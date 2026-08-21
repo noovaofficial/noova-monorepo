@@ -1,0 +1,16 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# Явный список пакетов, которым разрешены postinstall-скрипты.
+# Всё остальное pnpm блокирует — это защита от произвольного кода в зависимостях.
+allowBuilds:
+  '@parcel/watcher': true
+  '@prisma/engines': true
+  '@swc/core': true
+  esbuild: true
+  prisma: true
+
+minimumReleaseAgeExclude:
+  - '@fastify/helmet@13.1.1'
+  - fastify@5.12.1

@@ -1,0 +1,66 @@
+.wrap {
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space4);
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.count {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+/* Пометка на снятой анкете. Приглушение самой карточки — в ProfileCard:
+   там же остаётся рабочим сердце, иначе отметку было бы не снять. */
+.item {
+  position: relative;
+}
+
+.unavailableNote {
+  position: absolute;
+  inset-inline: 0;
+  top: 40%;
+  z-index: 4;
+  margin: 0 var(--space3);
+  padding: var(--space2) var(--space3);
+  text-align: center;
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: #fff;
+  background: rgb(0 0 0 / 70%);
+  border-radius: var(--radiusMd);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.emptyTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  color: var(--primaryText);
+  margin-bottom: var(--space2);
+}
+
+.actions {
+  margin-top: var(--space5);
+}

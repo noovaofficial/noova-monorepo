@@ -1,0 +1,89 @@
+.footer {
+  margin-top: var(--space12);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.grid {
+  display: grid;
+  /* Две колонки: правовой блок временно убран, и третья пустая колонка
+     оставила бы «Компанию» прижатой к середине. */
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--space12);
+  padding: var(--space12) 0 36px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--primaryText);
+  margin-bottom: 14px;
+}
+
+.about {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  max-width: 460px;
+}
+
+.age {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space4);
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: var(--secondaryText);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 5px 12px;
+}
+
+.colTitle {
+  font-family: var(--fontDisplay);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+  margin-bottom: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.list a {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  transition: color 0.15s;
+}
+
+.list a:hover {
+  color: var(--primary);
+}
+
+.bottom {
+  border-top: 1px solid var(--border);
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--tertiaryText);
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space8);
+  }
+}

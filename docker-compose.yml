@@ -1,0 +1,268 @@
+# Полный стек для сервера: фронт, бэк, БД, хранилище, прокси и бэкапы.
+# Разворачивается одной командой на любой машине с Docker — это и есть
+# «портируемость важнее ухода в тень» из documentation/architecture.md §6.
+#
+#   cp .env.example .env && отредактировать секреты
+#   docker compose up -d --build
+
+name: noova
+
+x-restart: &restart
+  restart: unless-stopped
+
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: '10m'
+      max-file: '5'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    <<: [*restart, *logging]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      # Логическое время в UTC: смена таймзоны сервера не должна двигать данные.
+      TZ: UTC
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks: [internal]
+
+  redis:
+    image: redis:7-alpine
+    <<: [*restart, *logging]
+    command: redis-server --save 60 1 --appendonly yes --loglevel warning
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks: [internal]
+
+  minio:
+    image: minio/minio:latest
+    <<: [*restart, *logging]
+    command: server /data --console-address ':9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [internal]
+
+  # Миграции — отдельный одноразовый контейнер. Если бы их гонял сам api,
+  # при нескольких репликах они запустились бы параллельно и подрались за блокировку.
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    <<: *logging
+    restart: 'no'
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    command: ['./node_modules/.bin/prisma', 'migrate', 'deploy']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    <<: [*restart, *logging]
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOST: 0.0.0.0
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public&connection_limit=10&pool_timeout=20
+      REDIS_URL: redis://redis:6379
+      SMTP_HOST: smtp
+      SMTP_PORT: 587
+      SMTP_SECURE: 'false'
+      MAIL_FROM: ${MAIL_FROM}
+      PUBLIC_SITE_URL: ${SITE_URL}
+      SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-30}
+      IP_HASH_SALT: ${IP_HASH_SALT}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      # Сброс кэша фронта по событию. Без этих двух правки владелицы и
+      # решения модератора не видны до истечения ISR — до десяти минут,
+      # а адрес по умолчанию (localhost) внутри контейнера ведёт в сам api.
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      WEB_REVALIDATE_URL: http://web:3000/api/revalidate
+      CORS_ORIGINS: ${SITE_URL}
+      MEDIA_BASE_URL: ${MEDIA_BASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      smtp:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:4000/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [internal, edge]
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
+        NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+    <<: [*restart, *logging]
+    environment:
+      NODE_ENV: production
+      # Внутри сети идём напрямую в контейнер api, минуя прокси.
+      API_INTERNAL_URL: http://api:4000
+      # Тот же секрет, что у api: им серверный рендер отличается от посетителя.
+      # Без префикса NEXT_PUBLIC_ — в браузерный бандл не попадает.
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      # Тем же секретом фронт проверяет запрос на сброс кэша от api.
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      # Пустое значение отключает карты: остаётся текстовая сноска.
+      MAP_TILE_URL: ${MAP_TILE_URL:-}
+      MAP_TILE_USER_AGENT: ${MAP_TILE_USER_AGENT:-Noova/1.0}
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
+      NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks: [internal, edge]
+
+  # Собственный SMTP. Массовые почтовые сервисы ограничивают adult в ToS,
+  # и блокировка аккаунта остановила бы регистрацию и сброс пароля — то есть
+  # вход на сайт. Наружу порт не публикуется: писать письма может только API.
+  #
+  # Перед первым запуском обязательно:
+  #   1) PTR-запись на отправляющий IP — без неё письма отклоняются на входе;
+  #   2) SPF, DKIM и DMARC на MAIL_DOMAIN;
+  #   3) прогрев адреса: первые недели объём наращивается постепенно.
+  # Подробнее — documentation/planning.md, N-15.
+  smtp:
+    image: boky/postfix:latest
+    <<: [*restart, *logging]
+    environment:
+      ALLOWED_SENDER_DOMAINS: ${MAIL_DOMAIN}
+      HOSTNAME: mail.${SITE_DOMAIN}
+      DKIM_AUTOGENERATE: 'true'
+    volumes:
+      - dkim_keys:/etc/opendkim/keys
+    networks: [internal]
+
+  # Единственный контейнер, смотрящий наружу. Caddy сам получает и продлевает
+  # TLS-сертификаты — на новом домене поднимается без ручной возни.
+  caddy:
+    image: caddy:2-alpine
+    <<: [*restart, *logging]
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    volumes:
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - api
+    networks: [edge]
+
+  # Чистка по срокам хранения. Отдельным сервисом, а не таймером внутри api:
+  # при нескольких репликах api таймер отработал бы в каждой, а удалять
+  # нужно один раз. По той же причине отдельным сервисом вынесены миграции.
+  jobs:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    <<: [*restart, *logging]
+    command: ['node', 'dist/jobs/runner.js']
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public&connection_limit=2&pool_timeout=20
+      REDIS_URL: redis://redis:6379
+      JOBS_INTERVAL_SECONDS: ${JOBS_INTERVAL_SECONDS:-21600}
+      RETENTION_DELETED_PHOTOS_DAYS: ${RETENTION_DELETED_PHOTOS_DAYS:-30}
+      RETENTION_AUTH_TOKENS_DAYS: ${RETENTION_AUTH_TOKENS_DAYS:-7}
+      RETENTION_CONTACT_REVEALS_DAYS: ${RETENTION_CONTACT_REVEALS_DAYS:-365}
+      RETENTION_MODERATION_ACTIONS_DAYS: ${RETENTION_MODERATION_ACTIONS_DAYS:-365}
+      ACCOUNT_DELETION_GRACE_DAYS: ${ACCOUNT_DELETION_GRACE_DAYS:-14}
+      # Чистка удаляет и файлы из хранилища, а не только строки в БД.
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_BUCKET: ${S3_BUCKET:-noova-media}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      MEDIA_BASE_URL: ${MEDIA_BASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks: [internal]
+
+  backup:
+    image: postgres:17-alpine
+    <<: [*restart, *logging]
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB}
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./infra/backup:/scripts:ro
+      - ./backups:/backups
+    entrypoint: ['/bin/sh', '/scripts/backup-loop.sh']
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [internal]
+
+networks:
+  # Порты этих сервисов наружу не публикуются: снаружи доступен только Caddy.
+  internal:
+  edge:
+
+volumes:
+  dkim_keys:
+  postgres_data:
+  redis_data:
+  minio_data:
+  caddy_data:
+  caddy_config:

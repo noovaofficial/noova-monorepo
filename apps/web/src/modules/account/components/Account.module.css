@@ -1,0 +1,435 @@
+.wrap {
+  padding: var(--space8) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space6);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text2xl);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space4) var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  flex-wrap: wrap;
+}
+
+.cardMain {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cardName {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textLg);
+}
+
+.cardMeta {
+  color: var(--tertiaryText);
+  font-size: var(--textSm);
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space2);
+  flex-wrap: wrap;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radiusPill);
+  white-space: nowrap;
+}
+
+.statusDraft { background: var(--surfaceMuted); color: var(--secondaryText); }
+.statusPending { background: var(--warningSubtle); color: var(--warning); }
+.statusPublished { background: var(--successSubtle); color: var(--success); }
+.statusPaused { background: var(--surfaceMuted); color: var(--tertiaryText); }
+.statusRejected { background: var(--dangerSubtle); color: var(--danger); }
+.statusBanned { background: var(--dangerSubtle); color: var(--danger); }
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  margin-bottom: var(--space4);
+}
+
+.noticeWarn { background: var(--warningSubtle); color: var(--warning); }
+.noticeError { background: var(--dangerSubtle); color: var(--danger); }
+.noticeOk { background: var(--successSubtle); color: var(--success); }
+.noticeInfo { background: var(--surfaceMuted); color: var(--secondaryText); }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space5);
+  max-width: 640px;
+}
+
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space4);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textLg);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.input,
+.select,
+.textarea {
+  font-family: var(--fontBody);
+  font-size: var(--textBase);
+  padding: 10px 12px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+  width: 100%;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.hint {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space3);
+}
+
+.priceRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: var(--space2);
+  align-items: end;
+}
+
+.remove {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  color: var(--secondaryText);
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: var(--textSm);
+}
+
+.remove:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+  .priceRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.serviceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.serviceGroupTitle {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space2);
+}
+
+.serviceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--background);
+}
+
+.serviceRowChecked {
+  border-color: var(--primary);
+  background: var(--primarySubtle);
+}
+
+.serviceLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  flex: 1;
+  cursor: pointer;
+  font-size: var(--textSm);
+  min-width: 0;
+}
+
+.serviceName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.extraToggle {
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--tertiaryText);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.extraToggleOn {
+  background: var(--accentSubtle);
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space3);
+}
+
+.photoCard {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radiusMd);
+  overflow: hidden;
+  background: var(--surfaceMuted);
+  border: 1px solid var(--border);
+}
+
+.photoCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radiusPill);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+.photoBadgeCover {
+  background: var(--primary);
+}
+
+.photoBadgeRejected {
+  background: var(--danger);
+}
+
+.photoTools {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  padding: 6px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+}
+
+.photoTool {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  border-radius: var(--radiusSm);
+  padding: 4px 8px;
+  font-size: var(--textXs);
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.photoTool:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.photoTool:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.photoToolDanger:hover {
+  background: var(--danger);
+}
+
+.uploadLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space2);
+  font-weight: 600;
+  font-size: var(--textSm);
+  border-radius: var(--radiusMd);
+  padding: 10px 18px;
+  border: 1px solid var(--borderStrong);
+  background: transparent;
+  color: var(--primaryText);
+  cursor: pointer;
+}
+
+.uploadLabel:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.uploadInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Две колонки: форма слева, состояние анкеты справа. Правая колонка липкая —
+   при длинной форме владелец не теряет из виду причину отказа и кнопки,
+   и ему не нужно скроллить наверх после каждой правки. */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--space6);
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  /* Шапка липкая, поэтому отступаем на её высоту, иначе панель уедет под неё. */
+  top: calc(var(--headerHeight) + var(--space4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.sidebarCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.sidebarTitle {
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.sidebarActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.sidebarActions > * {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* На узком экране липкая панель заняла бы пол-экрана — возвращаем в поток. */
+  .sidebar {
+    position: static;
+  }
+}
+
+/* Карточка удаления анкеты. Рамка опасности — чтобы единственное необратимое
+   действие в кабинете не выглядело как соседняя настройка. */
+.dangerCard {
+  margin-top: var(--space4);
+  border-color: var(--danger);
+}

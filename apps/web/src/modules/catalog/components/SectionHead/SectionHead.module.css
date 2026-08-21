@@ -1,0 +1,28 @@
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+
+.count {
+  color: var(--tertiaryText);
+  font-weight: 400;
+  font-size: var(--textLg);
+  font-family: var(--fontBody);
+}
+
+.more {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--primary);
+}

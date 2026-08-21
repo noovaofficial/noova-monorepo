@@ -1,0 +1,128 @@
+.wrap {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: var(--space12) 0;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text2xl);
+  margin-bottom: var(--space6);
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--tertiaryText);
+}
+
+.input,
+.select {
+  font-family: var(--fontBody);
+  font-size: var(--textBase);
+  padding: 10px 12px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--primaryText);
+  width: 100%;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.fieldError {
+  font-size: var(--textXs);
+  color: var(--danger);
+}
+
+.inputError {
+  border-color: var(--danger);
+}
+
+.inputError:focus {
+  border-color: var(--danger);
+}
+
+.hint {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space2);
+  margin-bottom: var(--space2);
+}
+
+.role {
+  padding: var(--space3);
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.roleActive {
+  background: var(--primarySubtle);
+  color: var(--onPrimarySubtle);
+  border-color: transparent;
+}
+
+.error {
+  color: var(--danger);
+  font-size: var(--textSm);
+  background: var(--dangerSubtle);
+  padding: var(--space3);
+  border-radius: var(--radiusMd);
+}
+
+.success {
+  color: var(--success);
+  font-size: var(--textSm);
+  background: var(--successSubtle);
+  padding: var(--space3);
+  border-radius: var(--radiusMd);
+}
+
+.footer {
+  margin-top: var(--space5);
+  text-align: center;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.link {
+  color: var(--primary);
+  font-weight: 600;
+}

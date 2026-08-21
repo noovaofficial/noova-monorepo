@@ -1,0 +1,20 @@
+/* auto-fill + minmax(200px) даёт ~5 карточек в ряд на десктопе и корректно
+   схлопывается до 2 на мобиле без медиазапросов. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.emptyTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  color: var(--primaryText);
+  margin-bottom: var(--space2);
+}

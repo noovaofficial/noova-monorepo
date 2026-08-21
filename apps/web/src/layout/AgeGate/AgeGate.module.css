@@ -1,0 +1,69 @@
+/* Оверлей лежит поверх контента, а не вместо него: разметка каталога остаётся
+   в DOM и доступна поисковикам. display:none убирает диалог и из порядка
+   табуляции, и из дерева доступности — visibility тут не подошёл бы. */
+:global(html[data-adult='yes']) .overlay {
+  display: none;
+}
+
+/* Пока подтверждения нет, фон не скроллится. */
+:global(html:not([data-adult='yes'])) body {
+  overflow: hidden;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zOverlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space5);
+  background: var(--surfaceSunken);
+}
+
+.dialog {
+  max-width: 480px;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusXl);
+  box-shadow: var(--shadowLg);
+  padding: var(--space8);
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--textXl);
+  color: var(--primaryText);
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text2xl);
+  margin-bottom: var(--space3);
+}
+
+.body {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  margin-bottom: var(--space6);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.denied {
+  color: var(--danger);
+  font-weight: 600;
+}

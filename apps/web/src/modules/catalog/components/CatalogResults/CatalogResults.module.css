@@ -1,0 +1,51 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space4);
+  margin-top: var(--space8);
+}
+
+/* Ссылки страниц нужны боту и работают без JS. Человеку показываем кнопку
+   «показать ещё», поэтому нумерация уходит в неприметную строку под ней. */
+
+
+
+
+
+.status {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+}
+
+.error {
+  font-size: var(--textSm);
+  color: var(--danger);
+}
+
+/* «Показать ещё» — ссылка, а не кнопка: по ней бот обходит каталог, а браузер
+   перехватывает клик и дописывает карточки на месте. Поэтому стиль кнопки
+   задаётся здесь вручную. */
+.more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--textSm);
+  border-radius: var(--radiusMd);
+  padding: 10px 18px;
+  border: 1px solid var(--borderStrong);
+  color: var(--primaryText);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.more:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.more[aria-busy='true'] {
+  opacity: 0.6;
+  pointer-events: none;
+}

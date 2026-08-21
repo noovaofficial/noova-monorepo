@@ -1,0 +1,44 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  margin-bottom: var(--space5);
+  overflow: hidden;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space4) var(--space5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textXl);
+}
+
+.chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--tertiaryText);
+  transition: transform 0.2s;
+}
+
+.collapsed .chevron {
+  transform: rotate(-90deg);
+}
+
+.body {
+  padding: 0 var(--space5) var(--space5);
+}
+
+.collapsed .body {
+  display: none;
+}

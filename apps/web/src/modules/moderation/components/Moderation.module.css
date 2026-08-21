@@ -1,0 +1,298 @@
+.wrap {
+  padding: var(--space8) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text2xl);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space2);
+  margin-bottom: var(--space5);
+  flex-wrap: wrap;
+}
+
+.tab {
+  font-size: var(--textSm);
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--secondaryText);
+  cursor: pointer;
+}
+
+.tabActive {
+  background: var(--primarySubtle);
+  color: var(--onPrimarySubtle);
+  border-color: transparent;
+}
+
+.count {
+  margin-left: 6px;
+  opacity: 0.7;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space4);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardPhoto {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--surfaceMuted);
+}
+
+.cardPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBody {
+  padding: var(--space4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+  flex: 1;
+}
+
+.cardKind {
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: var(--tertiaryText);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cardName {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textLg);
+}
+
+.cardMeta {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  padding: 0 var(--space4) var(--space4);
+  flex-wrap: wrap;
+}
+
+.reasonBox {
+  padding: 0 var(--space4) var(--space4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.textarea {
+  font-family: var(--fontBody);
+  font-size: var(--textSm);
+  padding: 8px 10px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+  min-height: 70px;
+  resize: vertical;
+  width: 100%;
+}
+
+.textarea:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.hint {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.link {
+  font-size: var(--textSm);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  margin-bottom: var(--space4);
+}
+
+.noticeError { background: var(--dangerSubtle); color: var(--danger); }
+.noticeInfo { background: var(--surfaceMuted); color: var(--secondaryText); }
+
+/* ---------- Сотрудники ---------- */
+
+.staffList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.staffRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space4) var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  flex-wrap: wrap;
+}
+
+.staffMain {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.staffEmail {
+  font-weight: 600;
+}
+
+.staffMeta {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  /* Без этого во flex-строке бейдж растягивается по высоте соседней кнопки,
+     а текст остаётся прижатым к верхнему краю. */
+  align-self: center;
+  line-height: 1;
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radiusPill);
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+}
+
+.badgeAdmin { background: var(--primarySubtle); color: var(--onPrimarySubtle); }
+.badgeBlocked { background: var(--dangerSubtle); color: var(--danger); }
+
+.form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space4);
+  margin-bottom: var(--space5);
+  max-width: 480px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.input,
+.select {
+  font-family: var(--fontBody);
+  font-size: var(--textBase);
+  padding: 10px 12px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+  width: 100%;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+/* Текст комментария в очереди. Перенос по любому месту: сплошная строка
+   без пробелов иначе растянет карточку и сломает список. */
+.commentBody {
+  margin: var(--space2) 0;
+  padding: var(--space3);
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  background: var(--surfaceSunken);
+  border-radius: var(--radiusMd);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Жалоба выделена цветом предупреждения: это не текст на проверку,
+   а причина, по которой уже опубликованное вернулось в очередь. */
+.reportBody {
+  margin: var(--space2) 0 0;
+  padding: var(--space3);
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--warning);
+  background: var(--warningSubtle);
+  border-radius: var(--radiusMd);
+  overflow-wrap: anywhere;
+}
+
+/* Срочная жалоба: несовершеннолетняя или принуждение. Выделяется цветом
+   опасности, а не порядком в списке, — порядок читается не сразу. */
+.urgentBadge {
+  align-self: flex-start;
+  margin-bottom: var(--space2);
+  padding: 3px 10px;
+  font-size: var(--textXs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--textOnBrand);
+  background: var(--danger);
+  border-radius: var(--radiusPill);
+}

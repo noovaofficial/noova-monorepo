@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noova — Design System</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --brand-rose:#E0457B; --brand-coral:#FF8A5C; --brand-plum:#1E1320; --brand-offwhite:#FBF4F0;
+  --background:#F6F1EF; --surface:#FFFFFF; --surfaceMuted:#F0E9E7; --surfaceSunken:#EAE1DE; --overlay:rgba(30,19,32,.55);
+  --primaryText:#251A24; --secondaryText:#6E5F6A; --tertiaryText:#9A8B95; --textOnBrand:#FFFFFF; --link:#C9356B;
+  --border:#E7DDDA; --borderStrong:#D6C8C4; --borderFocus:#E0457B;
+  --primary:#E0457B; --primaryHover:#C9356B; --primaryActive:#B12C5E; --primarySubtle:#FBE7EE; --onPrimarySubtle:#B12C5E;
+  --accent:#FF8A5C; --accentHover:#F4774A; --accentSubtle:#FFEADF;
+  --success:#3E9E7A; --successSubtle:#E3F2EB; --warning:#C98A2E; --warningSubtle:#F8EBD6;
+  --danger:#CE4640; --dangerSubtle:#FBE5E3; --info:#6E78B0; --infoSubtle:#ECEEF8;
+  --verified:#2E8B9E; --verifiedSubtle:#E0F0F3; --featured:#C29A33; --featuredSubtle:#F7EFD7; --online:#3E9E7A;
+  --shadowSm:0 1px 2px rgba(30,19,32,.06); --shadowMd:0 4px 16px rgba(30,19,32,.08); --shadowLg:0 16px 40px rgba(30,19,32,.14);
+  --fontDisplay:'Sora','Futura',system-ui,sans-serif; --fontBody:'Inter',system-ui,sans-serif;
+  --radiusSm:6px; --radiusMd:10px; --radiusLg:16px; --radiusXl:24px; --radiusPill:999px;
+}
+.theme-dark{
+  --background:#150E14; --surface:#1F1620; --surfaceMuted:#2A1F2C; --surfaceSunken:#110B10; --overlay:rgba(0,0,0,.6);
+  --primaryText:#F4ECF1; --secondaryText:#B6A6B1; --tertiaryText:#7C6C78; --link:#F08AB0;
+  --border:#352A37; --borderStrong:#4A3B4C; --borderFocus:#EC5A8B;
+  --primary:#EC5A8B; --primaryHover:#F2779F; --primaryActive:#D94A7B; --primarySubtle:#3A1E2C; --onPrimarySubtle:#F6A9C2;
+  --accent:#FF9A70; --accentHover:#FFB08D; --accentSubtle:#3A241B;
+  --success:#4FB48C; --successSubtle:#182A22; --warning:#D6A24A; --warningSubtle:#2D2415;
+  --danger:#E15C56; --dangerSubtle:#321A19; --info:#8B95CE; --infoSubtle:#1F2233;
+  --verified:#4AA6B8; --verifiedSubtle:#14282C; --featured:#D8B048; --featuredSubtle:#2C2413; --online:#4FB48C;
+  --shadowSm:0 1px 2px rgba(0,0,0,.4); --shadowMd:0 6px 20px rgba(0,0,0,.45); --shadowLg:0 20px 48px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fontBody);background:var(--background);color:var(--primaryText);line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:56px 32px 80px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-weight:600}
+h1{font-family:var(--fontDisplay);font-weight:700;font-size:38px;letter-spacing:-.02em;margin:6px 0 4px}
+.sub{color:var(--secondaryText);font-size:16px;max-width:620px}
+h2{font-family:var(--fontDisplay);font-weight:600;font-size:22px;letter-spacing:-.01em;margin:0 0 18px}
+section{margin-top:56px}
+.divider{height:1px;background:var(--border);margin:14px 0 0}
+
+/* swatch grid */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
+.sw{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusMd);overflow:hidden;box-shadow:var(--shadowSm)}
+.sw .chip{height:64px}
+.sw .meta{padding:10px 12px}
+.sw .name{font-size:13px;font-weight:600}
+.sw .hex{font-size:12px;color:var(--tertiaryText);font-family:var(--fontBody);letter-spacing:.02em}
+.sw .use{font-size:11px;color:var(--secondaryText);margin-top:3px}
+
+/* type scale */
+.type-row{display:flex;align-items:baseline;gap:18px;padding:10px 0;border-bottom:1px solid var(--border)}
+.type-row .lbl{width:120px;flex:none;font-size:12px;color:var(--tertiaryText)}
+.fontcard{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:26px}
+.fontcard .fc{flex:1;min-width:260px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);padding:20px 22px}
+.fontcard .fc .big{font-size:40px;font-weight:600;letter-spacing:-.02em}
+.fontcard .fc .role{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);font-weight:600;margin-bottom:8px}
+.fontcard .fc .note{font-size:13px;color:var(--secondaryText);margin-top:10px}
+
+/* components */
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.btn{font-family:var(--fontBody);font-weight:600;font-size:14px;border-radius:var(--radiusMd);padding:11px 20px;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--primary);color:var(--textOnBrand)}
+.btn-secondary{background:transparent;color:var(--primary);border-color:var(--borderStrong)}
+.btn-ghost{background:transparent;color:var(--secondaryText)}
+.chip-f{font-size:13px;font-weight:500;padding:8px 14px;border-radius:var(--radiusPill);border:1px solid var(--border);background:var(--surface);color:var(--secondaryText)}
+.chip-f.sel{background:var(--primarySubtle);color:var(--onPrimarySubtle);border-color:transparent;font-weight:600}
+.tag{font-size:12px;font-weight:500;padding:4px 10px;border-radius:var(--radiusSm);background:var(--surfaceMuted);color:var(--secondaryText)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:var(--radiusPill)}
+.badge.verified{background:var(--verifiedSubtle);color:var(--verified)}
+.badge.featured{background:var(--featuredSubtle);color:var(--featured)}
+.badge.success{background:var(--successSubtle);color:var(--success)}
+.badge.warning{background:var(--warningSubtle);color:var(--warning)}
+.badge.danger{background:var(--dangerSubtle);color:var(--danger)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--online);display:inline-block}
+
+/* girl card mock */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);overflow:hidden;box-shadow:var(--shadowMd)}
+.card .photo{aspect-ratio:3/4;position:relative;background:
+   radial-gradient(120% 90% at 30% 10%, #F6B8CE 0%, #E0457B 45%, #7A2247 100%);}
+.card .photo .top{position:absolute;top:10px;left:10px;display:flex;gap:6px}
+.card .photo .scrim{position:absolute;inset:auto 0 0 0;height:46%;background:linear-gradient(to top,var(--overlay),transparent)}
+.card .photo .who{position:absolute;left:12px;bottom:10px;color:#fff}
+.card .photo .who .nm{font-family:var(--fontDisplay);font-weight:600;font-size:17px}
+.card .photo .who .loc{font-size:12px;opacity:.85}
+.card .body{padding:12px}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.card .foot{display:flex;align-items:center;justify-content:space-between}
+.card .price{font-weight:600;font-size:14px}
+.card .price small{color:var(--tertiaryText);font-weight:400}
+
+/* dark preview shell */
+.preview{border-radius:var(--radiusXl);padding:28px;background:var(--background);border:1px solid var(--border)}
+.faq-q{font-family:var(--fontDisplay);font-weight:600;font-size:18px;margin-bottom:6px}
+.faq-a{color:var(--secondaryText);line-height:1.65;max-width:640px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Noova · design system</div>
+  <h1>Цвета, типографика, компоненты</h1>
+  <p class="sub">Приглушённая база, розовый — только как акцент. Светлая и тёмная темы переключаются одним атрибутом <code>data-theme</code>.</p>
+
+  <!-- BRAND -->
+  <section>
+    <h2>Бренд</h2>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#E0457B"></div><div class="meta"><div class="name">Rose</div><div class="hex">#E0457B</div><div class="use">основной акцент</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FF8A5C"></div><div class="meta"><div class="name">Coral</div><div class="hex">#FF8A5C</div><div class="use">искра / вторичный</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1E1320"></div><div class="meta"><div class="name">Plum</div><div class="hex">#1E1320</div><div class="use">тёмная база</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FBF4F0;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">Off-white</div><div class="hex">#FBF4F0</div><div class="use">тёплые поверхности</div></div></div>
+    </div>
+  </section>
+
+  <!-- SEMANTIC LIGHT -->
+  <section>
+    <h2>Семантические токены — светлая тема</h2>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#F6F1EF;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">background</div><div class="hex">#F6F1EF</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">surface</div><div class="hex">#FFFFFF</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F0E9E7"></div><div class="meta"><div class="name">surfaceMuted</div><div class="hex">#F0E9E7</div></div></div>
+      <div class="sw"><div class="chip" style="background:#251A24"></div><div class="meta"><div class="name">primaryText</div><div class="hex">#251A24</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6E5F6A"></div><div class="meta"><div class="name">secondaryText</div><div class="hex">#6E5F6A</div></div></div>
+      <div class="sw"><div class="chip" style="background:#9A8B95"></div><div class="meta"><div class="name">tertiaryText</div><div class="hex">#9A8B95</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E7DDDA"></div><div class="meta"><div class="name">border</div><div class="hex">#E7DDDA</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E0457B"></div><div class="meta"><div class="name">primary</div><div class="hex">#E0457B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FBE7EE"></div><div class="meta"><div class="name">primarySubtle</div><div class="hex">#FBE7EE</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FF8A5C"></div><div class="meta"><div class="name">accent</div><div class="hex">#FF8A5C</div></div></div>
+      <div class="sw"><div class="chip" style="background:#3E9E7A"></div><div class="meta"><div class="name">success</div><div class="hex">#3E9E7A</div></div></div>
+      <div class="sw"><div class="chip" style="background:#C98A2E"></div><div class="meta"><div class="name">warning</div><div class="hex">#C98A2E</div></div></div>
+      <div class="sw"><div class="chip" style="background:#CE4640"></div><div class="meta"><div class="name">danger</div><div class="hex">#CE4640</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6E78B0"></div><div class="meta"><div class="name">info</div><div class="hex">#6E78B0</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2E8B9E"></div><div class="meta"><div class="name">verified</div><div class="hex">#2E8B9E</div><div class="use">«Проверено»</div></div></div>
+      <div class="sw"><div class="chip" style="background:#C29A33"></div><div class="meta"><div class="name">featured</div><div class="hex">#C29A33</div><div class="use">«ТОП» / промо</div></div></div>
+    </div>
+  </section>
+
+  <!-- SEMANTIC DARK -->
+  <section>
+    <h2>Семантические токены — тёмная тема</h2>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#150E14"></div><div class="meta"><div class="name">background</div><div class="hex">#150E14</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1F1620"></div><div class="meta"><div class="name">surface</div><div class="hex">#1F1620</div></div></div>
+      <div class="sw"><div class="chip" style="background:#2A1F2C"></div><div class="meta"><div class="name">surfaceMuted</div><div class="hex">#2A1F2C</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F4ECF1;border-bottom:1px solid var(--border)"></div><div class="meta"><div class="name">primaryText</div><div class="hex">#F4ECF1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B6A6B1"></div><div class="meta"><div class="name">secondaryText</div><div class="hex">#B6A6B1</div></div></div>
+      <div class="sw"><div class="chip" style="background:#352A37"></div><div class="meta"><div class="name">border</div><div class="hex">#352A37</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EC5A8B"></div><div class="meta"><div class="name">primary</div><div class="hex">#EC5A8B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FF9A70"></div><div class="meta"><div class="name">accent</div><div class="hex">#FF9A70</div></div></div>
+      <div class="sw"><div class="chip" style="background:#4FB48C"></div><div class="meta"><div class="name">success</div><div class="hex">#4FB48C</div></div></div>
+      <div class="sw"><div class="chip" style="background:#4AA6B8"></div><div class="meta"><div class="name">verified</div><div class="hex">#4AA6B8</div></div></div>
+      <div class="sw"><div class="chip" style="background:#D8B048"></div><div class="meta"><div class="name">featured</div><div class="hex">#D8B048</div></div></div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section>
+    <h2>Типографика</h2>
+    <div class="fontcard">
+      <div class="fc">
+        <div class="role">Display — Sora</div>
+        <div class="big" style="font-family:var(--fontDisplay)">Noova Aa Бб 24</div>
+        <div class="note">Заголовки, hero, имена. Геометрическая, перекликается со знаком. Используется сдержанно, веса 600–700.</div>
+      </div>
+      <div class="fc">
+        <div class="role">Body / UI — Inter</div>
+        <div class="big" style="font-family:var(--fontBody)">Noova Aa Бб 24</div>
+        <div class="note">Текст, карточки, теги, фильтры. Отлично читается в мелком кегле — критично для плотной сетки анкет.</div>
+      </div>
+    </div>
+    <div class="type-row"><div class="lbl">5xl · 48 / 700</div><div style="font-family:var(--fontDisplay);font-size:48px;font-weight:700;letter-spacing:-.02em;line-height:1.1">Найди свою компанию</div></div>
+    <div class="type-row"><div class="lbl">3xl · 30 / 600</div><div style="font-family:var(--fontDisplay);font-size:30px;font-weight:600;letter-spacing:-.01em">Топ недели</div></div>
+    <div class="type-row"><div class="lbl">xl · 20 / 600</div><div style="font-family:var(--fontDisplay);font-size:20px;font-weight:600">Алиса, 24</div></div>
+    <div class="type-row"><div class="lbl">base · 16 / 400</div><div style="font-size:16px">Основной текст описаний и FAQ — спокойный, читаемый.</div></div>
+    <div class="type-row"><div class="lbl">sm · 14 / 400</div><div style="font-size:14px;color:var(--secondaryText)">Метаданные карточки: город, район, рост.</div></div>
+    <div class="type-row"><div class="lbl">xs · 12 / 500</div><div style="font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)">Категория</div></div>
+  </section>
+
+  <!-- COMPONENTS -->
+  <section>
+    <h2>Компоненты</h2>
+    <div class="row">
+      <button class="btn btn-primary">Написать</button>
+      <button class="btn btn-secondary">В избранное</button>
+      <button class="btn btn-ghost">Подробнее</button>
+    </div>
+    <div class="row">
+      <span class="chip-f sel">Берлин</span>
+      <span class="chip-f">Мюнхен</span>
+      <span class="chip-f">Гамбург</span>
+      <span class="chip-f">Онлайн сейчас</span>
+    </div>
+    <div class="row">
+      <span class="tag">ужин</span>
+      <span class="tag">сопровождение</span>
+      <span class="tag">путешествия</span>
+      <span class="badge verified">✓ Проверено</span>
+      <span class="badge featured">★ ТОП</span>
+      <span class="badge success"><span class="dot"></span> Онлайн</span>
+      <span class="badge warning">Ожидает проверки</span>
+    </div>
+  </section>
+
+  <!-- LISTING CARDS -->
+  <section>
+    <h2>Карточки списка</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="photo">
+          <div class="top"><span class="badge featured">★ ТОП</span></div>
+          <div class="scrim"></div>
+          <div class="who"><div class="nm">Алиса, 24</div><div class="loc">Берлин · Митте</div></div>
+        </div>
+        <div class="body">
+          <div class="tags"><span class="tag">ужин</span><span class="tag">сопровождение</span></div>
+          <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от 200€<small>/час</small></span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="photo" style="background:radial-gradient(120% 90% at 70% 10%,#FFC9A8 0%,#FF8A5C 45%,#8A3A1E 100%)">
+          <div class="scrim"></div>
+          <div class="who"><div class="nm">Майя, 27</div><div class="loc">Мюнхен · центр</div></div>
+        </div>
+        <div class="body">
+          <div class="tags"><span class="tag">путешествия</span><span class="tag">вечер</span></div>
+          <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от 250€<small>/час</small></span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="photo" style="background:radial-gradient(120% 90% at 40% 0%,#D9B8F6 0%,#9B6BD0 50%,#3E2257 100%)">
+          <div class="scrim"></div>
+          <div class="who"><div class="nm">Лена, 22</div><div class="loc">Гамбург</div></div>
+        </div>
+        <div class="body">
+          <div class="tags"><span class="tag">ужин</span><span class="tag">фотосессии</span></div>
+          <div class="foot"><span class="badge success"><span class="dot"></span> Онлайн</span><span class="price">от 180€<small>/час</small></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DARK PREVIEW -->
+  <section>
+    <h2>Тёмная тема в деле</h2>
+    <div class="preview theme-dark">
+      <div class="grid2">
+        <div>
+          <div class="eyebrow">Главная</div>
+          <div style="font-family:var(--fontDisplay);font-weight:700;font-size:30px;letter-spacing:-.01em;color:var(--primaryText);margin:6px 0 8px">Топ недели</div>
+          <p style="color:var(--secondaryText);margin-bottom:16px">На тёмном фоне фотографии «играют» сильнее, а интерфейс уходит на второй план.</p>
+          <div class="row">
+            <button class="btn btn-primary">Написать</button>
+            <button class="btn btn-secondary">В избранное</button>
+          </div>
+          <div class="row" style="margin-top:4px">
+            <span class="chip-f sel">Берлин</span><span class="chip-f">Мюнхен</span><span class="chip-f">Онлайн</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="photo" style="background:radial-gradient(120% 90% at 30% 10%,#F6B8CE 0%,#E0457B 45%,#5A1833 100%)">
+            <div class="top"><span class="badge featured">★ ТОП</span></div>
+            <div class="scrim"></div>
+            <div class="who"><div class="nm">София, 25</div><div class="loc">Берлин · Шарлоттенбург</div></div>
+          </div>
+          <div class="body">
+            <div class="tags"><span class="tag">ужин</span><span class="tag">сопровождение</span></div>
+            <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от 220€<small>/час</small></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ TYPE -->
+  <section>
+    <h2>Контентные страницы (FAQ)</h2>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);padding:24px 26px;box-shadow:var(--shadowSm)">
+      <div class="faq-q">Что означает бейдж «Проверено»?</div>
+      <p class="faq-a">Он подтверждает, что анкета прошла проверку: возраст и личность подтверждены, а фотографии соответствуют человеку. Это базовое требование площадки — без проверки анкета не публикуется.</p>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

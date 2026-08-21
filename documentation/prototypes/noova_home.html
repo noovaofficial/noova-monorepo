@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noova</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --background:#F6F1EF; --surface:#FFFFFF; --surfaceMuted:#F0E9E7; --surfaceSunken:#EAE1DE; --overlay:rgba(30,19,32,.55);
+  --primaryText:#251A24; --secondaryText:#6E5F6A; --tertiaryText:#9A8B95; --textOnBrand:#FFFFFF; --link:#C9356B;
+  --border:#E7DDDA; --borderStrong:#D6C8C4; --borderFocus:#E0457B;
+  --primary:#E0457B; --primaryHover:#C9356B; --primaryActive:#B12C5E; --primarySubtle:#FBE7EE; --onPrimarySubtle:#B12C5E;
+  --accent:#FF8A5C; --accentHover:#F4774A; --accentSubtle:#FFEADF;
+  --success:#3E9E7A; --successSubtle:#E3F2EB; --warning:#C98A2E; --warningSubtle:#F8EBD6;
+  --danger:#CE4640; --dangerSubtle:#FBE5E3; --info:#6E78B0; --infoSubtle:#ECEEF8;
+  --verified:#2E8B9E; --verifiedSubtle:#E0F0F3; --featured:#C29A33; --featuredSubtle:#F7EFD7; --online:#3E9E7A;
+  --shadowSm:0 1px 2px rgba(30,19,32,.06); --shadowMd:0 4px 16px rgba(30,19,32,.08); --shadowLg:0 16px 40px rgba(30,19,32,.14);
+  --headerBg:rgba(246,241,239,.85);
+  --fontDisplay:'Sora','Futura',system-ui,sans-serif; --fontBody:'Inter',system-ui,sans-serif;
+  --radiusSm:6px; --radiusMd:10px; --radiusLg:16px; --radiusXl:24px; --radiusPill:999px;
+  --containerMax:1200px;
+}
+[data-theme="dark"]{
+  --background:#150E14; --surface:#1F1620; --surfaceMuted:#2A1F2C; --surfaceSunken:#110B10; --overlay:rgba(0,0,0,.6);
+  --primaryText:#F4ECF1; --secondaryText:#B6A6B1; --tertiaryText:#7C6C78; --link:#F08AB0;
+  --border:#352A37; --borderStrong:#4A3B4C; --borderFocus:#EC5A8B;
+  --primary:#EC5A8B; --primaryHover:#F2779F; --primaryActive:#D94A7B; --primarySubtle:#3A1E2C; --onPrimarySubtle:#F6A9C2;
+  --accent:#FF9A70; --accentHover:#FFB08D; --accentSubtle:#3A241B;
+  --success:#4FB48C; --successSubtle:#182A22; --warning:#D6A24A; --warningSubtle:#2D2415;
+  --danger:#E15C56; --dangerSubtle:#321A19; --info:#8B95CE; --infoSubtle:#1F2233;
+  --verified:#4AA6B8; --verifiedSubtle:#14282C; --featured:#D8B048; --featuredSubtle:#2C2413; --online:#4FB48C;
+  --shadowSm:0 1px 2px rgba(0,0,0,.4); --shadowMd:0 6px 20px rgba(0,0,0,.45); --shadowLg:0 20px 48px rgba(0,0,0,.55);
+  --headerBg:rgba(21,14,20,.82);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fontBody);background:var(--background);color:var(--primaryText);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--containerMax);margin:0 auto;padding:0 32px}
+
+/* ---------- HEADER ---------- */
+header{position:sticky;top:0;z-index:50;background:var(--headerBg);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border)}
+.hrow{display:flex;align-items:center;gap:16px}
+.hrow1{height:64px;justify-content:space-between}
+.hrow2{height:56px;border-top:1px solid var(--border);gap:10px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--fontDisplay);font-weight:700;font-size:22px;letter-spacing:-.01em;color:var(--primaryText)}
+.logo svg{width:30px;height:30px;flex:none}
+.hactions{display:flex;align-items:center;gap:10px}
+.btn{font-family:var(--fontBody);font-weight:600;font-size:14px;border-radius:var(--radiusMd);padding:10px 18px;border:1px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--primary);color:var(--textOnBrand)}
+.btn-primary:hover{background:var(--primaryHover)}
+.btn-secondary{background:transparent;color:var(--primaryText);border-color:var(--borderStrong)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radiusMd);border:1px solid var(--border);background:var(--surface);color:var(--secondaryText);cursor:pointer;transition:.15s;font-weight:600;font-size:13px}
+.iconbtn:hover{color:var(--primary);border-color:var(--primary)}
+.iconbtn svg{width:18px;height:18px}
+.filterbtn{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:9px 16px;border-radius:var(--radiusPill);border:1px solid var(--borderStrong);background:var(--surface);color:var(--primaryText);cursor:pointer;transition:.15s;white-space:nowrap}
+.filterbtn:hover{border-color:var(--primary);color:var(--primary)}
+.filterbtn svg{width:16px;height:16px}
+.qfilters{display:flex;align-items:center;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+.qfilters::-webkit-scrollbar{display:none}
+.chip-f{font-size:13px;font-weight:500;padding:8px 15px;border-radius:var(--radiusPill);border:1px solid var(--border);background:var(--surface);color:var(--secondaryText);cursor:pointer;white-space:nowrap;transition:.15s}
+.chip-f:hover{border-color:var(--primary);color:var(--primary)}
+.chip-f.sel{background:var(--primarySubtle);color:var(--onPrimarySubtle);border-color:transparent;font-weight:600}
+.spacer{flex:1}
+
+/* ---------- PROMO SLIDER ---------- */
+.section{padding:32px 0}
+.promo-wrap{position:relative}
+.promo{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px}
+.promo::-webkit-scrollbar{display:none}
+.promo a{flex:none;width:340px;height:184px;border-radius:var(--radiusLg);scroll-snap-align:start;position:relative;overflow:hidden;box-shadow:var(--shadowMd);display:block}
+.promo a .lbl{position:absolute;left:18px;bottom:16px;color:#fff;z-index:2}
+.promo a .lbl .t{font-family:var(--fontDisplay);font-weight:700;font-size:20px}
+.promo a .lbl .s{font-size:13px;opacity:.9}
+.promo a .scrim{position:absolute;inset:0;background:linear-gradient(105deg,rgba(0,0,0,.45),transparent 60%)}
+.promo a .ad{position:absolute;top:12px;right:12px;z-index:2;font-size:11px;font-weight:600;letter-spacing:.04em;color:#fff;background:rgba(0,0,0,.28);padding:3px 8px;border-radius:var(--radiusPill);backdrop-filter:blur(4px)}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadowMd);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;color:var(--primaryText)}
+.arrow.l{left:-12px}.arrow.r{right:-12px}
+.arrow svg{width:18px;height:18px}
+
+/* ---------- SECTION HEADER ---------- */
+.sechead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.sechead h2{font-family:var(--fontDisplay);font-weight:600;font-size:26px;letter-spacing:-.01em}
+.sechead h2 .cnt{color:var(--tertiaryText);font-weight:400;font-size:18px;font-family:var(--fontBody)}
+.sechead a.more{font-size:14px;font-weight:600;color:var(--primary)}
+
+/* ---------- CARD GRID ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);overflow:hidden;box-shadow:var(--shadowSm);cursor:pointer;transition:transform .18s, box-shadow .18s;display:block}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadowLg)}
+.card .photo{aspect-ratio:3/4;position:relative}
+.card .photo .top{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:2}
+.card .photo .online{position:absolute;top:12px;right:12px;z-index:2;display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.3);padding:3px 8px;border-radius:var(--radiusPill);backdrop-filter:blur(4px)}
+.card .photo .scrim{position:absolute;inset:auto 0 0 0;height:48%;background:linear-gradient(to top,var(--overlay),transparent)}
+.card .photo .who{position:absolute;left:12px;right:12px;bottom:10px;color:#fff;z-index:2}
+.card .photo .who .nm{font-family:var(--fontDisplay);font-weight:600;font-size:16px}
+.card .photo .who .loc{font-size:12px;opacity:.88}
+.card .body{padding:11px 12px 12px}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:22px;overflow:hidden}
+.tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:var(--radiusSm);background:var(--surfaceMuted);color:var(--secondaryText);white-space:nowrap}
+.card .foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card .price{font-weight:600;font-size:14px;white-space:nowrap}
+.card .price small{color:var(--tertiaryText);font-weight:400}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:var(--radiusPill);white-space:nowrap}
+.badge.verified{background:var(--verifiedSubtle);color:var(--verified)}
+.badge.featured{background:var(--featuredSubtle);color:var(--featured)}
+.showall{display:flex;justify-content:center;margin-top:26px}
+
+/* ---------- FOOTER ---------- */
+footer{margin-top:48px;border-top:1px solid var(--border);background:var(--surface)}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;padding:48px 0 36px}
+.fcol .logo{margin-bottom:14px}
+.fabout{color:var(--secondaryText);font-size:14px;line-height:1.65;max-width:460px}
+.age{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;font-weight:600;color:var(--secondaryText);border:1px solid var(--border);border-radius:var(--radiusPill);padding:5px 12px}
+.fcol h4{font-family:var(--fontDisplay);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--tertiaryText);margin-bottom:14px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.fcol ul a{color:var(--secondaryText);font-size:14px;transition:.15s}
+.fcol ul a:hover{color:var(--primary)}
+.fbottom{border-top:1px solid var(--border);padding:18px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--tertiaryText);font-size:13px}
+
+@media(max-width:860px){
+  .fgrid{grid-template-columns:1fr;gap:32px}
+  .hrow1{height:60px}
+  .container{padding:0 18px}
+}
+@media(max-width:560px){
+  .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="hrow hrow1">
+      <a class="logo" href="#">
+        <svg viewBox="0 0 100 100" fill="none" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M50,82 C30,64 12,52 12,34 C12,20 24,12 36,16 C44,18 48,24 50,30 C52,24 56,18 64,16 C76,12 88,20 88,34 C88,52 70,64 50,82 Z" stroke="var(--primary)" stroke-width="6"/>
+          <path d="M50,68 C42,60 42,52 50,42 C58,52 58,60 50,68 Z" stroke="var(--accent)" stroke-width="6"/>
+        </svg>
+        noova
+      </a>
+      <div class="hactions">
+        <button class="btn btn-secondary" data-i18n="login">Войти</button>
+        <button class="btn btn-primary" data-i18n="create">Создать анкету</button>
+      </div>
+    </div>
+    <div class="hrow hrow2">
+      <button class="filterbtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+        <span data-i18n="filters">Фильтры</span>
+      </button>
+      <div class="qfilters">
+        <span class="chip-f sel">ТОП</span>
+        <span class="chip-f">Individual</span>
+        <span class="chip-f">BDSM</span>
+        <span class="chip-f">Blowjob</span>
+        <span class="chip-f" data-i18n="online">Онлайн сейчас</span>
+        <span class="chip-f">Couples</span>
+        <span class="chip-f">Massage</span>
+      </div>
+      <button class="iconbtn" id="langBtn" title="Язык">RU</button>
+      <button class="iconbtn" id="themeBtn" title="Тема" aria-label="Переключить тему"></button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- PROMO SLIDER -->
+  <section class="section">
+    <div class="promo-wrap">
+      <div class="arrow l" onclick="document.getElementById('promo').scrollBy({left:-360,behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="promo" id="promo"></div>
+      <div class="arrow r" onclick="document.getElementById('promo').scrollBy({left:360,behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></div>
+    </div>
+  </section>
+
+  <!-- ESCORT LISTING -->
+  <section class="section">
+    <div class="sechead">
+      <h2><span data-i18n="secEscort">Анкеты в Берлине</span> <span class="cnt">(всего 2&nbsp;333)</span></h2>
+      <a class="more" href="#" data-i18n="showAll">Показать все →</a>
+    </div>
+    <div class="grid" id="gridEscort"></div>
+    <div class="showall"><button class="btn btn-secondary" data-i18n="showAllBtn">Показать все 2&nbsp;333 анкеты</button></div>
+  </section>
+
+  <!-- MASSAGE LISTING -->
+  <section class="section">
+    <div class="sechead">
+      <h2><span data-i18n="secMassage">Массажные салоны в Берлине</span> <span class="cnt">(всего 123)</span></h2>
+      <a class="more" href="#" data-i18n="showAll">Показать все →</a>
+    </div>
+    <div class="grid" id="gridMassage"></div>
+    <div class="showall"><button class="btn btn-secondary" data-i18n="showAllM">Показать все салоны</button></div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="fgrid">
+      <div class="fcol">
+        <a class="logo" href="#">
+          <svg viewBox="0 0 100 100" fill="none" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M50,82 C30,64 12,52 12,34 C12,20 24,12 36,16 C44,18 48,24 50,30 C52,24 56,18 64,16 C76,12 88,20 88,34 C88,52 70,64 50,82 Z" stroke="var(--primary)" stroke-width="6"/>
+            <path d="M50,68 C42,60 42,52 50,42 C58,52 58,60 50,68 Z" stroke="var(--accent)" stroke-width="6"/>
+          </svg>
+          noova
+        </a>
+        <p class="fabout" data-i18n="footerAbout">Noova — каталог анкет для взрослых (18+). Доступ к материалам разрешён только совершеннолетним. Все анкеты проходят проверку возраста и личности; материалы с участием несовершеннолетних и любое принуждение строго запрещены и удаляются.</p>
+        <span class="age">🔞 <span data-i18n="adultsOnly">Только для лиц 18+</span></span>
+      </div>
+      <div class="fcol">
+        <h4 data-i18n="company">Компания</h4>
+        <ul>
+          <li><a href="#" data-i18n="linkAbout">О проекте</a></li>
+          <li><a href="#" data-i18n="linkVerify">О верификации</a></li>
+          <li><a href="#" data-i18n="linkAds">Реклама</a></li>
+          <li><a href="#" data-i18n="linkContacts">Контакты</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbottom">
+      <span>© 2026 Noova</span>
+      <span data-i18n="impressum">Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- gradients (фото-заглушки) ---------- */
+const grads = [
+  'radial-gradient(120% 90% at 30% 10%, #F6B8CE 0%, #E0457B 45%, #5A1833 100%)',
+  'radial-gradient(120% 90% at 70% 5%, #FFC9A8 0%, #FF8A5C 45%, #7A331A 100%)',
+  'radial-gradient(120% 90% at 40% 0%, #D9B8F6 0%, #9B6BD0 50%, #3E2257 100%)',
+  'radial-gradient(120% 90% at 60% 10%, #F4C9D7 0%, #C9356B 50%, #4A1730 100%)',
+  'radial-gradient(120% 90% at 25% 5%, #FAD9C2 0%, #E07A4A 50%, #5E2A14 100%)',
+  'radial-gradient(120% 90% at 75% 0%, #C9D4F0 0%, #6E78B0 50%, #2A3055 100%)',
+  'radial-gradient(120% 90% at 35% 10%, #C8E6DD 0%, #3E9E7A 55%, #163B2D 100%)',
+  'radial-gradient(120% 90% at 65% 5%, #F2B9C9 0%, #D94A7B 50%, #4F1A30 100%)'
+];
+
+const districts = ['Митте','Шарлоттенбург','Кройцберг','Пренцлауэр-Берг','Фридрихсхайн','Нойкёльн','Шёнеберг','Тиргартен'];
+const namesF = ['Алиса','Майя','Лена','София','Ника','Дарья','Эмма','Карина','Юлия','Вера','Лиза','Марта','Нина','Кира','Ева','Полина','Рита','Зоя','Аня','Таня'];
+const tagsPool = [['ужин','сопровождение'],['путешествия','вечер'],['ужин','фотосессии'],['сопровождение','мероприятия'],['вечер','ужин'],['массаж','спа'],['сопровождение','путешествия']];
+
+function profileCard(i){
+  const top = i % 5 === 0;            // каждый 5-й — ТОП
+  const online = i % 3 === 0;
+  const name = namesF[i % namesF.length];
+  const age = 21 + (i*7 % 14);
+  const dist = districts[i % districts.length];
+  const tags = tagsPool[i % tagsPool.length];
+  const price = 150 + (i % 8) * 20;
+  return `
+  <a class="card" href="#">
+    <div class="photo" style="background:${grads[i % grads.length]}">
+      <div class="top">${top ? '<span class="badge featured">★ ТОП</span>' : ''}</div>
+      ${online ? '<span class="online"><span style="width:7px;height:7px;border-radius:50%;background:var(--online);display:inline-block"></span>Онлайн</span>' : ''}
+      <div class="scrim"></div>
+      <div class="who"><div class="nm">${name}, ${age}</div><div class="loc">Берлин · ${dist}</div></div>
+    </div>
+    <div class="body">
+      <div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от ${price}€<small>/час</small></span></div>
+    </div>
+  </a>`;
+}
+
+const salonNames = ['Lotus Spa','Aurora','Velvet Rooms','Orchid','Серебро','Nirvana','Amber','Oasis','Lumière','Жемчуг'];
+const salonTags = [['тайский','спа'],['релакс','сауна'],['классический','спа'],['ароматерапия'],['спа','хаммам']];
+function salonCard(i){
+  const top = i % 6 === 0;
+  const name = salonNames[i % salonNames.length];
+  const dist = districts[(i+2) % districts.length];
+  const tags = salonTags[i % salonTags.length];
+  const price = 60 + (i % 6) * 15;
+  return `
+  <a class="card" href="#">
+    <div class="photo" style="background:${grads[(i+3) % grads.length]}">
+      <div class="top">${top ? '<span class="badge featured">★ ТОП</span>' : ''}</div>
+      <div class="scrim"></div>
+      <div class="who"><div class="nm">${name}</div><div class="loc">Берлин · ${dist}</div></div>
+    </div>
+    <div class="body">
+      <div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от ${price}€<small>/час</small></span></div>
+    </div>
+  </a>`;
+}
+
+function promoCard(i){
+  const name = namesF[(i*3) % namesF.length];
+  return `<a href="#" style="background:${grads[i % grads.length]}">
+    <span class="ad" data-i18n="ad">Реклама</span>
+    <div class="scrim"></div>
+    <div class="lbl"><div class="t">${name}</div><div class="s">Берлин · ${districts[i % districts.length]}</div></div>
+  </a>`;
+}
+
+document.getElementById('gridEscort').innerHTML  = Array.from({length:20}, (_,i)=>profileCard(i)).join('');
+document.getElementById('gridMassage').innerHTML = Array.from({length:10}, (_,i)=>salonCard(i)).join('');
+document.getElementById('promo').innerHTML       = Array.from({length:6}, (_,i)=>promoCard(i)).join('');
+
+/* ---------- theme toggle ---------- */
+const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
+const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>';
+const themeBtn = document.getElementById('themeBtn');
+function syncTheme(){ themeBtn.innerHTML = document.documentElement.getAttribute('data-theme')==='dark' ? sun : moon; }
+themeBtn.onclick = ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
+  syncTheme();
+};
+syncTheme();
+
+/* ---------- language toggle (минимальный i18n для демо) ---------- */
+const dict = {
+  ru:{login:'Войти',create:'Создать анкету',filters:'Фильтры',online:'Онлайн сейчас',
+      secEscort:'Анкеты в Берлине',secMassage:'Массажные салоны в Берлине',showAll:'Показать все →',
+      showAllBtn:'Показать все 2 333 анкеты',showAllM:'Показать все салоны',company:'Компания',
+      linkAbout:'О проекте',linkVerify:'О верификации',linkAds:'Реклама',linkContacts:'Контакты',
+      adultsOnly:'Только для лиц 18+',ad:'Реклама',
+      footerAbout:'Noova — каталог анкет для взрослых (18+). Доступ к материалам разрешён только совершеннолетним. Все анкеты проходят проверку возраста и личности; материалы с участием несовершеннолетних и любое принуждение строго запрещены и удаляются.',
+      impressum:'Impressum · Datenschutz · AGB'},
+  en:{login:'Log in',create:'Create profile',filters:'Filters',online:'Online now',
+      secEscort:'Profiles in Berlin',secMassage:'Massage studios in Berlin',showAll:'Show all →',
+      showAllBtn:'Show all 2,333 profiles',showAllM:'Show all studios',company:'Company',
+      linkAbout:'About',linkVerify:'Verification',linkAds:'Advertising',linkContacts:'Contacts',
+      adultsOnly:'Adults only 18+',ad:'Ad',
+      footerAbout:'Noova is an adults-only (18+) listings directory. Access is permitted to adults only. Every profile is age- and identity-verified; any material involving minors or any coercion is strictly prohibited and removed.',
+      impressum:'Imprint · Privacy · Terms'}
+};
+let lang='ru';
+const langBtn=document.getElementById('langBtn');
+langBtn.onclick=()=>{
+  lang = lang==='ru' ? 'en' : 'ru';
+  langBtn.textContent = lang==='ru' ? 'RU' : 'EN';
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n'); if(dict[lang][k]) el.textContent=dict[lang][k];
+  });
+};
+</script>
+</body>
+</html>

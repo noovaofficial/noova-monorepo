@@ -1,0 +1,25 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space1);
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radiusPill);
+  white-space: nowrap;
+}
+
+.verified {
+  background: var(--verifiedSubtle);
+  color: var(--verified);
+}
+
+.featured {
+  background: var(--featuredSubtle);
+  color: var(--featured);
+}
+
+.neutral {
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+}

@@ -1,0 +1,50 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.map {
+  height: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  overflow: hidden;
+  background: var(--surfaceSunken);
+}
+
+/* Тёмная тема: тёмных плиток у поставщика может не быть, а белый прямоугольник
+   посреди тёмной страницы читается как ошибка. Инверсия с обратным сдвигом
+   тона даёт приемлемый вариант из обычных плиток. Управление картой
+   не инвертируем — иначе кнопки становятся нечитаемыми. */
+:global(html[data-theme='dark']) .map :global(.leaflet-tile) {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(html:not([data-theme='light'])) .map :global(.leaflet-tile) {
+    filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+  }
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
+.value {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.reset {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--link);
+  font-size: var(--textSm);
+  cursor: pointer;
+  text-decoration: underline;
+}

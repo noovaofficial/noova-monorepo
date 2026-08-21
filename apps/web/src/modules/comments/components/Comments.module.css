@@ -1,0 +1,135 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.item {
+  padding: var(--space4);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space3);
+  margin-bottom: var(--space2);
+}
+
+.author {
+  font-weight: 600;
+  font-size: var(--textSm);
+}
+
+.date {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.body {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  /* Перенос по любому месту: сплошная строка без пробелов иначе растянет
+     карточку и сломает сетку страницы. */
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.empty {
+  padding: var(--space5) 0;
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.foot {
+  margin-top: var(--space3);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.reportBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tertiaryText);
+  font-size: var(--textXs);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.reportBtn:hover {
+  color: var(--danger);
+}
+
+.form {
+  margin-top: var(--space5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: var(--space3) var(--space4);
+  font: inherit;
+  font-size: var(--textSm);
+  color: var(--primaryText);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  resize: vertical;
+}
+
+.textarea:focus-visible {
+  outline: none;
+  border-color: var(--borderFocus);
+}
+
+.formFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+}
+
+.counter {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+  border-radius: var(--radiusMd);
+}
+
+.noticeInfo {
+  color: var(--info);
+  background: var(--infoSubtle);
+}
+
+.noticeWarn {
+  color: var(--warning);
+  background: var(--warningSubtle);
+}
+
+.noticeError {
+  color: var(--danger);
+  background: var(--dangerSubtle);
+}
+
+.noticeOk {
+  color: var(--success);
+  background: var(--successSubtle);
+}
+
+.hint {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  line-height: var(--leadingNormal);
+}

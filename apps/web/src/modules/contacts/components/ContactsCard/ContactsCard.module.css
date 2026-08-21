@@ -1,0 +1,74 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  padding: var(--space3) var(--space4);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  text-decoration: none;
+  color: inherit;
+}
+
+.rowLink:hover {
+  border-color: var(--accent);
+}
+
+.icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--secondaryText);
+}
+
+.rowLink .icon {
+  color: var(--accent);
+}
+
+.type {
+  flex: none;
+  min-width: 88px;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.value {
+  font-weight: 600;
+  font-size: var(--textBase);
+  word-break: break-all;
+}
+
+/* Заглушка до раскрытия. Это не спрятанное значение, а его отсутствие:
+   в разметке настоящего контакта нет вовсе — иначе гейт был бы декоративным. */
+.masked {
+  font-weight: 600;
+  color: var(--tertiaryText);
+  letter-spacing: 0.14em;
+  user-select: none;
+}
+
+.actions {
+  margin-top: var(--space4);
+}
+
+.note {
+  margin-top: var(--space3);
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+  line-height: var(--leadingNormal);
+}
+
+.error {
+  margin-top: var(--space3);
+  padding: var(--space3) var(--space4);
+  font-size: var(--textSm);
+  color: var(--danger);
+  background: var(--dangerSubtle);
+  border-radius: var(--radiusMd);
+}

@@ -1,0 +1,39 @@
+.wrap {
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  box-shadow: var(--shadowMd);
+  padding: var(--space1);
+  min-width: 120px;
+  z-index: var(--zOverlay);
+}
+
+.item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border-radius: var(--radiusSm);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--surfaceMuted);
+  color: var(--primaryText);
+}
+
+.active {
+  color: var(--primary);
+  font-weight: 600;
+}

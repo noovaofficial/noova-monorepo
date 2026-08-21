@@ -1,0 +1,9 @@
+.tag {
+  font-size: var(--textXs);
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: var(--radiusSm);
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+  white-space: nowrap;
+}

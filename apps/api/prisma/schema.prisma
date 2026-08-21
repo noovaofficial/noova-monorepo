@@ -1,0 +1,612 @@
+// Noova — схема каталога. Персональные данные анкет относятся к особой категории
+// по GDPR (documentation/architecture.md §6): всё, что идентифицирует человека, живёт в отдельных
+// моделях (VerificationCase, User) и никогда не попадает в публичные выборки.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ListingKind {
+  escort
+  massage
+}
+
+enum ProfileStatus {
+  draft
+  pending_verification
+  published
+  paused
+  rejected
+  banned
+}
+
+enum VerificationStatus {
+  none
+  pending
+  verified
+  failed
+}
+
+enum UserRole {
+  client
+  advertiser
+  moderator
+  admin
+}
+
+enum Gender {
+  male
+  female
+  other
+}
+
+/// Тип рекламодателя. Задаёт, сколько анкет разрешено вести и какого вида:
+/// individual — ровно одна анкета kind=escort, salon — сколько угодно kind=massage.
+/// Смешивать нельзя: салон, размещающий эскорт-анкеты от своего имени, — уже
+/// посредничество, а модель построена на само-размещении.
+enum AdvertiserKind {
+  individual
+  salon
+}
+
+/// Параметры внешности. Enum, а не свободная строка: по строке фильтр
+/// не соберётся — «blonde», «Blond» и «блондинка» окажутся разными значениями,
+/// и перевести их на три языка тоже нельзя.
+enum HairColor {
+  blonde
+  brunette
+  black
+  red
+  brown
+  other
+}
+
+enum EyeColor {
+  blue
+  green
+  brown
+  grey
+  hazel
+}
+
+enum BreastSize {
+  a
+  b
+  c
+  d
+  e
+  f_plus
+}
+
+/// Самодекларируемый тип внешности — описание облика, а не происхождения.
+/// Данные о расовом или этническом происхождении относятся к особой категории
+/// по ст. 9 GDPR и так храниться не могут. Заполняет только сам владелец
+/// анкеты, поле необязательное.
+enum AppearanceType {
+  european
+  asian
+  latin
+  african
+  arab
+  mixed
+}
+
+enum BodyType {
+  slim
+  thin
+  athletic
+  normal
+  curvy
+}
+
+/// «Натуральная грудь» и «силикон» — взаимоисключающая пара, поэтому это
+/// перечисление рядом с размером, а не два независимых флага.
+enum BreastType {
+  natural
+  silicone
+}
+
+enum PubicHair {
+  natural
+  trimmed
+  shaved
+}
+
+enum ModerationSubject {
+  photo
+  profile
+  verification
+  comment
+  user
+}
+
+enum ModerationDecision {
+  approved
+  rejected
+}
+
+enum AuthTokenPurpose {
+  email_verification
+  password_reset
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(advertiser)
+  // Подтверждение совершеннолетия самого аккаунта, до анкет.
+  isAdult      Boolean  @default(false)
+
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  /// Заполняется только для role = advertiser.
+  advertiserKind  AdvertiserKind?
+  /// Язык интерфейса на момент регистрации — на нём приходят письма.
+  locale          String          @default("de")
+  // Бан гасит все сессии; вход отклоняется до снятия.
+  bannedAt        DateTime?
+  /**
+   * Запрошено удаление учётной записи. Не мгновенное: анкеты сразу уходят
+   * из каталога, а физическое удаление происходит по истечении отсрочки
+   * (`purgeDeletedAccounts`). Отсрочка нужна против угона: удаление
+   * необратимо, и для салона или индивидуалки это потеря заработка,
+   * которую нельзя откатить.
+   */
+  deletionRequestedAt DateTime?
+  /// Причина блокировки. Обязательна вместе с `bannedAt`: блокировка без
+  /// объяснения не оставляет человеку способа исправиться и превращает
+  /// модерацию в произвол. Показывается ему же при попытке входа.
+  banReason       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profiles         Profile[]
+  clientProfile    ClientProfile?
+  authTokens       AuthToken[]
+  favorites        Favorite[]
+  comments         ProfileComment[]
+  commentReports   CommentReport[]
+  profileReports   ProfileReport[]
+  moderationActions ModerationAction[] @relation("moderatorActions")
+  createdStaff     User[]             @relation("staffCreator")
+  /// Кто завёл эту учётку. Заполняется только для модераторов и админов.
+  createdById      String?
+  createdBy        User?              @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}
+
+/// Профиль посетителя. Обязателен только никнейм — остальное по желанию.
+model ClientProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nickname String  @unique
+  name     String?
+  /// Год рождения, а не возраст: возраст протухает и требует пересчёта.
+  birthYear Int?
+  gender    Gender?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Журнал решений модерации.
+///
+/// Нужен не для отчётности: при споре с владельцем анкеты или запросе
+/// надзорного органа это единственное доказательство того, кто и на каком
+/// основании принял решение. Записи не удаляются вместе с объектом —
+/// поэтому здесь `subjectId` строкой, а не внешним ключом.
+model ModerationAction {
+  id          String             @id @default(cuid())
+  moderatorId String
+  moderator   User               @relation("moderatorActions", fields: [moderatorId], references: [id])
+  subjectType ModerationSubject
+  subjectId   String
+  decision    ModerationDecision
+  reason      String?
+  createdAt   DateTime           @default(now())
+
+  @@index([subjectType, createdAt])
+  @@index([moderatorId, createdAt])
+}
+
+/// Одноразовые токены для подтверждения почты и сброса пароля.
+model AuthToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Хранится только хэш: утечка таблицы не должна давать рабочие ссылки.
+  tokenHash String           @unique
+  purpose   AuthTokenPurpose
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, purpose])
+  @@index([expiresAt])
+}
+
+model City {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  countryCode String   @db.Char(2)
+  lat         Float?
+  lng         Float?
+  createdAt   DateTime @default(now())
+
+  districts District[]
+  profiles  Profile[]
+
+  @@index([countryCode])
+}
+
+model District {
+  id     String @id @default(cuid())
+  slug   String
+  name   String
+  cityId String
+  city   City   @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  /// Центр района. Отсюда и только отсюда берутся `Profile.approxLat/Lng`:
+  /// владелица выбирает район, а не точку на карте, и точнее этого мы
+  /// местоположение не знаем и знать не должны (architecture.md §6).
+  /// Следствие: у всех анкет одного района координата одна — это и есть
+  /// нужное свойство, а не недоработка.
+  lat Float?
+  lng Float?
+
+  profiles Profile[]
+
+  @@unique([cityId, slug])
+}
+
+model Profile {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  kind        ListingKind   @default(escort)
+  status      ProfileStatus @default(draft)
+  displayName String
+  description String        @default("")
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  cityId     String
+  city       City      @relation(fields: [cityId], references: [id])
+  districtId String?
+  district   District? @relation(fields: [districtId], references: [id])
+
+  /// Координаты **всегда огрублены до узла сетки** (`snapLocation`, ~1 км).
+  /// Владелица может поставить точку сама, но точнее ячейки сетки в базу
+  /// ничего не попадает: соседние адреса внутри ячейки неразличимы.
+  approxLat Float?
+  approxLng Float?
+  /// Точку поставила владелица, а не вывели из района. Нужно, чтобы смена
+  /// района не затирала выбранное ею место.
+  hasManualLocation Boolean @default(false)
+
+  // Денормализовано ради сортировки и фильтрации листинга без джойнов.
+  fromPriceCents Int?
+  isFeatured     Boolean   @default(false)
+  isVerified     Boolean   @default(false)
+  lastSeenAt     DateTime?
+  publishedAt    DateTime?
+
+  age         Int?
+  heightCm    Int?
+  weightKg    Int?
+  languages   String[] @default([])
+  /// НЕ ИСПОЛЬЗУЕТСЯ. Свободная строка о происхождении — то самое, от чего
+  /// ушли в пользу самодекларируемого `appearanceType`: происхождение
+  /// относится к особой категории по ст. 9 GDPR. Из API и интерфейса убрано;
+  /// колонку снести отдельной миграцией, убедившись, что данных в ней нет.
+  nationality String?
+  hairColor      HairColor?
+  eyeColor       EyeColor?
+  breastSize     BreastSize?
+  breastType     BreastType?
+  bodyType       BodyType?
+  pubicHair      PubicHair?
+  /// Пирсинг и татуировки независимы друг от друга и от остального боди-арта.
+  hasPiercing    Boolean?
+  hasTattoos     Boolean?
+  appearanceType AppearanceType?
+  smoker         Boolean?
+
+  tags String[] @default([])
+
+  /// Комментарий модератора владельцу: причина отказа или что исправить.
+  moderationNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  photos       Photo[]
+  favorites    Favorite[]
+  comments     ProfileComment[]
+  contacts     ProfileContact[]
+  reveals      ContactReveal[]
+  reports      ProfileReport[]
+  prices       PriceSlot[]
+  services     ProfileService[]
+  verification VerificationCase?
+  promoSlots   PromoSlot[]
+
+  // Основной индекс листинга: города × тип × статус, отсортированные по свежести.
+  @@index([status, kind, cityId, publishedAt])
+  @@index([status, kind, fromPriceCents])
+  @@index([status, isFeatured, publishedAt])
+  @@index([tags], type: Gin)
+}
+
+model Photo {
+  id          String  @id @default(cuid())
+  profileId   String
+  profile     Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  // Ключ в объектном хранилище, не публичный URL — CDN-домен подставляется на отдаче.
+  storageKey  String
+  width       Int
+  height      Int
+  blurDataUrl String?
+  position    Int     @default(0)
+  // Реальные фото публикуются только после верификации (documentation/architecture.md §6).
+  isApproved  Boolean @default(false)
+
+  /// Реальный формат, определённый по содержимому файла, а не по расширению.
+  mimeType String @default("image/jpeg")
+  bytes    Int    @default(0)
+  /// Ключи производных размеров. Перегенерация превью не трогает оригинал.
+  variants Json?
+
+  rejectedReason String?
+  /// Мягкое удаление: ошибочное удаление владельцем обратимо, стирание из
+  /// хранилища — нет. Физически файлы убирает отдельная фоновая чистка.
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, position])
+  @@index([deletedAt])
+}
+
+/// Причина жалобы. Перечислением, а не строкой: по свободному вводу нельзя
+/// расставить приоритет и собрать статистику, а разница между «мне не
+/// понравилось» и «на фото несовершеннолетняя» — это разница в срочности.
+enum ProfileReportReason {
+  underage
+  coercion
+  stolen_photos
+  impersonation
+  illegal_services
+  spam
+  other
+}
+
+/// Жалоба на анкету. Вход не требуется: заставлять регистрироваться того,
+/// кто увидел признаки принуждения или несовершеннолетнюю, значит такого
+/// сообщения не получить. Спам сдерживается лимитом на IP и журналом, как
+/// в N-08. Жалоба никогда не снимает анкету сама — решает человек.
+model ProfileReport {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  /// Заполнен, только если жаловался вошедший пользователь.
+  reporterId String?
+  reporter   User?   @relation(fields: [reporterId], references: [id], onDelete: SetNull)
+
+  /// Соль плюс хэш, не сырой адрес: журнал не должен сам стать базой ПД.
+  ipHash String
+
+  reason  ProfileReportReason
+  /// Пояснение обязательно: одна категория ни о чём не говорит модератору.
+  details String              @db.VarChar(1000)
+
+  resolvedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  /// Очередь: незакрытые, старые первыми.
+  @@index([resolvedAt, createdAt])
+  @@index([profileId, createdAt])
+}
+
+enum CommentStatus {
+  pending
+  published
+  rejected
+  hidden
+}
+
+/// Комментарий клиента к анкете. Премодерация обязательна: это высказывания
+/// о конкретных живых людях в чувствительной сфере, и по немецкому праву
+/// за размещённое отвечает площадка. Публикация — только решением модератора.
+///
+/// Числовой оценки здесь нет намеренно, см. решение 4 в planning.md:
+/// агрегированный рейтинг живого человека — инструмент травли, текст
+/// модерируется и снимается, среднее арифметическое — нет.
+model ProfileComment {
+  id        String        @id @default(cuid())
+  profileId String
+  profile   Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  body      String        @db.VarChar(2000)
+  status    CommentStatus @default(pending)
+
+  /// Причина отказа: автор должен понимать, почему комментарий не вышел.
+  moderationNote String?
+
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
+
+  reports CommentReport[]
+
+  /// Публичная выборка: опубликованные по анкете, свежие сверху.
+  @@index([profileId, status, publishedAt])
+  /// Проверка «не чаще одного в сутки на анкету» и список своих комментариев.
+  @@index([authorId, profileId, createdAt])
+  /// Очередь модерации.
+  @@index([status, createdAt])
+}
+
+/// Жалоба на комментарий. Владелец анкеты не отвечает публично (решение 3):
+/// вместо ответа — жалоба, которая попадает в общую очередь модерации.
+model CommentReport {
+  id        String         @id @default(cuid())
+  commentId String
+  comment   ProfileComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  /// Жалобу подаёт владелец анкеты; допускаем и жалобы других пользователей.
+  reporterId String
+  reporter   User          @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     String        @db.VarChar(1000)
+  resolvedAt DateTime?
+  createdAt  DateTime      @default(now())
+
+  /// Один заявитель — одна жалоба на комментарий: иначе очередь забивается повторами.
+  @@unique([commentId, reporterId])
+  @@index([resolvedAt, createdAt])
+}
+
+/// Избранное клиента. Составной первичный ключ вместо суррогатного: он же
+/// и защита от дублей — повторное добавление не создаёт вторую строку.
+model Favorite {
+  clientId  String
+  client    User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([clientId, profileId])
+  @@index([clientId, createdAt])
+}
+
+enum ContactType {
+  phone
+  whatsapp
+  telegram
+  viber
+}
+
+/// Контакты анкеты. Наружу отдаются только по явному раскрытию отдельным
+/// маршрутом: в публичном представлении анкеты их нет вовсе.
+model ProfileContact {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  type      ContactType
+  /// Телефон нормализован в E.164, Telegram — «@ник» либо тот же E.164.
+  /// Уникальность работает только на нормализованном значении: «0170…»
+  /// и «+49170…» иначе лягут двумя разными строками.
+  value     String
+  position  Int         @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, type, value])
+  @@index([profileId, position])
+}
+
+/// Журнал раскрытий: антифрод и статистика откликов для владелицы.
+/// Чистится по сроку из documentation/planning.md — 12 месяцев.
+model ContactReveal {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Заполнен, только если раскрывал вошедший пользователь: вход не требуется.
+  userId    String?
+  /// Соль плюс хэш, не сырой адрес — журнал не должен сам стать базой ПД.
+  ipHash    String
+  createdAt DateTime @default(now())
+
+  @@index([profileId, createdAt])
+  @@index([createdAt])
+}
+
+model PriceSlot {
+  id              String  @id @default(cuid())
+  profileId       String
+  profile         Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  durationMinutes Int
+  incallCents     Int?
+  outcallCents    Int?
+
+  @@unique([profileId, durationMinutes])
+}
+
+/// Справочник услуг. Ключи неизменяемы и переводятся на фронте: хранить
+/// человекочитаемое название в БД нельзя — оно не переводится на три языка.
+model Service {
+  id       String        @id @default(cuid())
+  key      String        @unique
+  group    String
+  /// Для каких видов анкет услуга предлагается. Пустой массив — для всех.
+  appliesTo ListingKind[] @default([])
+  position Int           @default(0)
+  isActive Boolean       @default(true)
+
+  profiles ProfileService[]
+
+  @@index([group, position])
+}
+
+model ProfileService {
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  isExtra   Boolean @default(false)
+
+  @@id([profileId, serviceId])
+}
+
+/// Документы верификации здесь не хранятся — только результат проверки и ссылка
+/// на кейс у провайдера. Сканы паспортов не должны попадать в основную БД.
+model VerificationCase {
+  id                 String             @id @default(cuid())
+  profileId          String             @unique
+  profile            Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  status             VerificationStatus @default(none)
+  provider           String?
+  providerCaseId     String?
+  ageConfirmed       Boolean            @default(false)
+  identityConfirmed  Boolean            @default(false)
+  reviewedByUserId   String?
+  rejectionReason    String?
+  submittedAt        DateTime?
+  reviewedAt         DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, submittedAt])
+}
+
+model PromoSlot {
+  id        String   @id @default(cuid())
+  profileId String?
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  title     String
+  subtitle  String?
+  href      String
+  imageKey  String?
+  position  Int      @default(0)
+  startsAt  DateTime @default(now())
+  endsAt    DateTime?
+  isActive  Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([isActive, position])
+}

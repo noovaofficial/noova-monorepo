@@ -1,0 +1,102 @@
+import {
+  CopyObjectCommand,
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { env } from '../../env.js';
+import { VARIANT_WIDTHS } from './images.js';
+
+/**
+ * Два префикса — это не организация папок, а граница доступа. Бакет отдаёт
+ * анонимно только `public/`, поэтому неодобренное фото физически недоступно
+ * по прямой ссылке, даже если её угадать. Публичным оно становится ровно
+ * в момент одобрения — переносом в `public/`.
+ */
+export const PENDING_PREFIX = 'pending';
+export const PUBLIC_PREFIX = 'public';
+
+const client = new S3Client({
+  endpoint: env.S3_ENDPOINT,
+  region: env.S3_REGION,
+  credentials: { accessKeyId: env.S3_ACCESS_KEY, secretAccessKey: env.S3_SECRET_KEY },
+  // MinIO адресует бакет путём, а не поддоменом.
+  forcePathStyle: true,
+});
+
+export async function putObject(key: string, body: Buffer, contentType: string): Promise<void> {
+  await client.send(
+    new PutObjectCommand({
+      Bucket: env.S3_BUCKET,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+      CacheControl: 'public, max-age=31536000, immutable',
+    }),
+  );
+}
+
+export async function deleteObject(key: string): Promise<void> {
+  await client.send(new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+}
+
+export async function moveObject(from: string, to: string): Promise<void> {
+  await client.send(
+    new CopyObjectCommand({
+      Bucket: env.S3_BUCKET,
+      CopySource: `${env.S3_BUCKET}/${from}`,
+      Key: to,
+    }),
+  );
+  await deleteObject(from);
+}
+
+/**
+ * Ссылка на неодобренное фото для владельца и модератора. Живёт минуты:
+ * это снимок реального человека, и постоянная ссылка разошлась бы дальше,
+ * чем нужно.
+ */
+export function signedUrl(key: string, expiresInSeconds = 600): Promise<string> {
+  return getSignedUrl(client, new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }), {
+    expiresIn: expiresInSeconds,
+  });
+}
+
+export function publicUrl(key: string): string {
+  return `${env.MEDIA_BASE_URL.replace(/\/$/, '')}/${key.replace(/^\//, '')}`;
+}
+
+export const isPublicKey = (key: string) => key.startsWith(`${PUBLIC_PREFIX}/`);
+
+/** Хранилище отвечает так, когда объекта нет. Это не сбой. */
+function isMissingObject(error: unknown): boolean {
+  const status = (error as { $metadata?: { httpStatusCode?: number } })?.$metadata?.httpStatusCode;
+  const name = (error as { name?: string })?.name;
+  return status === 404 || name === 'NoSuchKey' || name === 'NotFound';
+}
+
+/**
+ * Удаляет из хранилища все файлы одной фотографии — все её размеры.
+ *
+ * Существует отдельно и используется всюду, где исчезает фотография:
+ * удаление анкеты, удаление учётной записи, чистка мягко удалённых. Каскад
+ * в базе про файлы ничего не знает, и любое место, которое станет удалять
+ * их «по-своему», рано или поздно пропустит вариант и оставит файл в бакете.
+ *
+ * **Отсутствующий объект проглатывается, недоступное хранилище — нет.**
+ * Разница принципиальна: в первом случае файла и так нет, во втором — он
+ * есть, и если промолчать, вызывающий удалит строки и потеряет ключи.
+ * Файл останется в бакете навсегда, а одобренные лежат под публичным
+ * префиксом. Пусть лучше удаление не пройдёт и повторится следующим циклом.
+ */
+export async function deletePhotoFiles(storageKey: string): Promise<void> {
+  for (const variant of Object.keys(VARIANT_WIDTHS)) {
+    try {
+      await deleteObject(`${storageKey}/${variant}.webp`);
+    } catch (error) {
+      if (!isMissingObject(error)) throw error;
+    }
+  }
+}

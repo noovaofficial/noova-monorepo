@@ -1,0 +1,177 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--space8);
+  padding: var(--space5) 0 var(--space8);
+  align-items: start;
+}
+
+/* Слева одна галерея, справа все секции — правая колонка втрое длиннее,
+   и при прокрутке галерея уезжает, оставляя пустоту. Липкая колонка держит
+   фотографии в поле зрения, пока читают описание и тарифы. */
+.gallerySticky {
+  position: sticky;
+  /* Шапка сайта липкая — отступаем на её высоту. */
+  top: calc(var(--headerHeight) + var(--space4));
+}
+
+/* Шапка анкеты во всю ширину: имя, бейджи и город одной строкой. */
+.header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space3);
+  padding-top: var(--space8);
+}
+
+.headerName {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text3xl);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.headerCity {
+  color: var(--secondaryText);
+  font-size: var(--textLg);
+}
+
+.headerBadges {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  flex-wrap: wrap;
+}
+
+/* Группа услуг внутри секции. */
+.serviceGroup + .serviceGroup {
+  margin-top: var(--space4);
+}
+
+.serviceGroupTitle {
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+  margin-bottom: var(--space2);
+}
+
+@media (max-width: 980px) {
+  /* На узком экране колонки складываются в одну, и липкая галерея заняла бы
+     пол-экрана над текстом. */
+  .gallerySticky {
+    position: static;
+  }
+}
+
+
+
+
+.description {
+  color: var(--secondaryText);
+  line-height: var(--leadingRelaxed);
+  white-space: pre-line;
+}
+
+.params {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space3) var(--space6);
+}
+
+.param {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space3);
+  padding-bottom: var(--space2);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--textSm);
+}
+
+.paramKey {
+  color: var(--tertiaryText);
+}
+
+.prices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space3);
+}
+
+.priceCard {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  padding: var(--space4);
+}
+
+.priceDuration {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  margin-bottom: var(--space2);
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.priceRow strong {
+  color: var(--primaryText);
+}
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space2) var(--space5);
+}
+
+.service {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-size: var(--textSm);
+}
+
+.check {
+  color: var(--success);
+}
+
+.extra {
+  color: var(--tertiaryText);
+  font-size: var(--textXs);
+}
+
+.mapNote {
+  color: var(--tertiaryText);
+  font-size: var(--textXs);
+  margin-top: var(--space2);
+}
+
+.nearby {
+  padding-bottom: var(--space12);
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * «Анкеты рядом» — это витрина каталога. Владельцам анкет и сотрудникам
+ * каталог закрыт, и через этот блок он открывался бы обратно. Гость и клиент
+ * видят его как прежде.
+ *
+ * Скрываем через CSS по атрибуту из куки, а не условием в компоненте:
+ * страница статическая, роль на сервере не прочитать, а условный рендер
+ * на клиенте дал бы вспышку.
+ */
+:global(html[data-role='advertiser']) .nearby,
+:global(html[data-role='moderator']) .nearby,
+:global(html[data-role='admin']) .nearby {
+  display: none;
+}

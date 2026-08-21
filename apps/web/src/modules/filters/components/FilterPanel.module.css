@@ -1,0 +1,192 @@
+/* Панель выезжает сбоку: на длинном списке фильтров выпадающее меню
+   не помещается, а отдельная страница теряет контекст выдачи. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zOverlay);
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.panel {
+  width: min(420px, 100%);
+  height: 100%;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  padding: var(--space4) var(--space5);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--textXl);
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--secondaryText);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space6);
+}
+
+.foot {
+  display: flex;
+  gap: var(--space3);
+  padding: var(--space4) var(--space5);
+  border-top: 1px solid var(--border);
+  flex: none;
+}
+
+.foot > * {
+  flex: 1;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.groupHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space2);
+}
+
+.groupTitle {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textBase);
+}
+
+.clear {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: var(--textXs);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+}
+
+.chip {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--secondaryText);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.chipOn {
+  background: var(--primarySubtle);
+  color: var(--onPrimarySubtle);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space2);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.input,
+.select {
+  font-family: var(--fontBody);
+  font-size: var(--textSm);
+  padding: 9px 11px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+  width: 100%;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.subTitle {
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: default;
+  z-index: 0;
+}
+
+/* Панель поверх фоновой кнопки, иначе клики по ней закрывали бы окно. */
+.panel {
+  position: relative;
+  z-index: 1;
+}

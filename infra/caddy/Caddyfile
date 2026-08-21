@@ -1,0 +1,37 @@
+# TLS выпускается и продлевается автоматически. При переезде на запасной домен
+# достаточно поменять SITE_DOMAIN в .env и перезапустить контейнер.
+
+{
+	email {$ACME_EMAIL:admin@noova.app}
+}
+
+{$SITE_DOMAIN:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# API отдаётся с того же домена — тогда браузеру не нужен CORS-препролёт
+	# и не появляется второй домен, который придётся менять при переезде.
+	handle /api/* {
+		reverse_proxy api:4000 {
+			# Перезаписываем, а не дописываем: по умолчанию Caddy добавляет
+			# адрес клиента к тому, что клиент прислал сам, и левый край
+			# заголовка остаётся подконтрольным ему. API доверяет ровно
+			# одному переходу — этому.
+			header_up X-Forwarded-For {remote_host}
+		}
+	}
+
+	handle /healthz {
+		reverse_proxy api:4000
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}

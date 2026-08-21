@@ -1,0 +1,57 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radiusPill);
+  /* Полупрозрачная подложка: сердце лежит поверх фотографии, и на светлом
+     снимке контур без неё теряется. */
+  background: rgb(0 0 0 / 45%);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, color 0.15s;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  background: rgb(0 0 0 / 65%);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--borderFocus);
+  outline-offset: 2px;
+}
+
+.on {
+  color: var(--danger);
+}
+
+.icon {
+  width: 19px;
+  height: 19px;
+}
+
+/* Отдельный вид для страницы анкеты: там сердце стоит в ряду кнопок,
+   а не поверх фотографии, и подложка ему не нужна. */
+.inline {
+  width: auto;
+  height: auto;
+  gap: var(--space2);
+  padding: var(--space3) var(--space4);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  backdrop-filter: none;
+  color: var(--primaryText);
+  font-size: var(--textSm);
+  font-weight: 600;
+  border-radius: var(--radiusMd);
+}
+
+.inline:hover {
+  transform: none;
+  background: var(--surfaceMuted);
+}

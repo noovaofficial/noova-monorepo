@@ -1,0 +1,137 @@
+'use client';
+
+import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/design-system/components/Button';
+import { useSession } from '@/modules/auth/components/SessionProvider';
+import { fetchQueueCount } from '@/modules/moderation/api';
+import { Link, useRouter } from '@/shared/i18n/navigation';
+import { queryKeys } from '@/shared/query-keys';
+import styles from './HeaderActions.module.css';
+
+export function HeaderActions() {
+  const t = useTranslations('nav');
+  const ta = useTranslations('auth');
+  const { user, signOut } = useSession();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  const isStaff = user?.role === 'moderator' || user?.role === 'admin';
+
+  // Счётчик очереди тянем только для персонала: остальным этот запрос вернул
+  // бы 403 и зря шумел бы в консоли. Общий ключ с экраном модерации — после
+  // решения там счётчик обновляется инвалидацией, без своего перезапроса.
+  const { data: queue } = useQuery({
+    queryKey: queryKeys.queueCount(),
+    queryFn: fetchQueueCount,
+    enabled: isStaff,
+  });
+  const queueCount = queue?.total ?? 0;
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open]);
+
+  async function onSignOut() {
+    setOpen(false);
+    await signOut();
+    router.push('/');
+    router.refresh();
+  }
+
+  // Пока /auth/me не ответил, имени ещё нет — показываем нейтральную подпись,
+  // чтобы кнопка не прыгала по ширине при подстановке никнейма.
+  const label = user?.clientProfile?.nickname ?? user?.email ?? ta('account');
+  const needsVerification = user !== null && !user.isEmailVerified;
+
+  return (
+    <>
+      <div className={styles.anonymous}>
+        <Link href="/login" className={styles.hideSm}>
+          <Button variant="secondary">{t('login')}</Button>
+        </Link>
+        <Link href="/register">
+          <Button variant="primary">{t('create')}</Button>
+        </Link>
+      </div>
+
+      <div className={styles.authenticated} ref={wrapRef}>
+        <button
+          type="button"
+          className={styles.trigger}
+          onClick={() => setOpen((v) => !v)}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-label={ta('accountMenu')}
+        >
+          {queueCount > 0 ? (
+            <span className={styles.queueDot}>{queueCount}</span>
+          ) : needsVerification ? (
+            <span className={styles.warnDot} />
+          ) : null}
+          <span className={styles.name}>{label}</span>
+        </button>
+
+        {open ? (
+          <div className={styles.menu} role="menu">
+            {needsVerification ? (
+              <div className={styles.warning}>{ta('emailNotVerified')}</div>
+            ) : null}
+
+            {isStaff ? (
+              <Link href="/moderation" className={styles.item} role="menuitem">
+                {ta('moderation')}
+                {queueCount > 0 ? <span className={styles.queueBadge}>{queueCount}</span> : null}
+              </Link>
+            ) : null}
+
+            {user?.role === 'admin' ? (
+              <Link href="/admin" className={styles.item} role="menuitem">
+                {ta('staff')}
+              </Link>
+            ) : null}
+
+            {user?.role === 'advertiser' ? (
+              <Link href="/account/profiles" className={styles.item} role="menuitem">
+                {ta('myProfiles')}
+              </Link>
+            ) : null}
+
+            {user?.role === 'client' ? (
+              <Link href="/account/favorites" className={styles.item} role="menuitem">
+                {ta('favorites')}
+              </Link>
+            ) : null}
+
+            {/* Настройки — всем, кроме персонала: там удаление учётной
+                записи, а сотрудников заводит и убирает администратор. */}
+            {isStaff ? null : (
+              <Link href="/account/settings" className={styles.item} role="menuitem">
+                {ta('settings')}
+              </Link>
+            )}
+
+            <div className={styles.separator} />
+            <button type="button" className={styles.item} role="menuitem" onClick={onSignOut}>
+              {ta('logout')}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,65 @@
+.btn {
+  font-family: var(--fontBody);
+  font-weight: 600;
+  font-size: var(--textSm);
+  border-radius: var(--radiusMd);
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space2);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--primary);
+  color: var(--textOnBrand);
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--primaryHover);
+}
+
+.primary:active:not(:disabled) {
+  background: var(--primaryActive);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--primaryText);
+  border-color: var(--borderStrong);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--secondaryText);
+  font-size: 13px;
+}
+
+.icon:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.icon svg {
+  width: 18px;
+  height: 18px;
+}

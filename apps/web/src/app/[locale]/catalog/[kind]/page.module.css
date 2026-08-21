@@ -1,0 +1,40 @@
+.wrap {
+  padding: var(--space8) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space6);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text3xl);
+  letter-spacing: -0.01em;
+}
+
+.count {
+  color: var(--tertiaryText);
+  font-weight: 400;
+  font-size: var(--textLg);
+  font-family: var(--fontBody);
+  margin-left: var(--space2);
+}
+
+.empty {
+  padding: var(--space16) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.emptyTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textXl);
+  color: var(--primaryText);
+  margin-bottom: var(--space2);
+}

@@ -1,0 +1,124 @@
+.wrap {
+  max-width: 720px;
+  padding: var(--space8) 0 var(--space16);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text3xl);
+  font-weight: 600;
+  line-height: var(--leadingTight);
+  margin-bottom: var(--space3);
+}
+
+.lead {
+  font-size: var(--textLg);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin-bottom: var(--space8);
+}
+
+.section {
+  margin-bottom: var(--space8);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textXl);
+  font-weight: 600;
+  margin-bottom: var(--space3);
+}
+
+.text {
+  font-size: var(--textBase);
+  line-height: var(--leadingRelaxed);
+  margin-bottom: var(--space3);
+}
+
+.list {
+  margin: 0 0 var(--space3);
+  padding-left: var(--space5);
+  font-size: var(--textBase);
+  line-height: var(--leadingRelaxed);
+}
+
+.list li {
+  margin-bottom: var(--space2);
+}
+
+/* Тарифы: карточки, а не таблица — на телефоне таблица из трёх колонок
+   либо жмётся до нечитаемости, либо уезжает горизонтальной прокруткой. */
+.plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space4);
+  margin-bottom: var(--space5);
+}
+
+.plan {
+  padding: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.planName {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space2);
+}
+
+.planPrice {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 700;
+}
+
+.planPeriod {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  padding: var(--space4);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  color: inherit;
+  text-decoration: none;
+}
+
+.contact:hover {
+  border-color: var(--accent);
+}
+
+.contactIcon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+}
+
+.contactLabel {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.contactValue {
+  font-weight: 600;
+}
+
+.note {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+  line-height: var(--leadingNormal);
+}

@@ -1,0 +1,136 @@
+/* Обе версии блока лежат в разметке, а показывает нужную CSS по атрибуту,
+   который выставил инлайн-скрипт в <head>. Так вошедший пользователь не видит
+   вспышки кнопки «Войти», а страницы остаются статическими. */
+.anonymous {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.authenticated {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+:global(html[data-signed-in='yes']) .anonymous {
+  display: none;
+}
+
+:global(html[data-signed-in='yes']) .authenticated {
+  display: flex;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  padding: 8px 14px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--borderStrong);
+  background: var(--surface);
+  color: var(--primaryText);
+  font-size: var(--textSm);
+  font-weight: 600;
+  cursor: pointer;
+  max-width: 200px;
+}
+
+.trigger:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warnDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--warning);
+  flex: none;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 200px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  box-shadow: var(--shadowMd);
+  padding: var(--space1);
+  z-index: var(--zOverlay);
+}
+
+.item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: var(--radiusSm);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--surfaceMuted);
+  color: var(--primaryText);
+}
+
+.separator {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space1) 0;
+}
+
+.warning {
+  padding: 8px 12px;
+  font-size: var(--textXs);
+  color: var(--warning);
+}
+
+@media (max-width: 560px) {
+  .hideSm {
+    display: none;
+  }
+}
+
+/* Счётчик очереди модерации: заявка не должна пролежать незамеченной. */
+.queueDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--textOnBrand);
+  font-size: 11px;
+  font-weight: 700;
+  flex: none;
+}
+
+.queueBadge {
+  float: right;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--textOnBrand);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 18px;
+}

@@ -1,0 +1,168 @@
+/*
+ * Noova — дизайн-токены. Источник правды по цвету, типографике и раскладке.
+ * Светлая тема в :root, тёмная в [data-theme="dark"]. Тёмная — дефолт (arch.md §2):
+ * атрибут проставляется в <html> на сервере, поэтому вспышки светлой темы нет.
+ * Ничего не хардкодить мимо этих переменных.
+ */
+
+:root {
+  /* Поверхности */
+  --background: #f6f1ef;
+  --surface: #ffffff;
+  --surfaceMuted: #f0e9e7;
+  --surfaceSunken: #eae1de;
+  --overlay: rgba(30, 19, 32, 0.55);
+  --headerBg: rgba(246, 241, 239, 0.85);
+
+  /* Текст */
+  --primaryText: #251a24;
+  --secondaryText: #6e5f6a;
+  --tertiaryText: #9a8b95;
+  --textOnBrand: #ffffff;
+  --link: #c9356b;
+
+  /* Границы */
+  --border: #e7ddda;
+  --borderStrong: #d6c8c4;
+  --borderFocus: #e0457b;
+
+  /* Бренд */
+  --primary: #e0457b;
+  --primaryHover: #c9356b;
+  --primaryActive: #b12c5e;
+  --primarySubtle: #fbe7ee;
+  --onPrimarySubtle: #b12c5e;
+
+  /* Акцент */
+  --accent: #ff8a5c;
+  --accentHover: #f4774a;
+  --accentSubtle: #ffeadf;
+
+  /* Статусы */
+  --success: #3e9e7a;
+  --successSubtle: #e3f2eb;
+  --warning: #c98a2e;
+  --warningSubtle: #f8ebd6;
+  --danger: #ce4640;
+  --dangerSubtle: #fbe5e3;
+  --info: #6e78b0;
+  --infoSubtle: #eceef8;
+
+  /* Продуктовые: доверие и промо */
+  --verified: #2e8b9e;
+  --verifiedSubtle: #e0f0f3;
+  --featured: #c29a33;
+  --featuredSubtle: #f7efd7;
+  --online: #3e9e7a;
+
+  /* Тени */
+  --shadowSm: 0 1px 2px rgba(30, 19, 32, 0.06);
+  --shadowMd: 0 4px 16px rgba(30, 19, 32, 0.08);
+  --shadowLg: 0 16px 40px rgba(30, 19, 32, 0.14);
+
+  /* Типографика */
+  --fontDisplay: var(--font-sora), 'Sora', system-ui, sans-serif;
+  --fontBody: var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  --textXs: 12px;
+  --textSm: 14px;
+  --textBase: 16px;
+  --textLg: 18px;
+  --textXl: 20px;
+  --text2xl: 24px;
+  --text3xl: 30px;
+  --text4xl: 38px;
+  --text5xl: 48px;
+
+  --leadingTight: 1.1;
+  --leadingNormal: 1.5;
+  --leadingRelaxed: 1.65;
+
+  /* Раскладка: сетка 4px */
+  --space1: 4px;
+  --space2: 8px;
+  --space3: 12px;
+  --space4: 16px;
+  --space5: 20px;
+  --space6: 24px;
+  --space8: 32px;
+  --space10: 40px;
+  --space12: 48px;
+  --space16: 64px;
+
+  --radiusSm: 6px;
+  --radiusMd: 10px;
+  --radiusLg: 16px;
+  --radiusXl: 24px;
+  --radiusPill: 999px;
+
+  --containerMax: 1200px;
+  --containerPad: 32px;
+  --containerPadMobile: 18px;
+
+  --headerHeight: 120px;
+  --zHeader: 50;
+  --zOverlay: 100;
+  /* Полноэкранный просмотр поверх остальных оверлеев: панель фильтров
+     может быть открыта под ним. */
+  --zLightbox: 110;
+}
+
+/*
+ * Тёмная тема применяется и когда атрибута нет вовсе: атрибут ставит
+ * инлайн-скрипт, а до его выполнения (и у ботов без JS) страница обязана
+ * выглядеть так же. Светлая включается только явным data-theme="light".
+ */
+:root:not([data-theme='light']),
+[data-theme='dark'] {
+  --background: #150e14;
+  --surface: #1f1620;
+  --surfaceMuted: #2a1f2c;
+  --surfaceSunken: #110b10;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --headerBg: rgba(21, 14, 20, 0.82);
+
+  --primaryText: #f4ecf1;
+  --secondaryText: #b6a6b1;
+  --tertiaryText: #7c6c78;
+  --link: #f08ab0;
+
+  --border: #352a37;
+  --borderStrong: #4a3b4c;
+  --borderFocus: #ec5a8b;
+
+  --primary: #ec5a8b;
+  --primaryHover: #f2779f;
+  --primaryActive: #d94a7b;
+  --primarySubtle: #3a1e2c;
+  --onPrimarySubtle: #f6a9c2;
+
+  --accent: #ff9a70;
+  --accentHover: #ffb08d;
+  --accentSubtle: #3a241b;
+
+  --success: #4fb48c;
+  --successSubtle: #182a22;
+  --warning: #d6a24a;
+  --warningSubtle: #2d2415;
+  --danger: #e15c56;
+  --dangerSubtle: #321a19;
+  --info: #8b95ce;
+  --infoSubtle: #1f2233;
+
+  --verified: #4aa6b8;
+  --verifiedSubtle: #14282c;
+  --featured: #d8b048;
+  --featuredSubtle: #2c2413;
+  --online: #4fb48c;
+
+  --shadowSm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadowMd: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadowLg: 0 20px 48px rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 860px) {
+  :root {
+    --containerPad: var(--containerPadMobile);
+  }
+}

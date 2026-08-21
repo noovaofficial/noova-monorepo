@@ -1,0 +1,9 @@
+.section {
+  padding: var(--space8) 0;
+}
+
+.showAll {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}

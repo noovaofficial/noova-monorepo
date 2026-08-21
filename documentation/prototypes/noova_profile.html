@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Алиса, 24 — Noova</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --background:#F6F1EF; --surface:#FFFFFF; --surfaceMuted:#F0E9E7; --surfaceSunken:#EAE1DE; --overlay:rgba(30,19,32,.55);
+  --primaryText:#251A24; --secondaryText:#6E5F6A; --tertiaryText:#9A8B95; --textOnBrand:#FFFFFF; --link:#C9356B;
+  --border:#E7DDDA; --borderStrong:#D6C8C4; --borderFocus:#E0457B;
+  --primary:#E0457B; --primaryHover:#C9356B; --primaryActive:#B12C5E; --primarySubtle:#FBE7EE; --onPrimarySubtle:#B12C5E;
+  --accent:#FF8A5C; --accentHover:#F4774A; --accentSubtle:#FFEADF;
+  --success:#3E9E7A; --successSubtle:#E3F2EB; --warning:#C98A2E; --warningSubtle:#F8EBD6;
+  --danger:#CE4640; --dangerSubtle:#FBE5E3; --info:#6E78B0; --infoSubtle:#ECEEF8;
+  --verified:#2E8B9E; --verifiedSubtle:#E0F0F3; --featured:#C29A33; --featuredSubtle:#F7EFD7; --online:#3E9E7A;
+  --shadowSm:0 1px 2px rgba(30,19,32,.06); --shadowMd:0 4px 16px rgba(30,19,32,.08); --shadowLg:0 16px 40px rgba(30,19,32,.14);
+  --headerBg:rgba(246,241,239,.85);
+  --fontDisplay:'Sora','Futura',system-ui,sans-serif; --fontBody:'Inter',system-ui,sans-serif;
+  --radiusSm:6px; --radiusMd:10px; --radiusLg:16px; --radiusXl:24px; --radiusPill:999px;
+  --containerMax:1200px;
+}
+[data-theme="dark"]{
+  --background:#150E14; --surface:#1F1620; --surfaceMuted:#2A1F2C; --surfaceSunken:#110B10; --overlay:rgba(0,0,0,.6);
+  --primaryText:#F4ECF1; --secondaryText:#B6A6B1; --tertiaryText:#7C6C78; --link:#F08AB0;
+  --border:#352A37; --borderStrong:#4A3B4C; --borderFocus:#EC5A8B;
+  --primary:#EC5A8B; --primaryHover:#F2779F; --primaryActive:#D94A7B; --primarySubtle:#3A1E2C; --onPrimarySubtle:#F6A9C2;
+  --accent:#FF9A70; --accentHover:#FFB08D; --accentSubtle:#3A241B;
+  --success:#4FB48C; --successSubtle:#182A22; --warning:#D6A24A; --warningSubtle:#2D2415;
+  --danger:#E15C56; --dangerSubtle:#321A19; --info:#8B95CE; --infoSubtle:#1F2233;
+  --verified:#4AA6B8; --verifiedSubtle:#14282C; --featured:#D8B048; --featuredSubtle:#2C2413; --online:#4FB48C;
+  --shadowSm:0 1px 2px rgba(0,0,0,.4); --shadowMd:0 6px 20px rgba(0,0,0,.45); --shadowLg:0 20px 48px rgba(0,0,0,.55);
+  --headerBg:rgba(21,14,20,.82);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fontBody);background:var(--background);color:var(--primaryText);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--containerMax);margin:0 auto;padding:0 32px}
+
+/* HEADER (как на главной) */
+header{position:sticky;top:0;z-index:50;background:var(--headerBg);backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);border-bottom:1px solid var(--border)}
+.hrow{display:flex;align-items:center;gap:16px}
+.hrow1{height:64px;justify-content:space-between}
+.hrow2{height:56px;border-top:1px solid var(--border);gap:10px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--fontDisplay);font-weight:700;font-size:22px;letter-spacing:-.01em;color:var(--primaryText)}
+.logo svg{width:30px;height:30px;flex:none}
+.hactions{display:flex;align-items:center;gap:10px}
+.btn{font-family:var(--fontBody);font-weight:600;font-size:14px;border-radius:var(--radiusMd);padding:10px 18px;border:1px solid transparent;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--primary);color:var(--textOnBrand)}
+.btn-primary:hover{background:var(--primaryHover)}
+.btn-secondary{background:transparent;color:var(--primaryText);border-color:var(--borderStrong)}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+.iconbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radiusMd);border:1px solid var(--border);background:var(--surface);color:var(--secondaryText);cursor:pointer;transition:.15s;font-weight:600;font-size:13px}
+.iconbtn:hover{color:var(--primary);border-color:var(--primary)}
+.iconbtn svg{width:18px;height:18px}
+.filterbtn{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:9px 16px;border-radius:var(--radiusPill);border:1px solid var(--borderStrong);background:var(--surface);color:var(--primaryText);cursor:pointer;transition:.15s;white-space:nowrap}
+.filterbtn:hover{border-color:var(--primary);color:var(--primary)}
+.filterbtn svg{width:16px;height:16px}
+.qfilters{display:flex;align-items:center;gap:8px;overflow-x:auto;flex:1;scrollbar-width:none}
+.qfilters::-webkit-scrollbar{display:none}
+.chip-f{font-size:13px;font-weight:500;padding:8px 15px;border-radius:var(--radiusPill);border:1px solid var(--border);background:var(--surface);color:var(--secondaryText);cursor:pointer;white-space:nowrap;transition:.15s}
+.chip-f:hover{border-color:var(--primary);color:var(--primary)}
+.chip-f.sel{background:var(--primarySubtle);color:var(--onPrimarySubtle);border-color:transparent;font-weight:600}
+
+/* BREADCRUMBS */
+.crumbs{display:flex;gap:8px;align-items:center;padding:18px 0 4px;font-size:13px;color:var(--tertiaryText);flex-wrap:wrap}
+.crumbs a{color:var(--secondaryText)}
+.crumbs a:hover{color:var(--primary)}
+.crumbs .sep{opacity:.5}
+
+/* PROFILE LAYOUT */
+.profile{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;padding:16px 0 8px}
+@media(max-width:920px){.profile{grid-template-columns:1fr;gap:20px}}
+
+/* GALLERY */
+.gallery .main{position:relative;aspect-ratio:3/4;border-radius:var(--radiusLg);overflow:hidden;box-shadow:var(--shadowMd)}
+.gallery .main .badges{position:absolute;top:12px;left:12px;display:flex;gap:6px;z-index:2}
+.gallery .main .actions{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:2}
+.round-action{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.32);color:#fff;cursor:pointer;backdrop-filter:blur(4px);border:none;transition:.15s}
+.round-action:hover{background:rgba(0,0,0,.5)}
+.round-action.active{background:var(--primary)}
+.round-action svg{width:18px;height:18px}
+.gallery .main .online{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#fff;background:rgba(0,0,0,.34);padding:5px 10px;border-radius:var(--radiusPill);backdrop-filter:blur(4px)}
+.gallery .thumbs{display:flex;gap:8px;margin-top:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.gallery .thumbs::-webkit-scrollbar{display:none}
+.gallery .thumbs .t{flex:none;width:64px;aspect-ratio:3/4;border-radius:var(--radiusSm);cursor:pointer;border:2px solid transparent;transition:.15s}
+.gallery .thumbs .t.sel{border-color:var(--primary)}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:var(--radiusPill);white-space:nowrap}
+.badge.verified{background:var(--verifiedSubtle);color:var(--verified)}
+.badge.featured{background:var(--featuredSubtle);color:var(--featured)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--online);display:inline-block}
+
+/* INFO PANEL */
+.info .name{display:flex;align-items:center;gap:10px;font-family:var(--fontDisplay);font-weight:700;font-size:28px;letter-spacing:-.01em;margin-bottom:6px}
+.info .name .vchip{font-size:13px}
+.info .loc{display:flex;gap:8px;flex-wrap:wrap;color:var(--secondaryText);font-size:14px;margin-bottom:16px}
+.info .loc a{color:var(--accent)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:480px){.facts{grid-template-columns:repeat(2,1fr)}}
+.fact{background:var(--surfaceMuted);border-radius:var(--radiusMd);padding:10px 12px;text-align:center}
+.fact .v{font-family:var(--fontDisplay);font-weight:600;font-size:18px}
+.fact .l{font-size:11px;color:var(--tertiaryText);margin-top:2px}
+.pricebar{display:flex;align-items:baseline;gap:8px;margin-bottom:16px}
+.pricebar .big{font-family:var(--fontDisplay);font-weight:700;font-size:26px;color:var(--primary)}
+.pricebar small{color:var(--tertiaryText)}
+.cta{display:flex;gap:10px;margin-bottom:14px}
+.cta .btn-primary{flex:1;padding:14px;font-size:15px;background:var(--accent)}
+.cta .btn-primary:hover{background:var(--accentHover)}
+.cta .iconbtn{width:48px;height:48px}
+.trust{display:flex;gap:10px;align-items:flex-start;background:var(--verifiedSubtle);border-radius:var(--radiusMd);padding:12px 14px;font-size:13px;color:var(--secondaryText)}
+.trust b{color:var(--primaryText)}
+.trust svg{width:20px;height:20px;color:var(--verified);flex:none;margin-top:1px}
+
+/* SECTIONS */
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);margin-top:16px;overflow:hidden}
+.section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;user-select:none}
+.section-head h2{font-family:var(--fontDisplay);font-weight:600;font-size:18px}
+.section-head .chev{width:22px;height:22px;color:var(--tertiaryText);transition:transform .2s}
+.section-card.collapsed .chev{transform:rotate(-90deg)}
+.section-body{padding:0 20px 20px}
+.section-card.collapsed .section-body{display:none}
+
+/* prices */
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:560px){.prices{grid-template-columns:1fr}}
+.price-card{border:1px solid var(--border);border-radius:var(--radiusMd);padding:16px;text-align:center}
+.price-card .ph{font-family:var(--fontDisplay);font-weight:600;font-size:15px;margin-bottom:10px}
+.price-card .pr{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:var(--secondaryText)}
+.price-card .pr b{color:var(--primaryText)}
+.note-inline{display:flex;gap:8px;align-items:center;margin-top:14px;font-size:13px;color:var(--secondaryText);background:var(--infoSubtle);border-radius:var(--radiusMd);padding:10px 12px}
+.note-inline svg{width:18px;height:18px;color:var(--info);flex:none}
+
+/* parameters */
+.params{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
+@media(max-width:560px){.params{grid-template-columns:1fr}}
+.param{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px}
+.param .k{color:var(--secondaryText)}
+.param .v{text-align:right}
+.param .v a{color:var(--primaryText);border-bottom:1px dashed var(--border)}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{font-size:12px;font-weight:500;padding:4px 10px;border-radius:var(--radiusSm);background:var(--surfaceMuted);color:var(--secondaryText)}
+
+/* description */
+.desc{color:var(--secondaryText);line-height:1.7;font-size:15px}
+.desc p{margin-bottom:10px}
+
+/* services */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 24px}
+@media(max-width:720px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.svc-grid{grid-template-columns:1fr}}
+.svc-group .gname{font-family:var(--fontDisplay);font-weight:600;font-size:14px;margin-bottom:8px;color:var(--primaryText)}
+.svc-item{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:14px;color:var(--secondaryText)}
+.svc-item svg{width:16px;height:16px;color:var(--success);flex:none}
+.svc-item .add{font-size:11px;color:var(--tertiaryText);border:1px solid var(--border);border-radius:var(--radiusSm);padding:0 5px;margin-left:auto}
+
+/* map placeholder */
+.map-ph{height:280px;border-radius:var(--radiusMd);position:relative;overflow:hidden;background:
+  repeating-linear-gradient(0deg,transparent 0 38px,rgba(125,110,120,.12) 38px 39px),
+  repeating-linear-gradient(90deg,transparent 0 38px,rgba(125,110,120,.12) 38px 39px),
+  linear-gradient(135deg,var(--surfaceMuted),var(--surfaceSunken));display:flex;align-items:center;justify-content:center}
+.map-ph .pin{width:18px;height:18px;border-radius:50% 50% 50% 0;background:var(--primary);transform:rotate(-45deg);box-shadow:0 6px 16px rgba(0,0,0,.4)}
+.map-ph .pin::after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;top:5px;left:5px}
+.map-cap{font-size:13px;color:var(--secondaryText);margin-top:10px}
+
+/* reviews */
+.reviews-empty{text-align:center;color:var(--secondaryText);padding:18px 0}
+
+/* nearby */
+.sechead2{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 16px}
+.sechead2 h2{font-family:var(--fontDisplay);font-weight:600;font-size:24px;letter-spacing:-.01em}
+.cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radiusLg);overflow:hidden;box-shadow:var(--shadowSm);cursor:pointer;transition:transform .18s,box-shadow .18s;display:block}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadowLg)}
+.card .photo{aspect-ratio:3/4;position:relative}
+.card .photo .scrim{position:absolute;inset:auto 0 0 0;height:48%;background:linear-gradient(to top,var(--overlay),transparent)}
+.card .photo .who{position:absolute;left:12px;right:12px;bottom:10px;color:#fff;z-index:2}
+.card .photo .who .nm{font-family:var(--fontDisplay);font-weight:600;font-size:16px}
+.card .photo .who .lc{font-size:12px;opacity:.88}
+.card .photo .top{position:absolute;top:10px;left:10px;z-index:2}
+.card .b{padding:11px 12px 12px}
+.card .b .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:22px;overflow:hidden}
+.card .b .foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card .b .price{font-weight:600;font-size:14px;white-space:nowrap}
+.card .b .price small{color:var(--tertiaryText);font-weight:400}
+
+/* FOOTER */
+footer{margin-top:48px;border-top:1px solid var(--border);background:var(--surface)}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;padding:48px 0 36px}
+.fcol .logo{margin-bottom:14px}
+.fabout{color:var(--secondaryText);font-size:14px;line-height:1.65;max-width:460px}
+.age{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;font-weight:600;color:var(--secondaryText);border:1px solid var(--border);border-radius:var(--radiusPill);padding:5px 12px}
+.fcol h4{font-family:var(--fontDisplay);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--tertiaryText);margin-bottom:14px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+.fcol ul a{color:var(--secondaryText);font-size:14px;transition:.15s}
+.fcol ul a:hover{color:var(--primary)}
+.fbottom{border-top:1px solid var(--border);padding:18px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;color:var(--tertiaryText);font-size:13px}
+@media(max-width:860px){.fgrid{grid-template-columns:1fr;gap:32px}.container{padding:0 18px}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container">
+    <div class="hrow hrow1">
+      <a class="logo" href="#">
+        <svg viewBox="0 0 100 100" fill="none" stroke-linejoin="round" stroke-linecap="round">
+          <path d="M50,82 C30,64 12,52 12,34 C12,20 24,12 36,16 C44,18 48,24 50,30 C52,24 56,18 64,16 C76,12 88,20 88,34 C88,52 70,64 50,82 Z" stroke="var(--primary)" stroke-width="6"/>
+          <path d="M50,68 C42,60 42,52 50,42 C58,52 58,60 50,68 Z" stroke="var(--accent)" stroke-width="6"/>
+        </svg>
+        noova
+      </a>
+      <div class="hactions">
+        <button class="btn btn-secondary">Войти</button>
+        <button class="btn btn-primary">Создать анкету</button>
+      </div>
+    </div>
+    <div class="hrow hrow2">
+      <button class="filterbtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+        Фильтры
+      </button>
+      <div class="qfilters">
+        <span class="chip-f">ТОП</span><span class="chip-f">Individual</span><span class="chip-f">BDSM</span>
+        <span class="chip-f">Blowjob</span><span class="chip-f">Онлайн сейчас</span><span class="chip-f">Massage</span>
+      </div>
+      <button class="iconbtn" id="langBtn" title="Язык">RU</button>
+      <button class="iconbtn" id="themeBtn" title="Тема"></button>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <!-- BREADCRUMBS -->
+  <nav class="crumbs">
+    <a href="#">Главная</a><span class="sep">/</span>
+    <a href="#">Берлин</a><span class="sep">/</span>
+    <a href="#">Митте</a><span class="sep">/</span>
+    <span>Алиса</span>
+  </nav>
+
+  <!-- PROFILE -->
+  <div class="profile">
+    <!-- GALLERY -->
+    <div class="gallery">
+      <div class="main" id="mainPhoto">
+        <div class="badges"><span class="badge featured">★ ТОП</span></div>
+        <div class="actions">
+          <button class="round-action" id="favBtn" title="В избранное" onclick="this.classList.toggle('active')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3 1 6 4 3-3 4-4 6-4 3.5 0 5 3.5 3.5 6.5C19 16.5 12 21 12 21z"/></svg>
+          </button>
+          <button class="round-action" title="Поделиться">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+          </button>
+          <button class="round-action" title="Пожаловаться">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
+          </button>
+        </div>
+        <div class="online"><span class="dot"></span> Онлайн</div>
+      </div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <!-- INFO -->
+    <div class="info">
+      <div class="name">Алиса, 24 <span class="badge verified vchip">✓ Проверено</span></div>
+      <div class="loc">
+        <a href="#">Берлин</a> · <a href="#">Митте</a> · <span>U Rosenthaler Platz</span>
+      </div>
+      <div class="facts">
+        <div class="fact"><div class="v">24</div><div class="l">возраст</div></div>
+        <div class="fact"><div class="v">169</div><div class="l">рост, см</div></div>
+        <div class="fact"><div class="v">54</div><div class="l">вес, кг</div></div>
+        <div class="fact"><div class="v">RU·EN·DE</div><div class="l">языки</div></div>
+      </div>
+      <div class="pricebar"><span class="big">от 200&nbsp;€</span><small>/ час</small></div>
+      <div class="cta">
+        <button class="btn btn-primary">Показать контакты</button>
+        <button class="iconbtn" title="В избранное" onclick="this.classList.toggle('active')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5.5 6 5.5c2 0 3 1 6 4 3-3 4-4 6-4 3.5 0 5 3.5 3.5 6.5C19 16.5 12 21 12 21z"/></svg>
+        </button>
+      </div>
+      <div class="trust">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div><b>Анкета проверена.</b> Возраст и личность подтверждены, фотографии соответствуют человеку. Площадка работает только с совершеннолетними (18+).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ТАРИФЫ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>Тарифы</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="prices">
+        <div class="price-card">
+          <div class="ph">1 час</div>
+          <div class="pr"><span>У себя</span><b>200&nbsp;€</b></div>
+          <div class="pr"><span>Выезд</span><b>250&nbsp;€</b></div>
+        </div>
+        <div class="price-card">
+          <div class="ph">2 часа</div>
+          <div class="pr"><span>У себя</span><b>360&nbsp;€</b></div>
+          <div class="pr"><span>Выезд</span><b>440&nbsp;€</b></div>
+        </div>
+        <div class="price-card">
+          <div class="ph">Ночь</div>
+          <div class="pr"><span>У себя</span><b>1200&nbsp;€</b></div>
+          <div class="pr"><span>Выезд</span><b>1500&nbsp;€</b></div>
+        </div>
+      </div>
+      <div class="note-inline">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+        Стоимость указана ориентировочно. Точные условия уточняйте при обращении.
+      </div>
+    </div>
+  </div>
+
+  <!-- ПАРАМЕТРЫ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>Параметры</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="params">
+        <div class="param"><span class="k">Номер анкеты</span><span class="v">10472</span></div>
+        <div class="param"><span class="k">Возраст</span><span class="v">24</span></div>
+        <div class="param"><span class="k">Рост</span><span class="v">169 см</span></div>
+        <div class="param"><span class="k">Вес</span><span class="v">54 кг</span></div>
+        <div class="param"><span class="k">Телосложение</span><span class="v"><a href="#">Стройное</a></span></div>
+        <div class="param"><span class="k">Цвет волос</span><span class="v"><a href="#">Тёмные</a></span></div>
+        <div class="param"><span class="k">Внешность</span><span class="v"><a href="#">Европейская</a></span></div>
+        <div class="param"><span class="k">Языки</span><span class="v">Русский, English, Deutsch</span></div>
+        <div class="param"><span class="k">Формат</span><span class="v">У себя, выезд</span></div>
+        <div class="param"><span class="k">Город</span><span class="v"><a href="#">Берлин</a></span></div>
+        <div class="param"><span class="k">Район</span><span class="v"><a href="#">Митте</a></span></div>
+        <div class="param"><span class="k">Обновлено</span><span class="v">19.06.2026</span></div>
+      </div>
+      <div class="tagrow">
+        <span class="tag">сопровождение</span><span class="tag">ужин</span><span class="tag">путешествия</span>
+        <span class="tag">мероприятия</span><span class="tag">фотосессии</span><span class="tag">вечер</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ОПИСАНИЕ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>Описание</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="desc">
+        <p>Привет! Меня зовут Алиса. Спокойная, внимательная, ценю уважительное общение и хорошую компанию — ужин, прогулку по городу, поездку или просто вечер без спешки.</p>
+        <p>Пишите заранее, чтобы согласовать удобное время. На все сообщения отвечаю лично.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- УСЛУГИ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>Услуги</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="svc-grid" id="svcGrid"></div>
+    </div>
+  </div>
+
+  <!-- НА КАРТЕ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>На карте</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="map-ph"><div class="pin"></div></div>
+      <div class="map-cap">Примерный район: Берлин, Митте. Точный адрес — после согласования.</div>
+    </div>
+  </div>
+
+  <!-- ОТЗЫВЫ -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSec(this)">
+      <h2>Отзывы</h2>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="reviews-empty">Пока нет отзывов</div>
+      <button class="btn btn-secondary" style="width:100%">Войти и оставить отзыв</button>
+    </div>
+  </div>
+
+  <!-- АНКЕТЫ РЯДОМ -->
+  <div class="sechead2">
+    <h2>Анкеты рядом</h2>
+    <a class="more" href="#" style="font-size:14px;font-weight:600;color:var(--primary)">Показать все →</a>
+  </div>
+  <div class="cards-row" id="nearby"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="fgrid">
+      <div class="fcol">
+        <a class="logo" href="#">
+          <svg viewBox="0 0 100 100" fill="none" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M50,82 C30,64 12,52 12,34 C12,20 24,12 36,16 C44,18 48,24 50,30 C52,24 56,18 64,16 C76,12 88,20 88,34 C88,52 70,64 50,82 Z" stroke="var(--primary)" stroke-width="6"/>
+            <path d="M50,68 C42,60 42,52 50,42 C58,52 58,60 50,68 Z" stroke="var(--accent)" stroke-width="6"/>
+          </svg>
+          noova
+        </a>
+        <p class="fabout">Noova — каталог анкет для взрослых (18+). Доступ к материалам разрешён только совершеннолетним. Все анкеты проходят проверку возраста и личности; материалы с участием несовершеннолетних и любое принуждение строго запрещены и удаляются.</p>
+        <span class="age">🔞 Только для лиц 18+</span>
+      </div>
+      <div class="fcol">
+        <h4>Компания</h4>
+        <ul>
+          <li><a href="#">О проекте</a></li>
+          <li><a href="#">О верификации</a></li>
+          <li><a href="#">Реклама</a></li>
+          <li><a href="#">Контакты</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbottom">
+      <span>© 2026 Noova</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const grads = [
+  'radial-gradient(120% 90% at 30% 10%, #F6B8CE 0%, #E0457B 45%, #5A1833 100%)',
+  'radial-gradient(120% 90% at 70% 5%, #FFC9A8 0%, #FF8A5C 45%, #7A331A 100%)',
+  'radial-gradient(120% 90% at 40% 0%, #D9B8F6 0%, #9B6BD0 50%, #3E2257 100%)',
+  'radial-gradient(120% 90% at 60% 10%, #F4C9D7 0%, #C9356B 50%, #4A1730 100%)',
+  'radial-gradient(120% 90% at 25% 5%, #FAD9C2 0%, #E07A4A 50%, #5E2A14 100%)',
+  'radial-gradient(120% 90% at 75% 0%, #C9D4F0 0%, #6E78B0 50%, #2A3055 100%)'
+];
+
+/* gallery */
+const mainPhoto = document.getElementById('mainPhoto');
+const thumbsEl = document.getElementById('thumbs');
+mainPhoto.style.background = grads[0];
+grads.forEach((g,i)=>{
+  const t = document.createElement('div');
+  t.className = 't' + (i===0?' sel':'');
+  t.style.background = g;
+  t.onclick = ()=>{
+    mainPhoto.style.background = g;
+    [...thumbsEl.children].forEach(c=>c.classList.remove('sel'));
+    t.classList.add('sel');
+  };
+  thumbsEl.appendChild(t);
+});
+
+/* services (директория услуг — для каталога) */
+const services = {
+  'Сопровождение': ['Ужин и приём гостей','Сопровождение на мероприятия','Совместные поездки','Прогулки по городу'],
+  'Досуг': ['Кальян / бар','Фотосессии','Вечер вдвоём'],
+  'Дополнительно': [['Поездки в другой город','доп'], ['Поздний выезд','доп']]
+};
+const svcGrid = document.getElementById('svcGrid');
+const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>';
+Object.entries(services).forEach(([group, items])=>{
+  const g = document.createElement('div');
+  g.className = 'svc-group';
+  g.innerHTML = `<div class="gname">${group}</div>` + items.map(it=>{
+    const [name, add] = Array.isArray(it) ? it : [it, null];
+    return `<div class="svc-item">${check}<span>${name}</span>${add?`<span class="add">${add}</span>`:''}</div>`;
+  }).join('');
+  svcGrid.appendChild(g);
+});
+
+/* nearby cards */
+const names = ['Майя','Лена','София','Ника','Дарья','Эмма'];
+const dists = ['Шарлоттенбург','Кройцберг','Пренцлауэр-Берг','Фридрихсхайн','Нойкёльн','Шёнеберг'];
+const tagsPool = [['ужин','сопровождение'],['путешествия','вечер'],['ужин','фотосессии'],['сопровождение','вечер']];
+function card(i){
+  const top = i % 4 === 0;
+  const name = names[i % names.length];
+  const age = 22 + (i*5 % 12);
+  const tags = tagsPool[i % tagsPool.length];
+  const price = 160 + (i % 6) * 20;
+  return `<a class="card" href="#">
+    <div class="photo" style="background:${grads[i % grads.length]}">
+      <div class="top">${top?'<span class="badge featured">★ ТОП</span>':''}</div>
+      <div class="scrim"></div>
+      <div class="who"><div class="nm">${name}, ${age}</div><div class="lc">Берлин · ${dists[i % dists.length]}</div></div>
+    </div>
+    <div class="b">
+      <div class="tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="foot"><span class="badge verified">✓ Проверено</span><span class="price">от ${price}€<small>/час</small></span></div>
+    </div>
+  </a>`;
+}
+document.getElementById('nearby').innerHTML = Array.from({length:6}, (_,i)=>card(i)).join('');
+
+/* collapsible sections */
+function toggleSec(head){ head.parentElement.classList.toggle('collapsed'); }
+
+/* theme toggle */
+const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
+const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>';
+const themeBtn = document.getElementById('themeBtn');
+function syncTheme(){ themeBtn.innerHTML = document.documentElement.getAttribute('data-theme')==='dark' ? sun : moon; }
+themeBtn.onclick = ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur==='dark' ? 'light' : 'dark');
+  syncTheme();
+};
+syncTheme();
+
+/* language toggle (демо) */
+const langBtn = document.getElementById('langBtn');
+let lang='ru';
+langBtn.onclick=()=>{ lang = lang==='ru'?'en':'ru'; langBtn.textContent = lang.toUpperCase(); document.documentElement.lang = lang; };
+</script>
+</body>
+</html>

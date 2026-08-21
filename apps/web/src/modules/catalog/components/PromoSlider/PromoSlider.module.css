@@ -1,0 +1,108 @@
+.wrap {
+  position: relative;
+}
+
+.track {
+  display: flex;
+  gap: var(--space4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 2px;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  flex: none;
+  width: 340px;
+  height: 184px;
+  border-radius: var(--radiusLg);
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadowMd);
+  display: block;
+}
+
+.label {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  color: #fff;
+  z-index: 2;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--textXl);
+}
+
+.subtitle {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, rgba(0, 0, 0, 0.45), transparent 60%);
+}
+
+/* Метка «Реклама» обязательна на каждом промо-слоте. */
+.ad {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.28);
+  padding: 3px 8px;
+  border-radius: var(--radiusPill);
+  backdrop-filter: blur(4px);
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadowMd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  color: var(--primaryText);
+  padding: 0;
+}
+
+.arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.left {
+  left: -12px;
+}
+
+.right {
+  right: -12px;
+}
+
+/* На узких экранах стрелки не нужны — работает свайп. */
+@media (max-width: 860px) {
+  .arrow {
+    display: none;
+  }
+}

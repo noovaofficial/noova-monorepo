@@ -1,0 +1,159 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--zHeader);
+  background: var(--headerBg);
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space4);
+}
+
+.row1 {
+  height: 64px;
+  justify-content: space-between;
+}
+
+.row2 {
+  height: 56px;
+  border-top: 1px solid var(--border);
+  gap: 10px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--primaryText);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-weight: 600;
+  font-size: var(--textSm);
+  padding: 9px 16px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--borderStrong);
+  background: var(--surface);
+  color: var(--primaryText);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.filterBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.filterBtn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.quickFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  overflow-x: auto;
+  flex: 1;
+  scrollbar-width: none;
+}
+
+.quickFilters::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: var(--radiusPill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--secondaryText);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.chipSelected {
+  background: var(--primarySubtle);
+  color: var(--onPrimarySubtle);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* Ссылка для клавиатуры: видна только при фокусе. */
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--zOverlay);
+  background: var(--surface);
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+}
+
+.skip:focus {
+  left: var(--space4);
+  top: var(--space2);
+}
+
+@media (max-width: 860px) {
+  .row1 {
+    height: 60px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hideSm {
+    display: none;
+  }
+}
+
+.chipDisabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.chipHint {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.filterCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--textOnBrand);
+  font-size: 11px;
+  font-weight: 700;
+}

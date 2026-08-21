@@ -1,0 +1,76 @@
+# Локальная разработка: в контейнерах только инфраструктура.
+# Сам код (web/api) запускается на хосте через `pnpm dev` — так работает
+# hot reload и отладчик.
+
+name: noova-dev
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-noova}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-noova}
+      POSTGRES_DB: ${POSTGRES_DB:-noova}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-noova} -d ${POSTGRES_DB:-noova}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # S3-совместимое хранилище для фото. Self-hosted и переносимо между
+  # провайдерами — требование к портируемости из documentation/architecture.md §6.
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ':9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-noova}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-noova-dev-secret}
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ловушка для писем: принимает SMTP и показывает письма в браузере.
+  # Нужна, чтобы путь письма проверялся целиком, а одноразовые токены
+  # не оседали в логах приложения.
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - '1025:1025'  # SMTP
+      - '8025:8025'  # веб-интерфейс
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:

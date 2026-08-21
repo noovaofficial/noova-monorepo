@@ -1,0 +1,109 @@
+.wrap {
+  max-width: 640px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  margin-bottom: var(--space5);
+}
+
+.section {
+  padding: var(--space5);
+  margin-bottom: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+/* Удаление отделено рамкой опасности: это единственное необратимое действие
+   в кабинете, и оно не должно выглядеть как соседняя настройка. */
+.danger {
+  border-color: var(--danger);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space3);
+}
+
+.text {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin-bottom: var(--space4);
+}
+
+.list {
+  margin: 0 0 var(--space4);
+  padding-left: var(--space5);
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+  margin-bottom: var(--space4);
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 600;
+}
+
+.input {
+  padding: var(--space3) var(--space4);
+  font: inherit;
+  font-size: var(--textSm);
+  color: var(--primaryText);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
+.linkBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--danger);
+  font-size: var(--textSm);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  margin-bottom: var(--space4);
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+  border-radius: var(--radiusMd);
+}
+
+.noticeWarn {
+  color: var(--warning);
+  background: var(--warningSubtle);
+}
+
+.noticeError {
+  color: var(--danger);
+  background: var(--dangerSubtle);
+}
+
+.meta {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}

@@ -1,0 +1,22 @@
+.wrap {
+  padding: var(--space16) 0;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text3xl);
+  font-weight: 700;
+  margin-bottom: var(--space3);
+}
+
+.body {
+  color: var(--secondaryText);
+  margin-bottom: var(--space6);
+}
+
+.action {
+  display: inline-block;
+  color: var(--primary);
+  font-weight: 600;
+}

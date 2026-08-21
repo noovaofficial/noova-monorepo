@@ -1,0 +1,126 @@
+.wrap {
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space4);
+  margin-bottom: var(--space3);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.back {
+  color: var(--link);
+  font-size: var(--textSm);
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.hint {
+  margin-bottom: var(--space5);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space3);
+  margin-bottom: var(--space5);
+}
+
+.select {
+  min-width: 180px;
+  padding: var(--space2) var(--space3);
+  font: inherit;
+  font-size: var(--textSm);
+  color: var(--primaryText);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  text-decoration: none;
+  color: inherit;
+}
+
+.rowLink:hover {
+  border-color: var(--accent);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.subject {
+  font-weight: 600;
+  font-size: var(--textBase);
+  /* Начало текста отзыва может быть без пробелов — иначе строка растянет ряд. */
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  overflow-wrap: anywhere;
+}
+
+.reason {
+  margin-top: var(--space2);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  flex: none;
+  align-self: center;
+  padding: 3px 10px;
+  font-size: var(--textXs);
+  font-weight: 600;
+  border-radius: var(--radiusPill);
+}
+
+.badgeApproved {
+  color: var(--success);
+  background: var(--successSubtle);
+}
+
+.badgeRejected {
+  color: var(--danger);
+  background: var(--dangerSubtle);
+}
+
+.empty {
+  padding: var(--space10) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
