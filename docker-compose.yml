@@ -68,6 +68,28 @@ services:
 
   # Миграции — отдельный одноразовый контейнер. Если бы их гонял сам api,
   # при нескольких репликах они запустились бы параллельно и подрались за блокировку.
+  # Бакет и права на него никто не создавал: на чистой машине загрузка
+  # фотографий падала бы «нет такого бакета». Одноразовый контейнер,
+  # как и миграции.
+  minio-init:
+    image: minio/mc:latest
+    <<: *logging
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET: ${S3_BUCKET:-noova-media}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD &&
+      mc mb --ignore-existing local/$$S3_BUCKET &&
+      mc anonymous set download local/$$S3_BUCKET/public &&
+      echo '[minio-init] бакет и права готовы'
+      "
+    networks: [internal]
+
   migrate:
     build:
       context: .
@@ -109,6 +131,13 @@ services:
       WEB_REVALIDATE_URL: http://web:3000/api/revalidate
       CORS_ORIGINS: ${SITE_URL}
       MEDIA_BASE_URL: ${MEDIA_BASE_URL}
+      # Без этого api падал бы на умолчания `localhost:9000` — то есть
+      # стучался бы в самого себя, и загрузка фотографий не работала бы.
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_BUCKET: ${S3_BUCKET:-noova-media}
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
@@ -117,6 +146,8 @@ services:
       smtp:
         condition: service_started
       migrate:
+        condition: service_completed_successfully
+      minio-init:
         condition: service_completed_successfully
     healthcheck:
       test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:4000/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
@@ -223,8 +254,8 @@ services:
       S3_ENDPOINT: http://minio:9000
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_BUCKET: ${S3_BUCKET:-noova-media}
-      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
-      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       MEDIA_BASE_URL: ${MEDIA_BASE_URL}
     depends_on:
       postgres:
