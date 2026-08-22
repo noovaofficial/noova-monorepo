@@ -13,6 +13,9 @@ type FavoritesValue = {
   toggle: (profileId: string) => Promise<void>;
 };
 
+/** `add` вместо вывода из кэша — см. комментарий у мутации. */
+type ToggleVars = { profileId: string; add: boolean };
+
 const FavoritesContext = createContext<FavoritesValue | null>(null);
 
 /**
@@ -71,40 +74,52 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     enabled: status !== 'loading' && isClient,
   });
 
+  /**
+   * Намерение вычисляем до мутации и передаём явно.
+   *
+   * Раньше его выводили внутри `mutationFn` из кэша — и это ломало добавление:
+   * `onMutate` по контракту React Query отрабатывает РАНЬШЕ `mutationFn` и уже
+   * успевает записать туда оптимистичное значение. Добавление читалось как
+   * «анкета уже в избранном» и уходило на сервер запросом DELETE.
+   */
   const toggle = useMutation({
-    mutationFn: async (profileId: string) => {
-      const current = queryClient.getQueryData<Set<string>>(queryKeys.favoriteIds());
-      if (current?.has(profileId)) await removeFavorite(profileId);
-      else await addFavorite(profileId);
+    mutationFn: async ({ profileId, add }: ToggleVars) => {
+      if (add) await addFavorite(profileId);
+      else await removeFavorite(profileId);
     },
     // Оптимистично: сердце должно откликаться мгновенно, сеть здесь ни при
     // чём. При отказе возвращаем ровно тот снимок, что был до нажатия.
-    onMutate: async (profileId: string) => {
+    onMutate: async ({ profileId, add }: ToggleVars) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.favoriteIds() });
       const previous = queryClient.getQueryData<Set<string>>(queryKeys.favoriteIds());
 
       const next = new Set(previous ?? []);
-      if (next.has(profileId)) next.delete(profileId);
-      else next.add(profileId);
+      if (add) next.add(profileId);
+      else next.delete(profileId);
       queryClient.setQueryData(queryKeys.favoriteIds(), next);
 
       return { previous };
     },
-    onError: (_error, _profileId, context) => {
+    onError: (_error, _vars, context) => {
       queryClient.setQueryData(queryKeys.favoriteIds(), context?.previous ?? null);
     },
     onSettled: () => {
-      // Страница избранного показывает карточки, а не идентификаторы:
-      // её список тоже устарел.
+      // Обе группы, и это не перестраховка: `favorite-ids` держит состояние
+      // сердец, `favorites` — карточки на странице избранного. Ключи разные,
+      // и без первой строки расхождение оптимистичной отметки с сервером
+      // осталось бы на экране до перезагрузки — сверять его было бы не с чем.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.favoriteIds() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.favorites() });
     },
   });
 
   const toggleFavorite = useCallback(
     async (profileId: string) => {
-      await toggle.mutateAsync(profileId).catch(() => undefined);
+      const current = queryClient.getQueryData<Set<string>>(queryKeys.favoriteIds());
+      const add = !(current?.has(profileId) ?? false);
+      await toggle.mutateAsync({ profileId, add }).catch(() => undefined);
     },
-    [toggle],
+    [toggle, queryClient],
   );
 
   return (

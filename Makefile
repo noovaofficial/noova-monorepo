@@ -3,7 +3,8 @@
 SHELL := /bin/bash
 
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-reset \
-        build lint typecheck stack-up stack-down stack-logs backup restore
+        build lint typecheck stack-up stack-down stack-logs backup restore \
+        deploy rollback
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -55,6 +56,39 @@ stack-down: ## Остановить полный стек
 
 stack-logs: ## Логи полного стека
 	docker compose logs -f
+
+images: ## Собрать образы api и web (IMAGE_PREFIX=ghcr.io/<user> IMAGE_TAG=<sha>)
+	docker compose build api web
+
+images-push: images ## Собрать и отправить образы в реестр
+	docker compose push api web
+
+# Перенос образов без реестра: поток идёт по ssh, посредников нет.
+# Медленнее pull, но не требует ни учётной записи, ни публикации образов.
+images-ship: images ## Отправить образы прямо на сервер по ssh (SERVER=user@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
+	docker save $${IMAGE_PREFIX:-noova}/api:$${IMAGE_TAG:-latest} \
+	            $${IMAGE_PREFIX:-noova}/web:$${IMAGE_TAG:-latest} \
+	  | gzip | ssh $(SERVER) 'gunzip | docker load'
+
+deploy-files: ## Скопировать на сервер файлы, которые не входят в образы
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
+	ssh $(SERVER) 'mkdir -p noova/infra/caddy noova/infra/backup'
+	scp docker-compose.yml $(SERVER):noova/
+	scp infra/caddy/Caddyfile $(SERVER):noova/infra/caddy/
+	scp infra/backup/*.sh $(SERVER):noova/infra/backup/
+
+# Полный выпуск одной командой. Отдельные шаги выше остаются: они нужны,
+# когда что-то пошло не так и цепочку надо разобрать на части.
+deploy: ## Выпуск на сервер целиком: сборка, перенос, запуск, проверка (SERVER=user@host)
+	@SERVER=$(SERVER) ./scripts/deploy.sh
+
+rollback: ## Вернуть прежний образ без миграций (SERVER=user@host TAG=<тег>)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
+	@test -n "$(TAG)" || (echo "Укажите TAG=<тег прошлого выпуска>"; exit 1)
+	ssh $(SERVER) 'cd $${REMOTE_DIR:-noova} \
+	  && sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=$(TAG)|" .env \
+	  && docker compose up -d --no-build && docker compose ps'
 
 jobs: ## Прогнать чистку по срокам хранения прямо сейчас (локально)
 	pnpm --filter @noova/api jobs:dev

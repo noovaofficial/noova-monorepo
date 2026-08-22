@@ -64,7 +64,9 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
-    networks: [internal]
+    # edge — сеть того, что проксирует Caddy: там уже api и web. Без неё
+    # `reverse_proxy minio:9000` не резолвится, и все фотографии отдают 502.
+    networks: [internal, edge]
 
   # Миграции — отдельный одноразовый контейнер. Если бы их гонял сам api,
   # при нескольких репликах они запустились бы параллельно и подрались за блокировку.
@@ -91,6 +93,9 @@ services:
     networks: [internal]
 
   migrate:
+    # image + build вместе: `docker compose build` соберёт и пометит этим
+    # именем, `docker compose pull` — скачает готовое. Один файл на оба случая.
+    image: ${IMAGE_PREFIX:-noova}/api:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -105,6 +110,7 @@ services:
     networks: [internal]
 
   api:
+    image: ${IMAGE_PREFIX:-noova}/api:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -158,12 +164,23 @@ services:
     networks: [internal, edge]
 
   web:
+    image: ${IMAGE_PREFIX:-noova}/web:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
         NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+        # Из него next.config.ts собирает images.remotePatterns — на этапе
+        # сборки, а не в рантайме. Без аргумента остаётся умолчание
+        # localhost:9000, и оптимизатор отвечает «"url" parameter is not
+        # allowed» на каждую фотографию с боевого домена.
+        #
+        # Берём именно SITE_URL, а не одноимённую переменную: та есть в
+        # локальном .env со значением localhost и молча испортила бы
+        # прод-сборку. Медиа отдаёт тот же Caddy на том же домене —
+        # `handle_path /media/*` в Caddyfile.
+        NEXT_PUBLIC_MEDIA_URL: ${SITE_URL}
     <<: [*restart, *logging]
     environment:
       NODE_ENV: production
@@ -221,6 +238,11 @@ services:
       - '443:443/udp'
     environment:
       SITE_DOMAIN: ${SITE_DOMAIN}
+      # Без этого Caddyfile берёт запасной адрес из своего умолчания, и
+      # письма Let's Encrypt об истечении сертификата уходят не владельцу.
+      ACME_EMAIL: ${ACME_EMAIL}
+      # MinIO ждёт имя бакета первым сегментом пути — Caddyfile его подставляет.
+      S3_BUCKET: ${S3_BUCKET:-noova-media}
     volumes:
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -234,6 +256,8 @@ services:
   # при нескольких репликах api таймер отработал бы в каждой, а удалять
   # нужно один раз. По той же причине отдельным сервисом вынесены миграции.
   jobs:
+    # Тот же образ, что у api: общий код, разная команда запуска.
+    image: ${IMAGE_PREFIX:-noova}/api:${IMAGE_TAG:-latest}
     build:
       context: .
       dockerfile: apps/api/Dockerfile

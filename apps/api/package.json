@@ -15,7 +15,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:seed:services": "tsx prisma/seed-services.ts",
-    "db:create-admin": "tsx prisma/create-admin.ts",
+    "db:seed:reference": "tsx src/scripts/seed-reference.ts",
+    "db:create-admin": "tsx src/scripts/create-admin.ts",
     "db:seed:dev-users": "tsx prisma/seed-dev-users.ts",
     "jobs": "node dist/jobs/runner.js",
     "jobs:dev": "tsx src/jobs/runner.ts"

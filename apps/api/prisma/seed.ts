@@ -6,6 +6,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
+import { CITIES, type CitySeed } from './locations.js';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -24,16 +25,13 @@ const DEMO_OWNER_EMAIL = 'demo-advertiser@noova.local';
  * из этих значений собирается `Profile.approxLat/Lng`, и ничего точнее
  * система о местоположении не знает.
  */
-const DISTRICTS = [
-  ['mitte', 'Mitte', 52.5244, 13.4105],
-  ['charlottenburg', 'Charlottenburg', 52.505, 13.304],
-  ['kreuzberg', 'Kreuzberg', 52.498, 13.403],
-  ['prenzlauer-berg', 'Prenzlauer Berg', 52.539, 13.424],
-  ['friedrichshain', 'Friedrichshain', 52.515, 13.454],
-  ['neukoelln', 'Neukölln', 52.481, 13.435],
-  ['schoeneberg', 'Schöneberg', 52.483, 13.355],
-  ['tiergarten', 'Tiergarten', 52.514, 13.35],
-] as const;
+// Города и районы — общий справочник: он же накатывается на прод.
+const BERLIN: CitySeed =
+  CITIES.find((c) => c.slug === 'berlin') ??
+  (() => {
+    throw new Error('В справочнике prisma/locations.ts нет Берлина.');
+  })();
+const DISTRICTS = BERLIN.districts.map((d) => [d.slug, d.name, d.lat, d.lng] as const);
 
 const NAMES = [
   'Alisa',
@@ -159,7 +157,13 @@ async function main() {
   const berlin = await prisma.city.upsert({
     where: { slug: 'berlin' },
     update: {},
-    create: { slug: 'berlin', name: 'Berlin', countryCode: 'DE', lat: 52.52, lng: 13.405 },
+    create: {
+      slug: BERLIN.slug,
+      name: BERLIN.name,
+      countryCode: BERLIN.countryCode,
+      lat: BERLIN.lat,
+      lng: BERLIN.lng,
+    },
   });
 
   const districts = await Promise.all(

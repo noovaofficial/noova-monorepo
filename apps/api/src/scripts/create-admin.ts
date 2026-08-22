@@ -2,14 +2,15 @@
  * Первый администратор. Его некому создать через интерфейс — это проблема
  * курицы и яйца, и решается она разово при развёртывании.
  *
- *   pnpm --filter @noova/api db:create-admin <email> <пароль>
+ *   локально: pnpm --filter @noova/api db:create-admin <email> <пароль>
+ *   на сервере: docker compose exec api node dist/scripts/create-admin.js <email> <пароль>
  *
  * Дальше администратор заводит модераторов сам, в разделе /admin.
  */
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../src/generated/prisma/client.js';
-import { hashPassword } from '../src/modules/auth/passwords.js';
+import { PrismaClient } from '../generated/prisma/client.js';
+import { hashPassword } from '../modules/auth/passwords.js';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {

@@ -92,9 +92,16 @@ make help             # весь список
 
 ## Развёртывание на сервере
 
-Полное руководство — [documentation/deployment.md](documentation/deployment.md):
-что нужно кроме сервера, мощности, DNS для почты, заполнение `.env`,
-осмотр базы и бэкапы. Коротко:
+Руководство разбито на три части:
+
+- [documentation/server.md](documentation/server.md) — провайдер, мощности,
+  DNS, подготовка машины, почта. Всё, что делается один раз.
+- [documentation/release.md](documentation/release.md) — `.env` и выпуск:
+  `make deploy SERVER=deploy@<IP>`.
+- [documentation/deployment.md](documentation/deployment.md) — порядок
+  действий, осмотр базы, бэкапы.
+
+Коротко:
 
 Весь стек — контейнеры, поднимается одной командой на любой машине с Docker.
 

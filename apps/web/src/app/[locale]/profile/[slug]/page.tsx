@@ -94,6 +94,7 @@ export default async function ProfilePage({ params }: Props) {
   const tEye = await getTranslations({ locale, namespace: 'eyeColor' });
   const tBust = await getTranslations({ locale, namespace: 'breastSize' });
   const tLook = await getTranslations({ locale, namespace: 'appearanceType' });
+  const tLang = await getTranslations({ locale, namespace: 'languageNames' });
 
   /**
    * Услуги приходят упорядоченными по каталогу, поэтому группируем по первому
@@ -114,7 +115,14 @@ export default async function ProfilePage({ params }: Props) {
     profile.params.age !== null && [t('age'), String(profile.params.age)],
     profile.params.heightCm !== null && [t('height'), `${profile.params.heightCm} cm`],
     profile.params.weightKg !== null && [t('weight'), `${profile.params.weightKg} kg`],
-    profile.params.languages.length > 0 && [t('languages'), profile.params.languages.join(', ')],
+    profile.params.languages.length > 0 && [
+      t('languages'),
+      // Языки лежат в БД кодами — тем же способом, что и остальные
+      // справочные значения ниже, подставляем подписи из словаря. Код,
+      // которого в словаре нет, показываем как есть: список языков может
+      // пополниться раньше переводов, и «de» лучше пустого места.
+      profile.params.languages.map((code) => (tLang.has(code) ? tLang(code) : code)).join(', '),
+    ],
     profile.params.hairColor && [t('hairColor'), tHair(profile.params.hairColor)],
     profile.params.eyeColor && [t('eyeColor'), tEye(profile.params.eyeColor)],
     profile.params.breastSize && [t('breastSize'), tBust(profile.params.breastSize)],

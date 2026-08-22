@@ -3,7 +3,15 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   // Второй вход — процесс фоновых задач: он живёт в своём контейнере,
   // но делит код с API (Prisma, конфигурация, функции чистки).
-  entry: ['src/server.ts', 'src/jobs/runner.ts'],
+  // Третий вход — разовое создание первого администратора на сервере.
+  // В прод-образе нет dev-зависимостей, а значит и tsx: без сборки в dist
+  // запустить prisma/create-admin.ts там нечем.
+  entry: [
+    'src/server.ts',
+    'src/jobs/runner.ts',
+    'src/scripts/create-admin.ts',
+    'src/scripts/seed-reference.ts',
+  ],
   outDir: 'dist',
   format: ['esm'],
   target: 'node22',
