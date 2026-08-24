@@ -401,6 +401,8 @@ export const ModelName = {
   ClientProfile: 'ClientProfile',
   ModerationAction: 'ModerationAction',
   AuthToken: 'AuthToken',
+  Country: 'Country',
+  CountryTranslation: 'CountryTranslation',
   City: 'City',
   CityTranslation: 'CityTranslation',
   District: 'District',
@@ -435,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -732,6 +734,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AuthTokenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AuthTokenCountAggregateOutputType> | number
+        }
+      }
+    }
+    Country: {
+      payload: Prisma.$CountryPayload<ExtArgs>
+      fields: Prisma.CountryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CountryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CountryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        findFirst: {
+          args: Prisma.CountryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CountryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        findMany: {
+          args: Prisma.CountryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>[]
+        }
+        create: {
+          args: Prisma.CountryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        createMany: {
+          args: Prisma.CountryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CountryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>[]
+        }
+        delete: {
+          args: Prisma.CountryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        update: {
+          args: Prisma.CountryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        deleteMany: {
+          args: Prisma.CountryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CountryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CountryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>[]
+        }
+        upsert: {
+          args: Prisma.CountryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPayload>
+        }
+        aggregate: {
+          args: Prisma.CountryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCountry>
+        }
+        groupBy: {
+          args: Prisma.CountryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CountryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryCountAggregateOutputType> | number
+        }
+      }
+    }
+    CountryTranslation: {
+      payload: Prisma.$CountryTranslationPayload<ExtArgs>
+      fields: Prisma.CountryTranslationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CountryTranslationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CountryTranslationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        findFirst: {
+          args: Prisma.CountryTranslationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CountryTranslationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        findMany: {
+          args: Prisma.CountryTranslationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>[]
+        }
+        create: {
+          args: Prisma.CountryTranslationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        createMany: {
+          args: Prisma.CountryTranslationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CountryTranslationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>[]
+        }
+        delete: {
+          args: Prisma.CountryTranslationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        update: {
+          args: Prisma.CountryTranslationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CountryTranslationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CountryTranslationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CountryTranslationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CountryTranslationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTranslationPayload>
+        }
+        aggregate: {
+          args: Prisma.CountryTranslationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCountryTranslation>
+        }
+        groupBy: {
+          args: Prisma.CountryTranslationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryTranslationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CountryTranslationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryTranslationCountAggregateOutputType> | number
         }
       }
     }
@@ -2241,13 +2391,34 @@ export const AuthTokenScalarFieldEnum = {
 export type AuthTokenScalarFieldEnum = (typeof AuthTokenScalarFieldEnum)[keyof typeof AuthTokenScalarFieldEnum]
 
 
+export const CountryScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  isActive: 'isActive'
+} as const
+
+export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
+
+
+export const CountryTranslationScalarFieldEnum = {
+  id: 'id',
+  countryId: 'countryId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type CountryTranslationScalarFieldEnum = (typeof CountryTranslationScalarFieldEnum)[keyof typeof CountryTranslationScalarFieldEnum]
+
+
 export const CityScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   name: 'name',
-  countryCode: 'countryCode',
+  countryId: 'countryId',
   lat: 'lat',
   lng: 'lng',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
 
@@ -2270,7 +2441,8 @@ export const DistrictScalarFieldEnum = {
   name: 'name',
   cityId: 'cityId',
   lat: 'lat',
-  lng: 'lng'
+  lng: 'lng',
+  isActive: 'isActive'
 } as const
 
 export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typeof DistrictScalarFieldEnum]
@@ -3052,6 +3224,8 @@ export type GlobalOmitConfig = {
   clientProfile?: Prisma.ClientProfileOmit
   moderationAction?: Prisma.ModerationActionOmit
   authToken?: Prisma.AuthTokenOmit
+  country?: Prisma.CountryOmit
+  countryTranslation?: Prisma.CountryTranslationOmit
   city?: Prisma.CityOmit
   cityTranslation?: Prisma.CityTranslationOmit
   district?: Prisma.DistrictOmit

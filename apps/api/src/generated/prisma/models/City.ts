@@ -40,9 +40,10 @@ export type CityMinAggregateOutputType = {
   id: string | null
   slug: string | null
   name: string | null
-  countryCode: string | null
+  countryId: string | null
   lat: number | null
   lng: number | null
+  isActive: boolean | null
   createdAt: Date | null
 }
 
@@ -50,9 +51,10 @@ export type CityMaxAggregateOutputType = {
   id: string | null
   slug: string | null
   name: string | null
-  countryCode: string | null
+  countryId: string | null
   lat: number | null
   lng: number | null
+  isActive: boolean | null
   createdAt: Date | null
 }
 
@@ -60,9 +62,10 @@ export type CityCountAggregateOutputType = {
   id: number
   slug: number
   name: number
-  countryCode: number
+  countryId: number
   lat: number
   lng: number
+  isActive: number
   createdAt: number
   _all: number
 }
@@ -82,9 +85,10 @@ export type CityMinAggregateInputType = {
   id?: true
   slug?: true
   name?: true
-  countryCode?: true
+  countryId?: true
   lat?: true
   lng?: true
+  isActive?: true
   createdAt?: true
 }
 
@@ -92,9 +96,10 @@ export type CityMaxAggregateInputType = {
   id?: true
   slug?: true
   name?: true
-  countryCode?: true
+  countryId?: true
   lat?: true
   lng?: true
+  isActive?: true
   createdAt?: true
 }
 
@@ -102,9 +107,10 @@ export type CityCountAggregateInputType = {
   id?: true
   slug?: true
   name?: true
-  countryCode?: true
+  countryId?: true
   lat?: true
   lng?: true
+  isActive?: true
   createdAt?: true
   _all?: true
 }
@@ -199,9 +205,10 @@ export type CityGroupByOutputType = {
   id: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat: number | null
   lng: number | null
+  isActive: boolean
   createdAt: Date
   _count: CityCountAggregateOutputType | null
   _avg: CityAvgAggregateOutputType | null
@@ -232,10 +239,12 @@ export type CityWhereInput = {
   id?: Prisma.StringFilter<"City"> | string
   slug?: Prisma.StringFilter<"City"> | string
   name?: Prisma.StringFilter<"City"> | string
-  countryCode?: Prisma.StringFilter<"City"> | string
+  countryId?: Prisma.StringFilter<"City"> | string
   lat?: Prisma.FloatNullableFilter<"City"> | number | null
   lng?: Prisma.FloatNullableFilter<"City"> | number | null
+  isActive?: Prisma.BoolFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeFilter<"City"> | Date | string
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   districts?: Prisma.DistrictListRelationFilter
   profiles?: Prisma.ProfileListRelationFilter
   translations?: Prisma.CityTranslationListRelationFilter
@@ -245,10 +254,12 @@ export type CityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  countryCode?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  country?: Prisma.CountryOrderByWithRelationInput
   districts?: Prisma.DistrictOrderByRelationAggregateInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   translations?: Prisma.CityTranslationOrderByRelationAggregateInput
@@ -261,10 +272,12 @@ export type CityWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.CityWhereInput[]
   NOT?: Prisma.CityWhereInput | Prisma.CityWhereInput[]
   name?: Prisma.StringFilter<"City"> | string
-  countryCode?: Prisma.StringFilter<"City"> | string
+  countryId?: Prisma.StringFilter<"City"> | string
   lat?: Prisma.FloatNullableFilter<"City"> | number | null
   lng?: Prisma.FloatNullableFilter<"City"> | number | null
+  isActive?: Prisma.BoolFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeFilter<"City"> | Date | string
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   districts?: Prisma.DistrictListRelationFilter
   profiles?: Prisma.ProfileListRelationFilter
   translations?: Prisma.CityTranslationListRelationFilter
@@ -274,9 +287,10 @@ export type CityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  countryCode?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CityCountOrderByAggregateInput
   _avg?: Prisma.CityAvgOrderByAggregateInput
@@ -292,9 +306,10 @@ export type CityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"City"> | string
   slug?: Prisma.StringWithAggregatesFilter<"City"> | string
   name?: Prisma.StringWithAggregatesFilter<"City"> | string
-  countryCode?: Prisma.StringWithAggregatesFilter<"City"> | string
+  countryId?: Prisma.StringWithAggregatesFilter<"City"> | string
   lat?: Prisma.FloatNullableWithAggregatesFilter<"City"> | number | null
   lng?: Prisma.FloatNullableWithAggregatesFilter<"City"> | number | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"City"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"City"> | Date | string
 }
 
@@ -302,10 +317,11 @@ export type CityCreateInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutCitiesInput
   districts?: Prisma.DistrictCreateNestedManyWithoutCityInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCityInput
   translations?: Prisma.CityTranslationCreateNestedManyWithoutCityInput
@@ -315,9 +331,10 @@ export type CityUncheckedCreateInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
   districts?: Prisma.DistrictUncheckedCreateNestedManyWithoutCityInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCityInput
@@ -328,10 +345,11 @@ export type CityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutCitiesNestedInput
   districts?: Prisma.DistrictUpdateManyWithoutCityNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCityNestedInput
   translations?: Prisma.CityTranslationUpdateManyWithoutCityNestedInput
@@ -341,9 +359,10 @@ export type CityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   districts?: Prisma.DistrictUncheckedUpdateManyWithoutCityNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCityNestedInput
@@ -354,9 +373,10 @@ export type CityCreateManyInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
 }
 
@@ -364,9 +384,9 @@ export type CityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -374,19 +394,31 @@ export type CityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CityListRelationFilter = {
+  every?: Prisma.CityWhereInput
+  some?: Prisma.CityWhereInput
+  none?: Prisma.CityWhereInput
+}
+
+export type CityOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  countryCode?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -399,9 +431,10 @@ export type CityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  countryCode?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -409,9 +442,10 @@ export type CityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  countryCode?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -423,6 +457,48 @@ export type CitySumOrderByAggregateInput = {
 export type CityScalarRelationFilter = {
   is?: Prisma.CityWhereInput
   isNot?: Prisma.CityWhereInput
+}
+
+export type CityCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput> | Prisma.CityCreateWithoutCountryInput[] | Prisma.CityUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutCountryInput | Prisma.CityCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.CityCreateManyCountryInputEnvelope
+  connect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+}
+
+export type CityUncheckedCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput> | Prisma.CityCreateWithoutCountryInput[] | Prisma.CityUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutCountryInput | Prisma.CityCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.CityCreateManyCountryInputEnvelope
+  connect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+}
+
+export type CityUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput> | Prisma.CityCreateWithoutCountryInput[] | Prisma.CityUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutCountryInput | Prisma.CityCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.CityUpsertWithWhereUniqueWithoutCountryInput | Prisma.CityUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.CityCreateManyCountryInputEnvelope
+  set?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  disconnect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  delete?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  connect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  update?: Prisma.CityUpdateWithWhereUniqueWithoutCountryInput | Prisma.CityUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.CityUpdateManyWithWhereWithoutCountryInput | Prisma.CityUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.CityScalarWhereInput | Prisma.CityScalarWhereInput[]
+}
+
+export type CityUncheckedUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput> | Prisma.CityCreateWithoutCountryInput[] | Prisma.CityUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.CityCreateOrConnectWithoutCountryInput | Prisma.CityCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.CityUpsertWithWhereUniqueWithoutCountryInput | Prisma.CityUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.CityCreateManyCountryInputEnvelope
+  set?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  disconnect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  delete?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  connect?: Prisma.CityWhereUniqueInput | Prisma.CityWhereUniqueInput[]
+  update?: Prisma.CityUpdateWithWhereUniqueWithoutCountryInput | Prisma.CityUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.CityUpdateManyWithWhereWithoutCountryInput | Prisma.CityUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.CityScalarWhereInput | Prisma.CityScalarWhereInput[]
 }
 
 export type NullableFloatFieldUpdateOperationsInput = {
@@ -475,14 +551,81 @@ export type CityUpdateOneRequiredWithoutProfilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CityUpdateToOneWithWhereWithoutProfilesInput, Prisma.CityUpdateWithoutProfilesInput>, Prisma.CityUncheckedUpdateWithoutProfilesInput>
 }
 
+export type CityCreateWithoutCountryInput = {
+  id?: string
+  slug: string
+  name: string
+  lat?: number | null
+  lng?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  districts?: Prisma.DistrictCreateNestedManyWithoutCityInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutCityInput
+  translations?: Prisma.CityTranslationCreateNestedManyWithoutCityInput
+}
+
+export type CityUncheckedCreateWithoutCountryInput = {
+  id?: string
+  slug: string
+  name: string
+  lat?: number | null
+  lng?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  districts?: Prisma.DistrictUncheckedCreateNestedManyWithoutCityInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCityInput
+  translations?: Prisma.CityTranslationUncheckedCreateNestedManyWithoutCityInput
+}
+
+export type CityCreateOrConnectWithoutCountryInput = {
+  where: Prisma.CityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput>
+}
+
+export type CityCreateManyCountryInputEnvelope = {
+  data: Prisma.CityCreateManyCountryInput | Prisma.CityCreateManyCountryInput[]
+  skipDuplicates?: boolean
+}
+
+export type CityUpsertWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.CityWhereUniqueInput
+  update: Prisma.XOR<Prisma.CityUpdateWithoutCountryInput, Prisma.CityUncheckedUpdateWithoutCountryInput>
+  create: Prisma.XOR<Prisma.CityCreateWithoutCountryInput, Prisma.CityUncheckedCreateWithoutCountryInput>
+}
+
+export type CityUpdateWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.CityWhereUniqueInput
+  data: Prisma.XOR<Prisma.CityUpdateWithoutCountryInput, Prisma.CityUncheckedUpdateWithoutCountryInput>
+}
+
+export type CityUpdateManyWithWhereWithoutCountryInput = {
+  where: Prisma.CityScalarWhereInput
+  data: Prisma.XOR<Prisma.CityUpdateManyMutationInput, Prisma.CityUncheckedUpdateManyWithoutCountryInput>
+}
+
+export type CityScalarWhereInput = {
+  AND?: Prisma.CityScalarWhereInput | Prisma.CityScalarWhereInput[]
+  OR?: Prisma.CityScalarWhereInput[]
+  NOT?: Prisma.CityScalarWhereInput | Prisma.CityScalarWhereInput[]
+  id?: Prisma.StringFilter<"City"> | string
+  slug?: Prisma.StringFilter<"City"> | string
+  name?: Prisma.StringFilter<"City"> | string
+  countryId?: Prisma.StringFilter<"City"> | string
+  lat?: Prisma.FloatNullableFilter<"City"> | number | null
+  lng?: Prisma.FloatNullableFilter<"City"> | number | null
+  isActive?: Prisma.BoolFilter<"City"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"City"> | Date | string
+}
+
 export type CityCreateWithoutTranslationsInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutCitiesInput
   districts?: Prisma.DistrictCreateNestedManyWithoutCityInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCityInput
 }
@@ -491,9 +634,10 @@ export type CityUncheckedCreateWithoutTranslationsInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
   districts?: Prisma.DistrictUncheckedCreateNestedManyWithoutCityInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCityInput
@@ -519,10 +663,11 @@ export type CityUpdateWithoutTranslationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutCitiesNestedInput
   districts?: Prisma.DistrictUpdateManyWithoutCityNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCityNestedInput
 }
@@ -531,9 +676,10 @@ export type CityUncheckedUpdateWithoutTranslationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   districts?: Prisma.DistrictUncheckedUpdateManyWithoutCityNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCityNestedInput
@@ -543,10 +689,11 @@ export type CityCreateWithoutDistrictsInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutCitiesInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCityInput
   translations?: Prisma.CityTranslationCreateNestedManyWithoutCityInput
 }
@@ -555,9 +702,10 @@ export type CityUncheckedCreateWithoutDistrictsInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCityInput
   translations?: Prisma.CityTranslationUncheckedCreateNestedManyWithoutCityInput
@@ -583,10 +731,11 @@ export type CityUpdateWithoutDistrictsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutCitiesNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCityNestedInput
   translations?: Prisma.CityTranslationUpdateManyWithoutCityNestedInput
 }
@@ -595,9 +744,10 @@ export type CityUncheckedUpdateWithoutDistrictsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCityNestedInput
   translations?: Prisma.CityTranslationUncheckedUpdateManyWithoutCityNestedInput
@@ -607,10 +757,11 @@ export type CityCreateWithoutProfilesInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutCitiesInput
   districts?: Prisma.DistrictCreateNestedManyWithoutCityInput
   translations?: Prisma.CityTranslationCreateNestedManyWithoutCityInput
 }
@@ -619,9 +770,10 @@ export type CityUncheckedCreateWithoutProfilesInput = {
   id?: string
   slug: string
   name: string
-  countryCode: string
+  countryId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   createdAt?: Date | string
   districts?: Prisma.DistrictUncheckedCreateNestedManyWithoutCityInput
   translations?: Prisma.CityTranslationUncheckedCreateNestedManyWithoutCityInput
@@ -647,10 +799,11 @@ export type CityUpdateWithoutProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutCitiesNestedInput
   districts?: Prisma.DistrictUpdateManyWithoutCityNestedInput
   translations?: Prisma.CityTranslationUpdateManyWithoutCityNestedInput
 }
@@ -659,12 +812,59 @@ export type CityUncheckedUpdateWithoutProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   districts?: Prisma.DistrictUncheckedUpdateManyWithoutCityNestedInput
   translations?: Prisma.CityTranslationUncheckedUpdateManyWithoutCityNestedInput
+}
+
+export type CityCreateManyCountryInput = {
+  id?: string
+  slug: string
+  name: string
+  lat?: number | null
+  lng?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+}
+
+export type CityUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  districts?: Prisma.DistrictUpdateManyWithoutCityNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutCityNestedInput
+  translations?: Prisma.CityTranslationUpdateManyWithoutCityNestedInput
+}
+
+export type CityUncheckedUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  districts?: Prisma.DistrictUncheckedUpdateManyWithoutCityNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCityNestedInput
+  translations?: Prisma.CityTranslationUncheckedUpdateManyWithoutCityNestedInput
+}
+
+export type CityUncheckedUpdateManyWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -720,10 +920,12 @@ export type CitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   slug?: boolean
   name?: boolean
-  countryCode?: boolean
+  countryId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   districts?: boolean | Prisma.City$districtsArgs<ExtArgs>
   profiles?: boolean | Prisma.City$profilesArgs<ExtArgs>
   translations?: boolean | Prisma.City$translationsArgs<ExtArgs>
@@ -734,45 +936,56 @@ export type CitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   slug?: boolean
   name?: boolean
-  countryCode?: boolean
+  countryId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["city"]>
 
 export type CitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   slug?: boolean
   name?: boolean
-  countryCode?: boolean
+  countryId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   createdAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["city"]>
 
 export type CitySelectScalar = {
   id?: boolean
   slug?: boolean
   name?: boolean
-  countryCode?: boolean
+  countryId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   createdAt?: boolean
 }
 
-export type CityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "countryCode" | "lat" | "lng" | "createdAt", ExtArgs["result"]["city"]>
+export type CityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "countryId" | "lat" | "lng" | "isActive" | "createdAt", ExtArgs["result"]["city"]>
 export type CityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   districts?: boolean | Prisma.City$districtsArgs<ExtArgs>
   profiles?: boolean | Prisma.City$profilesArgs<ExtArgs>
   translations?: boolean | Prisma.City$translationsArgs<ExtArgs>
   _count?: boolean | Prisma.CityCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type CityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type CityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
+}
+export type CityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
+}
 
 export type $CityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "City"
   objects: {
+    country: Prisma.$CountryPayload<ExtArgs>
     districts: Prisma.$DistrictPayload<ExtArgs>[]
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     translations: Prisma.$CityTranslationPayload<ExtArgs>[]
@@ -781,9 +994,13 @@ export type $CityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     slug: string
     name: string
-    countryCode: string
+    countryId: string
     lat: number | null
     lng: number | null
+    /**
+     * Город не удаляем, а отключаем: на него ссылаются анкеты.
+     */
+    isActive: boolean
     createdAt: Date
   }, ExtArgs["result"]["city"]>
   composites: {}
@@ -1179,6 +1396,7 @@ readonly fields: CityFieldRefs;
  */
 export interface Prisma__CityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  country<T extends Prisma.CountryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryDefaultArgs<ExtArgs>>): Prisma.Prisma__CountryClient<runtime.Types.Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   districts<T extends Prisma.City$districtsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.City$districtsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DistrictPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   profiles<T extends Prisma.City$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.City$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   translations<T extends Prisma.City$translationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.City$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CityTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1214,9 +1432,10 @@ export interface CityFieldRefs {
   readonly id: Prisma.FieldRef<"City", 'String'>
   readonly slug: Prisma.FieldRef<"City", 'String'>
   readonly name: Prisma.FieldRef<"City", 'String'>
-  readonly countryCode: Prisma.FieldRef<"City", 'String'>
+  readonly countryId: Prisma.FieldRef<"City", 'String'>
   readonly lat: Prisma.FieldRef<"City", 'Float'>
   readonly lng: Prisma.FieldRef<"City", 'Float'>
+  readonly isActive: Prisma.FieldRef<"City", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"City", 'DateTime'>
 }
     
@@ -1472,6 +1691,10 @@ export type CityCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.CityCreateManyInput | Prisma.CityCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CityIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1542,6 +1765,10 @@ export type CityUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Cities to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CityIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

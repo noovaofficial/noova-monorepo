@@ -6,6 +6,7 @@ export * from './contact';
 export * from './favorite';
 export * from './geo';
 export * from './locales';
+export * from './locations';
 export * from './map';
 export * from './moderation';
 export * from './profile';

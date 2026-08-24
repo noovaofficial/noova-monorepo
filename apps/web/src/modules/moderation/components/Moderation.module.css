@@ -296,3 +296,10 @@
   background: var(--danger);
   border-radius: var(--radiusPill);
 }
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  margin-bottom: var(--space5);
+}

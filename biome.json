@@ -13,6 +13,7 @@
       "!**/dist",
       "!**/docs/prototypes",
       "!**/src/generated",
+      "!**/prisma/reference-data.ts",
       "!**/documentation/prototypes",
       "!**/next-env.d.ts"
     ]

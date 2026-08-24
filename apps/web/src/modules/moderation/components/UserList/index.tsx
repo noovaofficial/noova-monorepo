@@ -1,6 +1,6 @@
 'use client';
 
-import type { ManagedUser } from '@noova/shared';
+import type { ManagedUser, UserRole } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
@@ -9,9 +9,20 @@ import { blockUser, fetchUsers, unblockUser, verifyUserEmail } from '@/modules/m
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
 
-export function UserList({ blockedOnly = false }: { blockedOnly?: boolean } = {}) {
+const ROLES: UserRole[] = ['client', 'advertiser', 'moderator', 'admin'];
+
+export function UserList({
+  blockedOnly = false,
+  withRoleFilter = false,
+}: {
+  blockedOnly?: boolean;
+  withRoleFilter?: boolean;
+} = {}) {
   const t = useTranslations('moderation');
   const [query, setQuery] = useState('');
+  // Пусто — все типы. В разделе «Все пользователи» это и есть исходное
+  // состояние: сначала показать всех, потом дать сузить.
+  const [role, setRole] = useState<UserRole | ''>('');
   // Пауза перед запросом: без неё каждый символ в поиске уходит на сервер.
   // Отложенное значение и есть часть ключа — так каждый поисковый запрос
   // получает свой кэш, а ответ на прежний не может лечь поверх нового.
@@ -28,8 +39,8 @@ export function UserList({ blockedOnly = false }: { blockedOnly?: boolean } = {}
   const [reason, setReason] = useState('');
 
   const list = useQuery({
-    queryKey: queryKeys.users(debounced, blockedOnly),
-    queryFn: () => fetchUsers(debounced || undefined, blockedOnly),
+    queryKey: queryKeys.users(debounced, blockedOnly, role || undefined),
+    queryFn: () => fetchUsers(debounced || undefined, blockedOnly, role || undefined),
   });
 
   // Блокировка меняет и общий список, и таблицу заблокированных — гасим
@@ -71,14 +82,38 @@ export function UserList({ blockedOnly = false }: { blockedOnly?: boolean } = {}
         {t(blockedOnly ? 'blockedNote' : 'verifyEmailNote')}
       </p>
 
-      <div className={styles.field} style={{ maxWidth: 360, marginBottom: 'var(--space5)' }}>
-        <input
-          className={styles.input}
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t('searchUsers')}
-        />
+      <div className={styles.filters}>
+        <div className={styles.field} style={{ maxWidth: 360 }}>
+          <input
+            className={styles.input}
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t('searchUsers')}
+          />
+        </div>
+
+        {withRoleFilter ? (
+          <div className={styles.tabs}>
+            <button
+              type="button"
+              className={`${styles.tab} ${role === '' ? styles.tabActive : ''}`}
+              onClick={() => setRole('')}
+            >
+              {t('roleAll')}
+            </button>
+            {ROLES.map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={`${styles.tab} ${role === value ? styles.tabActive : ''}`}
+                onClick={() => setRole(value)}
+              >
+                {t(`role_${value}`)}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}

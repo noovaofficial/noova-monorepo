@@ -2,7 +2,9 @@ import type { Locale } from '@noova/shared';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import { Logo } from '@/design-system/components/Logo';
-import { fetchServiceCatalogPublic, safely } from '@/shared/api';
+import { CityLink } from '@/modules/locations/components/CityLink';
+import { CitySwitcher } from '@/modules/locations/components/CitySwitcher';
+import { fetchCities, fetchServiceCatalogPublic, safely } from '@/shared/api';
 import { Link } from '@/shared/i18n/navigation';
 import styles from '../Header.module.css';
 import { HeaderActions } from '../HeaderActions';
@@ -31,11 +33,11 @@ export async function Header() {
 
   // Справочник нужен панели фильтров в момент открытия. Тянем на сервере:
   // иначе первое нажатие показало бы пустые группы услуг.
-  const catalog = await safely(
-    fetchServiceCatalogPublic('escort', { locale: locale as Locale }),
-    [],
-    'headerCatalog',
-  );
+  const [catalog, cities] = await Promise.all([
+    safely(fetchServiceCatalogPublic('escort', { locale: locale as Locale }), [], 'headerCatalog'),
+    safely(fetchCities({ locale: locale as Locale, revalidate: 300 }), [], 'headerCities'),
+  ]);
+  const citySlugs = cities.map((city) => city.slug);
 
   return (
     <header className={styles.header}>
@@ -48,6 +50,7 @@ export async function Header() {
             <Logo />
           </Link>
           <div className={styles.actions}>
+            <CitySwitcher cities={cities} />
             <HeaderActions />
           </div>
         </div>
@@ -65,9 +68,13 @@ export async function Header() {
               fallback={
                 <>
                   <span className={styles.filterBtn}>{t('filters')}</span>
-                  <Link className={styles.filterBtn} href="/catalog/escort/map">
+                  <CityLink
+                    className={styles.filterBtn}
+                    href="/catalog/escort/map"
+                    citySlugs={citySlugs}
+                  >
                     {t('mapView')}
-                  </Link>
+                  </CityLink>
                 </>
               }
             >
@@ -76,9 +83,14 @@ export async function Header() {
 
             <div className={styles.quickFilters}>
               {QUICK_FILTERS.map((item) => (
-                <Link key={item.key} href={item.href} className={styles.chip}>
+                <CityLink
+                  key={item.key}
+                  href={item.href}
+                  citySlugs={citySlugs}
+                  className={styles.chip}
+                >
                   {tf(item.key)}
-                </Link>
+                </CityLink>
               ))}
             </div>
           </QuickLinks>

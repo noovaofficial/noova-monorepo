@@ -237,20 +237,50 @@ model AuthToken {
   @@index([expiresAt])
 }
 
+/// Страна. Заводится только главным администратором и только после
+/// урегулирования правовых вопросов по этой юрисдикции (L-09): кнопка делает
+/// шаг лёгким технически, но не юридически.
+model Country {
+  id       String  @id @default(cuid())
+  /// ISO 3166-1 alpha-2. Он же идентичность страны: слуг не нужен —
+  /// в адресах страна не участвует, город второй сегмент после языка.
+  code     String  @unique @db.Char(2)
+  /// Техническое имя для админки и журналов; посетителю идёт перевод.
+  name     String
+  /// Страну не удаляем, а отключаем: на неё ссылаются города, а на них — анкеты.
+  isActive Boolean @default(true)
+
+  cities       City[]
+  translations CountryTranslation[]
+}
+
+model CountryTranslation {
+  id        String  @id @default(cuid())
+  countryId String
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  locale    String  @db.VarChar(5)
+  name      String
+
+  @@unique([countryId, locale])
+}
+
 model City {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  countryCode String   @db.Char(2)
-  lat         Float?
-  lng         Float?
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  countryId String
+  country   Country  @relation(fields: [countryId], references: [id])
+  lat       Float?
+  lng       Float?
+  /// Город не удаляем, а отключаем: на него ссылаются анкеты.
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
 
   districts    District[]
   profiles     Profile[]
   translations CityTranslation[]
 
-  @@index([countryCode])
+  @@index([countryId])
 }
 
 /// Переводы названий справочников вынесены в отдельные таблицы, а не в
@@ -285,6 +315,9 @@ model District {
   /// нужное свойство, а не недоработка.
   lat Float?
   lng Float?
+
+  /// Район не удаляем, а отключаем: на него ссылаются анкеты.
+  isActive Boolean @default(true)
 
   profiles     Profile[]
   translations DistrictTranslation[]

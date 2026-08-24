@@ -35,7 +35,7 @@ export const cardSelect = (locale: Locale) =>
       select: {
         slug: true,
         name: true,
-        countryCode: true,
+        country: { select: { code: true } },
         translations: translationSelect(locale),
       },
     },

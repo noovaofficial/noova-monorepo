@@ -1,6 +1,6 @@
 import { LOCALES } from '@noova/shared';
 import type { MetadataRoute } from 'next';
-import { fetchProfiles } from '@/shared/api';
+import { fetchCities, fetchProfiles, safely } from '@/shared/api';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -16,6 +16,9 @@ function alternates(path: string) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Только существующие страницы. Правовые появятся вместе с L-01, страница
   // о верификации — вместе с L-02; ссылка в sitemap на 404 хуже её отсутствия.
+  //
+  // Городского префикса здесь нет: выбор города, «Компания» и контакты одни
+  // на весь каталог (N-32).
   const staticPaths = ['', '/about', '/advertising', '/contact'];
 
   const entries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
@@ -27,6 +30,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: alternates(path),
     })),
   );
+
+  // Витринные страницы умножаются на города: главная города и два каталога.
+  // Карта в sitemap не идёт — то же содержимое другим представлением.
+  const cities = await safely(fetchCities({ revalidate: 3600 }), [], 'sitemapCities');
+  for (const city of cities) {
+    for (const path of ['', '/catalog/escort', '/catalog/massage']) {
+      const full = `/${city.slug}${path}`;
+      entries.push(
+        ...LOCALES.map((locale) => ({
+          url: `${SITE_URL}/${locale}${full}`,
+          lastModified: new Date(),
+          changeFrequency: 'hourly' as const,
+          priority: path === '' ? 0.9 : 0.8,
+          alternates: alternates(full),
+        })),
+      );
+    }
+  }
 
   // Анкеты подтягиваем из API. Если бэк недоступен, отдаём хотя бы статические
   // маршруты — пустой sitemap хуже неполного.

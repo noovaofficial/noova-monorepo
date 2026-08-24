@@ -1,6 +1,9 @@
 import { MAX_SERVICES_PER_PROFILE, updateProfileSchema } from '@noova/shared';
 import { describe, expect, it } from 'vitest';
-import { SERVICE_CATALOG, SERVICE_GROUPS } from './services';
+import { SERVICE_GROUPS, SERVICES } from './reference-data';
+
+/** В справочнике лежат и отключённые услуги прежних версий — их не выбрать. */
+const SERVICE_CATALOG = SERVICES.filter((service) => service.isActive);
 
 describe('справочник услуг', () => {
   /**
@@ -21,7 +24,7 @@ describe('справочник услуг', () => {
   });
 
   it('ссылается только на объявленные группы', () => {
-    const groups = new Set<string>(SERVICE_GROUPS);
+    const groups = new Set(SERVICE_GROUPS.map((group) => group.key));
     for (const service of SERVICE_CATALOG) {
       expect(groups.has(service.group), `${service.key} → ${service.group}`).toBe(true);
     }
@@ -29,8 +32,8 @@ describe('справочник услуг', () => {
 
   it('в каждой группе есть хотя бы одна услуга', () => {
     for (const group of SERVICE_GROUPS) {
-      const count = SERVICE_CATALOG.filter((service) => service.group === group).length;
-      expect(count, group).toBeGreaterThan(0);
+      const count = SERVICE_CATALOG.filter((service) => service.group === group.key).length;
+      expect(count, group.key).toBeGreaterThan(0);
     }
   });
 });

@@ -13,9 +13,6 @@
     "theme": "Design wechseln",
     "language": "Sprache",
     "skipToContent": "Zum Inhalt springen",
-    "quickQueue": "Warteschlange",
-    "quickUsers": "Benutzer",
-    "quickStaff": "Mitarbeiter",
     "quickProfiles": "Meine Anzeigen",
     "quickAnalytics": "Statistik",
     "soon": "bald",
@@ -224,7 +221,10 @@
     "advertiserKind": "Anzeigenart",
     "moderation": "Moderation",
     "staff": "Mitarbeiter",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "allUsers": "Alle Nutzer",
+    "log": "Entscheidungsprotokoll",
+    "locations": "Geografie"
   },
   "account": {
     "title": "Meine Anzeigen",
@@ -356,7 +356,6 @@
     "loadFailed": "Warteschlange konnte nicht geladen werden",
     "actionFailed": "Aktion fehlgeschlagen",
     "onlyStaff": "Dieser Bereich ist nur für Moderatoren",
-    "tabUsers": "Benutzer",
     "searchUsers": "Suche nach E-Mail",
     "emailVerified": "E-Mail bestätigt",
     "emailNotVerified": "E-Mail nicht bestätigt",
@@ -380,7 +379,6 @@
     "commentOf": "Bewertung zu",
     "reportedCommentOf": "Gemeldete Bewertung zu",
     "commentAuthor": "Autor: {nickname}",
-    "openLog": "Entscheidungsprotokoll",
     "tabReports": "Meldungen",
     "reportOf": "Meldung zu",
     "urgent": "Dringend",
@@ -395,7 +393,6 @@
     "reason_illegal_services": "Illegale Dienste",
     "reason_spam": "Spam oder Werbung",
     "reason_other": "Sonstiges",
-    "tabBlocked": "Gesperrt",
     "blockUser": "Sperren",
     "unblockUser": "Entsperren",
     "blockReason": "Grund der Sperrung",
@@ -411,7 +408,13 @@
     "tabBlockedProfiles": "Gesperrte Profile",
     "blockedProfilesNote": "Von der Moderation gesperrte Profile. Die Inhaberin sieht den Grund und kann ein korrigiertes Profil einreichen.",
     "blockedProfilesEmpty": "Keine gesperrten Profile.",
-    "ownerAlsoBlocked": "Das Konto der Inhaberin ist ebenfalls gesperrt"
+    "ownerAlsoBlocked": "Das Konto der Inhaberin ist ebenfalls gesperrt",
+    "tabBlockedUsers": "Gesperrte Nutzer",
+    "roleAll": "Alle",
+    "role_client": "Kunden",
+    "role_advertiser": "Inserenten",
+    "role_moderator": "Moderatoren",
+    "role_admin": "Administratoren"
   },
   "admin": {
     "title": "Mitarbeiter",
@@ -643,5 +646,41 @@
     "includedStats": "Markierung auf der Karte und Statistik der Kontaktanzeigen",
     "howTitle": "So starten Sie",
     "howText": "<register>Konto erstellen</register>, Profil ausfüllen und zur Prüfung einreichen. Nach der Freigabe durch die Moderation erscheint das Profil im Katalog. Für Fragen zur Bezahlung oder zu mehreren Profilen <contact>schreiben Sie uns</contact>."
+  },
+  "locations": {
+    "title": "Geografie",
+    "subtitle": "Länder, Städte und Bezirke",
+    "countries": "Länder",
+    "cities": "Städte",
+    "legalWarning": "Ein neues Land erst anlegen, wenn die Rechtsfragen dieser Rechtsordnung geklärt sind (L-09). Technisch ist der Schritt einfach, rechtlich nicht.",
+    "noCountries": "Noch keine Länder",
+    "noCities": "Noch keine Städte",
+    "noDistricts": "Ohne Bezirke — Anzeigen erhalten die Koordinaten des Stadtzentrums",
+    "code": "Code",
+    "slug": "Adresse",
+    "country": "Land",
+    "lat": "Breite",
+    "lng": "Länge",
+    "addCountry": "Land anlegen",
+    "addCity": "Stadt anlegen",
+    "addDistrict": "Bezirk",
+    "districtsLater": "Bezirke sind optional und lassen sich später hinzufügen.",
+    "disable": "Deaktivieren",
+    "enable": "Aktivieren",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "failed": "Konnte nicht gespeichert werden",
+    "onlyAdmins": "Nur für Administratoren",
+    "cityCount": "{count, plural, one {# Stadt} other {# Städte}}",
+    "profileCount": "{count, plural, one {# Anzeige} other {# Anzeigen}}",
+    "edit": "Ändern",
+    "editDistrict": "Bezirk ändern",
+    "active": "Aktiv"
+  },
+  "cityPicker": {
+    "title": "Stadt wählen",
+    "description": "Der Katalog wird nach Stadt geführt.",
+    "empty": "Noch keine Städte",
+    "switchLabel": "Stadt"
   }
 }

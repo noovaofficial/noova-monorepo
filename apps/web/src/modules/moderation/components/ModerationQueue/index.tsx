@@ -22,6 +22,9 @@ import { BlockedProfiles } from '../BlockedProfiles';
 import styles from '../Moderation.module.css';
 import { UserList } from '../UserList';
 
+// Вкладки «пользователи» здесь больше нет: поиск человека переехал в свой
+// раздел «Все пользователи». Заблокированные остались — это результат работы
+// очереди, и смотрят на них сразу после решения.
 const TABS = [
   'all',
   'report',
@@ -29,7 +32,6 @@ const TABS = [
   'verification',
   'comment',
   'blockedProfiles',
-  'users',
   'blocked',
 ] as const;
 type Tab = (typeof TABS)[number];
@@ -41,8 +43,7 @@ const TAB_LABELS: Record<Tab, string> = {
   comment: 'tabComments',
   report: 'tabReports',
   blockedProfiles: 'tabBlockedProfiles',
-  users: 'tabUsers',
-  blocked: 'tabBlocked',
+  blocked: 'tabBlockedUsers',
 };
 
 export function ModerationQueue() {
@@ -117,11 +118,6 @@ export function ModerationQueue() {
     <div className={styles.wrap}>
       <div className={styles.head}>
         <h1 className={styles.title}>{t('title')}</h1>
-        {/* Журнал решений — отдельная страница: разбор спорного случая
-            и разбор очереди это разные задачи. */}
-        <Link className={styles.link} href="/moderation/log">
-          {t('openLog')}
-        </Link>
       </div>
 
       <div className={styles.tabs}>
@@ -141,8 +137,8 @@ export function ModerationQueue() {
 
       {tab === 'blockedProfiles' ? (
         <BlockedProfiles />
-      ) : tab === 'users' || tab === 'blocked' ? (
-        <UserList blockedOnly={tab === 'blocked'} />
+      ) : tab === 'blocked' ? (
+        <UserList blockedOnly />
       ) : items === null ? (
         <p className={styles.empty}>{t('loading')}</p>
       ) : items.length === 0 ? (

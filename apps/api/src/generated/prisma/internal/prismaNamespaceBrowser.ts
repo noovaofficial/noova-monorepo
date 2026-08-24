@@ -55,6 +55,8 @@ export const ModelName = {
   ClientProfile: 'ClientProfile',
   ModerationAction: 'ModerationAction',
   AuthToken: 'AuthToken',
+  Country: 'Country',
+  CountryTranslation: 'CountryTranslation',
   City: 'City',
   CityTranslation: 'CityTranslation',
   District: 'District',
@@ -153,13 +155,34 @@ export const AuthTokenScalarFieldEnum = {
 export type AuthTokenScalarFieldEnum = (typeof AuthTokenScalarFieldEnum)[keyof typeof AuthTokenScalarFieldEnum]
 
 
+export const CountryScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  isActive: 'isActive'
+} as const
+
+export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
+
+
+export const CountryTranslationScalarFieldEnum = {
+  id: 'id',
+  countryId: 'countryId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type CountryTranslationScalarFieldEnum = (typeof CountryTranslationScalarFieldEnum)[keyof typeof CountryTranslationScalarFieldEnum]
+
+
 export const CityScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
   name: 'name',
-  countryCode: 'countryCode',
+  countryId: 'countryId',
   lat: 'lat',
   lng: 'lng',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
 
@@ -182,7 +205,8 @@ export const DistrictScalarFieldEnum = {
   name: 'name',
   cityId: 'cityId',
   lat: 'lat',
-  lng: 'lng'
+  lng: 'lng',
+  isActive: 'isActive'
 } as const
 
 export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typeof DistrictScalarFieldEnum]

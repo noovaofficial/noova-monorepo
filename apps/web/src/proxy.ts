@@ -1,4 +1,4 @@
-import { isLocale } from '@noova/shared';
+import { isLocale, RESERVED_CITY_SLUGS } from '@noova/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './shared/i18n/routing';
@@ -32,6 +32,27 @@ const BLOCKED_BY_ROLE: Record<string, string[]> = {
   advertiser: ['', '/catalog'],
 };
 
+/**
+ * Сегменты после языка, которые задают собственный маршрут. Всё остальное на
+ * этом месте — слуг города: `/ru/berlin/catalog/escort` (N-32).
+ *
+ * Список тот же, что `RESERVED_CITY_SLUGS`, и по той же причине: город и
+ * статические маршруты делят одно место в адресе. Сверяется тестом.
+ */
+const ROUTE_SEGMENTS = new Set<string>(RESERVED_CITY_SLUGS);
+
+/**
+ * Путь без языка и без города — в терминах, которыми описан доступ по ролям.
+ * Витрина у каждого города своя, но закрыта она для сотрудника целиком, и
+ * перечислять города в правилах доступа значило бы править их при каждом
+ * новом городе.
+ */
+function pathWithoutCity(rest: string): string {
+  const [, first = '', ...tail] = rest.split('/');
+  if (first === '' || ROUTE_SEGMENTS.has(first)) return rest;
+  return tail.length > 0 ? `/${tail.join('/')}` : '';
+}
+
 function localeOf(pathname: string): string {
   const first = pathname.split('/')[1] ?? '';
   return isLocale(first) ? first : routing.defaultLocale;
@@ -54,7 +75,7 @@ export default function proxy(request: NextRequest) {
   if (!target || !blocked) return response;
 
   const { pathname } = request.nextUrl;
-  const rest = pathWithoutLocale(pathname);
+  const rest = pathWithoutCity(pathWithoutLocale(pathname));
   const isBlocked = blocked.some(
     (prefix) => rest === prefix || (prefix !== '' && rest.startsWith(`${prefix}/`)),
   );

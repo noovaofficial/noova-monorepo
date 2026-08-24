@@ -11,6 +11,7 @@ export default defineConfig({
     'src/jobs/runner.ts',
     'src/scripts/create-admin.ts',
     'src/scripts/seed-reference.ts',
+    'src/scripts/export-reference.ts',
   ],
   outDir: 'dist',
   format: ['esm'],

@@ -17,6 +17,7 @@ import { authRoutes } from './modules/auth/routes.js';
 import { commentRoutes } from './modules/comments/routes.js';
 import { favoriteRoutes } from './modules/favorites/routes.js';
 import { healthRoutes } from './modules/health/routes.js';
+import { locationRoutes } from './modules/locations/routes.js';
 import { moderationRoutes } from './modules/moderation/routes.js';
 import { photoRoutes } from './modules/photos/routes.js';
 import { revealRoutes } from './modules/profiles/reveal.js';
@@ -122,6 +123,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(photoRoutes);
       await api.register(moderationRoutes);
       await api.register(adminRoutes);
+      await api.register(locationRoutes);
       await api.register(profileRoutes);
       await api.register(revealRoutes);
       await api.register(favoriteRoutes);

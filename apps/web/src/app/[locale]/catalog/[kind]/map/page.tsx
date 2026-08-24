@@ -1,40 +1,27 @@
-import type { ListingKind, Locale } from '@noova/shared';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Suspense } from 'react';
-import { CatalogMap } from '@/modules/catalog/components/CatalogMap';
+import type { Locale } from '@noova/shared';
+import { permanentRedirect } from 'next/navigation';
+import { activeCities } from '@/shared/city';
 
-type Props = { params: Promise<{ locale: string; kind: string }> };
+/**
+ * Прежний адрес карты каталога, без города.
+ *
+ * Каталог переехал под городской префикс (N-32), но ссылки на старый адрес
+ * уже существуют — во внешних источниках и в выдаче. Отдаём постоянный
+ * редирект, а не 404: 301 переносит вес страницы на новый адрес, 404 его
+ * теряет.
+ *
+ * Каталог заодно остаётся в `RESERVED_CITY_SLUGS`: город с таким слугом
+ * перекрылся бы этим маршрутом.
+ */
+type Props = {
+  params: Promise<{ locale: Locale; kind: string }>;
+};
 
-const KINDS: ListingKind[] = ['escort', 'massage'];
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'map' });
-
-  return {
-    title: t('title'),
-    /**
-     * Карта не индексируется. Она не несёт текста, который стоило бы искать,
-     * и дублирует содержимое каталога — а дубль в индексе только отнимает
-     * вес у самого каталога.
-     */
-    robots: { index: false, follow: true },
-  };
-}
-
-export default async function CatalogMapPage({ params }: Props) {
+export default async function LegacyCatalogMapRedirect({ params }: Props) {
   const { locale, kind } = await params;
-  setRequestLocale(locale);
+  const cities = await activeCities(locale);
+  const city = cities[0];
 
-  if (!KINDS.includes(kind as ListingKind)) notFound();
-
-  // useSearchParams внутри требует границы Suspense: без неё страница
-  // целиком уходит в клиентский рендер.
-  return (
-    <Suspense>
-      <CatalogMap kind={kind as ListingKind} locale={locale as Locale} />
-    </Suspense>
-  );
+  // Городов нет вовсе — вести некуда, кроме выбора города.
+  permanentRedirect(city ? `/${locale}/${city.slug}/catalog/${kind}/map` : `/${locale}`);
 }

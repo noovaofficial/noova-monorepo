@@ -43,6 +43,7 @@ export type DistrictMinAggregateOutputType = {
   cityId: string | null
   lat: number | null
   lng: number | null
+  isActive: boolean | null
 }
 
 export type DistrictMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type DistrictMaxAggregateOutputType = {
   cityId: string | null
   lat: number | null
   lng: number | null
+  isActive: boolean | null
 }
 
 export type DistrictCountAggregateOutputType = {
@@ -61,6 +63,7 @@ export type DistrictCountAggregateOutputType = {
   cityId: number
   lat: number
   lng: number
+  isActive: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type DistrictMinAggregateInputType = {
   cityId?: true
   lat?: true
   lng?: true
+  isActive?: true
 }
 
 export type DistrictMaxAggregateInputType = {
@@ -91,6 +95,7 @@ export type DistrictMaxAggregateInputType = {
   cityId?: true
   lat?: true
   lng?: true
+  isActive?: true
 }
 
 export type DistrictCountAggregateInputType = {
@@ -100,6 +105,7 @@ export type DistrictCountAggregateInputType = {
   cityId?: true
   lat?: true
   lng?: true
+  isActive?: true
   _all?: true
 }
 
@@ -196,6 +202,7 @@ export type DistrictGroupByOutputType = {
   cityId: string
   lat: number | null
   lng: number | null
+  isActive: boolean
   _count: DistrictCountAggregateOutputType | null
   _avg: DistrictAvgAggregateOutputType | null
   _sum: DistrictSumAggregateOutputType | null
@@ -228,6 +235,7 @@ export type DistrictWhereInput = {
   cityId?: Prisma.StringFilter<"District"> | string
   lat?: Prisma.FloatNullableFilter<"District"> | number | null
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
+  isActive?: Prisma.BoolFilter<"District"> | boolean
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   translations?: Prisma.DistrictTranslationListRelationFilter
@@ -240,6 +248,7 @@ export type DistrictOrderByWithRelationInput = {
   cityId?: Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   city?: Prisma.CityOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   translations?: Prisma.DistrictTranslationOrderByRelationAggregateInput
@@ -256,6 +265,7 @@ export type DistrictWhereUniqueInput = Prisma.AtLeast<{
   cityId?: Prisma.StringFilter<"District"> | string
   lat?: Prisma.FloatNullableFilter<"District"> | number | null
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
+  isActive?: Prisma.BoolFilter<"District"> | boolean
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   translations?: Prisma.DistrictTranslationListRelationFilter
@@ -268,6 +278,7 @@ export type DistrictOrderByWithAggregationInput = {
   cityId?: Prisma.SortOrder
   lat?: Prisma.SortOrderInput | Prisma.SortOrder
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   _count?: Prisma.DistrictCountOrderByAggregateInput
   _avg?: Prisma.DistrictAvgOrderByAggregateInput
   _max?: Prisma.DistrictMaxOrderByAggregateInput
@@ -285,6 +296,7 @@ export type DistrictScalarWhereWithAggregatesInput = {
   cityId?: Prisma.StringWithAggregatesFilter<"District"> | string
   lat?: Prisma.FloatNullableWithAggregatesFilter<"District"> | number | null
   lng?: Prisma.FloatNullableWithAggregatesFilter<"District"> | number | null
+  isActive?: Prisma.BoolWithAggregatesFilter<"District"> | boolean
 }
 
 export type DistrictCreateInput = {
@@ -293,6 +305,7 @@ export type DistrictCreateInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   city: Prisma.CityCreateNestedOneWithoutDistrictsInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
   translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
@@ -305,6 +318,7 @@ export type DistrictUncheckedCreateInput = {
   cityId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
   translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
@@ -315,6 +329,7 @@ export type DistrictUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
   translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
@@ -327,6 +342,7 @@ export type DistrictUncheckedUpdateInput = {
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
   translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
@@ -338,6 +354,7 @@ export type DistrictCreateManyInput = {
   cityId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
 }
 
 export type DistrictUpdateManyMutationInput = {
@@ -346,6 +363,7 @@ export type DistrictUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DistrictUncheckedUpdateManyInput = {
@@ -355,6 +373,7 @@ export type DistrictUncheckedUpdateManyInput = {
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type DistrictListRelationFilter = {
@@ -379,6 +398,7 @@ export type DistrictCountOrderByAggregateInput = {
   cityId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type DistrictAvgOrderByAggregateInput = {
@@ -393,6 +413,7 @@ export type DistrictMaxOrderByAggregateInput = {
   cityId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type DistrictMinOrderByAggregateInput = {
@@ -402,6 +423,7 @@ export type DistrictMinOrderByAggregateInput = {
   cityId?: Prisma.SortOrder
   lat?: Prisma.SortOrder
   lng?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
 }
 
 export type DistrictSumOrderByAggregateInput = {
@@ -497,6 +519,7 @@ export type DistrictCreateWithoutCityInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
   translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
 }
@@ -507,6 +530,7 @@ export type DistrictUncheckedCreateWithoutCityInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
   translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
@@ -547,6 +571,7 @@ export type DistrictScalarWhereInput = {
   cityId?: Prisma.StringFilter<"District"> | string
   lat?: Prisma.FloatNullableFilter<"District"> | number | null
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
+  isActive?: Prisma.BoolFilter<"District"> | boolean
 }
 
 export type DistrictCreateWithoutTranslationsInput = {
@@ -555,6 +580,7 @@ export type DistrictCreateWithoutTranslationsInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   city: Prisma.CityCreateNestedOneWithoutDistrictsInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
 }
@@ -566,6 +592,7 @@ export type DistrictUncheckedCreateWithoutTranslationsInput = {
   cityId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
 }
 
@@ -591,6 +618,7 @@ export type DistrictUpdateWithoutTranslationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
 }
@@ -602,6 +630,7 @@ export type DistrictUncheckedUpdateWithoutTranslationsInput = {
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
 }
 
@@ -611,6 +640,7 @@ export type DistrictCreateWithoutProfilesInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   city: Prisma.CityCreateNestedOneWithoutDistrictsInput
   translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
 }
@@ -622,6 +652,7 @@ export type DistrictUncheckedCreateWithoutProfilesInput = {
   cityId: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
   translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
 
@@ -647,6 +678,7 @@ export type DistrictUpdateWithoutProfilesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
   translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
 }
@@ -658,6 +690,7 @@ export type DistrictUncheckedUpdateWithoutProfilesInput = {
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
 
@@ -667,6 +700,7 @@ export type DistrictCreateManyCityInput = {
   name: string
   lat?: number | null
   lng?: number | null
+  isActive?: boolean
 }
 
 export type DistrictUpdateWithoutCityInput = {
@@ -675,6 +709,7 @@ export type DistrictUpdateWithoutCityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
   translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
 }
@@ -685,6 +720,7 @@ export type DistrictUncheckedUpdateWithoutCityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
   translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
@@ -695,6 +731,7 @@ export type DistrictUncheckedUpdateManyWithoutCityInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -744,6 +781,7 @@ export type DistrictSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   cityId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.District$profilesArgs<ExtArgs>
   translations?: boolean | Prisma.District$translationsArgs<ExtArgs>
@@ -757,6 +795,7 @@ export type DistrictSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   cityId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["district"]>
 
@@ -767,6 +806,7 @@ export type DistrictSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   cityId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["district"]>
 
@@ -777,9 +817,10 @@ export type DistrictSelectScalar = {
   cityId?: boolean
   lat?: boolean
   lng?: boolean
+  isActive?: boolean
 }
 
-export type DistrictOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "cityId" | "lat" | "lng", ExtArgs["result"]["district"]>
+export type DistrictOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "name" | "cityId" | "lat" | "lng" | "isActive", ExtArgs["result"]["district"]>
 export type DistrictInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.District$profilesArgs<ExtArgs>
@@ -814,6 +855,10 @@ export type $DistrictPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
      */
     lat: number | null
     lng: number | null
+    /**
+     * Район не удаляем, а отключаем: на него ссылаются анкеты.
+     */
+    isActive: boolean
   }, ExtArgs["result"]["district"]>
   composites: {}
 }
@@ -1246,6 +1291,7 @@ export interface DistrictFieldRefs {
   readonly cityId: Prisma.FieldRef<"District", 'String'>
   readonly lat: Prisma.FieldRef<"District", 'Float'>
   readonly lng: Prisma.FieldRef<"District", 'Float'>
+  readonly isActive: Prisma.FieldRef<"District", 'Boolean'>
 }
     
 

@@ -859,6 +859,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: {
           ...(query ? { email: { contains: query, mode: 'insensitive' } } : {}),
           ...(request.query.blocked === 'true' ? { bannedAt: { not: null } } : {}),
+          ...(request.query.role ? { role: request.query.role } : {}),
         },
         // Заблокированных показываем по свежести блокировки, остальных — по
         // дате регистрации: в таблице блокировок интересны последние решения.

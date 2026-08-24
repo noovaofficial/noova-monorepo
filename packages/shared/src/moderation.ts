@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { userRoleSchema } from './auth';
 import { commentQueueItemSchema } from './comment';
 import { listingKindSchema, verificationStatusSchema } from './profile';
 import { profileReportItemSchema } from './report';
@@ -155,6 +156,8 @@ export const userSearchSchema = z.object({
   query: z.string().trim().max(254).optional(),
   /** Только заблокированные — для отдельной таблицы, а не фильтра в поиске. */
   blocked: z.enum(['true']).optional(),
+  /** Тип учётной записи. Пусто — все: у раздела «Все пользователи» это норма. */
+  role: userRoleSchema.optional(),
   limit: z.coerce.number().int().min(1).max(50).default(25),
 });
 

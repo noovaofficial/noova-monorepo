@@ -125,11 +125,15 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { locale } = request.query;
       const cities = await fastify.prisma.city.findMany({
+        // Отключённый город и район из выбора уходят, но остаются в базе:
+        // на них ссылаются анкеты (N-32).
+        where: { isActive: true },
         select: {
           slug: true,
           name: true,
           translations: translationSelect(locale),
           districts: {
+            where: { isActive: true },
             select: { slug: true, name: true, translations: translationSelect(locale) },
           },
         },

@@ -14,6 +14,7 @@ import {
   queueItemSchema,
   type StaffMember,
   staffMemberSchema,
+  type UserRole,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -135,9 +136,16 @@ export function fetchModeratedProfile(id: string): Promise<ModeratedProfile> {
   return call(`/moderation/profiles/${id}`, moderatedProfileSchema);
 }
 
-export function fetchUsers(query?: string, blockedOnly = false): Promise<ManagedUser[]> {
+export function fetchUsers(
+  query?: string,
+  blockedOnly = false,
+  role?: UserRole,
+): Promise<ManagedUser[]> {
   const params = new URLSearchParams();
   if (query) params.set('query', query);
+  // Тип учётной записи: в разделе «Все пользователи» их четыре вида, и без
+  // фильтра список превращается в ленту, по которой ищут глазами.
+  if (role) params.set('role', role);
   // Заблокированные — отдельная таблица, а не фильтр в поиске: найти
   // конкретного человека и понять, кого заблокировали, — разные задачи.
   if (blockedOnly) params.set('blocked', 'true');

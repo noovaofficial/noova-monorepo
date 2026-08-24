@@ -67,6 +67,18 @@ export type ModerationAction = Prisma.ModerationActionModel
  */
 export type AuthToken = Prisma.AuthTokenModel
 /**
+ * Model Country
+ * Страна. Заводится только главным администратором и только после
+ * урегулирования правовых вопросов по этой юрисдикции (L-09): кнопка делает
+ * шаг лёгким технически, но не юридически.
+ */
+export type Country = Prisma.CountryModel
+/**
+ * Model CountryTranslation
+ * 
+ */
+export type CountryTranslation = Prisma.CountryTranslationModel
+/**
  * Model City
  * 
  */

@@ -13,9 +13,6 @@
     "theme": "Toggle theme",
     "language": "Language",
     "skipToContent": "Skip to content",
-    "quickQueue": "Queue",
-    "quickUsers": "Users",
-    "quickStaff": "Staff",
     "quickProfiles": "My profiles",
     "quickAnalytics": "Analytics",
     "soon": "soon",
@@ -224,7 +221,10 @@
     "advertiserKind": "Listing type",
     "moderation": "Moderation",
     "staff": "Staff",
-    "settings": "Settings"
+    "settings": "Settings",
+    "allUsers": "All users",
+    "log": "Decision log",
+    "locations": "Geography"
   },
   "account": {
     "title": "My profiles",
@@ -356,7 +356,6 @@
     "loadFailed": "Could not load the queue",
     "actionFailed": "The action failed",
     "onlyStaff": "This section is for moderators only",
-    "tabUsers": "Users",
     "searchUsers": "Search by email",
     "emailVerified": "Email confirmed",
     "emailNotVerified": "Email not confirmed",
@@ -380,7 +379,6 @@
     "commentOf": "Review of",
     "reportedCommentOf": "Reported review of",
     "commentAuthor": "Author: {nickname}",
-    "openLog": "Decision log",
     "tabReports": "Reports",
     "reportOf": "Report on",
     "urgent": "Urgent",
@@ -395,7 +393,6 @@
     "reason_illegal_services": "Illegal services",
     "reason_spam": "Spam or advertising",
     "reason_other": "Other",
-    "tabBlocked": "Blocked",
     "blockUser": "Block",
     "unblockUser": "Unblock",
     "blockReason": "Reason for blocking",
@@ -411,7 +408,13 @@
     "tabBlockedProfiles": "Blocked profiles",
     "blockedProfilesNote": "Profiles taken down by a moderator. The owner sees the reason and can resubmit a corrected profile.",
     "blockedProfilesEmpty": "No blocked profiles.",
-    "ownerAlsoBlocked": "The owner’s account is blocked as well"
+    "ownerAlsoBlocked": "The owner’s account is blocked as well",
+    "tabBlockedUsers": "Blocked users",
+    "roleAll": "All",
+    "role_client": "Clients",
+    "role_advertiser": "Advertisers",
+    "role_moderator": "Moderators",
+    "role_admin": "Administrators"
   },
   "admin": {
     "title": "Staff",
@@ -643,5 +646,41 @@
     "includedStats": "A marker on the map and contact reveal statistics",
     "howTitle": "How to start",
     "howText": "<register>Create an account</register>, fill in the profile and submit it for review. Once a moderator approves it, the profile appears in the catalogue. For payment or several profiles, <contact>write to us</contact>."
+  },
+  "locations": {
+    "title": "Geography",
+    "subtitle": "Countries, cities and districts",
+    "countries": "Countries",
+    "cities": "Cities",
+    "legalWarning": "Add a country only after the legal questions for that jurisdiction are settled (L-09). The step is easy technically, not legally.",
+    "noCountries": "No countries yet",
+    "noCities": "No cities yet",
+    "noDistricts": "No districts — listings get the city centre coordinates",
+    "code": "Code",
+    "slug": "URL",
+    "country": "Country",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "addCountry": "Add country",
+    "addCity": "Add city",
+    "addDistrict": "District",
+    "districtsLater": "Districts are optional and can be added later.",
+    "disable": "Disable",
+    "enable": "Enable",
+    "save": "Save",
+    "cancel": "Cancel",
+    "failed": "Could not save",
+    "onlyAdmins": "Administrators only",
+    "cityCount": "{count, plural, one {# city} other {# cities}}",
+    "profileCount": "{count, plural, one {# listing} other {# listings}}",
+    "edit": "Edit",
+    "editDistrict": "Edit district",
+    "active": "Active"
+  },
+  "cityPicker": {
+    "title": "Choose a city",
+    "description": "The catalogue is organised by city.",
+    "empty": "No cities yet",
+    "switchLabel": "City"
   }
 }

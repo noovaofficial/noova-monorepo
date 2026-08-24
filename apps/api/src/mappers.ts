@@ -46,7 +46,8 @@ type Translations = { name: string }[];
 type CityRow = {
   slug: string;
   name: string;
-  countryCode: string;
+  /// Код страны приходит связью: с N-32 страна — сущность, а не поле города.
+  country: { code: string };
   translations?: Translations;
 };
 
@@ -56,7 +57,7 @@ export function toCity(row: CityRow): City {
   return {
     slug: row.slug,
     name: localized(row.translations, row.name),
-    countryCode: row.countryCode,
+    countryCode: row.country.code,
   };
 }
 

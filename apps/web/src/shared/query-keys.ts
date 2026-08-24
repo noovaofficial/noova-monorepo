@@ -21,9 +21,11 @@ export const queryKeys = {
   queueCount: () => ['moderation-queue-count'] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,
   blockedProfiles: () => ['blocked-profiles'] as const,
-  users: (query: string, blockedOnly = false) =>
-    ['moderation-users', query, blockedOnly ? 'blocked' : 'all'] as const,
+  users: (query: string, blockedOnly = false, role?: string) =>
+    ['moderation-users', query, blockedOnly ? 'blocked' : 'all', role ?? 'any'] as const,
   staff: () => ['staff'] as const,
+  adminCountries: () => ['admin-countries'] as const,
+  adminCities: () => ['admin-cities'] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>
     [

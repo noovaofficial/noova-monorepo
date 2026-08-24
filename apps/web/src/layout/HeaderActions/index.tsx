@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchQueueCount } from '@/modules/moderation/api';
+import { isStaffRole, sectionsFor } from '@/modules/moderation/staff-sections';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './HeaderActions.module.css';
@@ -18,7 +19,7 @@ export function HeaderActions() {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  const isStaff = user?.role === 'moderator' || user?.role === 'admin';
+  const isStaff = isStaffRole(user?.role);
 
   // Счётчик очереди тянем только для персонала: остальным этот запрос вернул
   // бы 403 и зря шумел бы в консоли. Общий ключ с экраном модерации — после
@@ -92,18 +93,16 @@ export function HeaderActions() {
               <div className={styles.warning}>{ta('emailNotVerified')}</div>
             ) : null}
 
-            {isStaff ? (
-              <Link href="/moderation" className={styles.item} role="menuitem">
-                {ta('moderation')}
-                {queueCount > 0 ? <span className={styles.queueBadge}>{queueCount}</span> : null}
+            {/* Один список на шапку и на меню — см. staff-sections.ts.
+                Порядок и подписи обязаны совпадать: это одни и те же разделы. */}
+            {sectionsFor(user?.role).map((section) => (
+              <Link key={section.key} href={section.href} className={styles.item} role="menuitem">
+                {ta(section.key)}
+                {section.key === 'moderation' && queueCount > 0 ? (
+                  <span className={styles.queueBadge}>{queueCount}</span>
+                ) : null}
               </Link>
-            ) : null}
-
-            {user?.role === 'admin' ? (
-              <Link href="/admin" className={styles.item} role="menuitem">
-                {ta('staff')}
-              </Link>
-            ) : null}
+            ))}
 
             {user?.role === 'advertiser' ? (
               <Link href="/account/profiles" className={styles.item} role="menuitem">
