@@ -222,6 +222,7 @@ export type ServiceWhereInput = {
   position?: Prisma.IntFilter<"Service"> | number
   isActive?: Prisma.BoolFilter<"Service"> | boolean
   profiles?: Prisma.ProfileServiceListRelationFilter
+  translations?: Prisma.ServiceTranslationListRelationFilter
 }
 
 export type ServiceOrderByWithRelationInput = {
@@ -232,6 +233,7 @@ export type ServiceOrderByWithRelationInput = {
   position?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   profiles?: Prisma.ProfileServiceOrderByRelationAggregateInput
+  translations?: Prisma.ServiceTranslationOrderByRelationAggregateInput
 }
 
 export type ServiceWhereUniqueInput = Prisma.AtLeast<{
@@ -245,6 +247,7 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   position?: Prisma.IntFilter<"Service"> | number
   isActive?: Prisma.BoolFilter<"Service"> | boolean
   profiles?: Prisma.ProfileServiceListRelationFilter
+  translations?: Prisma.ServiceTranslationListRelationFilter
 }, "id" | "key">
 
 export type ServiceOrderByWithAggregationInput = {
@@ -281,6 +284,7 @@ export type ServiceCreateInput = {
   position?: number
   isActive?: boolean
   profiles?: Prisma.ProfileServiceCreateNestedManyWithoutServiceInput
+  translations?: Prisma.ServiceTranslationCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateInput = {
@@ -291,6 +295,7 @@ export type ServiceUncheckedCreateInput = {
   position?: number
   isActive?: boolean
   profiles?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutServiceInput
+  translations?: Prisma.ServiceTranslationUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUpdateInput = {
@@ -301,6 +306,7 @@ export type ServiceUpdateInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileServiceUpdateManyWithoutServiceNestedInput
+  translations?: Prisma.ServiceTranslationUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceUncheckedUpdateInput = {
@@ -311,6 +317,7 @@ export type ServiceUncheckedUpdateInput = {
   position?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profiles?: Prisma.ProfileServiceUncheckedUpdateManyWithoutServiceNestedInput
+  translations?: Prisma.ServiceTranslationUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceCreateManyInput = {
@@ -395,6 +402,20 @@ export type ServiceUpdateappliesToInput = {
   push?: $Enums.ListingKind | $Enums.ListingKind[]
 }
 
+export type ServiceCreateNestedOneWithoutTranslationsInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTranslationsInput, Prisma.ServiceUncheckedCreateWithoutTranslationsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTranslationsInput
+  connect?: Prisma.ServiceWhereUniqueInput
+}
+
+export type ServiceUpdateOneRequiredWithoutTranslationsNestedInput = {
+  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTranslationsInput, Prisma.ServiceUncheckedCreateWithoutTranslationsInput>
+  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTranslationsInput
+  upsert?: Prisma.ServiceUpsertWithoutTranslationsInput
+  connect?: Prisma.ServiceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutTranslationsInput, Prisma.ServiceUpdateWithoutTranslationsInput>, Prisma.ServiceUncheckedUpdateWithoutTranslationsInput>
+}
+
 export type ServiceCreateNestedOneWithoutProfilesInput = {
   create?: Prisma.XOR<Prisma.ServiceCreateWithoutProfilesInput, Prisma.ServiceUncheckedCreateWithoutProfilesInput>
   connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutProfilesInput
@@ -409,6 +430,62 @@ export type ServiceUpdateOneRequiredWithoutProfilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutProfilesInput, Prisma.ServiceUpdateWithoutProfilesInput>, Prisma.ServiceUncheckedUpdateWithoutProfilesInput>
 }
 
+export type ServiceCreateWithoutTranslationsInput = {
+  id?: string
+  key: string
+  group: string
+  appliesTo?: Prisma.ServiceCreateappliesToInput | $Enums.ListingKind[]
+  position?: number
+  isActive?: boolean
+  profiles?: Prisma.ProfileServiceCreateNestedManyWithoutServiceInput
+}
+
+export type ServiceUncheckedCreateWithoutTranslationsInput = {
+  id?: string
+  key: string
+  group: string
+  appliesTo?: Prisma.ServiceCreateappliesToInput | $Enums.ListingKind[]
+  position?: number
+  isActive?: boolean
+  profiles?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutServiceInput
+}
+
+export type ServiceCreateOrConnectWithoutTranslationsInput = {
+  where: Prisma.ServiceWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServiceCreateWithoutTranslationsInput, Prisma.ServiceUncheckedCreateWithoutTranslationsInput>
+}
+
+export type ServiceUpsertWithoutTranslationsInput = {
+  update: Prisma.XOR<Prisma.ServiceUpdateWithoutTranslationsInput, Prisma.ServiceUncheckedUpdateWithoutTranslationsInput>
+  create: Prisma.XOR<Prisma.ServiceCreateWithoutTranslationsInput, Prisma.ServiceUncheckedCreateWithoutTranslationsInput>
+  where?: Prisma.ServiceWhereInput
+}
+
+export type ServiceUpdateToOneWithWhereWithoutTranslationsInput = {
+  where?: Prisma.ServiceWhereInput
+  data: Prisma.XOR<Prisma.ServiceUpdateWithoutTranslationsInput, Prisma.ServiceUncheckedUpdateWithoutTranslationsInput>
+}
+
+export type ServiceUpdateWithoutTranslationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
+  appliesTo?: Prisma.ServiceUpdateappliesToInput | $Enums.ListingKind[]
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  profiles?: Prisma.ProfileServiceUpdateManyWithoutServiceNestedInput
+}
+
+export type ServiceUncheckedUpdateWithoutTranslationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
+  appliesTo?: Prisma.ServiceUpdateappliesToInput | $Enums.ListingKind[]
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  profiles?: Prisma.ProfileServiceUncheckedUpdateManyWithoutServiceNestedInput
+}
+
 export type ServiceCreateWithoutProfilesInput = {
   id?: string
   key: string
@@ -416,6 +493,7 @@ export type ServiceCreateWithoutProfilesInput = {
   appliesTo?: Prisma.ServiceCreateappliesToInput | $Enums.ListingKind[]
   position?: number
   isActive?: boolean
+  translations?: Prisma.ServiceTranslationCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceUncheckedCreateWithoutProfilesInput = {
@@ -425,6 +503,7 @@ export type ServiceUncheckedCreateWithoutProfilesInput = {
   appliesTo?: Prisma.ServiceCreateappliesToInput | $Enums.ListingKind[]
   position?: number
   isActive?: boolean
+  translations?: Prisma.ServiceTranslationUncheckedCreateNestedManyWithoutServiceInput
 }
 
 export type ServiceCreateOrConnectWithoutProfilesInput = {
@@ -450,6 +529,7 @@ export type ServiceUpdateWithoutProfilesInput = {
   appliesTo?: Prisma.ServiceUpdateappliesToInput | $Enums.ListingKind[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  translations?: Prisma.ServiceTranslationUpdateManyWithoutServiceNestedInput
 }
 
 export type ServiceUncheckedUpdateWithoutProfilesInput = {
@@ -459,6 +539,7 @@ export type ServiceUncheckedUpdateWithoutProfilesInput = {
   appliesTo?: Prisma.ServiceUpdateappliesToInput | $Enums.ListingKind[]
   position?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  translations?: Prisma.ServiceTranslationUncheckedUpdateManyWithoutServiceNestedInput
 }
 
 
@@ -468,10 +549,12 @@ export type ServiceUncheckedUpdateWithoutProfilesInput = {
 
 export type ServiceCountOutputType = {
   profiles: number
+  translations: number
 }
 
 export type ServiceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profiles?: boolean | ServiceCountOutputTypeCountProfilesArgs
+  translations?: boolean | ServiceCountOutputTypeCountTranslationsArgs
 }
 
 /**
@@ -491,6 +574,13 @@ export type ServiceCountOutputTypeCountProfilesArgs<ExtArgs extends runtime.Type
   where?: Prisma.ProfileServiceWhereInput
 }
 
+/**
+ * ServiceCountOutputType without action
+ */
+export type ServiceCountOutputTypeCountTranslationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServiceTranslationWhereInput
+}
+
 
 export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -500,6 +590,7 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   position?: boolean
   isActive?: boolean
   profiles?: boolean | Prisma.Service$profilesArgs<ExtArgs>
+  translations?: boolean | Prisma.Service$translationsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["service"]>
 
@@ -533,6 +624,7 @@ export type ServiceSelectScalar = {
 export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "group" | "appliesTo" | "position" | "isActive", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profiles?: boolean | Prisma.Service$profilesArgs<ExtArgs>
+  translations?: boolean | Prisma.Service$translationsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -542,6 +634,7 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Service"
   objects: {
     profiles: Prisma.$ProfileServicePayload<ExtArgs>[]
+    translations: Prisma.$ServiceTranslationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -948,6 +1041,7 @@ readonly fields: ServiceFieldRefs;
 export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   profiles<T extends Prisma.Service$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  translations<T extends Prisma.Service$translationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServiceTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1397,6 +1491,30 @@ export type Service$profilesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.ProfileServiceScalarFieldEnum | Prisma.ProfileServiceScalarFieldEnum[]
+}
+
+/**
+ * Service.translations
+ */
+export type Service$translationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServiceTranslation
+   */
+  select?: Prisma.ServiceTranslationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ServiceTranslation
+   */
+  omit?: Prisma.ServiceTranslationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServiceTranslationInclude<ExtArgs> | null
+  where?: Prisma.ServiceTranslationWhereInput
+  orderBy?: Prisma.ServiceTranslationOrderByWithRelationInput | Prisma.ServiceTranslationOrderByWithRelationInput[]
+  cursor?: Prisma.ServiceTranslationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServiceTranslationScalarFieldEnum | Prisma.ServiceTranslationScalarFieldEnum[]
 }
 
 /**

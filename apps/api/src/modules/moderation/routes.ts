@@ -12,6 +12,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
@@ -963,10 +964,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
+        querystring: localeQuerySchema,
         response: { 200: moderatedProfileSchema },
       },
     },
     async (request) => {
+      const { locale } = request.query;
       // Публичный маршрут отдаёт только опубликованные анкеты, поэтому
       // модератору нужен свой: проверять он должен именно то, что ещё
       // не опубликовано.
@@ -991,7 +994,11 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
             orderBy: { durationMinutes: 'asc' },
             select: { durationMinutes: true, incallCents: true, outcallCents: true },
           },
-          services: { select: { service: { select: { key: true } } } },
+          services: {
+            select: {
+              service: { select: { key: true, translations: translationSelect(locale) } },
+            },
+          },
           photos: {
             where: { deletedAt: null },
             orderBy: { position: 'asc' },
@@ -1021,7 +1028,10 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         heightCm: profile.heightCm,
         weightKg: profile.weightKg,
         languages: profile.languages,
-        serviceKeys: profile.services.map((s) => s.service.key),
+        services: profile.services.map((s) => ({
+          key: s.service.key,
+          name: localized(s.service.translations, s.service.key),
+        })),
         prices: profile.prices,
         photos: await Promise.all(
           profile.photos.map(async (photo) => ({

@@ -1,4 +1,5 @@
-import { getTranslations } from 'next-intl/server';
+import type { Locale } from '@noova/shared';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import { Logo } from '@/design-system/components/Logo';
 import { fetchServiceCatalogPublic, safely } from '@/shared/api';
@@ -24,12 +25,17 @@ const QUICK_FILTERS = [
 export async function Header() {
   // getTranslations, а не хук useTranslations: компонент асинхронный —
   // ему нужен справочник услуг с сервера, а хуки в async-компонентах нельзя.
+  const locale = await getLocale();
   const t = await getTranslations('nav');
   const tf = await getTranslations('filters');
 
   // Справочник нужен панели фильтров в момент открытия. Тянем на сервере:
   // иначе первое нажатие показало бы пустые группы услуг.
-  const catalog = await safely(fetchServiceCatalogPublic('escort'), [], 'headerCatalog');
+  const catalog = await safely(
+    fetchServiceCatalogPublic('escort', { locale: locale as Locale }),
+    [],
+    'headerCatalog',
+  );
 
   return (
     <header className={styles.header}>

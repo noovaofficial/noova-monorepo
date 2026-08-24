@@ -1,5 +1,6 @@
 import type { City, ListingKind, Money, Photo, ProfileCard, ProfileDetail } from '@noova/shared';
 import { env } from './env.js';
+import { localized } from './i18n.js';
 
 /** Публичный URL картинки собирается на отдаче — ключ в БД остаётся нейтральным
  *  к домену, чтобы переезд на другой CDN не требовал миграции данных. */
@@ -40,10 +41,23 @@ export function toPhoto(row: PhotoRow): Photo {
   };
 }
 
-type CityRow = { slug: string; name: string; countryCode: string };
+type Translations = { name: string }[];
+
+type CityRow = {
+  slug: string;
+  name: string;
+  countryCode: string;
+  translations?: Translations;
+};
 
 export function toCity(row: CityRow): City {
-  return { slug: row.slug, name: row.name, countryCode: row.countryCode };
+  // `name` в таблице — техническое имя для админки и журналов; посетителю
+  // идёт перевод на язык запроса (N-35).
+  return {
+    slug: row.slug,
+    name: localized(row.translations, row.name),
+    countryCode: row.countryCode,
+  };
 }
 
 /** Онлайн — это «был активен последние 10 минут», отдельного флага в БД нет. */
@@ -60,9 +74,9 @@ type ProfileCardRow = {
   displayName: string;
   age: number | null;
   city: CityRow;
-  district: { name: string } | null;
+  district: { name: string; translations?: Translations } | null;
   photos: PhotoRow[];
-  services?: { service: { key: string } }[];
+  services?: { service: { key: string; translations?: Translations } }[];
   fromPriceCents: number | null;
   isVerified: boolean;
   isFeatured: boolean;
@@ -78,9 +92,12 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
     displayName: row.displayName,
     age: row.age,
     city: toCity(row.city),
-    district: row.district?.name ?? null,
+    district: row.district ? localized(row.district.translations, row.district.name) : null,
     coverPhoto: cover ? toPhoto(cover) : null,
-    serviceKeys: (row.services ?? []).slice(0, 6).map((s) => s.service.key),
+    services: (row.services ?? []).slice(0, 6).map((s) => ({
+      key: s.service.key,
+      name: localized(s.service.translations, s.service.key),
+    })),
     fromPrice: toMoney(row.fromPriceCents),
     isVerified: row.isVerified,
     isFeatured: row.isFeatured,
@@ -108,13 +125,19 @@ type ProfileDetailRow = Omit<ProfileCardRow, 'services'> & {
   approxLng: number | null;
   updatedAt: Date;
   prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
-  services: { isExtra: boolean; service: { key: string; group: string } }[];
+  services: {
+    isExtra: boolean;
+    service: { key: string; group: string; translations?: Translations };
+  }[];
   verification: { reviewedAt: Date | null; status: string } | null;
   /** Только типы: значения контактов в это представление не выбираются вовсе. */
   contacts: { type: ProfileDetail['contactTypes'][number] }[];
 };
 
-export function toProfileDetail(row: ProfileDetailRow): ProfileDetail {
+export function toProfileDetail(
+  row: ProfileDetailRow,
+  groupNames?: Map<string, string>,
+): ProfileDetail {
   return {
     ...toProfileCard(row),
     status: row.status,
@@ -144,6 +167,10 @@ export function toProfileDetail(row: ProfileDetailRow): ProfileDetail {
     services: row.services.map((s) => ({
       key: s.service.key,
       group: s.service.group,
+      name: localized(s.service.translations, s.service.key),
+      // Название группы приходит отдельным справочником: связи между
+      // Service и переводом группы нет — группа хранится строкой.
+      groupName: groupNames?.get(s.service.group) ?? s.service.group,
       extra: s.isExtra,
     })),
     // Дубли убираем здесь: два номера WhatsApp дают одну строку в интерфейсе.

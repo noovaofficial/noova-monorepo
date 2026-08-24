@@ -14,7 +14,6 @@ const euro = (cents: number | null) => (cents === null ? '—' : `${Math.round(c
 
 export function ProfileReview({ profileId }: { profileId: string }) {
   const t = useTranslations('moderation');
-  const ts = useTranslations('services');
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -164,12 +163,12 @@ export function ProfileReview({ profileId }: { profileId: string }) {
           </div>
         </div>
 
-        {profile.serviceKeys.length > 0 ? (
+        {profile.services.length > 0 ? (
           <div className={styles.staffRow}>
             <div className={styles.staffMain}>
               <span className={styles.staffEmail}>{t('services')}</span>
               <span className={styles.staffMeta}>
-                {profile.serviceKeys.map((key) => ts(key)).join(', ')}
+                {profile.services.map((service) => service.name).join(', ')}
               </span>
             </div>
           </div>

@@ -15,7 +15,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 /**
  * Model ContactReveal
  * Журнал раскрытий: антифрод и статистика откликов для владелицы.
- * Чистится по сроку из documentation/planning.md — 12 месяцев.
+ * Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
  */
 export type ContactRevealModel = runtime.Types.Result.DefaultSelection<Prisma.$ContactRevealPayload>
 

@@ -1,6 +1,7 @@
 import { favoriteIdsSchema, favoriteItemSchema } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { localeQuerySchema } from '../../i18n.js';
 import { toProfileCard } from '../../mappers.js';
 import { requireSession } from '../../plugins/session.js';
 import { cardSelect } from '../profiles/routes.js';
@@ -17,7 +18,11 @@ export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/me/favorites',
     {
       ...onlyClient,
-      schema: { tags: ['favorites'], response: { 200: z.array(favoriteItemSchema) } },
+      schema: {
+        tags: ['favorites'],
+        querystring: localeQuerySchema,
+        response: { 200: z.array(favoriteItemSchema) },
+      },
     },
     async (request) => {
       const rows = await fastify.prisma.favorite.findMany({
@@ -25,7 +30,10 @@ export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
         orderBy: { createdAt: 'desc' },
         // Снятую с публикации анкету не отфильтровываем: она остаётся
         // в списке с пометкой, иначе карточка исчезает без объяснения.
-        select: { createdAt: true, profile: { select: { ...cardSelect, status: true } } },
+        select: {
+          createdAt: true,
+          profile: { select: { ...cardSelect(request.query.locale), status: true } },
+        },
       });
 
       return rows.map((row) => ({

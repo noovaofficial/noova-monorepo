@@ -16,8 +16,6 @@ type Props = {
  */
 export function ServicePicker({ catalog, selected, onChange }: Props) {
   const t = useTranslations('account');
-  const ts = useTranslations('services');
-  const tg = useTranslations('serviceGroups');
 
   const byKey = new Map(selected.map((s) => [s.key, s]));
 
@@ -40,7 +38,7 @@ export function ServicePicker({ catalog, selected, onChange }: Props) {
 
       {catalog.map((group) => (
         <div className={styles.serviceGroup} key={group.group}>
-          <span className={styles.serviceGroupTitle}>{tg(group.group)}</span>
+          <span className={styles.serviceGroupTitle}>{group.name}</span>
 
           <div className={styles.serviceGrid}>
             {group.services.map((service) => {
@@ -57,7 +55,7 @@ export function ServicePicker({ catalog, selected, onChange }: Props) {
                       checked={Boolean(picked)}
                       onChange={() => toggle(service.key)}
                     />
-                    <span className={styles.serviceName}>{ts(service.key)}</span>
+                    <span className={styles.serviceName}>{service.name}</span>
                   </label>
 
                   {picked ? (

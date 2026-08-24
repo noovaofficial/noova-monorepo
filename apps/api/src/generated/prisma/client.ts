@@ -72,10 +72,27 @@ export type AuthToken = Prisma.AuthTokenModel
  */
 export type City = Prisma.CityModel
 /**
+ * Model CityTranslation
+ * Переводы названий справочников вынесены в отдельные таблицы, а не в
+ * словари фронта: справочники редактируются из админки (N-32, N-36), и
+ * название, заведённое администратором, иначе отрисовалось бы сырым ключом.
+ * 
+ * Полнота перевода обеспечивается контрактом на записи: API не сохраняет
+ * сущность без строки на каждую локаль из LOCALES, а вложенная запись
+ * Prisma делает это одной транзакцией. На уровне БД частичный набор
+ * возможен — но появиться ему неоткуда.
+ */
+export type CityTranslation = Prisma.CityTranslationModel
+/**
  * Model District
  * 
  */
 export type District = Prisma.DistrictModel
+/**
+ * Model DistrictTranslation
+ * 
+ */
+export type DistrictTranslation = Prisma.DistrictTranslationModel
 /**
  * Model Profile
  * 
@@ -126,7 +143,7 @@ export type ProfileContact = Prisma.ProfileContactModel
 /**
  * Model ContactReveal
  * Журнал раскрытий: антифрод и статистика откликов для владелицы.
- * Чистится по сроку из documentation/planning.md — 12 месяцев.
+ * Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
  */
 export type ContactReveal = Prisma.ContactRevealModel
 /**
@@ -140,6 +157,20 @@ export type PriceSlot = Prisma.PriceSlotModel
  * человекочитаемое название в БД нельзя — оно не переводится на три языка.
  */
 export type Service = Prisma.ServiceModel
+/**
+ * Model ServiceTranslation
+ * 
+ */
+export type ServiceTranslation = Prisma.ServiceTranslationModel
+/**
+ * Model ServiceGroupTranslation
+ * Группа услуг — пока строка в `Service.group`, а не отдельная сущность:
+ * групп семь, они не растут, и вводить ради них таблицу со связью значило бы
+ * мигрировать все услуги без нужды. Переводу это не мешает — ключ здесь тот
+ * же, что в `Service.group`. Если N-36 потребует заводить группы из админки,
+ * сущность появится тогда же, и эта таблица станет её переводами.
+ */
+export type ServiceGroupTranslation = Prisma.ServiceGroupTranslationModel
 /**
  * Model ProfileService
  * 

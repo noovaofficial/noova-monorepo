@@ -1,4 +1,4 @@
-import { type ListingKind, listingKindSchema } from '@noova/shared';
+import { type ListingKind, type Locale, listingKindSchema } from '@noova/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -8,7 +8,7 @@ import { fetchProfileCount, fetchProfiles, safely } from '@/shared/api';
 import styles from './page.module.css';
 
 type Props = {
-  params: Promise<{ locale: string; kind: string }>;
+  params: Promise<{ locale: Locale; kind: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
@@ -88,11 +88,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   const [page, total] = await Promise.all([
     safely(
-      fetchProfiles({ ...query, limit: PAGE_SIZE, page: pageNumber }),
+      fetchProfiles({ ...query, limit: PAGE_SIZE, page: pageNumber }, { locale }),
       { items: [], nextCursor: null, total: null },
       'catalog',
     ),
-    safely(fetchProfileCount(query), { total: 0 }, 'catalogCount'),
+    safely(fetchProfileCount(query, { locale }), { total: 0 }, 'catalogCount'),
   ]);
 
   const nf = new Intl.NumberFormat(locale);

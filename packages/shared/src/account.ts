@@ -46,15 +46,22 @@ export const createProfileSchema = z.object({
 });
 export type CreateProfileInput = z.infer<typeof createProfileSchema>;
 
-/** Одна услуга в справочнике. Название приходит из словарей по ключу. */
+/**
+ * Одна услуга в справочнике. Название приходит из API уже на нужном языке —
+ * раньше искалось по ключу в словарях фронта, но справочник редактируется
+ * из админки, и заведённая услуга в словарь не попадёт (N-35).
+ */
 export const serviceOptionSchema = z.object({
   key: z.string(),
   group: z.string(),
+  name: z.string(),
 });
 export type ServiceOption = z.infer<typeof serviceOptionSchema>;
 
 export const serviceGroupSchema = z.object({
   group: z.string(),
+  /** Название группы на языке запроса. */
+  name: z.string(),
   services: z.array(serviceOptionSchema),
 });
 export type ServiceGroup = z.infer<typeof serviceGroupSchema>;

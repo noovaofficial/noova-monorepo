@@ -47,8 +47,6 @@ type Props = {
  */
 export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', targetPath }: Props) {
   const t = useTranslations('filters');
-  const tServices = useTranslations('services');
-  const tGroups = useTranslations('serviceGroups');
   const tHair = useTranslations('hairColor');
   const tEye = useTranslations('eyeColor');
   const tBust = useTranslations('breastSize');
@@ -275,10 +273,12 @@ export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', ta
             {catalog.map((group) => (
               <ChipGroup
                 key={group.group}
-                title={tGroups.has(group.group) ? tGroups(group.group) : group.group}
+                title={group.name}
                 options={group.services.map((service) => service.key)}
                 selected={selected('services')}
-                translate={(key) => (tServices.has(key) ? tServices(key) : key)}
+                translate={(key) =>
+                  group.services.find((service) => service.key === key)?.name ?? key
+                }
                 onToggle={(value) => toggle('services', value)}
                 clearLabel={t('clearGroup')}
               />

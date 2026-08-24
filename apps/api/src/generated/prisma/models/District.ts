@@ -230,6 +230,7 @@ export type DistrictWhereInput = {
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
+  translations?: Prisma.DistrictTranslationListRelationFilter
 }
 
 export type DistrictOrderByWithRelationInput = {
@@ -241,6 +242,7 @@ export type DistrictOrderByWithRelationInput = {
   lng?: Prisma.SortOrderInput | Prisma.SortOrder
   city?: Prisma.CityOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
+  translations?: Prisma.DistrictTranslationOrderByRelationAggregateInput
 }
 
 export type DistrictWhereUniqueInput = Prisma.AtLeast<{
@@ -256,6 +258,7 @@ export type DistrictWhereUniqueInput = Prisma.AtLeast<{
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
+  translations?: Prisma.DistrictTranslationListRelationFilter
 }, "id" | "cityId_slug">
 
 export type DistrictOrderByWithAggregationInput = {
@@ -292,6 +295,7 @@ export type DistrictCreateInput = {
   lng?: number | null
   city: Prisma.CityCreateNestedOneWithoutDistrictsInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
+  translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictUncheckedCreateInput = {
@@ -302,6 +306,7 @@ export type DistrictUncheckedCreateInput = {
   lat?: number | null
   lng?: number | null
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
+  translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictUpdateInput = {
@@ -312,6 +317,7 @@ export type DistrictUpdateInput = {
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
+  translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictUncheckedUpdateInput = {
@@ -322,6 +328,7 @@ export type DistrictUncheckedUpdateInput = {
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
+  translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictCreateManyInput = {
@@ -402,6 +409,11 @@ export type DistrictSumOrderByAggregateInput = {
   lng?: Prisma.SortOrder
 }
 
+export type DistrictScalarRelationFilter = {
+  is?: Prisma.DistrictWhereInput
+  isNot?: Prisma.DistrictWhereInput
+}
+
 export type DistrictNullableScalarRelationFilter = {
   is?: Prisma.DistrictWhereInput | null
   isNot?: Prisma.DistrictWhereInput | null
@@ -449,6 +461,20 @@ export type DistrictUncheckedUpdateManyWithoutCityNestedInput = {
   deleteMany?: Prisma.DistrictScalarWhereInput | Prisma.DistrictScalarWhereInput[]
 }
 
+export type DistrictCreateNestedOneWithoutTranslationsInput = {
+  create?: Prisma.XOR<Prisma.DistrictCreateWithoutTranslationsInput, Prisma.DistrictUncheckedCreateWithoutTranslationsInput>
+  connectOrCreate?: Prisma.DistrictCreateOrConnectWithoutTranslationsInput
+  connect?: Prisma.DistrictWhereUniqueInput
+}
+
+export type DistrictUpdateOneRequiredWithoutTranslationsNestedInput = {
+  create?: Prisma.XOR<Prisma.DistrictCreateWithoutTranslationsInput, Prisma.DistrictUncheckedCreateWithoutTranslationsInput>
+  connectOrCreate?: Prisma.DistrictCreateOrConnectWithoutTranslationsInput
+  upsert?: Prisma.DistrictUpsertWithoutTranslationsInput
+  connect?: Prisma.DistrictWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DistrictUpdateToOneWithWhereWithoutTranslationsInput, Prisma.DistrictUpdateWithoutTranslationsInput>, Prisma.DistrictUncheckedUpdateWithoutTranslationsInput>
+}
+
 export type DistrictCreateNestedOneWithoutProfilesInput = {
   create?: Prisma.XOR<Prisma.DistrictCreateWithoutProfilesInput, Prisma.DistrictUncheckedCreateWithoutProfilesInput>
   connectOrCreate?: Prisma.DistrictCreateOrConnectWithoutProfilesInput
@@ -472,6 +498,7 @@ export type DistrictCreateWithoutCityInput = {
   lat?: number | null
   lng?: number | null
   profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
+  translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictUncheckedCreateWithoutCityInput = {
@@ -481,6 +508,7 @@ export type DistrictUncheckedCreateWithoutCityInput = {
   lat?: number | null
   lng?: number | null
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
+  translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictCreateOrConnectWithoutCityInput = {
@@ -521,6 +549,62 @@ export type DistrictScalarWhereInput = {
   lng?: Prisma.FloatNullableFilter<"District"> | number | null
 }
 
+export type DistrictCreateWithoutTranslationsInput = {
+  id?: string
+  slug: string
+  name: string
+  lat?: number | null
+  lng?: number | null
+  city: Prisma.CityCreateNestedOneWithoutDistrictsInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutDistrictInput
+}
+
+export type DistrictUncheckedCreateWithoutTranslationsInput = {
+  id?: string
+  slug: string
+  name: string
+  cityId: string
+  lat?: number | null
+  lng?: number | null
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutDistrictInput
+}
+
+export type DistrictCreateOrConnectWithoutTranslationsInput = {
+  where: Prisma.DistrictWhereUniqueInput
+  create: Prisma.XOR<Prisma.DistrictCreateWithoutTranslationsInput, Prisma.DistrictUncheckedCreateWithoutTranslationsInput>
+}
+
+export type DistrictUpsertWithoutTranslationsInput = {
+  update: Prisma.XOR<Prisma.DistrictUpdateWithoutTranslationsInput, Prisma.DistrictUncheckedUpdateWithoutTranslationsInput>
+  create: Prisma.XOR<Prisma.DistrictCreateWithoutTranslationsInput, Prisma.DistrictUncheckedCreateWithoutTranslationsInput>
+  where?: Prisma.DistrictWhereInput
+}
+
+export type DistrictUpdateToOneWithWhereWithoutTranslationsInput = {
+  where?: Prisma.DistrictWhereInput
+  data: Prisma.XOR<Prisma.DistrictUpdateWithoutTranslationsInput, Prisma.DistrictUncheckedUpdateWithoutTranslationsInput>
+}
+
+export type DistrictUpdateWithoutTranslationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
+}
+
+export type DistrictUncheckedUpdateWithoutTranslationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
+}
+
 export type DistrictCreateWithoutProfilesInput = {
   id?: string
   slug: string
@@ -528,6 +612,7 @@ export type DistrictCreateWithoutProfilesInput = {
   lat?: number | null
   lng?: number | null
   city: Prisma.CityCreateNestedOneWithoutDistrictsInput
+  translations?: Prisma.DistrictTranslationCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictUncheckedCreateWithoutProfilesInput = {
@@ -537,6 +622,7 @@ export type DistrictUncheckedCreateWithoutProfilesInput = {
   cityId: string
   lat?: number | null
   lng?: number | null
+  translations?: Prisma.DistrictTranslationUncheckedCreateNestedManyWithoutDistrictInput
 }
 
 export type DistrictCreateOrConnectWithoutProfilesInput = {
@@ -562,6 +648,7 @@ export type DistrictUpdateWithoutProfilesInput = {
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   city?: Prisma.CityUpdateOneRequiredWithoutDistrictsNestedInput
+  translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictUncheckedUpdateWithoutProfilesInput = {
@@ -571,6 +658,7 @@ export type DistrictUncheckedUpdateWithoutProfilesInput = {
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictCreateManyCityInput = {
@@ -588,6 +676,7 @@ export type DistrictUpdateWithoutCityInput = {
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   profiles?: Prisma.ProfileUpdateManyWithoutDistrictNestedInput
+  translations?: Prisma.DistrictTranslationUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictUncheckedUpdateWithoutCityInput = {
@@ -597,6 +686,7 @@ export type DistrictUncheckedUpdateWithoutCityInput = {
   lat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   lng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutDistrictNestedInput
+  translations?: Prisma.DistrictTranslationUncheckedUpdateManyWithoutDistrictNestedInput
 }
 
 export type DistrictUncheckedUpdateManyWithoutCityInput = {
@@ -614,10 +704,12 @@ export type DistrictUncheckedUpdateManyWithoutCityInput = {
 
 export type DistrictCountOutputType = {
   profiles: number
+  translations: number
 }
 
 export type DistrictCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profiles?: boolean | DistrictCountOutputTypeCountProfilesArgs
+  translations?: boolean | DistrictCountOutputTypeCountTranslationsArgs
 }
 
 /**
@@ -637,6 +729,13 @@ export type DistrictCountOutputTypeCountProfilesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.ProfileWhereInput
 }
 
+/**
+ * DistrictCountOutputType without action
+ */
+export type DistrictCountOutputTypeCountTranslationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DistrictTranslationWhereInput
+}
+
 
 export type DistrictSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -647,6 +746,7 @@ export type DistrictSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   lng?: boolean
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.District$profilesArgs<ExtArgs>
+  translations?: boolean | Prisma.District$translationsArgs<ExtArgs>
   _count?: boolean | Prisma.DistrictCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["district"]>
 
@@ -683,6 +783,7 @@ export type DistrictOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type DistrictInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.District$profilesArgs<ExtArgs>
+  translations?: boolean | Prisma.District$translationsArgs<ExtArgs>
   _count?: boolean | Prisma.DistrictCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DistrictIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -697,6 +798,7 @@ export type $DistrictPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     city: Prisma.$CityPayload<ExtArgs>
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
+    translations: Prisma.$DistrictTranslationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1108,6 +1210,7 @@ export interface Prisma__DistrictClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   city<T extends Prisma.CityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CityDefaultArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.District$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.District$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  translations<T extends Prisma.District$translationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.District$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DistrictTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1565,6 +1668,30 @@ export type District$profilesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ProfileScalarFieldEnum | Prisma.ProfileScalarFieldEnum[]
+}
+
+/**
+ * District.translations
+ */
+export type District$translationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DistrictTranslation
+   */
+  select?: Prisma.DistrictTranslationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DistrictTranslation
+   */
+  omit?: Prisma.DistrictTranslationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DistrictTranslationInclude<ExtArgs> | null
+  where?: Prisma.DistrictTranslationWhereInput
+  orderBy?: Prisma.DistrictTranslationOrderByWithRelationInput | Prisma.DistrictTranslationOrderByWithRelationInput[]
+  cursor?: Prisma.DistrictTranslationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DistrictTranslationScalarFieldEnum | Prisma.DistrictTranslationScalarFieldEnum[]
 }
 
 /**

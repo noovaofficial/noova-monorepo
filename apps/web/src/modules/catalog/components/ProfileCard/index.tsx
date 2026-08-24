@@ -25,7 +25,6 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
   const t = useTranslations('card');
   // Ключи услуг переводятся здесь: в БД лежит только ключ, иначе название
   // не показать на трёх языках.
-  const ts = useTranslations('services');
   const price = formatMoney(profile.fromPrice, locale);
 
   const cardClass = unavailable ? `${styles.card} ${styles.muted}` : styles.card;
@@ -80,8 +79,8 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
 
       <div className={styles.body}>
         <div className={styles.tags}>
-          {profile.serviceKeys.slice(0, 3).map((key) => (
-            <Tag key={key}>{ts.has(key) ? ts(key) : key}</Tag>
+          {profile.services.slice(0, 3).map((service) => (
+            <Tag key={service.key}>{service.name}</Tag>
           ))}
         </div>
         <div className={styles.foot}>

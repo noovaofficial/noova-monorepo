@@ -56,7 +56,9 @@ export const ModelName = {
   ModerationAction: 'ModerationAction',
   AuthToken: 'AuthToken',
   City: 'City',
+  CityTranslation: 'CityTranslation',
   District: 'District',
+  DistrictTranslation: 'DistrictTranslation',
   Profile: 'Profile',
   Photo: 'Photo',
   ProfileReport: 'ProfileReport',
@@ -67,6 +69,8 @@ export const ModelName = {
   ContactReveal: 'ContactReveal',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
+  ServiceTranslation: 'ServiceTranslation',
+  ServiceGroupTranslation: 'ServiceGroupTranslation',
   ProfileService: 'ProfileService',
   VerificationCase: 'VerificationCase',
   PromoSlot: 'PromoSlot'
@@ -162,6 +166,16 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const CityTranslationScalarFieldEnum = {
+  id: 'id',
+  cityId: 'cityId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type CityTranslationScalarFieldEnum = (typeof CityTranslationScalarFieldEnum)[keyof typeof CityTranslationScalarFieldEnum]
+
+
 export const DistrictScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -172,6 +186,16 @@ export const DistrictScalarFieldEnum = {
 } as const
 
 export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typeof DistrictScalarFieldEnum]
+
+
+export const DistrictTranslationScalarFieldEnum = {
+  id: 'id',
+  districtId: 'districtId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type DistrictTranslationScalarFieldEnum = (typeof DistrictTranslationScalarFieldEnum)[keyof typeof DistrictTranslationScalarFieldEnum]
 
 
 export const ProfileScalarFieldEnum = {
@@ -329,6 +353,26 @@ export const ServiceScalarFieldEnum = {
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
+
+
+export const ServiceTranslationScalarFieldEnum = {
+  id: 'id',
+  serviceId: 'serviceId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type ServiceTranslationScalarFieldEnum = (typeof ServiceTranslationScalarFieldEnum)[keyof typeof ServiceTranslationScalarFieldEnum]
+
+
+export const ServiceGroupTranslationScalarFieldEnum = {
+  id: 'id',
+  groupKey: 'groupKey',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type ServiceGroupTranslationScalarFieldEnum = (typeof ServiceGroupTranslationScalarFieldEnum)[keyof typeof ServiceGroupTranslationScalarFieldEnum]
 
 
 export const ProfileServiceScalarFieldEnum = {

@@ -21,13 +21,13 @@ import styles from './page.module.css';
 export const revalidate = 600;
 export const dynamicParams = true;
 
-type Props = { params: Promise<{ locale: string; slug: string }> };
+type Props = { params: Promise<{ locale: Locale; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
 
   try {
-    const profile = await fetchProfile(slug, { revalidate });
+    const profile = await fetchProfile(slug, { revalidate, locale });
     const tm = await getTranslations({ locale, namespace: 'meta' });
     const title = tm('profileTitle', { name: profile.displayName, city: profile.city.name });
 
@@ -72,7 +72,7 @@ export default async function ProfilePage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const cache = { revalidate };
+  const cache = { revalidate, locale };
 
   // notFound() бросает служебную ошибку Next, которую нельзя вызывать внутри
   // колбэка .catch() — там сигнал теряется и страница отдаётся с кодом 200.
@@ -87,8 +87,6 @@ export default async function ProfilePage({ params }: Props) {
     getTranslations({ locale, namespace: 'profile' }),
   ]);
   const tc = await getTranslations({ locale, namespace: 'card' });
-  const tsv = await getTranslations({ locale, namespace: 'services' });
-  const tsg = await getTranslations({ locale, namespace: 'serviceGroups' });
   // Значения внешности лежат в БД ключами — подписи берём из словарей.
   const tHair = await getTranslations({ locale, namespace: 'hairColor' });
   const tEye = await getTranslations({ locale, namespace: 'eyeColor' });
@@ -101,11 +99,13 @@ export default async function ProfilePage({ params }: Props) {
    * появлению: так порядок групп на странице совпадает с формой редактирования
    * и не зависит от того, что именно выбрала владелица.
    */
-  const serviceGroups: { name: string; items: typeof profile.services }[] = [];
+  // Названия групп и услуг приходят из API уже переведёнными (N-35): раньше
+  // искались по ключу в словарях, но справочник редактируется из админки.
+  const serviceGroups: { name: string; title: string; items: typeof profile.services }[] = [];
   for (const service of profile.services) {
     let bucket = serviceGroups.find((group) => group.name === service.group);
     if (!bucket) {
-      bucket = { name: service.group, items: [] };
+      bucket = { name: service.group, title: service.groupName, items: [] };
       serviceGroups.push(bucket);
     }
     bucket.items.push(service);
@@ -241,14 +241,12 @@ export default async function ProfilePage({ params }: Props) {
             <Section title={t('services')}>
               {serviceGroups.map((group) => (
                 <div className={styles.serviceGroup} key={group.name}>
-                  <div className={styles.serviceGroupTitle}>
-                    {tsg.has(group.name) ? tsg(group.name) : group.name}
-                  </div>
+                  <div className={styles.serviceGroupTitle}>{group.title}</div>
                   <div className={styles.services}>
                     {group.items.map((service) => (
                       <span key={service.key} className={styles.service}>
                         <span className={styles.check}>✓</span>
-                        {tsv.has(service.key) ? tsv(service.key) : service.key}
+                        {service.name}
                         {service.extra ? <span className={styles.extra}>{t('extra')}</span> : null}
                       </span>
                     ))}

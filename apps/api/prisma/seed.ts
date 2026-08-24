@@ -31,7 +31,6 @@ const BERLIN: CitySeed =
   (() => {
     throw new Error('В справочнике prisma/locations.ts нет Берлина.');
   })();
-const DISTRICTS = BERLIN.districts.map((d) => [d.slug, d.name, d.lat, d.lng] as const);
 
 const NAMES = [
   'Alisa',
@@ -154,27 +153,21 @@ async function main() {
     },
   });
 
-  const berlin = await prisma.city.upsert({
-    where: { slug: 'berlin' },
-    update: {},
-    create: {
-      slug: BERLIN.slug,
-      name: BERLIN.name,
-      countryCode: BERLIN.countryCode,
-      lat: BERLIN.lat,
-      lng: BERLIN.lng,
-    },
-  });
+  // Города, районы и услуги демо-сид больше не заводит: это справочники,
+  // и заводить их в двух местах значит однажды получить разные названия
+  // на стенде и на проде. Здесь только читаем — и падаем, если справочник
+  // не накачен, вместо того чтобы молча создать «свой» Берлин без переводов.
+  const berlin = await prisma.city.findUnique({ where: { slug: BERLIN.slug } });
+  if (!berlin) {
+    console.error('Справочник пуст. Сначала: pnpm --filter @noova/api db:seed:reference');
+    process.exit(1);
+  }
 
-  const districts = await Promise.all(
-    DISTRICTS.map(([slug, name, lat, lng]) =>
-      prisma.district.upsert({
-        where: { cityId_slug: { cityId: berlin.id, slug } },
-        update: { name, lat, lng },
-        create: { slug, name, lat, lng, cityId: berlin.id },
-      }),
-    ),
-  );
+  const districts = await prisma.district.findMany({ where: { cityId: berlin.id } });
+  if (districts.length === 0) {
+    console.error(`У города ${BERLIN.slug} нет районов. Сначала: db:seed:reference`);
+    process.exit(1);
+  }
 
   const services = await prisma.service.findMany({ select: { id: true, key: true } });
   if (services.length === 0) {

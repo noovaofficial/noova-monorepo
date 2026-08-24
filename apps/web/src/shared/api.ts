@@ -1,4 +1,7 @@
 import {
+  type CityOption,
+  cityOptionSchema,
+  type Locale,
   type Page,
   type ProfileCard,
   type ProfileComment,
@@ -10,6 +13,8 @@ import {
   profileCommentSchema,
   profileDetailSchema,
   promoSlotSchema,
+  type ServiceGroup,
+  serviceGroupSchema,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -53,6 +58,12 @@ export class ApiError extends Error {
 }
 
 type FetchOptions = {
+  /**
+   * Язык названий справочников: города, районы, услуги приходят из API уже
+   * переведёнными (N-35). Параметром запроса, а не заголовком — иначе ISR
+   * сложил бы все языки в одну запись кэша, и посетитель получал бы чужой.
+   */
+  locale?: Locale;
   /** Секунды жизни кэша Next. 0 — всегда свежие данные. */
   revalidate?: number;
   tags?: string[];
@@ -64,7 +75,10 @@ async function request<T>(
   schema: z.ZodType<T>,
   options: FetchOptions = {},
 ): Promise<T> {
-  const url = `${baseUrl()}/api/v1${path}`;
+  const withLocale = options.locale
+    ? `${path}${path.includes('?') ? '&' : '?'}locale=${options.locale}`
+    : path;
+  const url = `${baseUrl()}/api/v1${withLocale}`;
   const response = await fetch(url, {
     headers: { accept: 'application/json', ...internalHeaders() },
     signal: options.signal,
@@ -174,17 +188,23 @@ export async function safely<T>(promise: Promise<T>, fallback: T, label: string)
 export function fetchServiceCatalogPublic(
   kind: 'escort' | 'massage',
   options?: FetchOptions,
-): Promise<{ group: string; services: { key: string; group: string }[] }[]> {
-  return request(
-    `/services?kind=${kind}`,
-    z.array(
-      z.object({
-        group: z.string(),
-        services: z.array(z.object({ key: z.string(), group: z.string() })),
-      }),
-    ),
-    options,
-  );
+): Promise<ServiceGroup[]> {
+  return request(`/services?kind=${kind}`, z.array(serviceGroupSchema), options);
+}
+
+/**
+ * Названия городов и районов на языке запроса. Нужны там, где город
+ * упоминается текстом — заголовок главной, метаданные, — а не приходит
+ * вместе с анкетой.
+ */
+export function fetchCities(options?: FetchOptions): Promise<CityOption[]> {
+  return request('/cities', z.array(cityOptionSchema), options);
+}
+
+/** Название одного города; если справочник недоступен — сам слуг. */
+export async function fetchCityName(slug: string, options?: FetchOptions): Promise<string> {
+  const cities = await safely(fetchCities(options), [], 'cities');
+  return cities.find((city) => city.slug === slug)?.name ?? slug;
 }
 
 export function fetchPromo(city?: string, options?: FetchOptions): Promise<PromoSlot[]> {

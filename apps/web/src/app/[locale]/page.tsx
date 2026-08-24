@@ -5,7 +5,7 @@ import { Button } from '@/design-system/components/Button';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
 import { PromoSlider } from '@/modules/catalog/components/PromoSlider';
 import { SectionHead } from '@/modules/catalog/components/SectionHead';
-import { fetchProfileCount, fetchProfiles, fetchPromo, safely } from '@/shared/api';
+import { fetchCityName, fetchProfileCount, fetchProfiles, fetchPromo, safely } from '@/shared/api';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './page.module.css';
 
@@ -14,16 +14,15 @@ import styles from './page.module.css';
 export const revalidate = 300;
 
 const DEFAULT_CITY = 'berlin';
-const DEFAULT_CITY_NAME = 'Berlin';
 
-type Props = { params: Promise<{ locale: string }> };
+type Props = { params: Promise<{ locale: Locale }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const tm = await getTranslations({ locale, namespace: 'meta' });
 
   return {
-    title: tm('homeTitle', { city: DEFAULT_CITY_NAME }),
+    title: tm('homeTitle', { city: await fetchCityName(DEFAULT_CITY, { locale }) }),
     description: tm('homeDescription'),
     alternates: {
       canonical: `/${locale}`,
@@ -42,11 +41,16 @@ export default async function HomePage({ params }: Props) {
   // Параллельно: пять независимых запросов, ждать их последовательно незачем.
   // revalidate передаём явно: Next берёт минимум из fetch-уровней, и без этого
   // дефолтные 60с молча переопределили бы объявленные на странице 300.
-  const cache = { revalidate };
+  // Локаль в кэш-ключ входит вместе с адресом: названия справочников
+  // приходят из API переведёнными, и без неё ISR отдал бы чужой язык.
+  const cache = { revalidate, locale };
 
   const emptyPage = { items: [], nextCursor: null, total: null };
 
-  const [promo, escorts, escortCount, massage, massageCount] = await Promise.all([
+  const [cityName, promo, escorts, escortCount, massage, massageCount] = await Promise.all([
+    // Название города — из справочника, а не константой в коде: города
+    // переводятся, и «Berlin» на русской странице читался бы как недоделка.
+    fetchCityName(DEFAULT_CITY, cache),
     safely(fetchPromo(DEFAULT_CITY, cache), [], 'promo'),
     safely(
       fetchProfiles({ kind: 'escort', city: DEFAULT_CITY, limit: 20 }, cache),
@@ -75,13 +79,13 @@ export default async function HomePage({ params }: Props) {
   return (
     <>
       <section className={styles.section}>
-        <h1 className="visually-hidden">{th('escortSection', { city: DEFAULT_CITY_NAME })}</h1>
+        <h1 className="visually-hidden">{th('escortSection', { city: cityName })}</h1>
         <PromoSlider slots={promo} />
       </section>
 
       <section className={styles.section}>
         <SectionHead
-          title={th('escortSection', { city: DEFAULT_CITY_NAME })}
+          title={th('escortSection', { city: cityName })}
           count={th('total', { count: nf.format(escortCount.total) })}
           moreHref={`/catalog/escort?city=${DEFAULT_CITY}`}
           moreLabel={th('showAll')}
@@ -100,7 +104,7 @@ export default async function HomePage({ params }: Props) {
 
       <section className={styles.section}>
         <SectionHead
-          title={th('massageSection', { city: DEFAULT_CITY_NAME })}
+          title={th('massageSection', { city: cityName })}
           count={th('total', { count: nf.format(massageCount.total) })}
           moreHref={`/catalog/massage?city=${DEFAULT_CITY}`}
           moreLabel={th('showAll')}

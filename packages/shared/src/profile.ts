@@ -63,6 +63,9 @@ export type PriceSlot = z.infer<typeof priceSlotSchema>;
 export const serviceSchema = z.object({
   key: z.string(),
   group: z.string(),
+  /** Названия на языке запроса — см. serviceOptionSchema. */
+  name: z.string(),
+  groupName: z.string(),
   extra: z.boolean().default(false),
 });
 export type Service = z.infer<typeof serviceSchema>;
@@ -139,7 +142,11 @@ export const profileCardSchema = z.object({
    * свободные теги — от них отказались: написанные руками, они расходятся
    * в формулировках, не переводятся и не годятся для фильтров.
    */
-  serviceKeys: z.array(z.string()).max(6).default([]),
+  /** До шести услуг тегами на карточке: ключ для верстки, название для показа. */
+  services: z
+    .array(z.object({ key: z.string(), name: z.string() }))
+    .max(6)
+    .default([]),
   fromPrice: moneySchema.nullable(),
   isVerified: z.boolean(),
   isFeatured: z.boolean(),

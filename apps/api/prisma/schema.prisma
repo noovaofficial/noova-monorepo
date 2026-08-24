@@ -143,14 +143,14 @@ model User {
   // Подтверждение совершеннолетия самого аккаунта, до анкет.
   isAdult      Boolean  @default(false)
 
-  emailVerifiedAt DateTime?
-  lastLoginAt     DateTime?
+  emailVerifiedAt     DateTime?
+  lastLoginAt         DateTime?
   /// Заполняется только для role = advertiser.
-  advertiserKind  AdvertiserKind?
+  advertiserKind      AdvertiserKind?
   /// Язык интерфейса на момент регистрации — на нём приходят письма.
-  locale          String          @default("de")
+  locale              String          @default("de")
   // Бан гасит все сессии; вход отклоняется до снятия.
-  bannedAt        DateTime?
+  bannedAt            DateTime?
   /**
    * Запрошено удаление учётной записи. Не мгновенное: анкеты сразу уходят
    * из каталога, а физическое удаление происходит по истечении отсрочки
@@ -162,23 +162,23 @@ model User {
   /// Причина блокировки. Обязательна вместе с `bannedAt`: блокировка без
   /// объяснения не оставляет человеку способа исправиться и превращает
   /// модерацию в произвол. Показывается ему же при попытке входа.
-  banReason       String?
+  banReason           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profiles         Profile[]
-  clientProfile    ClientProfile?
-  authTokens       AuthToken[]
-  favorites        Favorite[]
-  comments         ProfileComment[]
-  commentReports   CommentReport[]
-  profileReports   ProfileReport[]
+  profiles          Profile[]
+  clientProfile     ClientProfile?
+  authTokens        AuthToken[]
+  favorites         Favorite[]
+  comments          ProfileComment[]
+  commentReports    CommentReport[]
+  profileReports    ProfileReport[]
   moderationActions ModerationAction[] @relation("moderatorActions")
-  createdStaff     User[]             @relation("staffCreator")
+  createdStaff      User[]             @relation("staffCreator")
   /// Кто завёл эту учётку. Заполняется только для модераторов и админов.
-  createdById      String?
-  createdBy        User?              @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById       String?
+  createdBy         User?              @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
 }
@@ -189,8 +189,8 @@ model ClientProfile {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  nickname String  @unique
-  name     String?
+  nickname  String  @unique
+  name      String?
   /// Год рождения, а не возраст: возраст протухает и требует пересчёта.
   birthYear Int?
   gender    Gender?
@@ -246,10 +246,29 @@ model City {
   lng         Float?
   createdAt   DateTime @default(now())
 
-  districts District[]
-  profiles  Profile[]
+  districts    District[]
+  profiles     Profile[]
+  translations CityTranslation[]
 
   @@index([countryCode])
+}
+
+/// Переводы названий справочников вынесены в отдельные таблицы, а не в
+/// словари фронта: справочники редактируются из админки (N-32, N-36), и
+/// название, заведённое администратором, иначе отрисовалось бы сырым ключом.
+///
+/// Полнота перевода обеспечивается контрактом на записи: API не сохраняет
+/// сущность без строки на каждую локаль из LOCALES, а вложенная запись
+/// Prisma делает это одной транзакцией. На уровне БД частичный набор
+/// возможен — но появиться ему неоткуда.
+model CityTranslation {
+  id     String @id @default(cuid())
+  cityId String
+  city   City   @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  locale String @db.VarChar(5)
+  name   String
+
+  @@unique([cityId, locale])
 }
 
 model District {
@@ -267,9 +286,20 @@ model District {
   lat Float?
   lng Float?
 
-  profiles Profile[]
+  profiles     Profile[]
+  translations DistrictTranslation[]
 
   @@unique([cityId, slug])
+}
+
+model DistrictTranslation {
+  id         String   @id @default(cuid())
+  districtId String
+  district   District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  locale     String   @db.VarChar(5)
+  name       String
+
+  @@unique([districtId, locale])
 }
 
 model Profile {
@@ -291,8 +321,8 @@ model Profile {
   /// Координаты **всегда огрублены до узла сетки** (`snapLocation`, ~1 км).
   /// Владелица может поставить точку сама, но точнее ячейки сетки в базу
   /// ничего не попадает: соседние адреса внутри ячейки неразличимы.
-  approxLat Float?
-  approxLng Float?
+  approxLat         Float?
+  approxLng         Float?
   /// Точку поставила владелица, а не вывели из района. Нужно, чтобы смена
   /// района не затирала выбранное ею место.
   hasManualLocation Boolean @default(false)
@@ -304,15 +334,15 @@ model Profile {
   lastSeenAt     DateTime?
   publishedAt    DateTime?
 
-  age         Int?
-  heightCm    Int?
-  weightKg    Int?
-  languages   String[] @default([])
+  age            Int?
+  heightCm       Int?
+  weightKg       Int?
+  languages      String[]        @default([])
   /// НЕ ИСПОЛЬЗУЕТСЯ. Свободная строка о происхождении — то самое, от чего
   /// ушли в пользу самодекларируемого `appearanceType`: происхождение
   /// относится к особой категории по ст. 9 GDPR. Из API и интерфейса убрано;
   /// колонку снести отдельной миграцией, убедившись, что данных в ней нет.
-  nationality String?
+  nationality    String?
   hairColor      HairColor?
   eyeColor       EyeColor?
   breastSize     BreastSize?
@@ -373,7 +403,7 @@ model Photo {
   rejectedReason String?
   /// Мягкое удаление: ошибочное удаление владельцем обратимо, стирание из
   /// хранилища — нет. Физически файлы убирает отдельная фоновая чистка.
-  deletedAt DateTime?
+  deletedAt      DateTime?
 
   createdAt DateTime @default(now())
 
@@ -399,9 +429,9 @@ enum ProfileReportReason {
 /// сообщения не получить. Спам сдерживается лимитом на IP и журналом, как
 /// в N-08. Жалоба никогда не снимает анкету сама — решает человек.
 model ProfileReport {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   profileId String
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   /// Заполнен, только если жаловался вошедший пользователь.
   reporterId String?
@@ -464,15 +494,15 @@ model ProfileComment {
 /// Жалоба на комментарий. Владелец анкеты не отвечает публично (решение 3):
 /// вместо ответа — жалоба, которая попадает в общую очередь модерации.
 model CommentReport {
-  id        String         @id @default(cuid())
-  commentId String
-  comment   ProfileComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  id         String         @id @default(cuid())
+  commentId  String
+  comment    ProfileComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// Жалобу подаёт владелец анкеты; допускаем и жалобы других пользователей.
   reporterId String
-  reporter   User          @relation(fields: [reporterId], references: [id], onDelete: Cascade)
-  reason     String        @db.VarChar(1000)
+  reporter   User           @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     String         @db.VarChar(1000)
   resolvedAt DateTime?
-  createdAt  DateTime      @default(now())
+  createdAt  DateTime       @default(now())
 
   /// Один заявитель — одна жалоба на комментарий: иначе очередь забивается повторами.
   @@unique([commentId, reporterId])
@@ -548,17 +578,42 @@ model PriceSlot {
 /// Справочник услуг. Ключи неизменяемы и переводятся на фронте: хранить
 /// человекочитаемое название в БД нельзя — оно не переводится на три языка.
 model Service {
-  id       String        @id @default(cuid())
-  key      String        @unique
-  group    String
+  id        String        @id @default(cuid())
+  key       String        @unique
+  group     String
   /// Для каких видов анкет услуга предлагается. Пустой массив — для всех.
   appliesTo ListingKind[] @default([])
-  position Int           @default(0)
-  isActive Boolean       @default(true)
+  position  Int           @default(0)
+  isActive  Boolean       @default(true)
 
-  profiles ProfileService[]
+  profiles     ProfileService[]
+  translations ServiceTranslation[]
 
   @@index([group, position])
+}
+
+model ServiceTranslation {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  locale    String  @db.VarChar(5)
+  name      String
+
+  @@unique([serviceId, locale])
+}
+
+/// Группа услуг — пока строка в `Service.group`, а не отдельная сущность:
+/// групп семь, они не растут, и вводить ради них таблицу со связью значило бы
+/// мигрировать все услуги без нужды. Переводу это не мешает — ключ здесь тот
+/// же, что в `Service.group`. Если N-36 потребует заводить группы из админки,
+/// сущность появится тогда же, и эта таблица станет её переводами.
+model ServiceGroupTranslation {
+  id       String @id @default(cuid())
+  groupKey String
+  locale   String @db.VarChar(5)
+  name     String
+
+  @@unique([groupKey, locale])
 }
 
 model ProfileService {
@@ -574,18 +629,18 @@ model ProfileService {
 /// Документы верификации здесь не хранятся — только результат проверки и ссылка
 /// на кейс у провайдера. Сканы паспортов не должны попадать в основную БД.
 model VerificationCase {
-  id                 String             @id @default(cuid())
-  profileId          String             @unique
-  profile            Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  status             VerificationStatus @default(none)
-  provider           String?
-  providerCaseId     String?
-  ageConfirmed       Boolean            @default(false)
-  identityConfirmed  Boolean            @default(false)
-  reviewedByUserId   String?
-  rejectionReason    String?
-  submittedAt        DateTime?
-  reviewedAt         DateTime?
+  id                String             @id @default(cuid())
+  profileId         String             @unique
+  profile           Profile            @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  status            VerificationStatus @default(none)
+  provider          String?
+  providerCaseId    String?
+  ageConfirmed      Boolean            @default(false)
+  identityConfirmed Boolean            @default(false)
+  reviewedByUserId  String?
+  rejectionReason   String?
+  submittedAt       DateTime?
+  reviewedAt        DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -594,17 +649,17 @@ model VerificationCase {
 }
 
 model PromoSlot {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   profileId String?
-  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  profile   Profile?  @relation(fields: [profileId], references: [id], onDelete: SetNull)
   title     String
   subtitle  String?
   href      String
   imageKey  String?
-  position  Int      @default(0)
-  startsAt  DateTime @default(now())
+  position  Int       @default(0)
+  startsAt  DateTime  @default(now())
   endsAt    DateTime?
-  isActive  Boolean  @default(true)
+  isActive  Boolean   @default(true)
 
   createdAt DateTime @default(now())
 

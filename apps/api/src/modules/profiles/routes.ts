@@ -1,4 +1,5 @@
 import {
+  type Locale,
   MAP_CLUSTER_SAMPLE,
   mapClusterSchema,
   pageSchema,
@@ -9,6 +10,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { localeQuerySchema, translationSelect } from '../../i18n.js';
 import { toMoney, toProfileCard, toProfileDetail } from '../../mappers.js';
 import { publicUrl } from '../photos/storage.js';
 import { buildProfileWhere, decodeCursor, encodeCursor, orderByFor } from './query.js';
@@ -17,34 +19,45 @@ import { buildProfileWhere, decodeCursor, encodeCursor, orderByFor } from './que
  * Поля карточки листинга. Экспортируется: избранное показывает те же карточки,
  * и второй набор полей рано или поздно разошёлся бы с этим.
  */
-export const cardSelect = {
-  id: true,
-  slug: true,
-  kind: true,
-  displayName: true,
-  age: true,
-  fromPriceCents: true,
-  isVerified: true,
-  isFeatured: true,
-  lastSeenAt: true,
-  publishedAt: true,
-  city: { select: { slug: true, name: true, countryCode: true } },
-  district: { select: { name: true } },
-  services: { take: 6, select: { service: { select: { key: true } } } },
-  photos: {
-    where: { isApproved: true, deletedAt: null },
-    orderBy: { position: 'asc' },
-    take: 1,
-    select: {
-      id: true,
-      storageKey: true,
-      width: true,
-      height: true,
-      blurDataUrl: true,
-      position: true,
+export const cardSelect = (locale: Locale) =>
+  ({
+    id: true,
+    slug: true,
+    kind: true,
+    displayName: true,
+    age: true,
+    fromPriceCents: true,
+    isVerified: true,
+    isFeatured: true,
+    lastSeenAt: true,
+    publishedAt: true,
+    city: {
+      select: {
+        slug: true,
+        name: true,
+        countryCode: true,
+        translations: translationSelect(locale),
+      },
     },
-  },
-} as const;
+    district: { select: { name: true, translations: translationSelect(locale) } },
+    services: {
+      take: 6,
+      select: { service: { select: { key: true, translations: translationSelect(locale) } } },
+    },
+    photos: {
+      where: { isApproved: true, deletedAt: null },
+      orderBy: { position: 'asc' },
+      take: 1,
+      select: {
+        id: true,
+        storageKey: true,
+        width: true,
+        height: true,
+        blurDataUrl: true,
+        position: true,
+      },
+    },
+  }) as const;
 
 export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.get(
@@ -52,7 +65,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     {
       schema: {
         tags: ['profiles'],
-        querystring: profileQuerySchema,
+        querystring: profileQuerySchema.and(localeQuerySchema),
         response: { 200: pageSchema(profileCardSchema) },
       },
     },
@@ -75,7 +88,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           : cursor
             ? { cursor: { id: cursor }, skip: 1 }
             : {}),
-        select: cardSelect,
+        select: cardSelect(query.locale),
       });
 
       const hasMore = rows.length > query.limit;
@@ -110,6 +123,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['profiles'],
         params: z.object({ slug: slugSchema }),
+        querystring: localeQuerySchema,
         response: { 200: profileDetailSchema },
       },
     },
@@ -117,7 +131,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const row = await fastify.prisma.profile.findFirst({
         where: { slug: request.params.slug, status: 'published' },
         select: {
-          ...cardSelect,
+          ...cardSelect(request.query.locale),
           photos: {
             where: { isApproved: true, deletedAt: null },
             orderBy: { position: 'asc' },
@@ -156,7 +170,16 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           // анкеты выстроятся произвольно и разойдутся с формой редактирования.
           services: {
             orderBy: { service: { position: 'asc' } },
-            select: { isExtra: true, service: { select: { key: true, group: true } } },
+            select: {
+              isExtra: true,
+              service: {
+                select: {
+                  key: true,
+                  group: true,
+                  translations: translationSelect(request.query.locale),
+                },
+              },
+            },
           },
           verification: { select: { status: true, reviewedAt: true } },
           // Только тип. Значение сюда не попадает ни при каких условиях —
@@ -166,7 +189,18 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       if (!row) throw fastify.httpErrors.notFound('Анкета не найдена');
-      return toProfileDetail(row);
+      // Названия групп одним запросом: связи между Service и переводом
+      // группы нет — группа хранится строкой, а не сущностью.
+      const groupNames = new Map(
+        (
+          await fastify.prisma.serviceGroupTranslation.findMany({
+            where: { locale: request.query.locale },
+            select: { groupKey: true, name: true },
+          })
+        ).map((g) => [g.groupKey, g.name]),
+      );
+
+      return toProfileDetail(row, groupNames);
     },
   );
 
@@ -255,7 +289,9 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['profiles'],
         params: z.object({ slug: slugSchema }),
-        querystring: z.object({ limit: z.coerce.number().int().min(1).max(24).default(8) }),
+        querystring: z
+          .object({ limit: z.coerce.number().int().min(1).max(24).default(8) })
+          .and(localeQuerySchema),
         response: { 200: z.array(profileCardSchema) },
       },
     },
@@ -275,7 +311,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
         take: request.query.limit,
-        select: cardSelect,
+        select: cardSelect(request.query.locale),
       });
 
       return rows.map(toProfileCard);

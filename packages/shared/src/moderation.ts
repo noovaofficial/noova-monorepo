@@ -111,7 +111,8 @@ export const moderatedProfileSchema = z.object({
   heightCm: z.number().int().nullable(),
   weightKg: z.number().int().nullable(),
   languages: z.array(z.string()),
-  serviceKeys: z.array(z.string()),
+  /** Ключ для журналов, название — для показа модератору (N-35). */
+  services: z.array(z.object({ key: z.string(), name: z.string() })),
   prices: z.array(
     z.object({
       durationMinutes: z.number().int(),

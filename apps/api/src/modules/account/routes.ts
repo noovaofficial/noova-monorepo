@@ -7,6 +7,7 @@ import {
   normalizeContact,
   ownProfileSchema,
   PROFILE_LIMIT_BY_ADVERTISER,
+  type ServiceGroup,
   serviceGroupSchema,
   snapLocation,
   updateProfileSchema,
@@ -14,6 +15,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { verifyPassword } from '../auth/passwords.js';
@@ -116,19 +118,35 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     {
       schema: {
         tags: ['account'],
+        querystring: localeQuerySchema,
         response: { 200: z.array(cityOptionSchema) },
       },
     },
-    async () => {
+    async (request) => {
+      const { locale } = request.query;
       const cities = await fastify.prisma.city.findMany({
-        orderBy: { name: 'asc' },
         select: {
           slug: true,
           name: true,
-          districts: { orderBy: { name: 'asc' }, select: { slug: true, name: true } },
+          translations: translationSelect(locale),
+          districts: {
+            select: { slug: true, name: true, translations: translationSelect(locale) },
+          },
         },
       });
-      return cities;
+
+      // Сортируем после перевода, а не в запросе: порядок зависит от языка —
+      // по-русски «Берлин» и «Вена» стоят иначе, чем «Berlin» и «Wien».
+      const collator = new Intl.Collator(locale);
+      return cities
+        .map((city) => ({
+          slug: city.slug,
+          name: localized(city.translations, city.name),
+          districts: city.districts
+            .map((d) => ({ slug: d.slug, name: localized(d.translations, d.name) }))
+            .sort((a, b) => collator.compare(a.name, b.name)),
+        }))
+        .sort((a, b) => collator.compare(a.name, b.name));
     },
   );
 
@@ -137,12 +155,14 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     {
       schema: {
         tags: ['account'],
-        querystring: z.object({ kind: z.enum(['escort', 'massage']).optional() }),
+        querystring: z
+          .object({ kind: z.enum(['escort', 'massage']).optional() })
+          .and(localeQuerySchema),
         response: { 200: z.array(serviceGroupSchema) },
       },
     },
     async (request) => {
-      const kind = request.query.kind;
+      const { kind, locale } = request.query;
       const rows = await fastify.prisma.service.findMany({
         where: {
           isActive: true,
@@ -150,19 +170,35 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ...(kind ? { OR: [{ appliesTo: { isEmpty: true } }, { appliesTo: { has: kind } }] } : {}),
         },
         orderBy: { position: 'asc' },
-        select: { key: true, group: true },
+        select: { key: true, group: true, translations: translationSelect(locale) },
       });
+
+      // Названия групп — отдельным запросом: групп семь, а услуг шесть
+      // десятков, и тянуть перевод группы вместе с каждой услугой значило бы
+      // повторить одну и ту же строку многократно.
+      const groupNames = new Map(
+        (
+          await fastify.prisma.serviceGroupTranslation.findMany({
+            where: { locale },
+            select: { groupKey: true, name: true },
+          })
+        ).map((row) => [row.groupKey, row.name]),
+      );
 
       // Группируем на сервере: порядок групп задаётся полем position и не
       // должен зависеть от того, как клиент разложит плоский список.
-      const groups: { group: string; services: { key: string; group: string }[] }[] = [];
+      const groups: ServiceGroup[] = [];
       for (const row of rows) {
         let bucket = groups.find((g) => g.group === row.group);
         if (!bucket) {
-          bucket = { group: row.group, services: [] };
+          bucket = { group: row.group, name: groupNames.get(row.group) ?? row.group, services: [] };
           groups.push(bucket);
         }
-        bucket.services.push(row);
+        bucket.services.push({
+          key: row.key,
+          group: row.group,
+          name: localized(row.translations, row.key),
+        });
       }
       return groups;
     },

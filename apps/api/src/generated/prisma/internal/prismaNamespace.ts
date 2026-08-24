@@ -402,7 +402,9 @@ export const ModelName = {
   ModerationAction: 'ModerationAction',
   AuthToken: 'AuthToken',
   City: 'City',
+  CityTranslation: 'CityTranslation',
   District: 'District',
+  DistrictTranslation: 'DistrictTranslation',
   Profile: 'Profile',
   Photo: 'Photo',
   ProfileReport: 'ProfileReport',
@@ -413,6 +415,8 @@ export const ModelName = {
   ContactReveal: 'ContactReveal',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
+  ServiceTranslation: 'ServiceTranslation',
+  ServiceGroupTranslation: 'ServiceGroupTranslation',
   ProfileService: 'ProfileService',
   VerificationCase: 'VerificationCase',
   PromoSlot: 'PromoSlot'
@@ -431,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "city" | "district" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "profileService" | "verificationCase" | "promoSlot"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -805,6 +809,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CityTranslation: {
+      payload: Prisma.$CityTranslationPayload<ExtArgs>
+      fields: Prisma.CityTranslationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CityTranslationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CityTranslationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        findFirst: {
+          args: Prisma.CityTranslationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CityTranslationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        findMany: {
+          args: Prisma.CityTranslationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>[]
+        }
+        create: {
+          args: Prisma.CityTranslationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        createMany: {
+          args: Prisma.CityTranslationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CityTranslationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>[]
+        }
+        delete: {
+          args: Prisma.CityTranslationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        update: {
+          args: Prisma.CityTranslationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CityTranslationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CityTranslationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CityTranslationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CityTranslationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTranslationPayload>
+        }
+        aggregate: {
+          args: Prisma.CityTranslationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCityTranslation>
+        }
+        groupBy: {
+          args: Prisma.CityTranslationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityTranslationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CityTranslationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityTranslationCountAggregateOutputType> | number
+        }
+      }
+    }
     District: {
       payload: Prisma.$DistrictPayload<ExtArgs>
       fields: Prisma.DistrictFieldRefs
@@ -876,6 +954,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DistrictCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DistrictCountAggregateOutputType> | number
+        }
+      }
+    }
+    DistrictTranslation: {
+      payload: Prisma.$DistrictTranslationPayload<ExtArgs>
+      fields: Prisma.DistrictTranslationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DistrictTranslationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DistrictTranslationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        findFirst: {
+          args: Prisma.DistrictTranslationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DistrictTranslationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        findMany: {
+          args: Prisma.DistrictTranslationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>[]
+        }
+        create: {
+          args: Prisma.DistrictTranslationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        createMany: {
+          args: Prisma.DistrictTranslationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DistrictTranslationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>[]
+        }
+        delete: {
+          args: Prisma.DistrictTranslationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        update: {
+          args: Prisma.DistrictTranslationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        deleteMany: {
+          args: Prisma.DistrictTranslationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DistrictTranslationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DistrictTranslationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>[]
+        }
+        upsert: {
+          args: Prisma.DistrictTranslationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DistrictTranslationPayload>
+        }
+        aggregate: {
+          args: Prisma.DistrictTranslationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDistrictTranslation>
+        }
+        groupBy: {
+          args: Prisma.DistrictTranslationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DistrictTranslationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DistrictTranslationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DistrictTranslationCountAggregateOutputType> | number
         }
       }
     }
@@ -1619,6 +1771,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ServiceTranslation: {
+      payload: Prisma.$ServiceTranslationPayload<ExtArgs>
+      fields: Prisma.ServiceTranslationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ServiceTranslationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ServiceTranslationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        findFirst: {
+          args: Prisma.ServiceTranslationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ServiceTranslationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        findMany: {
+          args: Prisma.ServiceTranslationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>[]
+        }
+        create: {
+          args: Prisma.ServiceTranslationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        createMany: {
+          args: Prisma.ServiceTranslationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ServiceTranslationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>[]
+        }
+        delete: {
+          args: Prisma.ServiceTranslationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        update: {
+          args: Prisma.ServiceTranslationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ServiceTranslationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ServiceTranslationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ServiceTranslationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ServiceTranslationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceTranslationPayload>
+        }
+        aggregate: {
+          args: Prisma.ServiceTranslationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateServiceTranslation>
+        }
+        groupBy: {
+          args: Prisma.ServiceTranslationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServiceTranslationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ServiceTranslationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServiceTranslationCountAggregateOutputType> | number
+        }
+      }
+    }
+    ServiceGroupTranslation: {
+      payload: Prisma.$ServiceGroupTranslationPayload<ExtArgs>
+      fields: Prisma.ServiceGroupTranslationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ServiceGroupTranslationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ServiceGroupTranslationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        findFirst: {
+          args: Prisma.ServiceGroupTranslationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ServiceGroupTranslationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        findMany: {
+          args: Prisma.ServiceGroupTranslationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>[]
+        }
+        create: {
+          args: Prisma.ServiceGroupTranslationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        createMany: {
+          args: Prisma.ServiceGroupTranslationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ServiceGroupTranslationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>[]
+        }
+        delete: {
+          args: Prisma.ServiceGroupTranslationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        update: {
+          args: Prisma.ServiceGroupTranslationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        deleteMany: {
+          args: Prisma.ServiceGroupTranslationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ServiceGroupTranslationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ServiceGroupTranslationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>[]
+        }
+        upsert: {
+          args: Prisma.ServiceGroupTranslationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServiceGroupTranslationPayload>
+        }
+        aggregate: {
+          args: Prisma.ServiceGroupTranslationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateServiceGroupTranslation>
+        }
+        groupBy: {
+          args: Prisma.ServiceGroupTranslationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServiceGroupTranslationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ServiceGroupTranslationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServiceGroupTranslationCountAggregateOutputType> | number
+        }
+      }
+    }
     ProfileService: {
       payload: Prisma.$ProfileServicePayload<ExtArgs>
       fields: Prisma.ProfileServiceFieldRefs
@@ -1954,6 +2254,16 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const CityTranslationScalarFieldEnum = {
+  id: 'id',
+  cityId: 'cityId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type CityTranslationScalarFieldEnum = (typeof CityTranslationScalarFieldEnum)[keyof typeof CityTranslationScalarFieldEnum]
+
+
 export const DistrictScalarFieldEnum = {
   id: 'id',
   slug: 'slug',
@@ -1964,6 +2274,16 @@ export const DistrictScalarFieldEnum = {
 } as const
 
 export type DistrictScalarFieldEnum = (typeof DistrictScalarFieldEnum)[keyof typeof DistrictScalarFieldEnum]
+
+
+export const DistrictTranslationScalarFieldEnum = {
+  id: 'id',
+  districtId: 'districtId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type DistrictTranslationScalarFieldEnum = (typeof DistrictTranslationScalarFieldEnum)[keyof typeof DistrictTranslationScalarFieldEnum]
 
 
 export const ProfileScalarFieldEnum = {
@@ -2121,6 +2441,26 @@ export const ServiceScalarFieldEnum = {
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
+
+
+export const ServiceTranslationScalarFieldEnum = {
+  id: 'id',
+  serviceId: 'serviceId',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type ServiceTranslationScalarFieldEnum = (typeof ServiceTranslationScalarFieldEnum)[keyof typeof ServiceTranslationScalarFieldEnum]
+
+
+export const ServiceGroupTranslationScalarFieldEnum = {
+  id: 'id',
+  groupKey: 'groupKey',
+  locale: 'locale',
+  name: 'name'
+} as const
+
+export type ServiceGroupTranslationScalarFieldEnum = (typeof ServiceGroupTranslationScalarFieldEnum)[keyof typeof ServiceGroupTranslationScalarFieldEnum]
 
 
 export const ProfileServiceScalarFieldEnum = {
@@ -2713,7 +3053,9 @@ export type GlobalOmitConfig = {
   moderationAction?: Prisma.ModerationActionOmit
   authToken?: Prisma.AuthTokenOmit
   city?: Prisma.CityOmit
+  cityTranslation?: Prisma.CityTranslationOmit
   district?: Prisma.DistrictOmit
+  districtTranslation?: Prisma.DistrictTranslationOmit
   profile?: Prisma.ProfileOmit
   photo?: Prisma.PhotoOmit
   profileReport?: Prisma.ProfileReportOmit
@@ -2724,6 +3066,8 @@ export type GlobalOmitConfig = {
   contactReveal?: Prisma.ContactRevealOmit
   priceSlot?: Prisma.PriceSlotOmit
   service?: Prisma.ServiceOmit
+  serviceTranslation?: Prisma.ServiceTranslationOmit
+  serviceGroupTranslation?: Prisma.ServiceGroupTranslationOmit
   profileService?: Prisma.ProfileServiceOmit
   verificationCase?: Prisma.VerificationCaseOmit
   promoSlot?: Prisma.PromoSlotOmit
