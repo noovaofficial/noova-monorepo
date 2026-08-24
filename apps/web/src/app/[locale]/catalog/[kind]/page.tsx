@@ -15,13 +15,24 @@ import { activeCities } from '@/shared/city';
  */
 type Props = {
   params: Promise<{ locale: Locale; kind: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function LegacyCatalogRedirect({ params }: Props) {
+export default async function LegacyCatalogRedirect({ params, searchParams }: Props) {
   const { locale, kind } = await params;
   const cities = await activeCities(locale);
   const city = cities[0];
 
+  // Фильтры переносим вместе с адресом: старая ссылка с выбранными услугами
+  // иначе привела бы в пустой каталог, и потеря выглядела бы как сброс.
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(await searchParams)) {
+    if (Array.isArray(value)) for (const item of value) search.append(key, item);
+    else if (value !== undefined) search.set(key, value);
+  }
+  const query = search.toString();
+  const suffix = query ? `?${query}` : '';
+
   // Городов нет вовсе — вести некуда, кроме выбора города.
-  permanentRedirect(city ? `/${locale}/${city.slug}/catalog/${kind}` : `/${locale}`);
+  permanentRedirect(city ? `/${locale}/${city.slug}/catalog/${kind}${suffix}` : `/${locale}`);
 }

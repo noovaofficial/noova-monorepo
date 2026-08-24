@@ -36,6 +36,19 @@ export const RESERVED_CITY_SLUGS = [
   'verify-email',
 ] as const;
 
+/**
+ * Город из пути **без языкового префикса**: `/berlin/catalog/escort` → `berlin`.
+ *
+ * Первый сегмент после языка — либо слуг города, либо имя статического
+ * маршрута; отличить их можно только по списку выше. Возвращает `null`, если
+ * города в пути нет: страница анкеты, кабинет, «Компания».
+ */
+export function cityFromPath(pathname: string): string | null {
+  const [, first = ''] = pathname.split('/');
+  if (first === '' || (RESERVED_CITY_SLUGS as readonly string[]).includes(first)) return null;
+  return first;
+}
+
 export const citySlugSchema = slugSchema.refine(
   (value) => !(RESERVED_CITY_SLUGS as readonly string[]).includes(value),
   { message: 'Этот адрес занят страницей сайта — выберите другой' },

@@ -5,6 +5,7 @@ import {
   bodyTypeSchema,
   breastSizeSchema,
   breastTypeSchema,
+  cityFromPath,
   eyeColorSchema,
   hairColorSchema,
   type ListingKind,
@@ -74,7 +75,11 @@ export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', ta
       return;
     }
     const query = params.toString();
-    const target = targetPath ?? `/catalog/${kind}`;
+    // Город берём из текущего пути: каталог живёт под ним (N-32). Без города
+    // адрес попал бы на заглушку `/catalog/...`, а та уводит редиректом —
+    // и выбранные фильтры терялись бы по дороге.
+    const city = cityFromPath(pathname);
+    const target = targetPath ?? `${city ? `/${city}` : ''}/catalog/${kind}`;
     router.push(query ? `${target}?${query}` : target);
     onClose();
   };
