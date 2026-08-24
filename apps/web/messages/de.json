@@ -224,7 +224,8 @@
     "settings": "Einstellungen",
     "allUsers": "Alle Nutzer",
     "log": "Entscheidungsprotokoll",
-    "locations": "Geografie"
+    "locations": "Geografie",
+    "serviceCatalog": "Dienstleistungen"
   },
   "account": {
     "title": "Meine Anzeigen",
@@ -682,5 +683,28 @@
     "description": "Der Katalog wird nach Stadt geführt.",
     "empty": "Noch keine Städte",
     "switchLabel": "Stadt"
+  },
+  "services": {
+    "title": "Dienstleistungen",
+    "subtitle": "Katalog und Gruppen",
+    "onlyAdmins": "Nur für Administratoren",
+    "failed": "Konnte nicht gespeichert werden",
+    "key": "Schlüssel",
+    "group": "Gruppe",
+    "position": "Reihenfolge",
+    "positionShort": "Pos.",
+    "active": "Aktiv",
+    "edit": "Ändern",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "addGroup": "Gruppe anlegen",
+    "addService": "Dienstleistung anlegen",
+    "renameGroup": "Gruppe umbenennen",
+    "groupEmpty": "Noch keine Dienstleistungen in dieser Gruppe",
+    "kindEscort": "Begleitung",
+    "kindMassage": "Massage",
+    "kindAll": "Für alle Anzeigentypen",
+    "inProfiles": "in {count} Anzeigen",
+    "cannotDelete": "In {count} Anzeigen gewählt — Löschen würde die Verknüpfungen zerreißen. Stattdessen deaktivieren."
   }
 }

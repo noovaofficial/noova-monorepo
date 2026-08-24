@@ -26,6 +26,7 @@ export const queryKeys = {
   staff: () => ['staff'] as const,
   adminCountries: () => ['admin-countries'] as const,
   adminCities: () => ['admin-cities'] as const,
+  adminServices: () => ['admin-services'] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>
     [

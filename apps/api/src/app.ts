@@ -24,6 +24,7 @@ import { revealRoutes } from './modules/profiles/reveal.js';
 import { profileRoutes } from './modules/profiles/routes.js';
 import { promoRoutes } from './modules/promo/routes.js';
 import { reportRoutes } from './modules/reports/routes.js';
+import { serviceCatalogRoutes } from './modules/service-catalog/routes.js';
 import presencePlugin from './plugins/presence.js';
 import prismaPlugin from './plugins/prisma.js';
 import redisPlugin from './plugins/redis.js';
@@ -124,6 +125,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(moderationRoutes);
       await api.register(adminRoutes);
       await api.register(locationRoutes);
+      await api.register(serviceCatalogRoutes);
       await api.register(profileRoutes);
       await api.register(revealRoutes);
       await api.register(favoriteRoutes);

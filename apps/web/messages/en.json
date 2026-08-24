@@ -224,7 +224,8 @@
     "settings": "Settings",
     "allUsers": "All users",
     "log": "Decision log",
-    "locations": "Geography"
+    "locations": "Geography",
+    "serviceCatalog": "Services"
   },
   "account": {
     "title": "My profiles",
@@ -682,5 +683,28 @@
     "description": "The catalogue is organised by city.",
     "empty": "No cities yet",
     "switchLabel": "City"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Catalogue and groups",
+    "onlyAdmins": "Administrators only",
+    "failed": "Could not save",
+    "key": "Key",
+    "group": "Group",
+    "position": "Order",
+    "positionShort": "pos.",
+    "active": "Active",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "addGroup": "Add group",
+    "addService": "Add service",
+    "renameGroup": "Rename group",
+    "groupEmpty": "No services in this group yet",
+    "kindEscort": "Escort",
+    "kindMassage": "Massage",
+    "kindAll": "For all listing types",
+    "inProfiles": "in {count} listings",
+    "cannotDelete": "Chosen in {count} listings — deleting would break the links. Disable instead."
   }
 }
