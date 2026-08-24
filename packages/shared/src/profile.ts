@@ -24,7 +24,7 @@ export type ListingKind = z.infer<typeof listingKindSchema>;
 
 /**
  * Статус анкеты. Публикуется только `published`, и только после
- * пройденной верификации возраста и личности — см. documentation/architecture.md §6.
+ * пройденной верификации возраста и личности — см. documentation/arch/architecture.md §6.
  */
 export const profileStatusSchema = z.enum([
   'draft',

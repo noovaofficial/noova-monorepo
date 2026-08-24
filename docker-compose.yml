@@ -1,6 +1,6 @@
 # Полный стек для сервера: фронт, бэк, БД, хранилище, прокси и бэкапы.
 # Разворачивается одной командой на любой машине с Docker — это и есть
-# «портируемость важнее ухода в тень» из documentation/architecture.md §6.
+# «портируемость важнее ухода в тень» из documentation/arch/architecture.md §6.
 #
 #   cp .env.example .env && отредактировать секреты
 #   docker compose up -d --build
@@ -215,7 +215,7 @@ services:
   #   1) PTR-запись на отправляющий IP — без неё письма отклоняются на входе;
   #   2) SPF, DKIM и DMARC на MAIL_DOMAIN;
   #   3) прогрев адреса: первые недели объём наращивается постепенно.
-  # Подробнее — documentation/planning.md, N-15.
+  # Подробнее — documentation/planning/planning.md, N-15.
   smtp:
     image: boky/postfix:latest
     <<: [*restart, *logging]

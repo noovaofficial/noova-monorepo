@@ -9,14 +9,14 @@
 ## 1. Файлы, которые уже есть
 
 > Прототипы — исторический референс. Рабочий код живёт в `apps/`,
-> актуальная структура описана в [README](../README.md).
+> актуальная структура описана в [README](../../README.md).
 
 | Файл | Что это |
 |------|---------|
 | `apps/web/src/styles/tokens.css` | Источник правды по цветам/типографике/отступам. Светлая тема в `:root`, тёмная в `[data-theme="dark"]`. |
-| `documentation/prototypes/noova_design_system.html` | Живой style guide: свотчи, шкала шрифтов, превью компонентов. Референс, в прод не идёт. |
-| `documentation/prototypes/noova_home.html` | Исходный прототип главной. Перенесён в `apps/web/src/app/[locale]/page.tsx`. |
-| `documentation/prototypes/noova_profile.html` | Исходный прототип страницы анкеты. Перенесён в `apps/web/src/app/[locale]/profile/[slug]/page.tsx`. |
+| `documentation/arch/prototypes/noova_design_system.html` | Живой style guide: свотчи, шкала шрифтов, превью компонентов. Референс, в прод не идёт. |
+| `documentation/arch/prototypes/noova_home.html` | Исходный прототип главной. Перенесён в `apps/web/src/app/[locale]/page.tsx`. |
+| `documentation/arch/prototypes/noova_profile.html` | Исходный прототип страницы анкеты. Перенесён в `apps/web/src/app/[locale]/profile/[slug]/page.tsx`. |
 
 Все прототипы самодостаточны: токены вшиты в `<style>`, тема по умолчанию — тёмная
 (`<html data-theme="dark">`). Шрифты — Google Fonts (Sora + Inter) через `@import`.
@@ -142,8 +142,12 @@ src/
 ## 8. Следующие шаги
 
 Роадмап и постановки задач вынесены в отдельный документ:
-**[planning.md](planning.md)**. Там же — приоритеты, зависимости между
+**[planning.md](../planning/planning.md)**. Там же — приоритеты, зависимости между
 задачами и критерии приёмки.
+
+Ограничения, оставленные уже выполненными задачами, — в
+[constraints.md](constraints.md). Читать перед тем, как «упростить»
+работающее.
 
 ## 9. Технические заметки
 

@@ -154,6 +154,13 @@ compose берёт из `SITE_URL` и `PUBLIC_API_URL`. Строка в `.env` �
 make deploy SERVER=deploy@<IP>
 ```
 
+На сервере
+```bash
+docker compose up -d --no-build
+```
+
+
+
 Внутри — `scripts/deploy.sh`. Он делает то же, что делали бы руками, плюс
 четыре вещи, которые руками забываются:
 

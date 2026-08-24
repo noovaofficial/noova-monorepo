@@ -20,7 +20,7 @@ export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/profiles/:slug/contacts/reveal',
     {
       // Сдерживание массового сбора: вход не требуется (см. решение 2 в
-      // documentation/planning.md), поэтому вся защита — здесь и в журнале.
+      // documentation/planning/planning.md), поэтому вся защита — здесь и в журнале.
       //
       // `allowList` глушим намеренно: общее освобождение существует ради
       // серверного рендера, который упирался бы в лимит посетителя. Этот

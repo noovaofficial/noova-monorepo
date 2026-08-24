@@ -5,7 +5,7 @@ export const ADULT_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
  * Инлайн-скрипт в <head>: если подтверждение уже есть в куке, помечает документ
  * до первой отрисовки, и CSS скрывает оверлей. Читать куку на сервере нельзя —
  * cookies() в layout переводит всё приложение в динамический рендер и убивает
- * SSG/ISR (см. documentation/implementation-notes.md).
+ * SSG/ISR (см. documentation/arch/implementation-notes.md).
  */
 export const AGE_GATE_INIT_SCRIPT = `
 (function(){try{

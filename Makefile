@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
-.PHONY: help setup dev infra-up infra-down db-migrate db-seed db-reset \
+.PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback
 
@@ -18,6 +18,7 @@ setup: ## Первичная настройка: зависимости, инф�
 	@until docker compose -f docker-compose.dev.yml exec -T postgres pg_isready -U noova >/dev/null 2>&1; do sleep 1; done
 	pnpm db:generate
 	pnpm db:migrate
+	pnpm db:seed:reference
 	pnpm db:seed
 	@echo "Готово. Запуск: make dev"
 
@@ -33,8 +34,11 @@ infra-down: ## Остановить инфраструктуру разрабо�
 db-migrate: ## Применить миграции
 	pnpm db:migrate
 
-db-seed: ## Загрузить демо-данные
+db-seed: ## Загрузить демо-данные (требует справочников — см. db-seed-reference)
 	pnpm db:seed
+
+db-seed-reference: ## Справочники: услуги, города, районы. Идемпотентно, годится для прода
+	pnpm db:seed:reference
 
 db-reset: ## Пересоздать БД с нуля (данные будут потеряны)
 	pnpm --filter @noova/api exec prisma migrate reset

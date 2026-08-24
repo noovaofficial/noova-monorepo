@@ -1,5 +1,5 @@
 // Noova — схема каталога. Персональные данные анкет относятся к особой категории
-// по GDPR (documentation/architecture.md §6): всё, что идентифицирует человека, живёт в отдельных
+// по GDPR (documentation/arch/architecture.md §6): всё, что идентифицирует человека, живёт в отдельных
 // моделях (VerificationCase, User) и никогда не попадает в публичные выборки.
 
 generator client {
@@ -361,7 +361,7 @@ model Photo {
   height      Int
   blurDataUrl String?
   position    Int     @default(0)
-  // Реальные фото публикуются только после верификации (documentation/architecture.md §6).
+  // Реальные фото публикуются только после верификации (documentation/arch/architecture.md §6).
   isApproved  Boolean @default(false)
 
   /// Реальный формат, определённый по содержимому файла, а не по расширению.
@@ -519,7 +519,7 @@ model ProfileContact {
 }
 
 /// Журнал раскрытий: антифрод и статистика откликов для владелицы.
-/// Чистится по сроку из documentation/planning.md — 12 месяцев.
+/// Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
 model ContactReveal {
   id        String   @id @default(cuid())
   profileId String

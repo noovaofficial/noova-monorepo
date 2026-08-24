@@ -2,8 +2,8 @@
 
 Каталог-классифайд анкет для взрослых (18+), легальная модель для рынка Германии.
 Продуктовый контекст, дизайн-принципы и ограничения — в
-[documentation/architecture.md](documentation/architecture.md).
-Роадмап — в [documentation/planning.md](documentation/planning.md).
+[documentation/arch/architecture.md](documentation/arch/architecture.md).
+Роадмап — в [documentation/planning/planning.md](documentation/planning/planning.md).
 
 ## Стек
 
@@ -38,7 +38,11 @@ noova/
 ├── infra/
 │   ├── caddy/                Caddyfile
 │   └── backup/               скрипты дампа и восстановления
-├── documentation/            архитектура, роадмап, развёртывание, правовые задачи
+├── documentation/
+│   ├── arch/                 продуктовый контекст, дизайн-система, прототипы,
+│   │                         неочевидные решения и действующие ограничения
+│   ├── deploy/               подготовка сервера, `.env`, выпуск, эксплуатация
+│   └── planning/             роадмап, постановки задач, правовые задачи
 ├── docker-compose.dev.yml    инфраструктура для разработки
 └── docker-compose.yml        полный стек для сервера
 ```
@@ -94,11 +98,11 @@ make help             # весь список
 
 Руководство разбито на три части:
 
-- [documentation/server.md](documentation/server.md) — провайдер, мощности,
+- [documentation/deploy/server.md](documentation/deploy/server.md) — провайдер, мощности,
   DNS, подготовка машины, почта. Всё, что делается один раз.
-- [documentation/release.md](documentation/release.md) — `.env` и выпуск:
+- [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск:
   `make deploy SERVER=deploy@<IP>`.
-- [documentation/deployment.md](documentation/deployment.md) — порядок
+- [documentation/deploy/deployment.md](documentation/deploy/deployment.md) — порядок
   действий, осмотр базы, бэкапы.
 
 Коротко:
@@ -211,7 +215,7 @@ make restore DUMP=backups/noova-20260819T120000Z.sql.gz
 ## Дальше
 
 Роадмап, постановки задач и критерии приёмки — в
-[documentation/planning.md](documentation/planning.md). Там же раздел
+[documentation/planning/planning.md](documentation/planning/planning.md). Там же раздел
 «Сделано» с решениями, которые ограничивают дальнейшую работу.
 
 Ближайшее и единственное оставшееся: **N-21** — продвижение анкет. Сейчас флаг `isFeatured` ставит
@@ -220,7 +224,7 @@ make restore DUMP=backups/noova-20260819T120000Z.sql.gz
 вопросы выписаны в постановке.
 
 Правовые задачи вынесены в
-[documentation/legal.md](documentation/legal.md) и отложены до согласования
+[documentation/planning/legal.md](documentation/planning/legal.md) и отложены до согласования
 с юристом: приложение на стенде разработки. Ни одна из них не может остаться
 невыполненной к публичному запуску — без `Impressum` и `Datenschutz` на
 рынке Германии открываться нельзя.

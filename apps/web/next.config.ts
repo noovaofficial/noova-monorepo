@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@noova/shared'],
   poweredByHeader: false,
   // Next генерирует собственные AGENTS.md/CLAUDE.md — проектная документация
-  // живёт в README.md и documentation/architecture.md, дубли не нужны.
+  // живёт в README.md и documentation/arch/architecture.md, дубли не нужны.
   agentRules: false,
   images: {
     formats: ['image/avif', 'image/webp'],

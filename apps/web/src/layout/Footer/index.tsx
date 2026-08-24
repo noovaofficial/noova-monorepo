@@ -6,7 +6,7 @@ import styles from './Footer.module.css';
 /**
  * «О верификации» временно убрана: пока публикуются только девушки,
  * проверенные агентством, страница обещала бы собственную процедуру
- * проверки, которой нет (L-02 в documentation/legal.md).
+ * проверки, которой нет (L-02 в documentation/planning/legal.md).
  */
 const COMPANY_LINKS = [
   { key: 'linkAbout', href: '/about' },
@@ -24,7 +24,7 @@ const COMPANY_LINKS = [
  *
  * **Вернуть обязательно до публичного запуска.** `Impressum`, `Datenschutz`
  * и `AGB` обязательны на рынке Германии; их отсутствие — основание для
- * Abmahnung. Задача и сроки — в documentation/legal.md.
+ * Abmahnung. Задача и сроки — в documentation/planning/legal.md.
  */
 
 export function Footer() {

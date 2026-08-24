@@ -19,6 +19,7 @@
     "db:migrate": "pnpm --filter @noova/api db:migrate",
     "db:generate": "pnpm --filter @noova/api db:generate",
     "db:seed": "pnpm --filter @noova/api db:seed",
+    "db:seed:reference": "pnpm --filter @noova/api db:seed:reference",
     "db:studio": "pnpm --filter @noova/api db:studio",
     "infra:up": "docker compose -f docker-compose.dev.yml up -d",
     "infra:down": "docker compose -f docker-compose.dev.yml down",
