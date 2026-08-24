@@ -11,6 +11,15 @@
 html {
   scroll-behavior: smooth;
   color-scheme: dark;
+  /*
+   * Safari на iPhone сам укрупняет шрифт в блоках, которые считает узкими,
+   * — «text autosizing». Разметка от этого расползается вширь, и появляется
+   * горизонтальная прокрутка, которой нет ни в одном настольном браузере:
+   * воспроизвести её на макбуке невозможно, а на телефоне она видна сразу.
+   * Отключаем — размеры задаются макетом, а не эвристикой браузера.
+   */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 html[data-theme='light'] {
@@ -22,6 +31,12 @@ body {
   background: var(--background);
   color: var(--primaryText);
   line-height: var(--leadingNormal);
+  /*
+   * Длинное неразрывное слово — адрес канала, доменное имя, немецкое
+   * составное — не должно распирать колонку. Перенос по символам включается
+   * только когда слово иначе не помещается.
+   */
+  overflow-wrap: anywhere;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -3,6 +3,8 @@
 SHELL := /bin/bash
 
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
+        server-setup server-env update \
+        backup-key backup-snapshot backup-fetch backup-open backup-verify restore-media \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback
 
@@ -75,6 +77,27 @@ images-ship: images ## Отправить образы прямо на серв�
 	            $${IMAGE_PREFIX:-noova}/web:$${IMAGE_TAG:-latest} \
 	  | gzip | ssh $(SERVER) 'gunzip | docker load'
 
+# --- Новый сервер -----------------------------------------------------------
+# Порядок: ssh-copy-id вручную → server-setup → server-env → deploy.
+# Первый шаг руками намеренно: без ключа root скрипт откажется закрывать
+# парольный вход, и это правильно — иначе машина закроется снаружи.
+
+server-setup: ## Подготовить чистый сервер: пользователь, SSH, Docker, ufw, своп (SERVER=root@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=root@host"; exit 1)
+	ssh $(SERVER) 'bash -s' < infra/server/setup.sh
+
+server-env: ## Создать .env на сервере (SERVER=deploy@host DOMAIN=noova.cc EMAIL=admin@…)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	@test -n "$(DOMAIN)" || (echo "Укажите DOMAIN=noova.cc — без схемы"; exit 1)
+	@test -n "$(EMAIL)" || (echo "Укажите EMAIL=admin@… — для писем Let's Encrypt"; exit 1)
+	ssh $(SERVER) 'bash -s' -- '$(DOMAIN)' '$(EMAIL)' < infra/server/make-env.sh
+
+# Применить то, что уже лежит на сервере: правку .env, новый Caddyfile,
+# изменения в compose. Образы не собираются и не везутся — для этого deploy.
+update: ## Перезапустить стек из текущих образов (SERVER=deploy@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	ssh $(SERVER) 'cd noova && docker compose up -d --no-build && docker compose ps'
+
 deploy-files: ## Скопировать на сервер файлы, которые не входят в образы
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
 	ssh $(SERVER) 'mkdir -p noova/infra/caddy noova/infra/backup'
@@ -97,9 +120,39 @@ rollback: ## Вернуть прежний образ без миграций (S
 jobs: ## Прогнать чистку по срокам хранения прямо сейчас (локально)
 	pnpm --filter @noova/api jobs:dev
 
+# --- Резервные копии (N-29) -------------------------------------------------
+
+backup-key: ## Создать пару ключей для шифрования копий (DIR=~/noova-backup)
+	@test -n "$(DIR)" || (echo "Укажите DIR=~/noova-backup"; exit 1)
+	./infra/backup/make-key.sh '$(DIR)'
+
+backup-snapshot: ## Снимок на сервере: база + фотографии, зашифровано (SERVER=deploy@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	ssh $(SERVER) 'cd noova && bash -s' < infra/backup/snapshot.sh
+
+backup-fetch: backup-snapshot ## Снять копию и забрать её к себе (SERVER=… DIR=куда)
+	@test -n "$(DIR)" || (echo "Укажите DIR=куда сложить"; exit 1)
+	mkdir -p '$(DIR)'
+	scp $(SERVER):noova/backups/'*.enc' '$(DIR)/'
+	@echo "Забрано в $(DIR). Расшифровать: make backup-open FILE=… KEY=…"
+
+backup-open: ## Расшифровать копию (FILE=…​.enc KEY=~/noova-backup/backup-private.pem)
+	@test -n "$(FILE)" || (echo "Укажите FILE=путь.enc"; exit 1)
+	@test -n "$(KEY)" || (echo "Укажите KEY=путь к закрытому ключу"; exit 1)
+	openssl smime -decrypt -binary -inform DER -in '$(FILE)' -inkey '$(KEY)' -out '$(FILE:.enc=)'
+	@echo "Расшифровано: $(FILE:.enc=)"
+
+backup-verify: ## Проверить копию восстановлением в отдельную БД (FILE=…​.sql.gz)
+	@test -n "$(FILE)" || (echo "Укажите FILE=путь к расшифрованному дампу"; exit 1)
+	./infra/backup/verify.sh '$(FILE)'
+
 backup: ## Сделать дамп БД прямо сейчас
 	docker compose exec -T backup /bin/sh /scripts/backup.sh
 
 restore: ## Восстановить из дампа: make restore DUMP=backups/noova-<stamp>.sql.gz
 	@test -n "$(DUMP)" || (echo "Укажите DUMP=путь"; exit 1)
 	docker compose exec -T postgres /bin/sh /scripts/restore.sh /$(DUMP)
+
+restore-media: ## Восстановить фотографии: make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
+	@test -n "$(ARCHIVE)" || (echo "Укажите ARCHIVE=путь"; exit 1)
+	./infra/backup/restore-media.sh '$(ARCHIVE)'
