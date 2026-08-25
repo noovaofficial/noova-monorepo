@@ -194,3 +194,14 @@
 :global(html[data-role='admin']) .nearby {
   display: none;
 }
+
+/* Ссылка на салон или агентство в шапке анкеты (N-31). */
+.headerCompany {
+  color: var(--secondaryText);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.headerCompany:hover {
+  color: var(--primary);
+}

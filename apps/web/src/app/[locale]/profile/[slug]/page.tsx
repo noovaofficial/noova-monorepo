@@ -15,6 +15,7 @@ import { FavoriteButton } from '@/modules/favorites/components/FavoriteButton';
 import { ReportProfile } from '@/modules/reports/components/ReportProfile';
 import { ApiError, fetchComments, fetchNearby, fetchProfile } from '@/shared/api';
 import { durationKey, formatMoney } from '@/shared/format';
+import { Link } from '@/shared/i18n/navigation';
 import styles from './page.module.css';
 
 // ISR: страница анкеты редко меняется, но должна подхватывать правки без редеплоя.
@@ -174,6 +175,18 @@ export default async function ProfilePage({ params }: Props) {
         <span className={styles.headerCity}>
           {profile.city.name}
           {profile.district ? ` · ${profile.district}` : ''}
+          {/* Салон и агентство посетитель видит — решение владельца продукта
+              (N-31). Ссылка ведёт на страницу компании с её анкетами. */}
+          {profile.company ? (
+            <>
+              {' · '}
+              <Link className={styles.headerCompany} href={`/company/${profile.company.slug}`}>
+                {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
+                  name: profile.company.name,
+                })}
+              </Link>
+            </>
+          ) : null}
         </span>
       </header>
 

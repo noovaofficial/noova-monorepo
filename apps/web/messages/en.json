@@ -125,7 +125,9 @@
     "contacts": "Contacts",
     "comments": "Reviews",
     "reportSection": "Report",
-    "mapAttribution": "© OpenStreetMap"
+    "mapAttribution": "© OpenStreetMap",
+    "fromSalon": "Studio {name}",
+    "fromAgency": "Agency {name}"
   },
   "footer": {
     "about": "Noova is an adults-only (18+) listings directory. Access is permitted to adults only. Every profile is age- and identity-verified; any material involving minors or any coercion is strictly prohibited and removed.",
@@ -217,7 +219,7 @@
     "advertiserIndividual": "Individual profile",
     "advertiserIndividualHint": "One profile in your own name",
     "advertiserSalon": "Studio",
-    "advertiserSalonHint": "Several massage studio profiles",
+    "advertiserSalonHint": "Several listings of a massage studio with an address",
     "advertiserKind": "Listing type",
     "moderation": "Moderation",
     "staff": "Staff",
@@ -225,7 +227,9 @@
     "allUsers": "All users",
     "log": "Decision log",
     "locations": "Geography",
-    "serviceCatalog": "Services"
+    "serviceCatalog": "Services",
+    "advertiserAgency": "Agency",
+    "advertiserAgencyHint": "Several escort listings, no address of its own"
   },
   "account": {
     "title": "My profiles",
@@ -706,5 +710,17 @@
     "kindAll": "For all listing types",
     "inProfiles": "in {count} listings",
     "cannotDelete": "Chosen in {count} listings — deleting would break the links. Disable instead."
+  },
+  "company": {
+    "salon": "Studio",
+    "agency": "Agency",
+    "titleSalon": "Studio {name}",
+    "titleAgency": "Agency {name}",
+    "profiles": "{count, plural, one {# listing} other {# listings}}",
+    "noProfiles": "No published listings yet",
+    "contact_phone": "Phone",
+    "contact_whatsapp": "WhatsApp",
+    "contact_telegram": "Telegram",
+    "contact_viber": "Viber"
   }
 }

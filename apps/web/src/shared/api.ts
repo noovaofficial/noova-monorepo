@@ -1,6 +1,7 @@
 import {
   type CityOption,
   cityOptionSchema,
+  companySchema,
   type Locale,
   type Page,
   type ProfileCard,
@@ -17,6 +18,9 @@ import {
   serviceGroupSchema,
 } from '@noova/shared';
 import { z } from 'zod';
+
+const companyPageSchema = companySchema.extend({ profiles: z.array(profileCardSchema) });
+type CompanyPage = z.infer<typeof companyPageSchema>;
 
 /**
  * На сервере ходим по внутреннему адресу контейнера, в браузере — по публичному.
@@ -197,6 +201,14 @@ export function fetchServiceCatalogPublic(
  * упоминается текстом — заголовок главной, метаданные, — а не приходит
  * вместе с анкетой.
  */
+/** Салон или агентство с их анкетами (N-31). */
+export function fetchCompany(slug: string, options?: FetchOptions): Promise<CompanyPage> {
+  return request(`/companies/${slug}`, companyPageSchema, {
+    tags: [PROFILES_TAG],
+    ...options,
+  });
+}
+
 export function fetchCities(options?: FetchOptions): Promise<CityOption[]> {
   return request('/cities', z.array(cityOptionSchema), options);
 }

@@ -7,6 +7,7 @@ import {
   queryArraySchema,
   slugSchema,
 } from './common';
+import { profileCompanySchema } from './company';
 import { contactTypeSchema } from './contact';
 
 /**
@@ -136,6 +137,8 @@ export const profileCardSchema = z.object({
   age: z.number().int().min(18).nullable(),
   city: citySchema,
   district: z.string().nullable(),
+  /** Салон или агентство, если анкету ведёт компания (N-31). */
+  company: profileCompanySchema.nullable().default(null),
   coverPhoto: photoSchema.nullable(),
   /**
    * Ключи услуг из справочника для подписей на карточке. Раньше здесь были

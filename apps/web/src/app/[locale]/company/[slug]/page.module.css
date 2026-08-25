@@ -1,0 +1,66 @@
+.wrap {
+  padding: var(--space8) 0 var(--space12);
+}
+
+.head {
+  margin-bottom: var(--space8);
+  max-width: 720px;
+}
+
+.kind {
+  font-size: var(--textSm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.name {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text3xl);
+  margin: var(--space2) 0 var(--space3);
+}
+
+.address {
+  color: var(--secondaryText);
+  margin-bottom: var(--space3);
+}
+
+.description {
+  color: var(--secondaryText);
+  line-height: var(--leadingRelaxed);
+  white-space: pre-line;
+}
+
+.contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space3);
+  margin-top: var(--space4);
+  list-style: none;
+}
+
+.contact {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space2);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: var(--space2) var(--space4);
+  font-size: var(--textSm);
+}
+
+.contactType {
+  color: var(--tertiaryText);
+}
+
+.listTitle {
+  font-weight: 600;
+  font-size: var(--textLg);
+  margin-bottom: var(--space4);
+}
+
+.empty {
+  color: var(--secondaryText);
+}

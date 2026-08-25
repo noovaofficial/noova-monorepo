@@ -1,4 +1,5 @@
 import {
+  companySchema,
   type Locale,
   MAP_CLUSTER_SAMPLE,
   mapClusterSchema,
@@ -40,6 +41,11 @@ export const cardSelect = (locale: Locale) =>
       },
     },
     district: { select: { name: true, translations: translationSelect(locale) } },
+    // Отключённую компанию не показываем: она снята с витрины целиком.
+    company: {
+      where: { isActive: true },
+      select: { slug: true, kind: true, name: true },
+    },
     services: {
       take: 6,
       select: { service: { select: { key: true, translations: translationSelect(locale) } } },
@@ -114,6 +120,64 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const total = await fastify.prisma.profile.count({ where: buildProfileWhere(request.query) });
       return { total };
+    },
+  );
+
+  /**
+   * Страница компании: салон или агентство с их анкетами (N-31).
+   *
+   * Отключённая компания отдаёт 404, а не пустую страницу: снятая с витрины
+   * компания не должна оставлять по себе адрес, который выглядит рабочим.
+   */
+  fastify.get(
+    '/companies/:slug',
+    {
+      schema: {
+        tags: ['profiles'],
+        params: z.object({ slug: slugSchema }),
+        querystring: localeQuerySchema,
+        response: {
+          200: companySchema.extend({ profiles: z.array(profileCardSchema) }),
+        },
+      },
+    },
+    async (request) => {
+      const { locale } = request.query;
+      const row = await fastify.prisma.company.findFirst({
+        where: { slug: request.params.slug, isActive: true },
+        select: {
+          id: true,
+          slug: true,
+          kind: true,
+          name: true,
+          description: true,
+          address: true,
+          isActive: true,
+          contacts: {
+            orderBy: { position: 'asc' },
+            select: { type: true, value: true },
+          },
+          profiles: {
+            where: { status: 'published' },
+            orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }],
+            select: cardSelect(locale),
+          },
+        },
+      });
+      if (!row) throw fastify.httpErrors.notFound('Компания не найдена');
+
+      return {
+        id: row.id,
+        slug: row.slug,
+        kind: row.kind,
+        name: row.name,
+        description: row.description,
+        address: row.address,
+        contacts: row.contacts,
+        isActive: row.isActive,
+        profileCount: row.profiles.length,
+        profiles: row.profiles.map(toProfileCard),
+      };
     },
   );
 

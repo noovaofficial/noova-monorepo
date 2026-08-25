@@ -67,6 +67,8 @@ export const ModelName = {
   ProfileComment: 'ProfileComment',
   CommentReport: 'CommentReport',
   Favorite: 'Favorite',
+  Company: 'Company',
+  CompanyContact: 'CompanyContact',
   ProfileContact: 'ProfileContact',
   ContactReveal: 'ContactReveal',
   PriceSlot: 'PriceSlot',
@@ -229,6 +231,7 @@ export const ProfileScalarFieldEnum = {
   status: 'status',
   displayName: 'displayName',
   description: 'description',
+  companyId: 'companyId',
   ownerId: 'ownerId',
   cityId: 'cityId',
   districtId: 'districtId',
@@ -331,6 +334,34 @@ export const FavoriteScalarFieldEnum = {
 } as const
 
 export type FavoriteScalarFieldEnum = (typeof FavoriteScalarFieldEnum)[keyof typeof FavoriteScalarFieldEnum]
+
+
+export const CompanyScalarFieldEnum = {
+  id: 'id',
+  slug: 'slug',
+  kind: 'kind',
+  name: 'name',
+  description: 'description',
+  address: 'address',
+  isActive: 'isActive',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const CompanyContactScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  type: 'type',
+  value: 'value',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type CompanyContactScalarFieldEnum = (typeof CompanyContactScalarFieldEnum)[keyof typeof CompanyContactScalarFieldEnum]
 
 
 export const ProfileContactScalarFieldEnum = {

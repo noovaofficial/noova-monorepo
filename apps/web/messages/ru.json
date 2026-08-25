@@ -125,7 +125,9 @@
     "contacts": "Контакты",
     "comments": "Отзывы",
     "reportSection": "Пожаловаться",
-    "mapAttribution": "© OpenStreetMap"
+    "mapAttribution": "© OpenStreetMap",
+    "fromSalon": "Салон {name}",
+    "fromAgency": "Агентство {name}"
   },
   "footer": {
     "about": "Noova — каталог анкет для взрослых (18+). Доступ к материалам разрешён только совершеннолетним. Все анкеты проходят проверку возраста и личности; материалы с участием несовершеннолетних и любое принуждение строго запрещены и удаляются.",
@@ -217,7 +219,7 @@
     "advertiserIndividual": "Индивидуальная анкета",
     "advertiserIndividualHint": "Одна анкета от своего имени",
     "advertiserSalon": "Салон",
-    "advertiserSalonHint": "Несколько анкет массажного салона",
+    "advertiserSalonHint": "Несколько анкет массажного салона с адресом",
     "advertiserKind": "Тип размещения",
     "moderation": "Модерация",
     "staff": "Сотрудники",
@@ -225,7 +227,9 @@
     "allUsers": "Все пользователи",
     "log": "Журнал решений",
     "locations": "География",
-    "serviceCatalog": "Услуги"
+    "serviceCatalog": "Услуги",
+    "advertiserAgency": "Агентство",
+    "advertiserAgencyHint": "Несколько анкет сопровождения, своего адреса нет"
   },
   "account": {
     "title": "Мои анкеты",
@@ -706,5 +710,17 @@
     "kindAll": "Для всех видов анкет",
     "inProfiles": "в {count} анкетах",
     "cannotDelete": "Выбрана в {count} анкетах — удаление порвало бы связи. Вместо него отключите."
+  },
+  "company": {
+    "salon": "Салон",
+    "agency": "Агентство",
+    "titleSalon": "Салон {name}",
+    "titleAgency": "Агентство {name}",
+    "profiles": "{count, plural, one {# анкета} few {# анкеты} many {# анкет} other {# анкеты}}",
+    "noProfiles": "Опубликованных анкет пока нет",
+    "contact_phone": "Телефон",
+    "contact_whatsapp": "WhatsApp",
+    "contact_telegram": "Telegram",
+    "contact_viber": "Viber"
   }
 }

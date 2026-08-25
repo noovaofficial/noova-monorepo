@@ -60,10 +60,19 @@ export type Gender = (typeof Gender)[keyof typeof Gender]
 
 export const AdvertiserKind = {
   individual: 'individual',
+  agency: 'agency',
   salon: 'salon'
 } as const
 
 export type AdvertiserKind = (typeof AdvertiserKind)[keyof typeof AdvertiserKind]
+
+
+export const CompanyKind = {
+  agency: 'agency',
+  salon: 'salon'
+} as const
+
+export type CompanyKind = (typeof CompanyKind)[keyof typeof CompanyKind]
 
 
 export const HairColor = {

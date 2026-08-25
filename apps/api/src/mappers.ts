@@ -76,6 +76,7 @@ type ProfileCardRow = {
   age: number | null;
   city: CityRow;
   district: { name: string; translations?: Translations } | null;
+  company: { slug: string; kind: 'agency' | 'salon'; name: string } | null;
   photos: PhotoRow[];
   services?: { service: { key: string; translations?: Translations } }[];
   fromPriceCents: number | null;
@@ -94,6 +95,8 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
     age: row.age,
     city: toCity(row.city),
     district: row.district ? localized(row.district.translations, row.district.name) : null,
+    // Компанию посетитель видит — решение владельца продукта (N-31).
+    company: row.company,
     coverPhoto: cover ? toPhoto(cover) : null,
     services: (row.services ?? []).slice(0, 6).map((s) => ({
       key: s.service.key,

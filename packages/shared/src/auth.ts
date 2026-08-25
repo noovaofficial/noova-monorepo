@@ -51,7 +51,7 @@ export const registerAdvertiserSchema = z.object({
   // Тип задаётся при регистрации: от него зависит и лимит анкет, и их вид.
   // Выводить это из первой созданной анкеты нельзя — проверять нужно раньше,
   // чем анкета появилась.
-  advertiserKind: z.enum(['individual', 'salon']),
+  advertiserKind: z.enum(['individual', 'agency', 'salon']),
 });
 export type RegisterAdvertiserInput = z.infer<typeof registerAdvertiserSchema>;
 
@@ -90,7 +90,7 @@ export const currentUserSchema = z.object({
   email: emailSchema,
   role: userRoleSchema,
   isEmailVerified: z.boolean(),
-  advertiserKind: z.enum(['individual', 'salon']).nullable(),
+  advertiserKind: z.enum(['individual', 'agency', 'salon']).nullable(),
   clientProfile: clientProfileSchema.nullable(),
   /**
    * Когда запрошено удаление. Не null — учётка в отсрочке: интерфейс должен

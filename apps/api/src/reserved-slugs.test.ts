@@ -15,16 +15,14 @@ import { describe, expect, it } from 'vitest';
  * легко — и город с таким именем потом просто не откроется, без единой ошибки
  * при заведении. Пусть об этом узнает сборка, а не посетитель.
  */
-const APP_DIR = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '../../../apps/web/src/app/[locale]',
-);
+const APP_DIR = join(dirname(fileURLToPath(import.meta.url)), '../../../apps/web/src/app/[locale]');
 
 describe('RESERVED_CITY_SLUGS', () => {
   it('покрывает все статические маршруты под [locale]', () => {
     const routes = readdirSync(APP_DIR, { withFileTypes: true })
       .filter(
-        (entry) => entry.isDirectory() && !entry.name.startsWith('[') && !entry.name.startsWith('_'),
+        (entry) =>
+          entry.isDirectory() && !entry.name.startsWith('[') && !entry.name.startsWith('_'),
       )
       .map((entry) => entry.name);
 

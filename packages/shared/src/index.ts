@@ -2,6 +2,7 @@ export * from './account';
 export * from './auth';
 export * from './comment';
 export * from './common';
+export * from './company';
 export * from './contact';
 export * from './favorite';
 export * from './geo';

@@ -433,10 +433,6 @@ export type ProfileContactUncheckedUpdateManyWithoutProfileNestedInput = {
   deleteMany?: Prisma.ProfileContactScalarWhereInput | Prisma.ProfileContactScalarWhereInput[]
 }
 
-export type EnumContactTypeFieldUpdateOperationsInput = {
-  set?: $Enums.ContactType
-}
-
 export type ProfileContactCreateWithoutProfileInput = {
   id?: string
   type: $Enums.ContactType

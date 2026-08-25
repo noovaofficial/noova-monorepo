@@ -262,6 +262,7 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
+  company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
@@ -290,6 +291,7 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  company?: Prisma.CompanyOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   clientProfile?: Prisma.ClientProfileOrderByWithRelationInput
   authTokens?: Prisma.AuthTokenOrderByRelationAggregateInput
@@ -321,6 +323,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
+  company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
@@ -390,6 +393,7 @@ export type UserCreateInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -418,6 +422,7 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -444,6 +449,7 @@ export type UserUpdateInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -472,6 +478,7 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -810,6 +817,20 @@ export type UserUpdateOneRequiredWithoutFavoritesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFavoritesInput, Prisma.UserUpdateWithoutFavoritesInput>, Prisma.UserUncheckedUpdateWithoutFavoritesInput>
 }
 
+export type UserCreateNestedOneWithoutCompanyInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCompanyInput, Prisma.UserUncheckedCreateWithoutCompanyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompanyInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCompanyNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCompanyInput, Prisma.UserUncheckedCreateWithoutCompanyInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCompanyInput
+  upsert?: Prisma.UserUpsertWithoutCompanyInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompanyInput, Prisma.UserUpdateWithoutCompanyInput>, Prisma.UserUncheckedUpdateWithoutCompanyInput>
+}
+
 export type UserCreateWithoutCreatedByInput = {
   id?: string
   email: string
@@ -825,6 +846,7 @@ export type UserCreateWithoutCreatedByInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -851,6 +873,7 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -887,6 +910,7 @@ export type UserCreateWithoutCreatedStaffInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -914,6 +938,7 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -992,6 +1017,7 @@ export type UserUpdateWithoutCreatedStaffInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1019,6 +1045,7 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1044,6 +1071,7 @@ export type UserCreateWithoutClientProfileInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1071,6 +1099,7 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1112,6 +1141,7 @@ export type UserUpdateWithoutClientProfileInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1139,6 +1169,7 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1164,6 +1195,7 @@ export type UserCreateWithoutModerationActionsInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -1191,6 +1223,7 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1232,6 +1265,7 @@ export type UserUpdateWithoutModerationActionsInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1259,6 +1293,7 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1284,6 +1319,7 @@ export type UserCreateWithoutAuthTokensInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1311,6 +1347,7 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1352,6 +1389,7 @@ export type UserUpdateWithoutAuthTokensInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1379,6 +1417,7 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1404,6 +1443,7 @@ export type UserCreateWithoutProfilesInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1431,6 +1471,7 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1472,6 +1513,7 @@ export type UserUpdateWithoutProfilesInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1499,6 +1541,7 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1524,6 +1567,7 @@ export type UserCreateWithoutProfileReportsInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -1551,6 +1595,7 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1592,6 +1637,7 @@ export type UserUpdateWithoutProfileReportsInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1619,6 +1665,7 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1644,6 +1691,7 @@ export type UserCreateWithoutCommentsInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -1671,6 +1719,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1712,6 +1761,7 @@ export type UserUpdateWithoutCommentsInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1739,6 +1789,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1764,6 +1815,7 @@ export type UserCreateWithoutCommentReportsInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -1791,6 +1843,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1832,6 +1885,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1859,6 +1913,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1884,6 +1939,7 @@ export type UserCreateWithoutFavoritesInput = {
   banReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
@@ -1911,6 +1967,7 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1952,6 +2009,7 @@ export type UserUpdateWithoutFavoritesInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -1979,9 +2037,134 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCompanyInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutCompanyInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCompanyInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCompanyInput, Prisma.UserUncheckedCreateWithoutCompanyInput>
+}
+
+export type UserUpsertWithoutCompanyInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCompanyInput, Prisma.UserUncheckedUpdateWithoutCompanyInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCompanyInput, Prisma.UserUncheckedCreateWithoutCompanyInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCompanyInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCompanyInput, Prisma.UserUncheckedUpdateWithoutCompanyInput>
+}
+
+export type UserUpdateWithoutCompanyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCompanyInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
@@ -2021,6 +2204,7 @@ export type UserUpdateWithoutCreatedByInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
@@ -2047,6 +2231,7 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2185,6 +2370,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  company?: boolean | Prisma.User$companyArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
@@ -2256,6 +2442,7 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  company?: boolean | Prisma.User$companyArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
@@ -2278,6 +2465,10 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    /**
+     * Салон или агентство. У индивидуалки и у посетителя пусто.
+     */
+    company: Prisma.$CompanyPayload<ExtArgs> | null
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     clientProfile: Prisma.$ClientProfilePayload<ExtArgs> | null
     authTokens: Prisma.$AuthTokenPayload<ExtArgs>[]
@@ -2721,6 +2912,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  company<T extends Prisma.User$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$companyArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.User$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clientProfile<T extends Prisma.User$clientProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientProfileArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   authTokens<T extends Prisma.User$authTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3173,6 +3365,25 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.company
+ */
+export type User$companyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Company
+   */
+  select?: Prisma.CompanySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Company
+   */
+  omit?: Prisma.CompanyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyInclude<ExtArgs> | null
+  where?: Prisma.CompanyWhereInput
 }
 
 /**

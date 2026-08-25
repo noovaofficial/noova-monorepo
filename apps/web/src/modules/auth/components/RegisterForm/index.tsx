@@ -1,6 +1,11 @@
 'use client';
 
-import { type RegisterInput, registerAdvertiserSchema, registerClientSchema } from '@noova/shared';
+import {
+  type AdvertiserKind,
+  type RegisterInput,
+  registerAdvertiserSchema,
+  registerClientSchema,
+} from '@noova/shared';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -12,10 +17,28 @@ import { useRedirectSignedIn } from '../useRedirectSignedIn';
 
 type Role = 'client' | 'advertiser';
 
+/**
+ * Три типа размещения (N-31). Порядок — от простого к сложному: большинство
+ * приходит за одной анкетой, и она должна быть первой.
+ */
+const ADVERTISER_KINDS: AdvertiserKind[] = ['individual', 'agency', 'salon'];
+
+const KIND_LABEL: Record<AdvertiserKind, string> = {
+  individual: 'advertiserIndividual',
+  agency: 'advertiserAgency',
+  salon: 'advertiserSalon',
+};
+
+const KIND_HINT: Record<AdvertiserKind, string> = {
+  individual: 'advertiserIndividualHint',
+  agency: 'advertiserAgencyHint',
+  salon: 'advertiserSalonHint',
+};
+
 export function RegisterForm() {
   const t = useTranslations('auth');
   const [role, setRole] = useState<Role>('client');
-  const [advertiserKind, setAdvertiserKind] = useState<'individual' | 'salon'>('individual');
+  const [advertiserKind, setAdvertiserKind] = useState<AdvertiserKind>('individual');
   const [pending, setPending] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -178,28 +201,19 @@ export function RegisterForm() {
           <div className={styles.field}>
             <span className={styles.label}>{t('advertiserKind')}</span>
             <div className={styles.roles}>
-              <button
-                type="button"
-                className={`${styles.role} ${advertiserKind === 'individual' ? styles.roleActive : ''}`}
-                onClick={() => setAdvertiserKind('individual')}
-                aria-pressed={advertiserKind === 'individual'}
-              >
-                {t('advertiserIndividual')}
-              </button>
-              <button
-                type="button"
-                className={`${styles.role} ${advertiserKind === 'salon' ? styles.roleActive : ''}`}
-                onClick={() => setAdvertiserKind('salon')}
-                aria-pressed={advertiserKind === 'salon'}
-              >
-                {t('advertiserSalon')}
-              </button>
+              {ADVERTISER_KINDS.map((kind) => (
+                <button
+                  key={kind}
+                  type="button"
+                  className={`${styles.role} ${advertiserKind === kind ? styles.roleActive : ''}`}
+                  onClick={() => setAdvertiserKind(kind)}
+                  aria-pressed={advertiserKind === kind}
+                >
+                  {t(KIND_LABEL[kind])}
+                </button>
+              ))}
             </div>
-            <span className={styles.hint}>
-              {advertiserKind === 'individual'
-                ? t('advertiserIndividualHint')
-                : t('advertiserSalonHint')}
-            </span>
+            <span className={styles.hint}>{t(KIND_HINT[advertiserKind])}</span>
           </div>
         ) : null}
 

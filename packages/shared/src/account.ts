@@ -14,18 +14,27 @@ import {
   verificationStatusSchema,
 } from './profile';
 
-export const advertiserKindSchema = z.enum(['individual', 'salon']);
+export const advertiserKindSchema = z.enum(['individual', 'agency', 'salon']);
 export type AdvertiserKind = z.infer<typeof advertiserKindSchema>;
 
 /** Какой вид анкет разрешён владельцу. Смешивать типы нельзя. */
+/**
+ * Ветка каталога по типу рекламодателя (N-31).
+ *
+ * Отсюда же следует «у салона свои услуги»: анкета салона всегда massage,
+ * а услуги отбираются по `Service.appliesTo` — отдельного справочника для
+ * салона заводить не пришлось.
+ */
 export const LISTING_KIND_BY_ADVERTISER: Record<AdvertiserKind, 'escort' | 'massage'> = {
   individual: 'escort',
+  agency: 'escort',
   salon: 'massage',
 };
 
-/** Сколько анкет разрешено. У индивидуалки ровно одна. */
+/** Сколько анкет разрешено. У индивидуалки ровно одна — она размещает себя. */
 export const PROFILE_LIMIT_BY_ADVERTISER: Record<AdvertiserKind, number> = {
   individual: 1,
+  agency: 50,
   salon: 50,
 };
 

@@ -125,7 +125,9 @@
     "contacts": "Kontakte",
     "comments": "Bewertungen",
     "reportSection": "Melden",
-    "mapAttribution": "© OpenStreetMap"
+    "mapAttribution": "© OpenStreetMap",
+    "fromSalon": "Studio {name}",
+    "fromAgency": "Agentur {name}"
   },
   "footer": {
     "about": "Noova ist ein Anzeigenverzeichnis für Erwachsene (18+). Der Zugang ist ausschließlich Volljährigen gestattet. Alle Anzeigen durchlaufen eine Alters- und Identitätsprüfung; Material mit Minderjährigen sowie jede Form von Zwang sind strikt verboten und werden entfernt.",
@@ -217,7 +219,7 @@
     "advertiserIndividual": "Einzelanzeige",
     "advertiserIndividualHint": "Eine Anzeige im eigenen Namen",
     "advertiserSalon": "Studio",
-    "advertiserSalonHint": "Mehrere Anzeigen eines Massagestudios",
+    "advertiserSalonHint": "Mehrere Anzeigen eines Massagestudios mit Adresse",
     "advertiserKind": "Anzeigenart",
     "moderation": "Moderation",
     "staff": "Mitarbeiter",
@@ -225,7 +227,9 @@
     "allUsers": "Alle Nutzer",
     "log": "Entscheidungsprotokoll",
     "locations": "Geografie",
-    "serviceCatalog": "Dienstleistungen"
+    "serviceCatalog": "Dienstleistungen",
+    "advertiserAgency": "Agentur",
+    "advertiserAgencyHint": "Mehrere Begleitanzeigen, ohne eigene Adresse"
   },
   "account": {
     "title": "Meine Anzeigen",
@@ -706,5 +710,17 @@
     "kindAll": "Für alle Anzeigentypen",
     "inProfiles": "in {count} Anzeigen",
     "cannotDelete": "In {count} Anzeigen gewählt — Löschen würde die Verknüpfungen zerreißen. Stattdessen deaktivieren."
+  },
+  "company": {
+    "salon": "Studio",
+    "agency": "Agentur",
+    "titleSalon": "Studio {name}",
+    "titleAgency": "Agentur {name}",
+    "profiles": "{count, plural, one {# Anzeige} other {# Anzeigen}}",
+    "noProfiles": "Noch keine veröffentlichten Anzeigen",
+    "contact_phone": "Telefon",
+    "contact_whatsapp": "WhatsApp",
+    "contact_telegram": "Telegram",
+    "contact_viber": "Viber"
   }
 }

@@ -49,8 +49,19 @@ enum Gender {
 /// individual — ровно одна анкета kind=escort, salon — сколько угодно kind=massage.
 /// Смешивать нельзя: салон, размещающий эскорт-анкеты от своего имени, — уже
 /// посредничество, а модель построена на само-размещении.
+/// Кто размещает анкеты. Три типа, и они не смешиваются: у каждого свой
+/// предел числа анкет и своя ветка каталога (N-31).
 enum AdvertiserKind {
   individual
+  agency
+  salon
+}
+
+/// Компания рекламодателя. Индивидуалки здесь нет: она размещает себя, и
+/// заводить для неё «компанию из одного человека» значит выдумывать сущность
+/// ради единообразия.
+enum CompanyKind {
+  agency
   salon
 }
 
@@ -147,6 +158,8 @@ model User {
   lastLoginAt         DateTime?
   /// Заполняется только для role = advertiser.
   advertiserKind      AdvertiserKind?
+  /// Салон или агентство. У индивидуалки и у посетителя пусто.
+  company             Company?
   /// Язык интерфейса на момент регистрации — на нём приходят письма.
   locale              String          @default("de")
   // Бан гасит все сессии; вход отклоняется до снятия.
@@ -342,6 +355,11 @@ model Profile {
   status      ProfileStatus @default(draft)
   displayName String
   description String        @default("")
+
+  /// Компания, ведущая анкету (N-31). Пусто у индивидуалки: она размещает
+  /// себя сама, и компании у неё нет.
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
 
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -560,6 +578,57 @@ enum ContactType {
   whatsapp
   telegram
   viber
+}
+
+/// Салон или агентство (N-31).
+///
+/// Разница между ними по существу одна: **у салона есть адрес**, он принимает
+/// у себя; агентство ведёт анкеты без общего места. Отсюда и разные ветки
+/// каталога: салон публикует massage-анкеты, агентство — escort, и набор
+/// услуг у них разный сам собой (`Service.appliesTo`).
+///
+/// Одна компания на учётную запись: `ownerId` уникален. Рекламодатель — это
+/// и есть компания, отдельной сущности «сотрудник компании» пока нет.
+model Company {
+  id          String      @id @default(cuid())
+  /// Адрес страницы компании: /{locale}/company/{slug}.
+  slug        String      @unique
+  kind        CompanyKind
+  name        String
+  description String?
+  /// Только у салона. У агентства адреса нет — это и есть отличие.
+  address     String?
+
+  /// Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
+  isActive Boolean @default(true)
+
+  ownerId String @unique
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  profiles Profile[]
+  contacts CompanyContact[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kind, isActive])
+}
+
+/// Контакты компании. В отличие от контактов анкеты, отдаются публично:
+/// у салона это способ до него дозвониться, и прятать его за раскрытием
+/// незачем — это контакт заведения, а не персональные данные девушки.
+model CompanyContact {
+  id        String      @id @default(cuid())
+  companyId String
+  company   Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  type      ContactType
+  value     String
+  position  Int         @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([companyId, type, value])
+  @@index([companyId, position])
 }
 
 /// Контакты анкеты. Наружу отдаются только по явному раскрытию отдельным

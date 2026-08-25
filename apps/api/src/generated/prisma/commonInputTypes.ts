@@ -582,6 +582,23 @@ export type EnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
 }
 
+export type EnumCompanyKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel> | $Enums.CompanyKind
+}
+
+export type EnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyKindWithAggregatesFilter<$PrismaModel> | $Enums.CompanyKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
+}
+
 export type EnumContactTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ContactType | Prisma.EnumContactTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel>
@@ -1157,6 +1174,23 @@ export type NestedEnumCommentStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCommentStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCompanyKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel> | $Enums.CompanyKind
+}
+
+export type NestedEnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
+  in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCompanyKindWithAggregatesFilter<$PrismaModel> | $Enums.CompanyKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
 }
 
 export type NestedEnumContactTypeFilter<$PrismaModel = never> = {
