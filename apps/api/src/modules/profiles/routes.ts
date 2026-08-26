@@ -47,6 +47,10 @@ export const cardSelect = (locale: Locale) =>
       select: { slug: true, kind: true, name: true },
     },
     services: {
+      // Только действующие: услуга, убранная из справочника, не должна
+      // оставаться на уже заполненных анкетах. Удалить её нельзя — на неё
+      // ссылаются, — поэтому «убрать» и означает «перестать показывать».
+      where: { service: { isActive: true } },
       take: 6,
       select: { service: { select: { key: true, translations: translationSelect(locale) } } },
     },
@@ -233,6 +237,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           // Порядок каталога задаётся position: без него группы на странице
           // анкеты выстроятся произвольно и разойдутся с формой редактирования.
           services: {
+            where: { service: { isActive: true } },
             orderBy: { service: { position: 'asc' } },
             select: {
               isExtra: true,

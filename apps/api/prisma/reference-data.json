@@ -420,19 +420,19 @@
       }
     },
     {
-      "key": "striptease",
-      "name": {
-        "de": "Striptease",
-        "en": "Striptease",
-        "ru": "Стриптиз"
-      }
-    },
-    {
       "key": "extreme",
       "name": {
         "de": "Extrem",
         "en": "Extreme",
         "ru": "Экстрим"
+      }
+    },
+    {
+      "key": "striptease",
+      "name": {
+        "de": "Striptease",
+        "en": "Striptease",
+        "ru": "Стриптиз"
       }
     },
     {
@@ -619,6 +619,21 @@
       }
     },
     {
+      "id": "cmtadtw7f000kz6b0cx8lo9qp",
+      "key": "cosplay_spiderman",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 110,
+      "isActive": true,
+      "name": {
+        "de": "Spider-Man",
+        "en": "Spider-Man",
+        "ru": "Человек-паук"
+      }
+    },
+    {
       "id": "cmt1irvgs000axab0kl2ym0m3",
       "key": "sex_couples",
       "group": "sex",
@@ -634,8 +649,8 @@
       }
     },
     {
-      "id": "cmt1irvgt000bxab0mfivptc0",
-      "key": "bj_condom",
+      "id": "cmtadtw2x0000z6b04gkypj7a",
+      "key": "bj",
       "group": "sex",
       "appliesTo": [
         "escort"
@@ -643,24 +658,39 @@
       "position": 111,
       "isActive": true,
       "name": {
-        "de": "Oral mit Kondom",
-        "en": "Oral with condom",
-        "ru": "Минет в резинке"
+        "de": "Blowjob",
+        "en": "Blowjob",
+        "ru": "Минет"
       }
     },
     {
-      "id": "cmt1irvgt000cxab00tfyk2uj",
-      "key": "bj_no_condom",
-      "group": "sex",
+      "id": "cmtadtw7y000oz6b0ufvszv7b",
+      "key": "cosplay_latex",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 111,
+      "isActive": true,
+      "name": {
+        "de": "Latex",
+        "en": "Latex",
+        "ru": "Латексный костюм"
+      }
+    },
+    {
+      "id": "cmtadtw8j000sz6b0ddf5wzq9",
+      "key": "cosplay_leather",
+      "group": "cosplay",
       "appliesTo": [
         "escort"
       ],
       "position": 112,
       "isActive": true,
       "name": {
-        "de": "Oral ohne Kondom",
-        "en": "Oral without condom",
-        "ru": "Минет без резинки"
+        "de": "Lederanzug",
+        "en": "Leather outfit",
+        "ru": "Кожаный костюм"
       }
     },
     {
@@ -679,6 +709,21 @@
       }
     },
     {
+      "id": "cmtadtw90000wz6b096ukmu5u",
+      "key": "cosplay_nurse",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 113,
+      "isActive": true,
+      "name": {
+        "de": "Krankenschwester",
+        "en": "Nurse",
+        "ru": "Медсестра"
+      }
+    },
+    {
       "id": "cmt1irvgu000exab000if7dz4",
       "key": "bj_throat",
       "group": "sex",
@@ -691,6 +736,21 @@
         "de": "Kehlenoral",
         "en": "Throat oral",
         "ru": "Минет горловой"
+      }
+    },
+    {
+      "id": "cmtadtw9g0010z6b01zz7m6aq",
+      "key": "cosplay_cat",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 114,
+      "isActive": true,
+      "name": {
+        "de": "Katze",
+        "en": "Cat",
+        "ru": "Кошка"
       }
     },
     {
@@ -709,6 +769,36 @@
       }
     },
     {
+      "id": "cmtadtw9v0014z6b0fekk3s18",
+      "key": "cosplay_maid",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 115,
+      "isActive": true,
+      "name": {
+        "de": "Zimmermädchen",
+        "en": "Maid",
+        "ru": "Горничная"
+      }
+    },
+    {
+      "id": "cmtadtwab0018z6b0epdk66re",
+      "key": "cosplay_schoolgirl",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 116,
+      "isActive": true,
+      "name": {
+        "de": "Schulmädchen",
+        "en": "Schoolgirl",
+        "ru": "Школьница"
+      }
+    },
+    {
       "id": "cmt1irvgw000gxab0l3b71121",
       "key": "cunnilingus",
       "group": "sex",
@@ -724,6 +814,21 @@
       }
     },
     {
+      "id": "cmtadtwar001cz6b0f250opp8",
+      "key": "cosplay_police",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 117,
+      "isActive": true,
+      "name": {
+        "de": "Polizistin",
+        "en": "Police officer",
+        "ru": "Полицейский"
+      }
+    },
+    {
       "id": "cmt1irvgw000hxab0svexmeap",
       "key": "kissing",
       "group": "sex",
@@ -736,6 +841,21 @@
         "de": "Küssen",
         "en": "Kissing",
         "ru": "Целуюсь"
+      }
+    },
+    {
+      "id": "cmtadtwb8001gz6b0ppn0v08s",
+      "key": "cosplay_devil",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 118,
+      "isActive": true,
+      "name": {
+        "de": "Teufelin",
+        "en": "She-devil",
+        "ru": "Дьяволица"
       }
     },
     {
@@ -811,6 +931,21 @@
         "de": "69er-Stellung",
         "en": "69 position",
         "ru": "Поза 69"
+      }
+    },
+    {
+      "id": "cmt1irvhj001lxab0f85gv927",
+      "key": "squirt",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 123,
+      "isActive": true,
+      "name": {
+        "de": "Squirting",
+        "en": "Squirting",
+        "ru": "Сквирт"
       }
     },
     {
@@ -905,6 +1040,66 @@
       }
     },
     {
+      "id": "cmtadtw490004z6b0bog9avl7",
+      "key": "strapon_to_client",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 300,
+      "isActive": true,
+      "name": {
+        "de": "Strapon für den Kunden",
+        "en": "Strap-on to client",
+        "ru": "Страпон клиенту"
+      }
+    },
+    {
+      "id": "cmtadtw4v0008z6b026k8ah0o",
+      "key": "strapon_to_me",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 301,
+      "isActive": true,
+      "name": {
+        "de": "Strapon für mich",
+        "en": "Strap-on to me",
+        "ru": "Страпон мне"
+      }
+    },
+    {
+      "id": "cmtadtw66000cz6b0utgyd4ri",
+      "key": "fingering_to_client",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 308,
+      "isActive": true,
+      "name": {
+        "de": "Fingern des Kunden",
+        "en": "Fingering the client",
+        "ru": "Фингеринг клиенту"
+      }
+    },
+    {
+      "id": "cmtadtw6v000gz6b0yc833j1p",
+      "key": "fingering_to_me",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 309,
+      "isActive": true,
+      "name": {
+        "de": "Fingern bei mir",
+        "en": "Fingering me",
+        "ru": "Фингеринг мне"
+      }
+    },
+    {
       "id": "cmt1irvh4000uxab0bu7u7zet",
       "key": "striptease_pro",
       "group": "striptease",
@@ -965,21 +1160,6 @@
       }
     },
     {
-      "id": "cmt1irvh6000yxab0xq9tq69d",
-      "key": "strapon",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 434,
-      "isActive": true,
-      "name": {
-        "de": "Umschnalldildo",
-        "en": "Strap-on",
-        "ru": "Страпон"
-      }
-    },
-    {
       "id": "cmt1irvh6000zxab02p3jwd8k",
       "key": "anilingus_to_client",
       "group": "extreme",
@@ -1007,96 +1187,6 @@
         "de": "Anilingus für mich",
         "en": "Anilingus to me",
         "ru": "Анилингус мне"
-      }
-    },
-    {
-      "id": "cmt1irvh80011xab0g144k1ql",
-      "key": "golden_to_client",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 437,
-      "isActive": true,
-      "name": {
-        "de": "Natursekt aktiv",
-        "en": "Golden shower to client",
-        "ru": "Золотой дождь клиенту"
-      }
-    },
-    {
-      "id": "cmt1irvh80012xab01hg9ucl2",
-      "key": "golden_to_me",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 438,
-      "isActive": true,
-      "name": {
-        "de": "Natursekt passiv",
-        "en": "Golden shower to me",
-        "ru": "Золотой дождь мне"
-      }
-    },
-    {
-      "id": "cmt1irvh90013xab07jwgde5k",
-      "key": "fisting_anal_client",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 439,
-      "isActive": true,
-      "name": {
-        "de": "Anales Fisting aktiv",
-        "en": "Anal fisting to client",
-        "ru": "Фистинг анальный клиенту"
-      }
-    },
-    {
-      "id": "cmt1irvh90014xab01pyzhcak",
-      "key": "fisting_anal_me",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 440,
-      "isActive": true,
-      "name": {
-        "de": "Anales Fisting passiv",
-        "en": "Anal fisting to me",
-        "ru": "Фистинг анальный мне"
-      }
-    },
-    {
-      "id": "cmt1irvha0015xab0k7vs2o6y",
-      "key": "fisting_classic",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 441,
-      "isActive": true,
-      "name": {
-        "de": "Klassisches Fisting",
-        "en": "Classic fisting",
-        "ru": "Фистинг классический"
-      }
-    },
-    {
-      "id": "cmt1irvha0016xab04ux5z8tr",
-      "key": "fingering",
-      "group": "extreme",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 442,
-      "isActive": true,
-      "name": {
-        "de": "Fingering",
-        "en": "Fingering",
-        "ru": "Фингеринг"
       }
     },
     {
@@ -1277,51 +1367,6 @@
         "de": "Facesitting",
         "en": "Facesitting",
         "ru": "Фейсситтинг"
-      }
-    },
-    {
-      "id": "cmt1irvhi001jxab047yzsesf",
-      "key": "copro_give",
-      "group": "bdsm",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 555,
-      "isActive": true,
-      "name": {
-        "de": "Kaviar aktiv",
-        "en": "Copro (active)",
-        "ru": "Копро (выдача)"
-      }
-    },
-    {
-      "id": "cmt1irvhj001kxab0vwmtj3gg",
-      "key": "copro_take",
-      "group": "bdsm",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 556,
-      "isActive": true,
-      "name": {
-        "de": "Kaviar passiv",
-        "en": "Copro (passive)",
-        "ru": "Копро (приём)"
-      }
-    },
-    {
-      "id": "cmt1irvhj001lxab0f85gv927",
-      "key": "squirt",
-      "group": "bdsm",
-      "appliesTo": [
-        "escort"
-      ],
-      "position": 557,
-      "isActive": true,
-      "name": {
-        "de": "Squirt",
-        "en": "Squirt",
-        "ru": "Сквирт"
       }
     },
     {

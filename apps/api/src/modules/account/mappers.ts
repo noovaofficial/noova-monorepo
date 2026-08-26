@@ -133,7 +133,12 @@ export const ownProfileSelect = {
     orderBy: { durationMinutes: 'asc' },
     select: { durationMinutes: true, incallCents: true, outcallCents: true },
   },
-  services: { select: { isExtra: true, service: { select: { key: true } } } },
+  services: {
+    // Убранная из справочника услуга не должна оставаться в форме: иначе
+    // владелец видит её, сохраняет — и она возвращается на анкету.
+    where: { service: { isActive: true } },
+    select: { isExtra: true, service: { select: { key: true } } },
+  },
   contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
   photos: {
     where: { deletedAt: null },

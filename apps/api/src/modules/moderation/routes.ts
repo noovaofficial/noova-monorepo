@@ -996,6 +996,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
             select: { durationMinutes: true, incallCents: true, outcallCents: true },
           },
           services: {
+            where: { service: { isActive: true } },
             select: {
               service: { select: { key: true, translations: translationSelect(locale) } },
             },
