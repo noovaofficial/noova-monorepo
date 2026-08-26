@@ -226,7 +226,6 @@ async function main() {
         hasPiercing: i % 4 === 0,
         hasTattoos: i % 3 === 0,
         languages: ['de', 'en', ...(i % 3 === 0 ? ['ru'] : [])],
-        tags: [],
         lastSeenAt: isOnline ? new Date(now - 60_000) : new Date(now - 6 * 60 * 60 * 1000),
         publishedAt: new Date(now - i * 3_600_000),
         prices: {
@@ -283,7 +282,6 @@ async function main() {
         isFeatured: i % 6 === 0,
         isVerified: true,
         languages: ['de', 'en'],
-        tags: [],
         publishedAt: new Date(now - i * 7_200_000),
         services: linkServices(SALON_SERVICE_SETS[i % SALON_SERVICE_SETS.length]!),
         contacts: { create: demoContacts(i + 50) },

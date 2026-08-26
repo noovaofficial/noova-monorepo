@@ -101,7 +101,6 @@ export const updateProfileSchema = z.object({
   hasTattoos: z.boolean().nullable().optional(),
   appearanceType: appearanceTypeSchema.nullable().optional(),
   smoker: z.boolean().nullable().optional(),
-  tags: z.array(z.string().trim().min(1).max(30)).max(10).optional(),
   /**
    * Точка на карте, выбранная владелицей. Сервер огрубляет её до сетки перед
    * сохранением — проверять это на клиенте бессмысленно, запрос подделывается.
@@ -174,7 +173,6 @@ export const ownProfileSchema = z.object({
   hasTattoos: z.boolean().nullable(),
   appearanceType: appearanceTypeSchema.nullable(),
   smoker: z.boolean().nullable(),
-  tags: z.array(z.string()),
   /** Уже огрублённые координаты — те же, что видит посетитель. */
   location: z.object({ lat: z.number(), lng: z.number() }).nullable(),
   /** Точку поставила владелица; иначе она выведена из района. */

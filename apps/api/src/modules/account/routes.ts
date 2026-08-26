@@ -523,7 +523,6 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
             ...(body.hasTattoos !== undefined ? { hasTattoos: body.hasTattoos } : {}),
             ...(body.appearanceType !== undefined ? { appearanceType: body.appearanceType } : {}),
             ...(body.smoker !== undefined ? { smoker: body.smoker } : {}),
-            ...(body.tags !== undefined ? { tags: body.tags } : {}),
             ...(body.prices !== undefined ? { fromPriceCents: lowestPriceCents(body.prices) } : {}),
           },
           select: ownProfileSelect,

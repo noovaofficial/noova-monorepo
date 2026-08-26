@@ -24,7 +24,6 @@ type OwnProfileRow = {
   hasTattoos: boolean | null;
   appearanceType: OwnProfile['appearanceType'];
   smoker: boolean | null;
-  tags: string[];
   approxLat: number | null;
   approxLng: number | null;
   hasManualLocation: boolean;
@@ -76,7 +75,6 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     hasTattoos: row.hasTattoos,
     appearanceType: row.appearanceType,
     smoker: row.smoker,
-    tags: row.tags,
     location:
       row.approxLat !== null && row.approxLng !== null
         ? { lat: row.approxLat, lng: row.approxLng }
@@ -122,7 +120,6 @@ export const ownProfileSelect = {
   hasTattoos: true,
   appearanceType: true,
   smoker: true,
-  tags: true,
   approxLat: true,
   approxLng: true,
   hasManualLocation: true,

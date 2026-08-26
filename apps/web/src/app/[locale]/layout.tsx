@@ -2,7 +2,7 @@ import { isLocale, LOCALES } from '@noova/shared';
 import type { Metadata } from 'next';
 import { Inter, Sora } from 'next/font/google';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { THEME_INIT_SCRIPT } from '@/design-system/theme';
 import { AgeGate } from '@/layout/AgeGate';
@@ -12,6 +12,7 @@ import { Header } from '@/layout/Header';
 import { SessionProvider } from '@/modules/auth/components/SessionProvider';
 import { SESSION_HINT_SCRIPT } from '@/modules/auth/session-hint';
 import { FavoritesProvider } from '@/modules/favorites/components/FavoritesProvider';
+import { PUBLIC_CLIENT_NAMESPACES, pickNamespaces } from '@/shared/i18n/client-namespaces';
 import { routing } from '@/shared/i18n/routing';
 import { QueryProvider } from '@/shared/query/QueryProvider';
 import '@/design-system/globals.css';
@@ -86,6 +87,7 @@ export default async function LocaleLayout({
 
   // Включает статическую генерацию для всех страниц под этим layout.
   setRequestLocale(locale);
+  const messages = await getMessages({ locale });
 
   return (
     // data-theme и data-adult намеренно НЕ задаются здесь. Смена языка
@@ -103,7 +105,10 @@ export default async function LocaleLayout({
         />
       </head>
       <body>
-        <NextIntlClientProvider>
+        {/* Клиенту уходит только общий набор разделов словаря: приватные
+            добавляют вложенные провайдеры в /account, /admin и /moderation.
+            Иначе посетитель каталога скачивал бы подписи админки. */}
+        <NextIntlClientProvider messages={pickNamespaces(messages, PUBLIC_CLIENT_NAMESPACES)}>
           {/* Query выше сессии: провайдер сессии сам ходит в API. Публичные
               страницы это не затрагивает — они грузятся на сервере. */}
           <QueryProvider>

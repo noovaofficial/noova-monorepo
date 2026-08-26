@@ -2642,7 +2642,6 @@ export const ProfileScalarFieldEnum = {
   hasTattoos: 'hasTattoos',
   appearanceType: 'appearanceType',
   smoker: 'smoker',
-  tags: 'tags',
   moderationNote: 'moderationNote',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

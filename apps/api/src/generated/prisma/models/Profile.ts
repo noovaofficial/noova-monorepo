@@ -154,7 +154,6 @@ export type ProfileCountAggregateOutputType = {
   hasTattoos: number
   appearanceType: number
   smoker: number
-  tags: number
   moderationNote: number
   createdAt: number
   updatedAt: number
@@ -290,7 +289,6 @@ export type ProfileCountAggregateInputType = {
   hasTattoos?: true
   appearanceType?: true
   smoker?: true
-  tags?: true
   moderationNote?: true
   createdAt?: true
   updatedAt?: true
@@ -417,7 +415,6 @@ export type ProfileGroupByOutputType = {
   hasTattoos: boolean | null
   appearanceType: $Enums.AppearanceType | null
   smoker: boolean | null
-  tags: string[]
   moderationNote: string | null
   createdAt: Date
   updatedAt: Date
@@ -480,7 +477,6 @@ export type ProfileWhereInput = {
   hasTattoos?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
-  tags?: Prisma.StringNullableListFilter<"Profile">
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
@@ -534,7 +530,6 @@ export type ProfileOrderByWithRelationInput = {
   hasTattoos?: Prisma.SortOrderInput | Prisma.SortOrder
   appearanceType?: Prisma.SortOrderInput | Prisma.SortOrder
   smoker?: Prisma.SortOrderInput | Prisma.SortOrder
-  tags?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -591,7 +586,6 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   hasTattoos?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
-  tags?: Prisma.StringNullableListFilter<"Profile">
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
@@ -645,7 +639,6 @@ export type ProfileOrderByWithAggregationInput = {
   hasTattoos?: Prisma.SortOrderInput | Prisma.SortOrder
   appearanceType?: Prisma.SortOrderInput | Prisma.SortOrder
   smoker?: Prisma.SortOrderInput | Prisma.SortOrder
-  tags?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -693,7 +686,6 @@ export type ProfileScalarWhereWithAggregatesInput = {
   hasTattoos?: Prisma.BoolNullableWithAggregatesFilter<"Profile"> | boolean | null
   appearanceType?: Prisma.EnumAppearanceTypeNullableWithAggregatesFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableWithAggregatesFilter<"Profile"> | boolean | null
-  tags?: Prisma.StringNullableListFilter<"Profile">
   moderationNote?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
@@ -729,7 +721,6 @@ export type ProfileCreateInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -783,7 +774,6 @@ export type ProfileUncheckedCreateInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -829,7 +819,6 @@ export type ProfileUpdateInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -883,7 +872,6 @@ export type ProfileUncheckedUpdateInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -933,7 +921,6 @@ export type ProfileCreateManyInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -969,7 +956,6 @@ export type ProfileUpdateManyMutationInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1009,7 +995,6 @@ export type ProfileUncheckedUpdateManyInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1067,7 +1052,6 @@ export type ProfileCountOrderByAggregateInput = {
   hasTattoos?: Prisma.SortOrder
   appearanceType?: Prisma.SortOrder
   smoker?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1307,10 +1291,6 @@ export type ProfileCreatelanguagesInput = {
   set: string[]
 }
 
-export type ProfileCreatetagsInput = {
-  set: string[]
-}
-
 export type EnumListingKindFieldUpdateOperationsInput = {
   set?: $Enums.ListingKind
 }
@@ -1354,11 +1334,6 @@ export type NullableBoolFieldUpdateOperationsInput = {
 
 export type NullableEnumAppearanceTypeFieldUpdateOperationsInput = {
   set?: $Enums.AppearanceType | null
-}
-
-export type ProfileUpdatetagsInput = {
-  set?: string[]
-  push?: string | string[]
 }
 
 export type ProfileCreateNestedOneWithoutPhotosInput = {
@@ -1575,7 +1550,6 @@ export type ProfileCreateWithoutOwnerInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1627,7 +1601,6 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1706,7 +1679,6 @@ export type ProfileScalarWhereInput = {
   hasTattoos?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
-  tags?: Prisma.StringNullableListFilter<"Profile">
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
@@ -1742,7 +1714,6 @@ export type ProfileCreateWithoutCityInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1794,7 +1765,6 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1866,7 +1836,6 @@ export type ProfileCreateWithoutDistrictInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1918,7 +1887,6 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1990,7 +1958,6 @@ export type ProfileCreateWithoutPhotosInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2043,7 +2010,6 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2104,7 +2070,6 @@ export type ProfileUpdateWithoutPhotosInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2157,7 +2122,6 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2202,7 +2166,6 @@ export type ProfileCreateWithoutReportsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2255,7 +2218,6 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2316,7 +2278,6 @@ export type ProfileUpdateWithoutReportsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2369,7 +2330,6 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2414,7 +2374,6 @@ export type ProfileCreateWithoutCommentsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2467,7 +2426,6 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2528,7 +2486,6 @@ export type ProfileUpdateWithoutCommentsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2581,7 +2538,6 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2626,7 +2582,6 @@ export type ProfileCreateWithoutFavoritesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2679,7 +2634,6 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2740,7 +2694,6 @@ export type ProfileUpdateWithoutFavoritesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2793,7 +2746,6 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2838,7 +2790,6 @@ export type ProfileCreateWithoutCompanyInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2890,7 +2841,6 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2962,7 +2912,6 @@ export type ProfileCreateWithoutContactsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3015,7 +2964,6 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3076,7 +3024,6 @@ export type ProfileUpdateWithoutContactsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3129,7 +3076,6 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3174,7 +3120,6 @@ export type ProfileCreateWithoutRevealsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3227,7 +3172,6 @@ export type ProfileUncheckedCreateWithoutRevealsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3288,7 +3232,6 @@ export type ProfileUpdateWithoutRevealsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3341,7 +3284,6 @@ export type ProfileUncheckedUpdateWithoutRevealsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3386,7 +3328,6 @@ export type ProfileCreateWithoutPricesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3439,7 +3380,6 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3500,7 +3440,6 @@ export type ProfileUpdateWithoutPricesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3553,7 +3492,6 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3598,7 +3536,6 @@ export type ProfileCreateWithoutServicesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3651,7 +3588,6 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3712,7 +3648,6 @@ export type ProfileUpdateWithoutServicesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3765,7 +3700,6 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3810,7 +3744,6 @@ export type ProfileCreateWithoutVerificationInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3863,7 +3796,6 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3924,7 +3856,6 @@ export type ProfileUpdateWithoutVerificationInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3977,7 +3908,6 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4022,7 +3952,6 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4075,7 +4004,6 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4136,7 +4064,6 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4189,7 +4116,6 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4237,7 +4163,6 @@ export type ProfileCreateManyOwnerInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4273,7 +4198,6 @@ export type ProfileUpdateWithoutOwnerInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4325,7 +4249,6 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4374,7 +4297,6 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4413,7 +4335,6 @@ export type ProfileCreateManyCityInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4449,7 +4370,6 @@ export type ProfileUpdateWithoutCityInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4501,7 +4421,6 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4550,7 +4469,6 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4589,7 +4507,6 @@ export type ProfileCreateManyDistrictInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4625,7 +4542,6 @@ export type ProfileUpdateWithoutDistrictInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4677,7 +4593,6 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4726,7 +4641,6 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4765,7 +4679,6 @@ export type ProfileCreateManyCompanyInput = {
   hasTattoos?: boolean | null
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
-  tags?: Prisma.ProfileCreatetagsInput | string[]
   moderationNote?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4801,7 +4714,6 @@ export type ProfileUpdateWithoutCompanyInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4853,7 +4765,6 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4902,7 +4813,6 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  tags?: Prisma.ProfileUpdatetagsInput | string[]
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5045,7 +4955,6 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   hasTattoos?: boolean
   appearanceType?: boolean
   smoker?: boolean
-  tags?: boolean
   moderationNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5100,7 +5009,6 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   hasTattoos?: boolean
   appearanceType?: boolean
   smoker?: boolean
-  tags?: boolean
   moderationNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5144,7 +5052,6 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   hasTattoos?: boolean
   appearanceType?: boolean
   smoker?: boolean
-  tags?: boolean
   moderationNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5188,13 +5095,12 @@ export type ProfileSelectScalar = {
   hasTattoos?: boolean
   appearanceType?: boolean
   smoker?: boolean
-  tags?: boolean
   moderationNote?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "age" | "heightCm" | "weightKg" | "languages" | "nationality" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "tags" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "age" | "heightCm" | "weightKg" | "languages" | "nationality" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -5299,7 +5205,6 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     hasTattoos: boolean | null
     appearanceType: $Enums.AppearanceType | null
     smoker: boolean | null
-    tags: string[]
     /**
      * Комментарий модератора владельцу: причина отказа или что исправить.
      */
@@ -5776,7 +5681,6 @@ export interface ProfileFieldRefs {
   readonly hasTattoos: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly appearanceType: Prisma.FieldRef<"Profile", 'AppearanceType'>
   readonly smoker: Prisma.FieldRef<"Profile", 'Boolean'>
-  readonly tags: Prisma.FieldRef<"Profile", 'String[]'>
   readonly moderationNote: Prisma.FieldRef<"Profile", 'String'>
   readonly createdAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Profile", 'DateTime'>

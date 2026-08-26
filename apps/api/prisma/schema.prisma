@@ -406,7 +406,6 @@ model Profile {
   appearanceType AppearanceType?
   smoker         Boolean?
 
-  tags String[] @default([])
 
   /// Комментарий модератора владельцу: причина отказа или что исправить.
   moderationNote String?
@@ -429,7 +428,6 @@ model Profile {
   @@index([status, kind, cityId, publishedAt])
   @@index([status, kind, fromPriceCents])
   @@index([status, isFeatured, publishedAt])
-  @@index([tags], type: Gin)
 }
 
 model Photo {
