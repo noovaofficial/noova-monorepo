@@ -48,15 +48,30 @@ export default async function CityPickerPage({ params }: Props) {
       {cities.length === 0 ? (
         <p className={styles.empty}>{t('empty')}</p>
       ) : (
-        <ul className={styles.list}>
-          {cities.map((city) => (
-            <li key={city.slug}>
-              <Link className={styles.city} href={`/${city.slug}`}>
-                {city.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        // Группируем по странам: список из десятков городов вперемешку
+        // читается хуже, чем те же города под названием страны. Порядок стран
+        // — по первому появлению, а города уже отсортированы API по языку.
+        Object.entries(
+          cities.reduce<Record<string, typeof cities>>((acc, city) => {
+            const key = city.country.name;
+            acc[key] = acc[key] ?? [];
+            acc[key].push(city);
+            return acc;
+          }, {}),
+        ).map(([country, group]) => (
+          <section className={styles.country} key={country}>
+            <h2 className={styles.countryName}>{country}</h2>
+            <ul className={styles.list}>
+              {group.map((city) => (
+                <li key={city.slug}>
+                  <Link className={styles.city} href={`/${city.slug}`}>
+                    {city.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
       )}
     </div>
   );

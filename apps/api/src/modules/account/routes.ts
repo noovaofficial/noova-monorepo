@@ -127,11 +127,16 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const cities = await fastify.prisma.city.findMany({
         // Отключённый город и район из выбора уходят, но остаются в базе:
         // на них ссылаются анкеты (N-32).
-        where: { isActive: true },
+        // Отключённая страна прячет и свои города: держать в выборе город
+        // страны, которую закрыли, значит открыть её обходным путём.
+        where: { isActive: true, country: { isActive: true } },
         select: {
           slug: true,
           name: true,
           translations: translationSelect(locale),
+          country: {
+            select: { code: true, name: true, translations: translationSelect(locale) },
+          },
           districts: {
             where: { isActive: true },
             select: { slug: true, name: true, translations: translationSelect(locale) },
@@ -146,6 +151,10 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         .map((city) => ({
           slug: city.slug,
           name: localized(city.translations, city.name),
+          country: {
+            code: city.country.code,
+            name: localized(city.country.translations, city.country.name),
+          },
           districts: city.districts
             .map((d) => ({ slug: d.slug, name: localized(d.translations, d.name) }))
             .sort((a, b) => collator.compare(a.name, b.name)),

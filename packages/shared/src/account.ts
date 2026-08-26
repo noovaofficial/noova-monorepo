@@ -196,6 +196,8 @@ export type OwnProfile = z.infer<typeof ownProfileSchema>;
 export const cityOptionSchema = z.object({
   slug: slugSchema,
   name: z.string(),
+  /** Страна на языке запроса: страница выбора города группирует по ней. */
+  country: z.object({ code: z.string(), name: z.string() }),
   districts: z.array(z.object({ slug: z.string(), name: z.string() })),
 });
 export type CityOption = z.infer<typeof cityOptionSchema>;

@@ -19,11 +19,10 @@
  */
 import 'dotenv/config';
 import { writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { LOCALES, type Translated } from '@noova/shared';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
+import { referencePath } from '../reference-data.js';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -33,7 +32,8 @@ if (!connectionString) {
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '../../prisma/reference-data.ts');
+// Путь тот же, что у загрузчика: файл читается в рантайме, а не импортируется.
+const OUT = referencePath();
 
 const gaps: string[] = [];
 
@@ -63,9 +63,6 @@ function names(rows: { locale: string; name: string }[], what: string, soft?: st
 
   return Object.fromEntries(LOCALES.map((l) => [l, byLocale.get(l)])) as Translated;
 }
-
-const lit = (value: unknown) => JSON.stringify(value);
-const translated = (t: Translated) => `{ ${LOCALES.map((l) => `${l}: ${lit(t[l])}`).join(', ')} }`;
 
 async function main() {
   const countries = await prisma.country.findMany({
@@ -106,119 +103,52 @@ async function main() {
     groupsByKey.set(row.groupKey, list);
   }
 
-  const parts: string[] = [];
-  parts.push(`/**
- * Справочники: страны, города, районы, услуги. **Файл генерируется.**
- *
- *   pnpm --filter @noova/api db:export:reference
- *
- * Править руками можно — это обычный TypeScript, — но следующая выгрузка
- * перепишет файл целиком по состоянию базы. Порядок работы обратный:
- * менять справочник в админке, потом выгружать и коммитить.
- *
- * Идентификаторы здесь не украшение: \`db:seed:reference\` проставляет их
- * при создании, и справочник, восстановленный на чистой машине, получает те
- * же id. Иначе всё, что на него ссылается, указывало бы в пустоту.
- *
- * Состав каталога услуг — продуктовое решение владельца, а не техническое.
- */
-import type { ListingKind, Locale } from '@noova/shared';
+  const data = {
+    countries: countries.map((c) => ({
+      id: c.id,
+      code: c.code,
+      name: names(c.translations, `страны ${c.code}`),
+      isActive: c.isActive,
+    })),
+    cities: cities.map((city) => ({
+      id: city.id,
+      slug: city.slug,
+      name: names(city.translations, `города ${city.slug}`),
+      countryCode: city.country.code,
+      lat: city.lat ?? 0,
+      lng: city.lng ?? 0,
+      isActive: city.isActive,
+      districts: city.districts.map((d) => ({
+        id: d.id,
+        slug: d.slug,
+        name: names(d.translations, `района ${city.slug}/${d.slug}`),
+        lat: d.lat ?? 0,
+        lng: d.lng ?? 0,
+        isActive: d.isActive,
+      })),
+    })),
+    serviceGroups: groupOrder.map((key) => ({
+      key,
+      name: names(groupsByKey.get(key) ?? [], `группы ${key}`, key),
+    })),
+    services: services.map((s) => ({
+      id: s.id,
+      key: s.key,
+      group: s.group,
+      appliesTo: s.appliesTo,
+      position: s.position,
+      isActive: s.isActive,
+      name: names(s.translations, `услуги ${s.key}`, s.isActive ? undefined : s.key),
+    })),
+  };
 
-export type Translated = Record<Locale, string>;
-
-export type CountrySeed = {
-  id: string;
-  /** ISO 3166-1 alpha-2. */
-  code: string;
-  name: Translated;
-  isActive: boolean;
-};
-
-export type DistrictSeed = {
-  id: string;
-  slug: string;
-  name: Translated;
-  /** Центр района: из него собирается приблизительное место анкеты. */
-  lat: number;
-  lng: number;
-  isActive: boolean;
-};
-
-export type CitySeed = {
-  id: string;
-  slug: string;
-  name: Translated;
-  countryCode: string;
-  lat: number;
-  lng: number;
-  isActive: boolean;
-  /** Необязательны: город может не делиться на районы. */
-  districts: DistrictSeed[];
-};
-
-export type ServiceGroupSeed = { key: string; name: Translated };
-
-export type ServiceSeed = {
-  id: string;
-  key: string;
-  group: string;
-  appliesTo: ListingKind[];
-  position: number;
-  isActive: boolean;
-  name: Translated;
-};
-`);
-
-  parts.push(`\nexport const COUNTRIES: CountrySeed[] = [`);
-  for (const c of countries) {
-    parts.push(
-      `  { id: ${lit(c.id)}, code: ${lit(c.code)}, name: ${translated(names(c.translations, `страны ${c.code}`))}, isActive: ${c.isActive} },`,
-    );
-  }
-  parts.push('];\n');
-
-  parts.push(`\nexport const CITIES: CitySeed[] = [`);
-  for (const city of cities) {
-    parts.push(`  {
-    id: ${lit(city.id)},
-    slug: ${lit(city.slug)},
-    name: ${translated(names(city.translations, `города ${city.slug}`))},
-    countryCode: ${lit(city.country.code)},
-    lat: ${city.lat ?? 0},
-    lng: ${city.lng ?? 0},
-    isActive: ${city.isActive},
-    districts: [`);
-    for (const d of city.districts) {
-      parts.push(
-        `      { id: ${lit(d.id)}, slug: ${lit(d.slug)}, name: ${translated(names(d.translations, `района ${city.slug}/${d.slug}`))}, lat: ${d.lat ?? 0}, lng: ${d.lng ?? 0}, isActive: ${d.isActive} },`,
-      );
-    }
-    parts.push('    ],\n  },');
-  }
-  parts.push('];\n');
-
-  parts.push(
-    `\n/** Порядок групп задаёт вид панели фильтров. */\nexport const SERVICE_GROUPS: ServiceGroupSeed[] = [`,
-  );
-  for (const key of groupOrder) {
-    const rows = groupsByKey.get(key) ?? [];
-    parts.push(`  { key: ${lit(key)}, name: ${translated(names(rows, `группы ${key}`, key))} },`);
-  }
-  parts.push('];\n');
-
-  parts.push(`\nexport const SERVICES: ServiceSeed[] = [`);
-  for (const s of services) {
-    parts.push(
-      `  { id: ${lit(s.id)}, key: ${lit(s.key)}, group: ${lit(s.group)}, appliesTo: ${lit(s.appliesTo)}, position: ${s.position}, isActive: ${s.isActive}, name: ${translated(names(s.translations, `услуги ${s.key}`, s.isActive ? undefined : s.key))} },`,
-    );
-  }
-  parts.push('];\n');
-
-  writeFileSync(OUT, `${parts.join('\n')}`, 'utf8');
+  // JSON с отступами и переводом строки в конце: файл лежит в git, и diff
+  // должен читаться построчно, а не одной длинной строкой.
+  writeFileSync(OUT, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
   console.log(
     `Выгружено: стран ${countries.length}, городов ${cities.length}, районов ${cities.reduce((n, c) => n + c.districts.length, 0)}, услуг ${services.length}, групп ${groupOrder.length}`,
   );
-  console.log('→ prisma/reference-data.ts (не забудьте закоммитить)');
+  console.log(`→ ${OUT}`);
 
   if (gaps.length > 0) {
     console.warn(`\nБез полного перевода (подставлен ключ), ${gaps.length}:`);

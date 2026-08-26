@@ -38,3 +38,16 @@
 .empty {
   color: var(--secondaryText);
 }
+
+.country {
+  margin-bottom: var(--space6);
+}
+
+.countryName {
+  font-size: var(--textSm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--secondaryText);
+  margin-bottom: var(--space3);
+}

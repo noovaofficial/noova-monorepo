@@ -1,9 +1,9 @@
 import type { Locale } from '@noova/shared';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { CountryList } from '@/modules/locations/components/CountryList';
+import { CountryDetail } from '@/modules/locations/components/CountryDetail';
 
-type Props = { params: Promise<{ locale: Locale }> };
+type Props = { params: Promise<{ locale: Locale; code: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -11,9 +11,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: t('locations'), robots: { index: false, follow: false } };
 }
 
-export default async function LocationsPage({ params }: Props) {
-  const { locale } = await params;
+export default async function CountryPage({ params }: Props) {
+  const { locale, code } = await params;
   setRequestLocale(locale);
-
-  return <CountryList />;
+  return <CountryDetail code={code} />;
 }

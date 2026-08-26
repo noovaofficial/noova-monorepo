@@ -13,8 +13,10 @@ export const queryKeys = {
   /** Кабинет владельца. */
   ownProfiles: () => ['own-profiles'] as const,
   ownProfile: (id: string) => ['own-profile', id] as const,
-  cities: () => ['cities'] as const,
-  serviceCatalog: (kind: string) => ['service-catalog', kind] as const,
+  // Локаль — часть ключа: названия переведены на стороне API, и без неё
+  // смена языка отдавала бы прежний список из кэша.
+  cities: (locale: string) => ['cities', locale] as const,
+  serviceCatalog: (kind: string, locale: string) => ['service-catalog', kind, locale] as const,
 
   /** Модерация и админка. */
   queue: (kind?: string) => ['moderation-queue', kind ?? 'all'] as const,
@@ -25,7 +27,7 @@ export const queryKeys = {
     ['moderation-users', query, blockedOnly ? 'blocked' : 'all', role ?? 'any'] as const,
   staff: () => ['staff'] as const,
   adminCountries: () => ['admin-countries'] as const,
-  adminCities: () => ['admin-cities'] as const,
+  adminCities: (countryId?: string) => ['admin-cities', countryId ?? 'all'] as const,
   adminServices: () => ['admin-services'] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>

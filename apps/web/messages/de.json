@@ -680,7 +680,16 @@
     "profileCount": "{count, plural, one {# Anzeige} other {# Anzeigen}}",
     "edit": "Ändern",
     "editDistrict": "Bezirk ändern",
-    "active": "Aktiv"
+    "active": "Aktiv",
+    "open": "Ansehen",
+    "countriesHint": "Städte und Bezirke sind im Land",
+    "countryInfo": "Landesdaten",
+    "cityInfo": "Stadtdaten",
+    "districts": "Bezirke",
+    "districtsOptional": "Bezirke sind optional: eine Anzeige ohne Bezirk erhält die Koordinaten des Stadtzentrums.",
+    "countryNotFound": "Land nicht gefunden",
+    "cityNotFound": "Stadt nicht gefunden",
+    "districtCount": "{count, plural, one {# Bezirk} other {# Bezirke}}"
   },
   "cityPicker": {
     "title": "Stadt wählen",

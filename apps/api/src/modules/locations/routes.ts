@@ -202,9 +202,17 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
   fastify.get(
     '/admin/cities',
-    { onRequest: guard, schema: { tags: ['admin'], response: { 200: z.array(citySchemaAdmin) } } },
-    async () => {
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        querystring: z.object({ countryId: z.string().min(1).optional() }),
+        response: { 200: z.array(citySchemaAdmin) },
+      },
+    },
+    async (request) => {
       const rows = await fastify.prisma.city.findMany({
+        where: request.query.countryId ? { countryId: request.query.countryId } : {},
         orderBy: { slug: 'asc' },
         select: cityShape,
       });

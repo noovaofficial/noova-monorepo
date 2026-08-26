@@ -1,6 +1,8 @@
 import { MAX_SERVICES_PER_PROFILE, updateProfileSchema } from '@noova/shared';
 import { describe, expect, it } from 'vitest';
-import { SERVICE_GROUPS, SERVICES } from './reference-data';
+import { loadReferenceData } from '../src/reference-data';
+
+const { services: SERVICES, serviceGroups: SERVICE_GROUPS } = loadReferenceData();
 
 /** В справочнике лежат и отключённые услуги прежних версий — их не выбрать. */
 const SERVICE_CATALOG = SERVICES.filter((service) => service.isActive);

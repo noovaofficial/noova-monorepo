@@ -680,7 +680,16 @@
     "profileCount": "{count, plural, one {# анкета} few {# анкеты} many {# анкет} other {# анкеты}}",
     "edit": "Изменить",
     "editDistrict": "Изменить район",
-    "active": "Активен"
+    "active": "Активен",
+    "open": "Просмотр",
+    "countriesHint": "Города и районы — внутри страны",
+    "countryInfo": "Данные страны",
+    "cityInfo": "Данные города",
+    "districts": "Районы",
+    "districtsOptional": "Районы необязательны: анкета без района получит координату центра города.",
+    "countryNotFound": "Страна не найдена",
+    "cityNotFound": "Город не найден",
+    "districtCount": "{count, plural, one {# район} few {# района} many {# районов} other {# района}}"
   },
   "cityPicker": {
     "title": "Выберите город",

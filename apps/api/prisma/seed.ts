@@ -6,7 +6,7 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client.js';
-import { CITIES, type CitySeed } from './reference-data.js';
+import { type CitySeed, loadReferenceData } from '../src/reference-data.js';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -26,6 +26,8 @@ const DEMO_OWNER_EMAIL = 'demo-advertiser@noova.local';
  * система о местоположении не знает.
  */
 // Города и районы — общий справочник: он же накатывается на прод.
+const CITIES = loadReferenceData().cities;
+
 const BERLIN: CitySeed =
   CITIES.find((c) => c.slug === 'berlin') ??
   (() => {

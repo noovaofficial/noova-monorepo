@@ -17,11 +17,12 @@ import {
   breastTypeSchema,
   eyeColorSchema,
   hairColorSchema,
+  type Locale,
   pubicHairSchema,
   SPOKEN_LANGUAGES,
 } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import {
@@ -94,6 +95,8 @@ const FORM_ID = 'profile-editor-form';
 
 export function ProfileEditor({ profileId }: { profileId: string }) {
   const t = useTranslations('account');
+  // Язык для справочников: города и услуги переведены на стороне API.
+  const locale = useLocale() as Locale;
   const tLang = useTranslations('languageNames');
   const { status: sessionStatus } = useSession();
   const router = useRouter();
@@ -194,8 +197,8 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
   const profile = profileQuery.data ?? null;
 
   const citiesQuery = useQuery({
-    queryKey: queryKeys.cities(),
-    queryFn: fetchCities,
+    queryKey: queryKeys.cities(locale),
+    queryFn: () => fetchCities(locale),
     enabled,
     staleTime: 60 * 60 * 1000,
   });
@@ -203,8 +206,8 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
 
   // Каталог зависит от вида анкеты — значит ждёт её загрузки.
   const catalogQuery = useQuery({
-    queryKey: queryKeys.serviceCatalog(profile?.kind ?? ''),
-    queryFn: () => fetchServiceCatalog(profile?.kind ?? 'escort'),
+    queryKey: queryKeys.serviceCatalog(profile?.kind ?? '', locale),
+    queryFn: () => fetchServiceCatalog(profile?.kind ?? 'escort', locale),
     enabled: enabled && profile !== null,
     staleTime: 60 * 60 * 1000,
   });

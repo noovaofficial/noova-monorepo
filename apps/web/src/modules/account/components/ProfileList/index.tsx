@@ -1,7 +1,9 @@
 'use client';
 
+import type { Locale } from '@noova/shared';
+
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AccountError, createProfile, fetchCities, fetchOwnProfiles } from '@/modules/account/api';
@@ -12,6 +14,7 @@ import styles from '../Account.module.css';
 import { ProfileStatusBadge } from '../ProfileStatusBadge';
 
 export function ProfileList() {
+  const locale = useLocale() as Locale;
   const t = useTranslations('account');
   const { user, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -23,8 +26,8 @@ export function ProfileList() {
   // Справочник городов меняется раз в год — свежесть держим долгую, иначе
   // он перезапрашивается на каждом заходе в кабинет без всякой пользы.
   const cityList = useQuery({
-    queryKey: queryKeys.cities(),
-    queryFn: fetchCities,
+    queryKey: queryKeys.cities(locale),
+    queryFn: () => fetchCities(locale),
     enabled,
     staleTime: 60 * 60 * 1000,
   });

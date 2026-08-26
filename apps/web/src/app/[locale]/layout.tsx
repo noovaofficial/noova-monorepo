@@ -50,6 +50,19 @@ export async function generateMetadata({
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
     title: { default: t('siteName'), template: `%s · ${t('siteName')}` },
     description: t('homeDescription'),
+    // Иконки из `public` объявляем явно. Next сам подхватывает только
+    // `app/icon.*` и `app/favicon.ico`; из `public` браузер по соглашению
+    // просит лишь `/favicon.ico` и `/apple-touch-icon.png`, а PNG-размеры и
+    // манифест без этих ссылок остались бы лежать мёртвым грузом.
+    icons: {
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+        { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      ],
+      apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    },
+    manifest: '/site.webmanifest',
     // Каталог 18+: помечаем контент для семейных фильтров браузеров и поисковиков.
     other: { rating: 'adult', 'RTA-5042-1996-1400-1577-RTA': 'RTA-5042-1996-1400-1577-RTA' },
   };

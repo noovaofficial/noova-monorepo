@@ -66,8 +66,9 @@ export function updateCountry(id: string, input: Omit<CountryInput, 'code'>): Pr
   });
 }
 
-export function fetchCities(): Promise<CityAdmin[]> {
-  return call('/admin/cities', z.array(citySchemaAdmin));
+export function fetchCities(countryId?: string): Promise<CityAdmin[]> {
+  const qs = countryId ? `?countryId=${encodeURIComponent(countryId)}` : '';
+  return call(`/admin/cities${qs}`, z.array(citySchemaAdmin));
 }
 
 export function createCity(input: CityInput): Promise<CityAdmin> {

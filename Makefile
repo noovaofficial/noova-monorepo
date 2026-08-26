@@ -4,7 +4,7 @@ SHELL := /bin/bash
 
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
         server-setup server-env update \
-        backup-key backup-snapshot backup-fetch backup-open backup-verify restore-media \
+        reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify restore-media \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback
 
@@ -96,7 +96,7 @@ server-env: ## Создать .env на сервере (SERVER=deploy@host DOMAI
 # изменения в compose. Образы не собираются и не везутся — для этого deploy.
 update: ## Перезапустить стек из текущих образов (SERVER=deploy@host)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
-	ssh $(SERVER) 'cd noova && docker compose up -d --no-build && docker compose ps'
+	ssh $(SERVER) 'cd noova && bash -s' < scripts/update.sh
 
 deploy-files: ## Скопировать на сервер файлы, которые не входят в образы
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
@@ -121,6 +121,23 @@ jobs: ## Прогнать чистку по срокам хранения пря
 	pnpm --filter @noova/api jobs:dev
 
 # --- Резервные копии (N-29) -------------------------------------------------
+
+# --- Справочник: три направления ------------------------------------------
+# Файл apps/api/prisma/reference-data.json — общий формат для всех трёх.
+# Правило: у справочника один источник правды за раз. Выгрузка со стенда и
+# с прода пишут в один файл, и попеременное использование даст пинг-понг
+# идентификаторов в git.
+
+reference-from-dev: ## Локальная база → файл в репозитории
+	pnpm --filter @noova/api db:export:reference
+
+reference-from-server: ## Сервер → файл в репозитории (SERVER=deploy@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	./scripts/reference-pull.sh '$(SERVER)'
+
+reference-to-server: ## Файл из репозитория → сервер, с накатом (SERVER=deploy@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	./scripts/reference-push.sh '$(SERVER)'
 
 backup-key: ## Создать пару ключей для шифрования копий (DIR=~/noova-backup)
 	@test -n "$(DIR)" || (echo "Укажите DIR=~/noova-backup"; exit 1)

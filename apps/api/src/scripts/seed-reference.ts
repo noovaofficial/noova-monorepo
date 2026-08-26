@@ -19,8 +19,8 @@
 import 'dotenv/config';
 import { DEFAULT_LOCALE, LOCALES, type Translated, translatedSchema } from '@noova/shared';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { CITIES, COUNTRIES, SERVICE_GROUPS, SERVICES } from '../../prisma/reference-data.js';
 import { PrismaClient } from '../generated/prisma/client.js';
+import { loadReferenceData, referencePath } from '../reference-data.js';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -29,6 +29,15 @@ if (!connectionString) {
 }
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+
+// Читаем в рантайме, а не импортируем: импорт tsup вшил бы справочник в бандл,
+// и обновить его на сервере можно было бы только пересборкой образа.
+const {
+  countries: COUNTRIES,
+  cities: CITIES,
+  serviceGroups: SERVICE_GROUPS,
+  services: SERVICES,
+} = loadReferenceData();
 
 /**
  * Неполный перевод — ошибка данных, а не повод подставить запасное значение:
@@ -203,7 +212,7 @@ async function main() {
   await seedServices();
   // Страны первыми: город без страны не сохранить, связь обязательна.
   await seedLocations(await seedCountries());
-  console.log('Справочники готовы.');
+  console.log(`Справочники готовы (источник: ${referencePath()}).`);
 }
 
 main()

@@ -2,6 +2,7 @@ import {
   type CityOption,
   type CreateProfileInput,
   cityOptionSchema,
+  type Locale,
   type OwnPhoto,
   type OwnProfile,
   ownPhotoSchema,
@@ -53,12 +54,20 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
   return schema.parse(await response.json());
 }
 
-export function fetchCities(): Promise<CityOption[]> {
-  return call('/cities', z.array(cityOptionSchema));
+/**
+ * Названия городов и услуг приходят из API уже переведёнными (N-35), поэтому
+ * язык обязателен: без него сервер отдаёт немецкий по умолчанию, и кабинет
+ * на русском показывал бы немецкие подписи.
+ */
+export function fetchCities(locale: Locale): Promise<CityOption[]> {
+  return call(`/cities?locale=${locale}`, z.array(cityOptionSchema));
 }
 
-export function fetchServiceCatalog(kind: 'escort' | 'massage'): Promise<ServiceGroup[]> {
-  return call(`/services?kind=${kind}`, z.array(serviceGroupSchema));
+export function fetchServiceCatalog(
+  kind: 'escort' | 'massage',
+  locale: Locale,
+): Promise<ServiceGroup[]> {
+  return call(`/services?kind=${kind}&locale=${locale}`, z.array(serviceGroupSchema));
 }
 
 export function fetchOwnProfiles(): Promise<OwnProfile[]> {

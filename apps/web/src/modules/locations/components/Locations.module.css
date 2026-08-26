@@ -171,3 +171,36 @@
   color: var(--secondaryText);
   padding: var(--space6) 0;
 }
+
+/* Ссылка в виде кнопки: «Просмотр» — навигация, но в ряду с кнопками
+   действий и должна выглядеть так же. */
+.linkButton {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSm);
+  padding: var(--space2) var(--space4);
+  font-size: var(--textSm);
+  font-weight: 500;
+  color: var(--primaryText);
+  background: var(--surface);
+  white-space: nowrap;
+}
+
+.linkButton:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space4);
+}
+
+.crumbs a:hover {
+  color: var(--primary);
+}

@@ -680,7 +680,16 @@
     "profileCount": "{count, plural, one {# listing} other {# listings}}",
     "edit": "Edit",
     "editDistrict": "Edit district",
-    "active": "Active"
+    "active": "Active",
+    "open": "View",
+    "countriesHint": "Cities and districts live inside a country",
+    "countryInfo": "Country details",
+    "cityInfo": "City details",
+    "districts": "Districts",
+    "districtsOptional": "Districts are optional: a listing without one gets the city centre coordinates.",
+    "countryNotFound": "Country not found",
+    "cityNotFound": "City not found",
+    "districtCount": "{count, plural, one {# district} other {# districts}}"
   },
   "cityPicker": {
     "title": "Choose a city",
