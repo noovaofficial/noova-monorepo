@@ -1,0 +1,149 @@
+.wrap {
+  padding: var(--space8) 0 var(--space12);
+  max-width: 720px;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--text2xl);
+}
+
+.hint {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.notice {
+  border-radius: var(--radiusMd);
+  padding: var(--space3) var(--space4);
+  margin-bottom: var(--space4);
+  font-size: var(--textSm);
+}
+
+.noticeError {
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.noticeOk {
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  padding: var(--space4);
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 500;
+  color: var(--secondaryText);
+}
+
+.input,
+.select,
+.textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSm);
+  padding: var(--space3);
+  background: var(--surface);
+  color: var(--primaryText);
+  font: inherit;
+  width: 100%;
+}
+
+.textarea {
+  resize: vertical;
+  line-height: var(--leadingRelaxed);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.contactRow {
+  display: flex;
+  gap: var(--space2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contactRow .select {
+  flex: 0 0 150px;
+}
+
+.contactRow .input {
+  flex: 1 1 200px;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space2);
+}
+
+.empty {
+  color: var(--secondaryText);
+  padding: var(--space10) 0;
+}
+
+.hoursRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  flex-wrap: wrap;
+}
+
+.day {
+  flex: 0 0 130px;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.time {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusSm);
+  padding: var(--space2) var(--space3);
+  background: var(--surface);
+  color: var(--primaryText);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.time:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.dash {
+  color: var(--secondaryText);
+}

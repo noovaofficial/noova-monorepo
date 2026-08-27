@@ -45,6 +45,8 @@ export const PUBLIC_CLIENT_NAMESPACES = [
 export const PRIVATE_CLIENT_NAMESPACES = [
   'account',
   'admin',
+  // Данные агентства и салона — только в кабинете (N-33).
+  'company',
   'locations',
   'moderation',
   'settings',

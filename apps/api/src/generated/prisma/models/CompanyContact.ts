@@ -14,9 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model CompanyContact
- * Контакты компании. В отличие от контактов анкеты, отдаются публично:
- * у салона это способ до него дозвониться, и прятать его за раскрытием
- * незачем — это контакт заведения, а не персональные данные девушки.
+ * 
  */
 export type CompanyContactModel = runtime.Types.Result.DefaultSelection<Prisma.$CompanyContactPayload>
 

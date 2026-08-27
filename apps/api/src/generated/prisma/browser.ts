@@ -136,10 +136,21 @@ export type Favorite = Prisma.FavoriteModel
  */
 export type Company = Prisma.CompanyModel
 /**
+ * Model CompanyPrice
+ * Прайс салона: общий, не привязанный к конкретной анкете (N-34).
+ */
+export type CompanyPrice = Prisma.CompanyPriceModel
+/**
+ * Model CompanyHours
+ * Часы работы салона по дням недели (N-34).
+ * 
+ * Только у салона: у агентства нет помещения, в которое можно прийти, —
+ * это то же различие, что и с адресом.
+ */
+export type CompanyHours = Prisma.CompanyHoursModel
+/**
  * Model CompanyContact
- * Контакты компании. В отличие от контактов анкеты, отдаются публично:
- * у салона это способ до него дозвониться, и прятать его за раскрытием
- * незачем — это контакт заведения, а не персональные данные девушки.
+ * 
  */
 export type CompanyContact = Prisma.CompanyContactModel
 /**

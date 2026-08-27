@@ -32,6 +32,11 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
     : user?.role === 'advertiser'
       ? [
           { href: '/account/profiles', label: t('quickProfiles') },
+          // Компания есть только у агентства и салона: индивидуалка размещает
+          // анкету от своего имени, посредника у неё нет.
+          ...(user.advertiserKind === 'agency' || user.advertiserKind === 'salon'
+            ? [{ href: '/account/company', label: t('quickCompany') }]
+            : []),
           { href: '/account/profiles', label: t('quickAnalytics'), disabled: true },
         ]
       : [];

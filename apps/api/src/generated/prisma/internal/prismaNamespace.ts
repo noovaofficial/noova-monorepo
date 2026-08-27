@@ -414,6 +414,8 @@ export const ModelName = {
   CommentReport: 'CommentReport',
   Favorite: 'Favorite',
   Company: 'Company',
+  CompanyPrice: 'CompanyPrice',
+  CompanyHours: 'CompanyHours',
   CompanyContact: 'CompanyContact',
   ProfileContact: 'ProfileContact',
   ContactReveal: 'ContactReveal',
@@ -439,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "companyPrice" | "companyHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1701,6 +1703,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CompanyPrice: {
+      payload: Prisma.$CompanyPricePayload<ExtArgs>
+      fields: Prisma.CompanyPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanyPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanyPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        findFirst: {
+          args: Prisma.CompanyPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanyPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        findMany: {
+          args: Prisma.CompanyPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>[]
+        }
+        create: {
+          args: Prisma.CompanyPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        createMany: {
+          args: Prisma.CompanyPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanyPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>[]
+        }
+        delete: {
+          args: Prisma.CompanyPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        update: {
+          args: Prisma.CompanyPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanyPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanyPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanyPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanyPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPricePayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanyPrice>
+        }
+        groupBy: {
+          args: Prisma.CompanyPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanyPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyPriceCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanyHours: {
+      payload: Prisma.$CompanyHoursPayload<ExtArgs>
+      fields: Prisma.CompanyHoursFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanyHoursFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanyHoursFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanyHoursFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanyHoursFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        findMany: {
+          args: Prisma.CompanyHoursFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>[]
+        }
+        create: {
+          args: Prisma.CompanyHoursCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        createMany: {
+          args: Prisma.CompanyHoursCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanyHoursCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanyHoursDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        update: {
+          args: Prisma.CompanyHoursUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanyHoursDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanyHoursUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanyHoursUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanyHoursUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyHoursPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyHoursAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanyHours>
+        }
+        groupBy: {
+          args: Prisma.CompanyHoursGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyHoursGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanyHoursCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyHoursCountAggregateOutputType> | number
+        }
+      }
+    }
     CompanyContact: {
       payload: Prisma.$CompanyContactPayload<ExtArgs>
       fields: Prisma.CompanyContactFieldRefs
@@ -2726,6 +2876,12 @@ export const CompanyScalarFieldEnum = {
   name: 'name',
   description: 'description',
   address: 'address',
+  directions: 'directions',
+  minSessionMinutes: 'minSessionMinutes',
+  bookingPolicy: 'bookingPolicy',
+  languages: 'languages',
+  payments: 'payments',
+  amenities: 'amenities',
   isActive: 'isActive',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
@@ -2733,6 +2889,29 @@ export const CompanyScalarFieldEnum = {
 } as const
 
 export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+export const CompanyPriceScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  title: 'title',
+  durationMinutes: 'durationMinutes',
+  priceCents: 'priceCents',
+  position: 'position'
+} as const
+
+export type CompanyPriceScalarFieldEnum = (typeof CompanyPriceScalarFieldEnum)[keyof typeof CompanyPriceScalarFieldEnum]
+
+
+export const CompanyHoursScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  weekday: 'weekday',
+  opensAt: 'opensAt',
+  closesAt: 'closesAt'
+} as const
+
+export type CompanyHoursScalarFieldEnum = (typeof CompanyHoursScalarFieldEnum)[keyof typeof CompanyHoursScalarFieldEnum]
 
 
 export const CompanyContactScalarFieldEnum = {
@@ -3235,6 +3414,34 @@ export type ListEnumCompanyKindFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'BookingPolicy'
+ */
+export type EnumBookingPolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingPolicy'>
+    
+
+
+/**
+ * Reference to a field of type 'BookingPolicy[]'
+ */
+export type ListEnumBookingPolicyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookingPolicy[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod[]'
+ */
+export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod'
+ */
+export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+/**
  * Reference to a field of type 'ContactType'
  */
 export type EnumContactTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactType'>
@@ -3429,6 +3636,8 @@ export type GlobalOmitConfig = {
   commentReport?: Prisma.CommentReportOmit
   favorite?: Prisma.FavoriteOmit
   company?: Prisma.CompanyOmit
+  companyPrice?: Prisma.CompanyPriceOmit
+  companyHours?: Prisma.CompanyHoursOmit
   companyContact?: Prisma.CompanyContactOmit
   profileContact?: Prisma.ProfileContactOmit
   contactReveal?: Prisma.ContactRevealOmit

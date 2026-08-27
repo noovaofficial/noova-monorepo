@@ -28,8 +28,18 @@ export type CompanyModel = runtime.Types.Result.DefaultSelection<Prisma.$Company
 
 export type AggregateCompany = {
   _count: CompanyCountAggregateOutputType | null
+  _avg: CompanyAvgAggregateOutputType | null
+  _sum: CompanySumAggregateOutputType | null
   _min: CompanyMinAggregateOutputType | null
   _max: CompanyMaxAggregateOutputType | null
+}
+
+export type CompanyAvgAggregateOutputType = {
+  minSessionMinutes: number | null
+}
+
+export type CompanySumAggregateOutputType = {
+  minSessionMinutes: number | null
 }
 
 export type CompanyMinAggregateOutputType = {
@@ -39,6 +49,9 @@ export type CompanyMinAggregateOutputType = {
   name: string | null
   description: string | null
   address: string | null
+  directions: string | null
+  minSessionMinutes: number | null
+  bookingPolicy: $Enums.BookingPolicy | null
   isActive: boolean | null
   ownerId: string | null
   createdAt: Date | null
@@ -52,6 +65,9 @@ export type CompanyMaxAggregateOutputType = {
   name: string | null
   description: string | null
   address: string | null
+  directions: string | null
+  minSessionMinutes: number | null
+  bookingPolicy: $Enums.BookingPolicy | null
   isActive: boolean | null
   ownerId: string | null
   createdAt: Date | null
@@ -65,6 +81,12 @@ export type CompanyCountAggregateOutputType = {
   name: number
   description: number
   address: number
+  directions: number
+  minSessionMinutes: number
+  bookingPolicy: number
+  languages: number
+  payments: number
+  amenities: number
   isActive: number
   ownerId: number
   createdAt: number
@@ -73,6 +95,14 @@ export type CompanyCountAggregateOutputType = {
 }
 
 
+export type CompanyAvgAggregateInputType = {
+  minSessionMinutes?: true
+}
+
+export type CompanySumAggregateInputType = {
+  minSessionMinutes?: true
+}
+
 export type CompanyMinAggregateInputType = {
   id?: true
   slug?: true
@@ -80,6 +110,9 @@ export type CompanyMinAggregateInputType = {
   name?: true
   description?: true
   address?: true
+  directions?: true
+  minSessionMinutes?: true
+  bookingPolicy?: true
   isActive?: true
   ownerId?: true
   createdAt?: true
@@ -93,6 +126,9 @@ export type CompanyMaxAggregateInputType = {
   name?: true
   description?: true
   address?: true
+  directions?: true
+  minSessionMinutes?: true
+  bookingPolicy?: true
   isActive?: true
   ownerId?: true
   createdAt?: true
@@ -106,6 +142,12 @@ export type CompanyCountAggregateInputType = {
   name?: true
   description?: true
   address?: true
+  directions?: true
+  minSessionMinutes?: true
+  bookingPolicy?: true
+  languages?: true
+  payments?: true
+  amenities?: true
   isActive?: true
   ownerId?: true
   createdAt?: true
@@ -151,6 +193,18 @@ export type CompanyAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CompanyAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CompanySumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CompanyMinAggregateInputType
@@ -181,6 +235,8 @@ export type CompanyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: CompanyCountAggregateInputType | true
+  _avg?: CompanyAvgAggregateInputType
+  _sum?: CompanySumAggregateInputType
   _min?: CompanyMinAggregateInputType
   _max?: CompanyMaxAggregateInputType
 }
@@ -192,11 +248,19 @@ export type CompanyGroupByOutputType = {
   name: string
   description: string | null
   address: string | null
+  directions: string | null
+  minSessionMinutes: number | null
+  bookingPolicy: $Enums.BookingPolicy | null
+  languages: string[]
+  payments: $Enums.PaymentMethod[]
+  amenities: string[]
   isActive: boolean
   ownerId: string
   createdAt: Date
   updatedAt: Date
   _count: CompanyCountAggregateOutputType | null
+  _avg: CompanyAvgAggregateOutputType | null
+  _sum: CompanySumAggregateOutputType | null
   _min: CompanyMinAggregateOutputType | null
   _max: CompanyMaxAggregateOutputType | null
 }
@@ -226,6 +290,12 @@ export type CompanyWhereInput = {
   name?: Prisma.StringFilter<"Company"> | string
   description?: Prisma.StringNullableFilter<"Company"> | string | null
   address?: Prisma.StringNullableFilter<"Company"> | string | null
+  directions?: Prisma.StringNullableFilter<"Company"> | string | null
+  minSessionMinutes?: Prisma.IntNullableFilter<"Company"> | number | null
+  bookingPolicy?: Prisma.EnumBookingPolicyNullableFilter<"Company"> | $Enums.BookingPolicy | null
+  languages?: Prisma.StringNullableListFilter<"Company">
+  payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
+  amenities?: Prisma.StringNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
   ownerId?: Prisma.StringFilter<"Company"> | string
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
@@ -233,6 +303,8 @@ export type CompanyWhereInput = {
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   contacts?: Prisma.CompanyContactListRelationFilter
+  hours?: Prisma.CompanyHoursListRelationFilter
+  prices?: Prisma.CompanyPriceListRelationFilter
 }
 
 export type CompanyOrderByWithRelationInput = {
@@ -242,6 +314,12 @@ export type CompanyOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  directions?: Prisma.SortOrderInput | Prisma.SortOrder
+  minSessionMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  bookingPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  payments?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -249,6 +327,8 @@ export type CompanyOrderByWithRelationInput = {
   owner?: Prisma.UserOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   contacts?: Prisma.CompanyContactOrderByRelationAggregateInput
+  hours?: Prisma.CompanyHoursOrderByRelationAggregateInput
+  prices?: Prisma.CompanyPriceOrderByRelationAggregateInput
 }
 
 export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -262,12 +342,20 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Company"> | string
   description?: Prisma.StringNullableFilter<"Company"> | string | null
   address?: Prisma.StringNullableFilter<"Company"> | string | null
+  directions?: Prisma.StringNullableFilter<"Company"> | string | null
+  minSessionMinutes?: Prisma.IntNullableFilter<"Company"> | number | null
+  bookingPolicy?: Prisma.EnumBookingPolicyNullableFilter<"Company"> | $Enums.BookingPolicy | null
+  languages?: Prisma.StringNullableListFilter<"Company">
+  payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
+  amenities?: Prisma.StringNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   contacts?: Prisma.CompanyContactListRelationFilter
+  hours?: Prisma.CompanyHoursListRelationFilter
+  prices?: Prisma.CompanyPriceListRelationFilter
 }, "id" | "slug" | "ownerId">
 
 export type CompanyOrderByWithAggregationInput = {
@@ -277,13 +365,21 @@ export type CompanyOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
+  directions?: Prisma.SortOrderInput | Prisma.SortOrder
+  minSessionMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  bookingPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  payments?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanyCountOrderByAggregateInput
+  _avg?: Prisma.CompanyAvgOrderByAggregateInput
   _max?: Prisma.CompanyMaxOrderByAggregateInput
   _min?: Prisma.CompanyMinOrderByAggregateInput
+  _sum?: Prisma.CompanySumOrderByAggregateInput
 }
 
 export type CompanyScalarWhereWithAggregatesInput = {
@@ -296,6 +392,12 @@ export type CompanyScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Company"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  directions?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  minSessionMinutes?: Prisma.IntNullableWithAggregatesFilter<"Company"> | number | null
+  bookingPolicy?: Prisma.EnumBookingPolicyNullableWithAggregatesFilter<"Company"> | $Enums.BookingPolicy | null
+  languages?: Prisma.StringNullableListFilter<"Company">
+  payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
+  amenities?: Prisma.StringNullableListFilter<"Company">
   isActive?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
   ownerId?: Prisma.StringWithAggregatesFilter<"Company"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Company"> | Date | string
@@ -309,12 +411,20 @@ export type CompanyCreateInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyUncheckedCreateInput = {
@@ -324,12 +434,20 @@ export type CompanyUncheckedCreateInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursUncheckedCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceUncheckedCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyUpdateInput = {
@@ -339,12 +457,20 @@ export type CompanyUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyUncheckedUpdateInput = {
@@ -354,12 +480,20 @@ export type CompanyUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUncheckedUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyCreateManyInput = {
@@ -369,6 +503,12 @@ export type CompanyCreateManyInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   ownerId: string
   createdAt?: Date | string
@@ -382,6 +522,12 @@ export type CompanyUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -394,6 +540,12 @@ export type CompanyUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -405,6 +557,14 @@ export type CompanyNullableScalarRelationFilter = {
   isNot?: Prisma.CompanyWhereInput | null
 }
 
+export type EnumPaymentMethodNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.PaymentMethod[] | Prisma.ListEnumPaymentMethodFieldRefInput<$PrismaModel> | null
+  has?: $Enums.PaymentMethod | Prisma.EnumPaymentMethodFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.PaymentMethod[] | Prisma.ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.PaymentMethod[] | Prisma.ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
 export type CompanyCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   slug?: Prisma.SortOrder
@@ -412,10 +572,20 @@ export type CompanyCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  directions?: Prisma.SortOrder
+  minSessionMinutes?: Prisma.SortOrder
+  bookingPolicy?: Prisma.SortOrder
+  languages?: Prisma.SortOrder
+  payments?: Prisma.SortOrder
+  amenities?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CompanyAvgOrderByAggregateInput = {
+  minSessionMinutes?: Prisma.SortOrder
 }
 
 export type CompanyMaxOrderByAggregateInput = {
@@ -425,6 +595,9 @@ export type CompanyMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  directions?: Prisma.SortOrder
+  minSessionMinutes?: Prisma.SortOrder
+  bookingPolicy?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -438,10 +611,17 @@ export type CompanyMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   address?: Prisma.SortOrder
+  directions?: Prisma.SortOrder
+  minSessionMinutes?: Prisma.SortOrder
+  bookingPolicy?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CompanySumOrderByAggregateInput = {
+  minSessionMinutes?: Prisma.SortOrder
 }
 
 export type CompanyScalarRelationFilter = {
@@ -497,8 +677,67 @@ export type CompanyUpdateOneWithoutProfilesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanyUpdateToOneWithWhereWithoutProfilesInput, Prisma.CompanyUpdateWithoutProfilesInput>, Prisma.CompanyUncheckedUpdateWithoutProfilesInput>
 }
 
+export type CompanyCreatelanguagesInput = {
+  set: string[]
+}
+
+export type CompanyCreatepaymentsInput = {
+  set: $Enums.PaymentMethod[]
+}
+
+export type CompanyCreateamenitiesInput = {
+  set: string[]
+}
+
 export type EnumCompanyKindFieldUpdateOperationsInput = {
   set?: $Enums.CompanyKind
+}
+
+export type NullableEnumBookingPolicyFieldUpdateOperationsInput = {
+  set?: $Enums.BookingPolicy | null
+}
+
+export type CompanyUpdatelanguagesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type CompanyUpdatepaymentsInput = {
+  set?: $Enums.PaymentMethod[]
+  push?: $Enums.PaymentMethod | $Enums.PaymentMethod[]
+}
+
+export type CompanyUpdateamenitiesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type CompanyCreateNestedOneWithoutPricesInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPricesInput, Prisma.CompanyUncheckedCreateWithoutPricesInput>
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPricesInput
+  connect?: Prisma.CompanyWhereUniqueInput
+}
+
+export type CompanyUpdateOneRequiredWithoutPricesNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutPricesInput, Prisma.CompanyUncheckedCreateWithoutPricesInput>
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutPricesInput
+  upsert?: Prisma.CompanyUpsertWithoutPricesInput
+  connect?: Prisma.CompanyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanyUpdateToOneWithWhereWithoutPricesInput, Prisma.CompanyUpdateWithoutPricesInput>, Prisma.CompanyUncheckedUpdateWithoutPricesInput>
+}
+
+export type CompanyCreateNestedOneWithoutHoursInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutHoursInput, Prisma.CompanyUncheckedCreateWithoutHoursInput>
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutHoursInput
+  connect?: Prisma.CompanyWhereUniqueInput
+}
+
+export type CompanyUpdateOneRequiredWithoutHoursNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutHoursInput, Prisma.CompanyUncheckedCreateWithoutHoursInput>
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutHoursInput
+  upsert?: Prisma.CompanyUpsertWithoutHoursInput
+  connect?: Prisma.CompanyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CompanyUpdateToOneWithWhereWithoutHoursInput, Prisma.CompanyUpdateWithoutHoursInput>, Prisma.CompanyUncheckedUpdateWithoutHoursInput>
 }
 
 export type CompanyCreateNestedOneWithoutContactsInput = {
@@ -522,11 +761,19 @@ export type CompanyCreateWithoutOwnerInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyUncheckedCreateWithoutOwnerInput = {
@@ -536,11 +783,19 @@ export type CompanyUncheckedCreateWithoutOwnerInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursUncheckedCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceUncheckedCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyCreateOrConnectWithoutOwnerInput = {
@@ -566,11 +821,19 @@ export type CompanyUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutOwnerInput = {
@@ -580,11 +843,19 @@ export type CompanyUncheckedUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUncheckedUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyCreateWithoutProfilesInput = {
@@ -594,11 +865,19 @@ export type CompanyCreateWithoutProfilesInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyUncheckedCreateWithoutProfilesInput = {
@@ -608,11 +887,19 @@ export type CompanyUncheckedCreateWithoutProfilesInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursUncheckedCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceUncheckedCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyCreateOrConnectWithoutProfilesInput = {
@@ -638,11 +925,19 @@ export type CompanyUpdateWithoutProfilesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutProfilesInput = {
@@ -652,11 +947,227 @@ export type CompanyUncheckedUpdateWithoutProfilesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUncheckedUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyCreateWithoutPricesInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutCompanyInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyUncheckedCreateWithoutPricesInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
+  isActive?: boolean
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyCreateOrConnectWithoutPricesInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutPricesInput, Prisma.CompanyUncheckedCreateWithoutPricesInput>
+}
+
+export type CompanyUpsertWithoutPricesInput = {
+  update: Prisma.XOR<Prisma.CompanyUpdateWithoutPricesInput, Prisma.CompanyUncheckedUpdateWithoutPricesInput>
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutPricesInput, Prisma.CompanyUncheckedCreateWithoutPricesInput>
+  where?: Prisma.CompanyWhereInput
+}
+
+export type CompanyUpdateToOneWithWhereWithoutPricesInput = {
+  where?: Prisma.CompanyWhereInput
+  data: Prisma.XOR<Prisma.CompanyUpdateWithoutPricesInput, Prisma.CompanyUncheckedUpdateWithoutPricesInput>
+}
+
+export type CompanyUpdateWithoutPricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateWithoutPricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyCreateWithoutHoursInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutCompanyInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyUncheckedCreateWithoutHoursInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
+  isActive?: boolean
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyCreateOrConnectWithoutHoursInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutHoursInput, Prisma.CompanyUncheckedCreateWithoutHoursInput>
+}
+
+export type CompanyUpsertWithoutHoursInput = {
+  update: Prisma.XOR<Prisma.CompanyUpdateWithoutHoursInput, Prisma.CompanyUncheckedUpdateWithoutHoursInput>
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutHoursInput, Prisma.CompanyUncheckedCreateWithoutHoursInput>
+  where?: Prisma.CompanyWhereInput
+}
+
+export type CompanyUpdateToOneWithWhereWithoutHoursInput = {
+  where?: Prisma.CompanyWhereInput
+  data: Prisma.XOR<Prisma.CompanyUpdateWithoutHoursInput, Prisma.CompanyUncheckedUpdateWithoutHoursInput>
+}
+
+export type CompanyUpdateWithoutHoursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateWithoutHoursInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyCreateWithoutContactsInput = {
@@ -666,11 +1177,19 @@ export type CompanyCreateWithoutContactsInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyUncheckedCreateWithoutContactsInput = {
@@ -680,11 +1199,19 @@ export type CompanyUncheckedCreateWithoutContactsInput = {
   name: string
   description?: string | null
   address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyCreateamenitiesInput | string[]
   isActive?: boolean
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
+  hours?: Prisma.CompanyHoursUncheckedCreateNestedManyWithoutCompanyInput
+  prices?: Prisma.CompanyPriceUncheckedCreateNestedManyWithoutCompanyInput
 }
 
 export type CompanyCreateOrConnectWithoutContactsInput = {
@@ -710,11 +1237,19 @@ export type CompanyUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUpdateManyWithoutCompanyNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutContactsInput = {
@@ -724,11 +1259,19 @@ export type CompanyUncheckedUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.CompanyUpdateamenitiesInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
+  hours?: Prisma.CompanyHoursUncheckedUpdateManyWithoutCompanyNestedInput
+  prices?: Prisma.CompanyPriceUncheckedUpdateManyWithoutCompanyNestedInput
 }
 
 
@@ -739,11 +1282,15 @@ export type CompanyUncheckedUpdateWithoutContactsInput = {
 export type CompanyCountOutputType = {
   profiles: number
   contacts: number
+  hours: number
+  prices: number
 }
 
 export type CompanyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profiles?: boolean | CompanyCountOutputTypeCountProfilesArgs
   contacts?: boolean | CompanyCountOutputTypeCountContactsArgs
+  hours?: boolean | CompanyCountOutputTypeCountHoursArgs
+  prices?: boolean | CompanyCountOutputTypeCountPricesArgs
 }
 
 /**
@@ -770,6 +1317,20 @@ export type CompanyCountOutputTypeCountContactsArgs<ExtArgs extends runtime.Type
   where?: Prisma.CompanyContactWhereInput
 }
 
+/**
+ * CompanyCountOutputType without action
+ */
+export type CompanyCountOutputTypeCountHoursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CompanyHoursWhereInput
+}
+
+/**
+ * CompanyCountOutputType without action
+ */
+export type CompanyCountOutputTypeCountPricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CompanyPriceWhereInput
+}
+
 
 export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -778,6 +1339,12 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   description?: boolean
   address?: boolean
+  directions?: boolean
+  minSessionMinutes?: boolean
+  bookingPolicy?: boolean
+  languages?: boolean
+  payments?: boolean
+  amenities?: boolean
   isActive?: boolean
   ownerId?: boolean
   createdAt?: boolean
@@ -785,6 +1352,8 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
   contacts?: boolean | Prisma.Company$contactsArgs<ExtArgs>
+  hours?: boolean | Prisma.Company$hoursArgs<ExtArgs>
+  prices?: boolean | Prisma.Company$pricesArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
@@ -795,6 +1364,12 @@ export type CompanySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   address?: boolean
+  directions?: boolean
+  minSessionMinutes?: boolean
+  bookingPolicy?: boolean
+  languages?: boolean
+  payments?: boolean
+  amenities?: boolean
   isActive?: boolean
   ownerId?: boolean
   createdAt?: boolean
@@ -809,6 +1384,12 @@ export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   address?: boolean
+  directions?: boolean
+  minSessionMinutes?: boolean
+  bookingPolicy?: boolean
+  languages?: boolean
+  payments?: boolean
+  amenities?: boolean
   isActive?: boolean
   ownerId?: boolean
   createdAt?: boolean
@@ -823,17 +1404,25 @@ export type CompanySelectScalar = {
   name?: boolean
   description?: boolean
   address?: boolean
+  directions?: boolean
+  minSessionMinutes?: boolean
+  bookingPolicy?: boolean
+  languages?: boolean
+  payments?: boolean
+  amenities?: boolean
   isActive?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "address" | "isActive" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "languages" | "payments" | "amenities" | "isActive" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
   contacts?: boolean | Prisma.Company$contactsArgs<ExtArgs>
+  hours?: boolean | Prisma.Company$hoursArgs<ExtArgs>
+  prices?: boolean | Prisma.Company$pricesArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CompanyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -849,6 +1438,8 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     owner: Prisma.$UserPayload<ExtArgs>
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     contacts: Prisma.$CompanyContactPayload<ExtArgs>[]
+    hours: Prisma.$CompanyHoursPayload<ExtArgs>[]
+    prices: Prisma.$CompanyPricePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -863,6 +1454,32 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      * Только у салона. У агентства адреса нет — это и есть отличие.
      */
     address: string | null
+    /**
+     * Как добраться: «5 минут от Zoologischer Garten». Свободный текст, а не
+     * координаты: маршрут словами полезнее точки на карте, а точка уже есть
+     * у города и района.
+     */
+    directions: string | null
+    /**
+     * Минимальная длительность сеанса, минуты. Салонное понятие: у анкеты
+     * длительности задаются тарифами.
+     */
+    minSessionMinutes: number | null
+    /**
+     * Нужна ли предварительная запись. Меняет сценарий визита целиком.
+     */
+    bookingPolicy: $Enums.BookingPolicy | null
+    /**
+     * Языки персонала — коды из SPOKEN_LANGUAGES.
+     */
+    languages: string[]
+    /**
+     * Способы оплаты и удобства: закрытые наборы, переводятся словарями.
+     * Списком строк, а не связью: домены не растут, и таблица ради девяти
+     * значений добавила бы джойн без выгоды.
+     */
+    payments: $Enums.PaymentMethod[]
+    amenities: string[]
     /**
      * Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
      */
@@ -1267,6 +1884,8 @@ export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends runtime.
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.Company$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.Company$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  hours<T extends Prisma.Company$hoursArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$hoursArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyHoursPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  prices<T extends Prisma.Company$pricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1302,6 +1921,12 @@ export interface CompanyFieldRefs {
   readonly name: Prisma.FieldRef<"Company", 'String'>
   readonly description: Prisma.FieldRef<"Company", 'String'>
   readonly address: Prisma.FieldRef<"Company", 'String'>
+  readonly directions: Prisma.FieldRef<"Company", 'String'>
+  readonly minSessionMinutes: Prisma.FieldRef<"Company", 'Int'>
+  readonly bookingPolicy: Prisma.FieldRef<"Company", 'BookingPolicy'>
+  readonly languages: Prisma.FieldRef<"Company", 'String[]'>
+  readonly payments: Prisma.FieldRef<"Company", 'PaymentMethod[]'>
+  readonly amenities: Prisma.FieldRef<"Company", 'String[]'>
   readonly isActive: Prisma.FieldRef<"Company", 'Boolean'>
   readonly ownerId: Prisma.FieldRef<"Company", 'String'>
   readonly createdAt: Prisma.FieldRef<"Company", 'DateTime'>
@@ -1752,6 +2377,54 @@ export type Company$contactsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.CompanyContactScalarFieldEnum | Prisma.CompanyContactScalarFieldEnum[]
+}
+
+/**
+ * Company.hours
+ */
+export type Company$hoursArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanyHours
+   */
+  select?: Prisma.CompanyHoursSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanyHours
+   */
+  omit?: Prisma.CompanyHoursOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyHoursInclude<ExtArgs> | null
+  where?: Prisma.CompanyHoursWhereInput
+  orderBy?: Prisma.CompanyHoursOrderByWithRelationInput | Prisma.CompanyHoursOrderByWithRelationInput[]
+  cursor?: Prisma.CompanyHoursWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CompanyHoursScalarFieldEnum | Prisma.CompanyHoursScalarFieldEnum[]
+}
+
+/**
+ * Company.prices
+ */
+export type Company$pricesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CompanyPrice
+   */
+  select?: Prisma.CompanyPriceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CompanyPrice
+   */
+  omit?: Prisma.CompanyPriceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CompanyPriceInclude<ExtArgs> | null
+  where?: Prisma.CompanyPriceWhereInput
+  orderBy?: Prisma.CompanyPriceOrderByWithRelationInput | Prisma.CompanyPriceOrderByWithRelationInput[]
+  cursor?: Prisma.CompanyPriceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CompanyPriceScalarFieldEnum | Prisma.CompanyPriceScalarFieldEnum[]
 }
 
 /**

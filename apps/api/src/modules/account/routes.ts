@@ -257,6 +257,11 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         );
       }
 
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: { id: true },
+      });
+
       const city = await fastify.prisma.city.findUnique({
         where: { slug: request.body.citySlug },
         select: { id: true, slug: true },
@@ -280,6 +285,10 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ...center,
           // Вид анкеты жёстко следует из типа владельца, из запроса не берётся.
           kind: LISTING_KIND_BY_ADVERTISER[advertiserKind],
+          // Анкета агентства и салона сразу принадлежит их компании: заводить
+          // её и отдельно привязывать — лишний шаг, который забывают, и
+          // анкета остаётся без бейджа принадлежности.
+          ...(company ? { companyId: company.id } : {}),
           status: 'draft',
           displayName: request.body.displayName,
           ownerId: userId,

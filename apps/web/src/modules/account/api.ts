@@ -1,7 +1,10 @@
 import {
   type CityOption,
+  type Company,
+  type CompanyInput,
   type CreateProfileInput,
   cityOptionSchema,
+  companySchema,
   type Locale,
   type OwnPhoto,
   type OwnProfile,
@@ -68,6 +71,26 @@ export function fetchServiceCatalog(
   locale: Locale,
 ): Promise<ServiceGroup[]> {
   return call(`/services?kind=${kind}&locale=${locale}`, z.array(serviceGroupSchema));
+}
+
+/**
+ * Компания рекламодателя. `null` — её ещё нет: обычное состояние сразу после
+ * регистрации, а не ошибка.
+ */
+export function fetchOwnCompany(): Promise<Company | null> {
+  return call('/me/company', companySchema.nullable());
+}
+
+export function saveOwnCompany(input: CompanyInput): Promise<Company> {
+  return call('/me/company', companySchema, { method: 'PUT', body: JSON.stringify(input) });
+}
+
+/** Привязка анкеты к своей компании — отдельным действием, а не полем формы. */
+export function attachProfileToCompany(profileId: string, attached: boolean) {
+  return call(`/me/profiles/${profileId}/company`, z.object({ attached: z.boolean() }), {
+    method: 'PUT',
+    body: JSON.stringify({ attached }),
+  });
 }
 
 export function fetchOwnProfiles(): Promise<OwnProfile[]> {

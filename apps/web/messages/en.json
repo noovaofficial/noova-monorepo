@@ -16,7 +16,8 @@
     "quickProfiles": "My profiles",
     "quickAnalytics": "Analytics",
     "soon": "soon",
-    "mapView": "Profiles on the map"
+    "mapView": "Profiles on the map",
+    "quickCompany": "Company"
   },
   "filters": {
     "title": "Filters",
@@ -80,7 +81,9 @@
     "online": "Online",
     "priceFrom": "from {price}",
     "perHour": "/hour",
-    "ad": "Ad"
+    "ad": "Ad",
+    "fromAgency": "Agency {name}",
+    "fromSalon": "Studio {name}"
   },
   "profile": {
     "prices": "Rates",
@@ -730,6 +733,37 @@
     "contact_phone": "Phone",
     "contact_whatsapp": "WhatsApp",
     "contact_telegram": "Telegram",
-    "contact_viber": "Viber"
+    "contact_viber": "Viber",
+    "onlyCompanies": "Agencies and studios only",
+    "notCreated": "Not created yet",
+    "publicAt": "Public at /company/{slug}",
+    "name": "Name",
+    "slug": "Page address",
+    "slugHint": "Lowercase letters, digits and hyphens",
+    "address": "Address",
+    "addressHint": "Only a studio has an address — that is what sets it apart from an agency",
+    "description": "Description",
+    "contacts": "Contacts",
+    "contactValue": "Value",
+    "addContact": "Add contact",
+    "remove": "Remove",
+    "save": "Save",
+    "saved": "Saved",
+    "failed": "Could not save",
+    "checkFields": "Check the fields",
+    "cabinetAgency": "Agency details",
+    "cabinetSalon": "Studio details",
+    "weekday_1": "Monday",
+    "weekday_2": "Tuesday",
+    "weekday_3": "Wednesday",
+    "weekday_4": "Thursday",
+    "weekday_5": "Friday",
+    "weekday_6": "Saturday",
+    "weekday_7": "Sunday",
+    "hours": "Opening hours",
+    "dayOff": "Closed",
+    "hoursHint": "Leave empty for a day off. A closing time earlier than opening means past midnight.",
+    "opensAt": "From",
+    "closesAt": "To"
   }
 }

@@ -12,6 +12,7 @@ export const queryKeys = {
 
   /** Кабинет владельца. */
   ownProfiles: () => ['own-profiles'] as const,
+  ownCompany: () => ['own-company'] as const,
   ownProfile: (id: string) => ['own-profile', id] as const,
   // Локаль — часть ключа: названия переведены на стороне API, и без неё
   // смена языка отдавала бы прежний список из кэша.

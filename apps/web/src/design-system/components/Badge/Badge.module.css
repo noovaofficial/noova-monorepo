@@ -23,3 +23,16 @@
   background: var(--surfaceMuted);
   color: var(--secondaryText);
 }
+
+/* Агентство и салон. Отдельный цвет, а не neutral: принадлежность компании —
+   это факт об анкете, а не служебная пометка, и посетитель должен отличать
+   его от «онлайн» с первого взгляда. */
+.company {
+  background: var(--primarySubtle);
+  color: var(--primary);
+}
+
+/* Тот же бейдж ссылкой: на странице анкеты он ведёт к компании. */
+a.badge:hover {
+  filter: brightness(0.95);
+}

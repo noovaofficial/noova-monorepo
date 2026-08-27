@@ -16,7 +16,8 @@
     "quickProfiles": "Мои анкеты",
     "quickAnalytics": "Аналитика",
     "soon": "скоро",
-    "mapView": "Анкеты на карте"
+    "mapView": "Анкеты на карте",
+    "quickCompany": "Компания"
   },
   "filters": {
     "title": "Фильтры",
@@ -80,7 +81,9 @@
     "online": "Онлайн",
     "priceFrom": "от {price}",
     "perHour": "/час",
-    "ad": "Реклама"
+    "ad": "Реклама",
+    "fromAgency": "Агентство {name}",
+    "fromSalon": "Салон {name}"
   },
   "profile": {
     "prices": "Тарифы",
@@ -730,6 +733,37 @@
     "contact_phone": "Телефон",
     "contact_whatsapp": "WhatsApp",
     "contact_telegram": "Telegram",
-    "contact_viber": "Viber"
+    "contact_viber": "Viber",
+    "onlyCompanies": "Только для агентств и салонов",
+    "notCreated": "Ещё не заведена",
+    "publicAt": "Публично по адресу /company/{slug}",
+    "name": "Название",
+    "slug": "Адрес страницы",
+    "slugHint": "Строчные буквы, цифры и дефисы",
+    "address": "Адрес",
+    "addressHint": "Адрес есть только у салона — этим он и отличается от агентства",
+    "description": "Описание",
+    "contacts": "Контакты",
+    "contactValue": "Значение",
+    "addContact": "Добавить контакт",
+    "remove": "Удалить",
+    "save": "Сохранить",
+    "saved": "Сохранено",
+    "failed": "Не удалось сохранить",
+    "checkFields": "Проверьте поля",
+    "cabinetAgency": "Данные агентства",
+    "cabinetSalon": "Данные салона",
+    "weekday_1": "Понедельник",
+    "weekday_2": "Вторник",
+    "weekday_3": "Среда",
+    "weekday_4": "Четверг",
+    "weekday_5": "Пятница",
+    "weekday_6": "Суббота",
+    "weekday_7": "Воскресенье",
+    "hours": "Часы работы",
+    "dayOff": "Выходной",
+    "hoursHint": "Оставьте пустым — в этот день выходной. Время закрытия раньше открытия означает переход через полночь.",
+    "opensAt": "С",
+    "closesAt": "До"
   }
 }

@@ -16,7 +16,8 @@
     "quickProfiles": "Meine Anzeigen",
     "quickAnalytics": "Statistik",
     "soon": "bald",
-    "mapView": "Profile auf der Karte"
+    "mapView": "Profile auf der Karte",
+    "quickCompany": "Firma"
   },
   "filters": {
     "title": "Filter",
@@ -80,7 +81,9 @@
     "online": "Online",
     "priceFrom": "ab {price}",
     "perHour": "/Stunde",
-    "ad": "Anzeige"
+    "ad": "Anzeige",
+    "fromAgency": "Agentur {name}",
+    "fromSalon": "Studio {name}"
   },
   "profile": {
     "prices": "Preise",
@@ -730,6 +733,37 @@
     "contact_phone": "Telefon",
     "contact_whatsapp": "WhatsApp",
     "contact_telegram": "Telegram",
-    "contact_viber": "Viber"
+    "contact_viber": "Viber",
+    "onlyCompanies": "Nur für Agenturen und Studios",
+    "notCreated": "Noch nicht angelegt",
+    "publicAt": "Öffentlich unter /company/{slug}",
+    "name": "Name",
+    "slug": "Adresse der Seite",
+    "slugHint": "Kleinbuchstaben, Ziffern und Bindestriche",
+    "address": "Adresse",
+    "addressHint": "Nur das Studio hat eine Adresse — daran unterscheidet es sich von der Agentur",
+    "description": "Beschreibung",
+    "contacts": "Kontakte",
+    "contactValue": "Wert",
+    "addContact": "Kontakt hinzufügen",
+    "remove": "Entfernen",
+    "save": "Speichern",
+    "saved": "Gespeichert",
+    "failed": "Konnte nicht gespeichert werden",
+    "checkFields": "Felder prüfen",
+    "cabinetAgency": "Agenturdaten",
+    "cabinetSalon": "Studiodaten",
+    "weekday_1": "Montag",
+    "weekday_2": "Dienstag",
+    "weekday_3": "Mittwoch",
+    "weekday_4": "Donnerstag",
+    "weekday_5": "Freitag",
+    "weekday_6": "Samstag",
+    "weekday_7": "Sonntag",
+    "hours": "Öffnungszeiten",
+    "dayOff": "Geschlossen",
+    "hoursHint": "Leer lassen — an diesem Tag geschlossen. Schließzeit vor Öffnungszeit bedeutet über Mitternacht.",
+    "opensAt": "Von",
+    "closesAt": "Bis"
   }
 }

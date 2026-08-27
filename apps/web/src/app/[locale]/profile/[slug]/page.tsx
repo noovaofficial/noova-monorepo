@@ -2,7 +2,7 @@ import type { Locale } from '@noova/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Badge } from '@/design-system/components/Badge';
+import { Badge, badgeClass } from '@/design-system/components/Badge';
 import { AreaMap } from '@/modules/catalog/components/AreaMap';
 import { Gallery } from '@/modules/catalog/components/Gallery';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
@@ -175,19 +175,21 @@ export default async function ProfilePage({ params }: Props) {
         <span className={styles.headerCity}>
           {profile.city.name}
           {profile.district ? ` · ${profile.district}` : ''}
-          {/* Салон и агентство посетитель видит — решение владельца продукта
-              (N-31). Ссылка ведёт на страницу компании с её анкетами. */}
-          {profile.company ? (
-            <>
-              {' · '}
-              <Link className={styles.headerCompany} href={`/company/${profile.company.slug}`}>
-                {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
-                  name: profile.company.name,
-                })}
-              </Link>
-            </>
-          ) : null}
         </span>
+
+        {/* Компания — отдельной строкой под именем, а не припиской к городу.
+            Это ссылка, и в ряду «Берлин · Митте · От агентства Velvet» она
+            читалась как часть адреса, а не как переход. Решение показывать
+            принадлежность — владельца продукта (N-31). */}
+        {profile.company ? (
+          <div className={styles.headerCompanyRow}>
+            <Link className={badgeClass('company')} href={`/company/${profile.company.slug}`}>
+              {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
+                name: profile.company.name,
+              })}
+            </Link>
+          </div>
+        ) : null}
       </header>
 
       <div className={styles.layout}>

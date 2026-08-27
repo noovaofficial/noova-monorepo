@@ -406,7 +406,6 @@ model Profile {
   appearanceType AppearanceType?
   smoker         Boolean?
 
-
   /// Комментарий модератора владельцу: причина отказа или что исправить.
   moderationNote String?
 
@@ -597,6 +596,27 @@ model Company {
   /// Только у салона. У агентства адреса нет — это и есть отличие.
   address     String?
 
+  /// Как добраться: «5 минут от Zoologischer Garten». Свободный текст, а не
+  /// координаты: маршрут словами полезнее точки на карте, а точка уже есть
+  /// у города и района.
+  directions String?
+
+  /// Минимальная длительность сеанса, минуты. Салонное понятие: у анкеты
+  /// длительности задаются тарифами.
+  minSessionMinutes Int?
+
+  /// Нужна ли предварительная запись. Меняет сценарий визита целиком.
+  bookingPolicy BookingPolicy?
+
+  /// Языки персонала — коды из SPOKEN_LANGUAGES.
+  languages String[] @default([])
+
+  /// Способы оплаты и удобства: закрытые наборы, переводятся словарями.
+  /// Списком строк, а не связью: домены не растут, и таблица ради девяти
+  /// значений добавила бы джойн без выгоды.
+  payments  PaymentMethod[] @default([])
+  amenities String[]        @default([])
+
   /// Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
   isActive Boolean @default(true)
 
@@ -605,6 +625,8 @@ model Company {
 
   profiles Profile[]
   contacts CompanyContact[]
+  hours    CompanyHours[]
+  prices   CompanyPrice[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -615,6 +637,58 @@ model Company {
 /// Контакты компании. В отличие от контактов анкеты, отдаются публично:
 /// у салона это способ до него дозвониться, и прятать его за раскрытием
 /// незачем — это контакт заведения, а не персональные данные девушки.
+/// Нужна ли предварительная запись (N-34).
+enum BookingPolicy {
+  /// Только по записи.
+  appointment
+  /// Принимают и без записи.
+  walk_in
+}
+
+enum PaymentMethod {
+  cash
+  card
+  transfer
+}
+
+/// Прайс салона: общий, не привязанный к конкретной анкете (N-34).
+model CompanyPrice {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// Что именно: «Классический массаж», «Спа-программа».
+  title           String
+  durationMinutes Int
+  /// В центах, как и у анкет: копейки в Float однажды разойдутся.
+  priceCents      Int
+  position        Int    @default(0)
+
+  @@index([companyId, position])
+}
+
+/// Часы работы салона по дням недели (N-34).
+///
+/// Только у салона: у агентства нет помещения, в которое можно прийти, —
+/// это то же различие, что и с адресом.
+model CompanyHours {
+  id        String  @id @default(cuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  /// 1 — понедельник, 7 — воскресенье. ISO-8601, как `Date.getISODay`:
+  /// нумерация с нуля путается с воскресеньем как началом недели у Date.
+  weekday Int
+
+  /// Минуты от полуночи. Минуты, а не строка «10:00», ради сравнений:
+  /// «открыто сейчас» и сортировка по времени работают без разбора текста.
+  /// Оба null — выходной.
+  opensAt  Int?
+  closesAt Int?
+
+  @@unique([companyId, weekday])
+}
+
 model CompanyContact {
   id        String      @id @default(cuid())
   companyId String

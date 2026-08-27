@@ -196,12 +196,13 @@
 }
 
 /* Ссылка на салон или агентство в шапке анкеты (N-31). */
-.headerCompany {
-  color: var(--secondaryText);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* Компания отдельной строкой под именем: flex-basis 100% переносит её на
+   новую строку, а сам бейдж внутри остаётся по ширине содержимого. */
+.headerCompanyRow {
+  flex: 0 0 100%;
+  margin-top: var(--space1);
 }
 
-.headerCompany:hover {
-  color: var(--primary);
+.headerCompanyRow a {
+  text-decoration: none;
 }

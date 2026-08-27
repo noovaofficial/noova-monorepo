@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
+import { SalonDetails } from '@/modules/company/components/SalonDetails';
+import { WorkingHours } from '@/modules/company/components/WorkingHours';
 import { ApiError, fetchCompany } from '@/shared/api';
 import styles from './page.module.css';
 
@@ -56,6 +58,12 @@ export default async function CompanyPage({ params }: Props) {
 
         {/* Адрес есть только у салона — это и есть отличие от агентства. */}
         {company.address ? <p className={styles.address}>{company.address}</p> : null}
+        {/* Часы работы перед описанием: посетитель салона сначала выясняет,
+            открыто ли, и только потом читает про интерьер. */}
+        <WorkingHours hours={company.hours} locale={locale} />
+
+        <SalonDetails company={company} locale={locale} />
+
         {company.description ? <p className={styles.description}>{company.description}</p> : null}
 
         {company.contacts.length > 0 ? (

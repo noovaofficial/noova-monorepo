@@ -21,6 +21,31 @@ type Props = {
   unavailable?: boolean;
 };
 
+/**
+ * Три услуги для карточки.
+ *
+ * Выбор псевдослучайный, но **устойчивый**: зерно — идентификатор анкеты.
+ * Настоящий `Math.random()` дал бы разный набор на сервере и в браузере, и
+ * React ругался бы на расхождение разметки при гидрации. Заодно карточка не
+ * дёргается при каждом обновлении списка, а разные анкеты показывают разное —
+ * ради этого разнообразия выбор и нужен.
+ */
+function pickServices<T>(seed: string, services: T[], count = 3): T[] {
+  if (services.length <= count) return services;
+
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) | 0;
+
+  const rest = [...services];
+  const out: T[] = [];
+  for (let i = 0; i < count; i += 1) {
+    hash = (hash * 1103515245 + 12345) & 0x7fffffff;
+    const [taken] = rest.splice(hash % rest.length, 1);
+    if (taken !== undefined) out.push(taken);
+  }
+  return out;
+}
+
 export function ProfileCard({ profile, locale, priority = false, unavailable = false }: Props) {
   const t = useTranslations('card');
   // Ключи услуг переводятся здесь: в БД лежит только ключ, иначе название
@@ -78,10 +103,21 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
       </div>
 
       <div className={styles.body}>
+        {/* Принадлежность компании вытесняет услуги: она говорит о анкете
+            больше, чем три строки из шестидесяти пяти, и в одном ряду с ними
+            терялась бы. Нет компании — показываем услуги. */}
         <div className={styles.tags}>
-          {profile.services.slice(0, 3).map((service) => (
-            <Tag key={service.key}>{service.name}</Tag>
-          ))}
+          {profile.company ? (
+            <Badge variant="company">
+              {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
+                name: profile.company.name,
+              })}
+            </Badge>
+          ) : (
+            pickServices(profile.id, profile.services).map((service) => (
+              <Tag key={service.key}>{service.name}</Tag>
+            ))
+          )}
         </div>
         <div className={styles.foot}>
           {profile.isVerified ? <Badge variant="verified">✓ {t('verified')}</Badge> : <span />}

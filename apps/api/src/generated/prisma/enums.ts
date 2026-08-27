@@ -208,3 +208,20 @@ export const ContactType = {
 } as const
 
 export type ContactType = (typeof ContactType)[keyof typeof ContactType]
+
+
+export const BookingPolicy = {
+  appointment: 'appointment',
+  walk_in: 'walk_in'
+} as const
+
+export type BookingPolicy = (typeof BookingPolicy)[keyof typeof BookingPolicy]
+
+
+export const PaymentMethod = {
+  cash: 'cash',
+  card: 'card',
+  transfer: 'transfer'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
