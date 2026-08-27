@@ -1,4 +1,4 @@
-import type { Company } from '@noova/shared';
+import type { Company, Locale } from '@noova/shared';
 import { getTranslations } from 'next-intl/server';
 import { formatMoney } from '@/shared/format';
 import styles from './SalonDetails.module.css';
@@ -11,7 +11,7 @@ import styles from './SalonDetails.module.css';
  * Всё это — свойства места, а не анкеты, поэтому у агентства блок пуст и не
  * отображается вовсе.
  */
-export async function SalonDetails({ company, locale }: { company: Company; locale: string }) {
+export async function SalonDetails({ company, locale }: { company: Company; locale: Locale }) {
   if (company.kind !== 'salon') return null;
 
   const t = await getTranslations({ locale, namespace: 'company' });
@@ -23,7 +23,10 @@ export async function SalonDetails({ company, locale }: { company: Company; loca
     facts.push({ label: t('booking'), value: t(`booking_${company.bookingPolicy}`) });
   }
   if (company.minSessionMinutes) {
-    facts.push({ label: t('minSession'), value: t('minutes', { count: company.minSessionMinutes }) });
+    facts.push({
+      label: t('minSession'),
+      value: t('minutes', { count: company.minSessionMinutes }),
+    });
   }
   if (company.payments.length > 0) {
     facts.push({
@@ -90,7 +93,9 @@ export async function SalonDetails({ company, locale }: { company: Company; loca
                 <span className={styles.priceMeta}>
                   {t('minutes', { count: price.durationMinutes })}
                   {' · '}
-                  <strong>{formatMoney({ amountCents: price.priceCents, currency: 'EUR' }, locale)}</strong>
+                  <strong>
+                    {formatMoney({ amountCents: price.priceCents, currency: 'EUR' }, locale)}
+                  </strong>
                 </span>
               </li>
             ))}

@@ -1,10 +1,14 @@
 'use client';
 
 import {
+  AMENITIES,
+  type BookingPolicy,
   CONTACT_TYPES,
   type CompanyInput,
   type ContactType,
   companyInputSchema,
+  type PaymentMethod,
+  SPOKEN_LANGUAGES,
 } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
@@ -19,6 +23,8 @@ type Contact = { type: ContactType; value: string };
 
 /** Список неизменяем и непуст, но тип этого не знает — фиксируем один раз. */
 const DEFAULT_CONTACT: ContactType = CONTACT_TYPES[0] ?? 'phone';
+
+type PriceRow = { title: string; durationMinutes: string; price: string };
 
 type HoursRow = { weekday: number; opensAt: string; closesAt: string };
 
@@ -43,6 +49,7 @@ const toHhmm = (minutes: number): string =>
  */
 export function CompanyEditor() {
   const t = useTranslations('company');
+  const tLang = useTranslations('languageNames');
   const { user, status } = useSession();
   const queryClient = useQueryClient();
 
@@ -63,6 +70,13 @@ export function CompanyEditor() {
   // Семь строк всегда: пустая пара означает выходной, и отдельной галочки
   // «закрыто» не нужно — незаполненный день и есть закрытый.
   const [hours, setHours] = useState<HoursRow[]>(() => emptyWeek());
+  const [directions, setDirections] = useState('');
+  const [minSession, setMinSession] = useState('');
+  const [booking, setBooking] = useState<BookingPolicy | ''>('');
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [payments, setPayments] = useState<PaymentMethod[]>([]);
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [prices, setPrices] = useState<PriceRow[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
@@ -76,6 +90,19 @@ export function CompanyEditor() {
     setDescription(company.description ?? '');
     setAddress(company.address ?? '');
     setContacts(company.contacts);
+    setDirections(company.directions ?? '');
+    setMinSession(company.minSessionMinutes ? String(company.minSessionMinutes) : '');
+    setBooking(company.bookingPolicy ?? '');
+    setLanguages(company.languages);
+    setPayments(company.payments);
+    setAmenities(company.amenities);
+    setPrices(
+      company.prices.map((p) => ({
+        title: p.title,
+        durationMinutes: String(p.durationMinutes),
+        price: String(p.priceCents / 100),
+      })),
+    );
     setHours(
       emptyWeek().map((row) => {
         const saved = company.hours.find((h) => h.weekday === row.weekday);
@@ -92,6 +119,7 @@ export function CompanyEditor() {
 
   const save = useMutation({
     mutationFn: async () => {
+      const isSalonKind = kind === 'salon';
       const input: CompanyInput = companyInputSchema.parse({
         slug,
         kind,
@@ -113,6 +141,23 @@ export function CompanyEditor() {
                   closesAt: toMinutes(h.closesAt),
                 }))
             : [],
+        directions: directions.trim() || undefined,
+        minSessionMinutes: isSalonKind && minSession ? Number(minSession) : undefined,
+        bookingPolicy: isSalonKind && booking ? booking : undefined,
+        languages,
+        payments,
+        amenities: isSalonKind ? amenities : [],
+        prices: isSalonKind
+          ? prices
+              .filter((p) => p.title.trim() !== '' && p.durationMinutes !== '')
+              .map((p) => ({
+                title: p.title.trim(),
+                durationMinutes: Number(p.durationMinutes),
+                // Цена вводится в евро, хранится в центах: копейки в Float
+                // однажды разойдутся, как и у анкет.
+                priceCents: Math.round(Number(p.price || 0) * 100),
+              }))
+          : [],
         isActive: true,
       });
       return saveOwnCompany(input);
@@ -220,6 +265,193 @@ export function CompanyEditor() {
             maxLength={4000}
           />
         </div>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="company-directions">
+            {t('directions')}
+          </label>
+          <input
+            className={styles.input}
+            id="company-directions"
+            value={directions}
+            onChange={(event) => setDirections(event.target.value)}
+            maxLength={500}
+          />
+        </div>
+
+        <fieldset className={styles.fieldset}>
+          <legend className={styles.label}>{t('languages')}</legend>
+          <div className={styles.chips}>
+            {SPOKEN_LANGUAGES.map((code) => (
+              <label className={styles.chipCheck} key={code}>
+                <input
+                  type="checkbox"
+                  checked={languages.includes(code)}
+                  onChange={(event) =>
+                    setLanguages(
+                      event.target.checked
+                        ? [...languages, code]
+                        : languages.filter((l) => l !== code),
+                    )
+                  }
+                />
+                {tLang.has(code) ? tLang(code) : code}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset className={styles.fieldset}>
+          <legend className={styles.label}>{t('payments')}</legend>
+          <div className={styles.chips}>
+            {(['cash', 'card', 'transfer'] as const).map((method) => (
+              <label className={styles.chipCheck} key={method}>
+                <input
+                  type="checkbox"
+                  checked={payments.includes(method)}
+                  onChange={(event) =>
+                    setPayments(
+                      event.target.checked
+                        ? [...payments, method]
+                        : payments.filter((p) => p !== method),
+                    )
+                  }
+                />
+                {t(`payment_${method}`)}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        {isSalon ? (
+          <>
+            <fieldset className={styles.fieldset}>
+              <legend className={styles.label}>{t('amenities')}</legend>
+              <div className={styles.chips}>
+                {AMENITIES.map((amenity) => (
+                  <label className={styles.chipCheck} key={amenity}>
+                    <input
+                      type="checkbox"
+                      checked={amenities.includes(amenity)}
+                      onChange={(event) =>
+                        setAmenities(
+                          event.target.checked
+                            ? [...amenities, amenity]
+                            : amenities.filter((a) => a !== amenity),
+                        )
+                      }
+                    />
+                    {t(`amenity_${amenity}`)}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className={styles.formRow}>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="company-booking">
+                  {t('booking')}
+                </label>
+                <select
+                  className={styles.select}
+                  id="company-booking"
+                  value={booking}
+                  onChange={(event) => setBooking(event.target.value as BookingPolicy | '')}
+                >
+                  <option value="">—</option>
+                  <option value="appointment">{t('booking_appointment')}</option>
+                  <option value="walk_in">{t('booking_walk_in')}</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="company-min-session">
+                  {t('minSession')}
+                </label>
+                <input
+                  className={styles.input}
+                  id="company-min-session"
+                  type="number"
+                  min={15}
+                  max={1440}
+                  step={15}
+                  value={minSession}
+                  onChange={(event) => setMinSession(event.target.value)}
+                />
+              </div>
+            </div>
+
+            <fieldset className={styles.fieldset}>
+              <legend className={styles.label}>{t('prices')}</legend>
+              {prices.map((row, index) => (
+                // Порядок — единственный ключ: названия могут повторяться,
+                // пока строку не заполнили.
+                // biome-ignore lint/suspicious/noArrayIndexKey: порядок и есть идентичность
+                <div className={styles.priceRow} key={index}>
+                  <input
+                    className={styles.input}
+                    value={row.title}
+                    placeholder={t('priceTitle')}
+                    onChange={(event) =>
+                      setPrices(
+                        prices.map((p, i) =>
+                          i === index ? { ...p, title: event.target.value } : p,
+                        ),
+                      )
+                    }
+                  />
+                  <input
+                    className={styles.time}
+                    type="number"
+                    min={15}
+                    step={15}
+                    value={row.durationMinutes}
+                    placeholder={t('duration')}
+                    onChange={(event) =>
+                      setPrices(
+                        prices.map((p, i) =>
+                          i === index ? { ...p, durationMinutes: event.target.value } : p,
+                        ),
+                      )
+                    }
+                  />
+                  <input
+                    className={styles.time}
+                    type="number"
+                    min={0}
+                    step={5}
+                    value={row.price}
+                    placeholder={t('price')}
+                    onChange={(event) =>
+                      setPrices(
+                        prices.map((p, i) =>
+                          i === index ? { ...p, price: event.target.value } : p,
+                        ),
+                      )
+                    }
+                  />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setPrices(prices.filter((_, i) => i !== index))}
+                  >
+                    {t('remove')}
+                  </Button>
+                </div>
+              ))}
+              {prices.length < 20 ? (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() =>
+                    setPrices([...prices, { title: '', durationMinutes: '60', price: '' }])
+                  }
+                >
+                  {t('addPrice')}
+                </Button>
+              ) : null}
+            </fieldset>
+          </>
+        ) : null}
 
         {isSalon ? (
           <fieldset className={styles.fieldset}>

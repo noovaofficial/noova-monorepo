@@ -147,3 +147,42 @@
 .dash {
   color: var(--secondaryText);
 }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2) var(--space4);
+}
+
+.chipCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--textSm);
+  cursor: pointer;
+}
+
+.formRow {
+  display: flex;
+  gap: var(--space4);
+  flex-wrap: wrap;
+}
+
+.formRow .field {
+  flex: 1 1 200px;
+}
+
+.priceRow {
+  display: flex;
+  gap: var(--space2);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.priceRow .input {
+  flex: 1 1 180px;
+}
+
+.priceRow .time {
+  flex: 0 0 110px;
+}

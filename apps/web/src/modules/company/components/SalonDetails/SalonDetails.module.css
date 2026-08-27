@@ -1,0 +1,81 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space5);
+  margin: var(--space5) 0;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.title {
+  font-size: var(--textSm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--secondaryText);
+}
+
+.text {
+  line-height: var(--leadingRelaxed);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space3) var(--space6);
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.factLabel {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  list-style: none;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 5px 12px;
+  font-size: var(--textSm);
+  background: var(--surface);
+}
+
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+  list-style: none;
+  max-width: 520px;
+}
+
+.price {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.priceMeta {
+  color: var(--secondaryText);
+  white-space: nowrap;
+}
+
+.priceMeta strong {
+  color: var(--primaryText);
+}
