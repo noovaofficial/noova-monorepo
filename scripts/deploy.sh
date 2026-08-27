@@ -47,6 +47,24 @@ export IMAGE_PREFIX IMAGE_TAG
 # ---------------------------------------------------------------------------
 # Проверки до сборки: дешевле упасть здесь, чем на сервере
 # ---------------------------------------------------------------------------
+# Соединение с сервером рвётся: выпуск дважды обрывался между переносом
+# образов и запуском, оставляя на машине новые образы и прежний IMAGE_TAG.
+# Снаружи это выглядело как успешный выпуск, в котором «нет изменений».
+#
+# Повтор вместо разбирательства: обрыв здесь — свойство канала, а не ошибка
+# в командах. Три попытки с паузой, дальше — честное падение.
+retry() {
+  local attempt=1
+  until "$@"; do
+    if [ "$attempt" -ge 3 ]; then
+      fail "Не удалось выполнить после 3 попыток: $*"
+    fi
+    printf '\033[33m  ! попытка %s не удалась, повтор через %ss\033[0m\n' "$attempt" "$((attempt * 3))"
+    sleep "$((attempt * 3))"
+    attempt=$((attempt + 1))
+  done
+}
+
 step "Проверки"
 
 # Локальный .env держит адреса разработки, и переписывать его на время
@@ -73,7 +91,7 @@ for pair in "SITE_URL=$SITE_URL" "PUBLIC_API_URL=$PUBLIC_API_URL"; do
   esac
 done
 
-ssh -o BatchMode=yes -o ConnectTimeout=10 "$SERVER" true \
+ssh -o BatchMode=yes -o ConnectTimeout=10 -o ServerAliveInterval=15 "$SERVER" true \
   || fail "Нет доступа по ssh к $SERVER (нужен ключ без пароля)."
 
 # Секреты скрипт не создаёт и не копирует: их заводят на сервере осознанно,
@@ -149,14 +167,27 @@ done
 
 step "Перенос образов по ssh"
 # Поток идёт напрямую: ни реестра, ни токена, ни промежуточного файла.
+#
+# Тег записывается в .env ТУТ ЖЕ, одним сеансом с загрузкой. Раньше он писался
+# позже, на шаге «Запуск», и между ними оставалось окно: если связь рвалась,
+# на сервере оказывались новые образы и прежний IMAGE_TAG. Снаружи это
+# выглядело успешным выпуском без изменений — так дважды и вышло.
+# Теперь либо доехало и то и другое, либо ничего.
 docker save "$IMAGE_PREFIX/api:$IMAGE_TAG" "$IMAGE_PREFIX/web:$IMAGE_TAG" \
-  | gzip | ssh "$SERVER" 'gunzip | docker load'
+  | gzip | ssh "$SERVER" "gunzip | docker load \
+      && cd $REMOTE_DIR \
+      && (grep -qE '^IMAGE_TAG=' .env \
+            && sed -i 's|^IMAGE_TAG=.*|IMAGE_TAG=$IMAGE_TAG|' .env \
+            || printf '\nIMAGE_TAG=%s\n' '$IMAGE_TAG' >> .env) \
+      && (grep -qE '^IMAGE_PREFIX=' .env \
+            && sed -i 's|^IMAGE_PREFIX=.*|IMAGE_PREFIX=$IMAGE_PREFIX|' .env \
+            || printf 'IMAGE_PREFIX=%s\n' '$IMAGE_PREFIX' >> .env)"
 
 step "Файлы вне образов"
-ssh "$SERVER" "mkdir -p $REMOTE_DIR/infra/caddy $REMOTE_DIR/infra/backup"
-scp -q docker-compose.yml "$SERVER:$REMOTE_DIR/"
-scp -q infra/caddy/Caddyfile "$SERVER:$REMOTE_DIR/infra/caddy/"
-scp -q infra/backup/*.sh "$SERVER:$REMOTE_DIR/infra/backup/"
+retry ssh "$SERVER" "mkdir -p $REMOTE_DIR/infra/caddy $REMOTE_DIR/infra/backup"
+retry scp -q docker-compose.yml "$SERVER:$REMOTE_DIR/"
+retry scp -q infra/caddy/Caddyfile "$SERVER:$REMOTE_DIR/infra/caddy/"
+retry scp -q infra/backup/*.sh "$SERVER:$REMOTE_DIR/infra/backup/"
 
 # ---------------------------------------------------------------------------
 # Запуск. Всё, что дальше, выполняется на сервере одним сеансом: разрывать
@@ -178,18 +209,14 @@ if docker compose ps --status running --services 2>/dev/null | grep -qx backup; 
   docker compose exec -T backup /bin/sh /scripts/backup.sh || echo "! Дамп не снят — смотрите логи backup"
 fi
 
-# Тег пишем в .env, а не передаём переменной окружения: иначе последующие
-# `docker compose ps` и `logs` на сервере резолвили бы другой образ.
-if grep -qE '^IMAGE_TAG=' .env; then
-  sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=$TAG|" .env
-else
-  printf '\nIMAGE_TAG=%s\n' "$TAG" >> .env
-fi
-if grep -qE '^IMAGE_PREFIX=' .env; then
-  sed -i "s|^IMAGE_PREFIX=.*|IMAGE_PREFIX=$PREFIX|" .env
-else
-  printf 'IMAGE_PREFIX=%s\n' "$PREFIX" >> .env
-fi
+# Тег уже записан на шаге переноса — вместе с образами, одним сеансом.
+# Здесь только сверяем, что дошло ожидаемое: расхождение означает, что
+# .env правили между шагами.
+ACTUAL_TAG="$(grep -E '^IMAGE_TAG=' .env | tail -1 | cut -d= -f2-)"
+[ "$ACTUAL_TAG" = "$TAG" ] || {
+  echo "✗ В .env тег $ACTUAL_TAG, ожидался $TAG" >&2
+  exit 1
+}
 
 # --no-build обязателен: исходников на сервере нет, и без флага compose
 # молча попытался бы собрать образ сам.

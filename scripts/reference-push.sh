@@ -33,13 +33,6 @@ print(f"стран {len(d['countries'])}, городов {len(d['cities'])}, "
       f"районов {sum(len(c['districts']) for c in d['cities'])}, услуг {len(d['services'])}")
 PY
 )"
-say "Отправляю: $COUNTS"
-
-# Пишем во временный файл и переносим на месте: оборванная передача не должна
-# оставить контейнер с половиной справочника.
-ssh "$SERVER" "cd '$DIR' && docker compose exec -T api sh -c 'cat > ${REMOTE_PATH}.partial'" < "$SOURCE"
-ssh "$SERVER" "cd '$DIR' && docker compose exec -T api sh -c 'mv ${REMOTE_PATH}.partial ${REMOTE_PATH}'"
-
 # Старый образ несёт справочник внутри бандла: до перехода на чтение в
 # рантайме отправка файла ничего не меняла, а сид отчитывался прежними
 # числами — выглядело как успешный накат, которым не был.
@@ -49,6 +42,13 @@ if ! ssh "$SERVER" "cd '$DIR' && docker compose exec -T api grep -q 'reference-d
   Он использует данные, вшитые в бандл, и присланный файл проигнорирует.
   Сначала: make deploy SERVER=$SERVER"
 fi
+
+say "Отправляю: $COUNTS"
+
+# Пишем во временный файл и переносим на месте: оборванная передача не должна
+# оставить контейнер с половиной справочника.
+ssh "$SERVER" "cd '$DIR' && docker compose exec -T api sh -c 'cat > ${REMOTE_PATH}.partial'" < "$SOURCE"
+ssh "$SERVER" "cd '$DIR' && docker compose exec -T api sh -c 'mv ${REMOTE_PATH}.partial ${REMOTE_PATH}'"
 
 say "Накатываю"
 ssh "$SERVER" "cd '$DIR' && docker compose exec -T api node dist/scripts/seed-reference.js"
