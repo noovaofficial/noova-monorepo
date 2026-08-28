@@ -21,7 +21,6 @@ export async function SalonDetails({
   const company = profile;
 
   const t = await getTranslations({ locale, namespace: 'company' });
-  const tLang = await getTranslations({ locale, namespace: 'languageNames' });
 
   const facts: { label: string; value: string }[] = [];
 
@@ -34,19 +33,11 @@ export async function SalonDetails({
       value: t('minutes', { count: company.minSessionMinutes }),
     });
   }
-  if (company.params.languages.length > 0) {
-    facts.push({
-      label: t('languages'),
-      // Код, которого нет в словаре, показываем как есть: список языков
-      // может пополниться раньше переводов.
-      value: company.params.languages.map((l) => (tLang.has(l) ? tLang(l) : l)).join(', '),
-    });
-  }
 
   // Прайс салона — это тарифы анкеты: отдельного списка нет, он уже на
   // странице в разделе «Тарифы».
-  // Удобства вынесены в свою секцию после услуг, оплата — в свою между
-  // контактами и тарифами. Здесь остаются маршрут и короткие факты.
+  // Удобства, оплата и языки вынесены каждый в свою секцию на странице.
+  // Здесь остаются маршрут и короткие факты о заведении.
   const hasAnything = facts.length > 0 || company.directions;
   if (!hasAnything) return null;
 

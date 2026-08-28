@@ -6,13 +6,20 @@
   align-items: start;
 }
 
-/* Слева одна галерея, справа все секции — правая колонка втрое длиннее,
-   и при прокрутке галерея уезжает, оставляя пустоту. Липкая колонка держит
-   фотографии в поле зрения, пока читают описание и тарифы. */
+/* Слева фотографии, описание и карта, справа — контакты, цены и услуги.
+   Правая колонка длиннее, и без липкости левая заканчивается на середине
+   прокрутки, оставляя пустое поле.
+
+   Липнет колонка целиком. Если она перерастёт экран (длинное описание при
+   раскрытой карте), нижняя её часть окажется недостижимой — поэтому высота
+   ограничена экраном, а лишнее прокручивается внутри. */
 .gallerySticky {
   position: sticky;
   /* Шапка сайта липкая — отступаем на её высоту. */
   top: calc(var(--headerHeight) + var(--space4));
+  max-height: calc(100vh - var(--headerHeight) - var(--space8));
+  overflow: auto;
+  scrollbar-width: thin;
 }
 
 /* Шапка анкеты во всю ширину: имя, бейджи и город одной строкой. */
@@ -63,6 +70,8 @@
      пол-экрана над текстом. */
   .gallerySticky {
     position: static;
+    max-height: none;
+    overflow: visible;
   }
 }
 
@@ -223,6 +232,23 @@
 }
 
 .payment {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 5px 12px;
+  font-size: var(--textSm);
+  background: var(--surface);
+}
+
+/* Языки: свой блок под параметрами, а не строка внутри них — у салона
+   параметров нет, а языки есть. */
+.languageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  list-style: none;
+}
+
+.language {
   border: 1px solid var(--border);
   border-radius: var(--radiusPill);
   padding: 5px 12px;

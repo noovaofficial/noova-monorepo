@@ -120,14 +120,6 @@ export default async function ProfilePage({ params }: Props) {
     profile.params.age !== null && [t('age'), String(profile.params.age)],
     profile.params.heightCm !== null && [t('height'), `${profile.params.heightCm} cm`],
     profile.params.weightKg !== null && [t('weight'), `${profile.params.weightKg} kg`],
-    profile.params.languages.length > 0 && [
-      t('languages'),
-      // Языки лежат в БД кодами — тем же способом, что и остальные
-      // справочные значения ниже, подставляем подписи из словаря. Код,
-      // которого в словаре нет, показываем как есть: список языков может
-      // пополниться раньше переводов, и «de» лучше пустого места.
-      profile.params.languages.map((code) => (tLang.has(code) ? tLang(code) : code)).join(', '),
-    ],
     profile.params.hairColor && [t('hairColor'), tHair(profile.params.hairColor)],
     profile.params.eyeColor && [t('eyeColor'), tEye(profile.params.eyeColor)],
     profile.params.breastSize && [t('breastSize'), tBust(profile.params.breastSize)],
@@ -203,12 +195,40 @@ export default async function ProfilePage({ params }: Props) {
       <SalonDetails profile={profile} locale={locale} />
 
       <div className={styles.layout}>
+        {/* Левая колонка: фотографии, а под ними описание и карта. Оба блока
+            про саму анкету, а не про условия сделки, и рядом с фотографиями
+            читаются заодно с ними — правая колонка остаётся про контакты,
+            цены и услуги. */}
         <div className={styles.gallerySticky}>
           <Gallery
             photos={profile.photos}
             alt={`${profile.displayName}, ${profile.city.name}`}
             seed={profile.id}
           />
+
+          <Section title={t('description')}>
+            <p className={styles.description}>{profile.description}</p>
+          </Section>
+
+          {/* Нет координат — нет и блока: пустая карта или одна сноска
+              вместо неё сообщают ровно ничего. */}
+          {profile.approxLocation ? (
+            <Section title={t('map')} defaultOpen={false}>
+              {/* Карта включается только когда задан тайл-сервер. Иначе
+                  остаётся текстовая сноска — пустой серый прямоугольник
+                  хуже честной строки. */}
+              {process.env.MAP_TILE_URL ? (
+                <AreaMap
+                  lat={profile.approxLocation.lat}
+                  lng={profile.approxLocation.lng}
+                  note={t('approxLocationNote')}
+                  attribution={t('mapAttribution')}
+                />
+              ) : (
+                <p className={styles.mapNote}>{t('approxLocationNote')}</p>
+              )}
+            </Section>
+          ) : null}
         </div>
 
         <div>
@@ -292,9 +312,21 @@ export default async function ProfilePage({ params }: Props) {
             </Section>
           )}
 
-          <Section title={t('description')}>
-            <p className={styles.description}>{profile.description}</p>
-          </Section>
+          {/* Языки отдельным блоком, а не строкой в параметрах: у салона
+              параметров нет вовсе, а языки есть, и прятать их было некуда.
+              Код, которого нет в словаре, показываем как есть — список языков
+              может пополниться раньше переводов, и «de» лучше пустого места. */}
+          {profile.params.languages.length > 0 ? (
+            <Section title={t('languages')}>
+              <ul className={styles.languageList}>
+                {profile.params.languages.map((code) => (
+                  <li className={styles.language} key={code}>
+                    {tLang.has(code) ? tLang(code) : code}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          ) : null}
 
           {profile.services.length > 0 ? (
             <Section title={t('services')}>
@@ -335,24 +367,6 @@ export default async function ProfilePage({ params }: Props) {
           <Section title={t('reportSection')} defaultOpen={false}>
             <ReportProfile slug={profile.slug} />
           </Section>
-
-          {profile.approxLocation ? (
-            <Section title={t('map')} defaultOpen={false}>
-              {/* Карта включается только когда задан тайл-сервер. Иначе
-                  остаётся текстовая сноска — пустой серый прямоугольник
-                  хуже честной строки. */}
-              {process.env.MAP_TILE_URL ? (
-                <AreaMap
-                  lat={profile.approxLocation.lat}
-                  lng={profile.approxLocation.lng}
-                  note={t('approxLocationNote')}
-                  attribution={t('mapAttribution')}
-                />
-              ) : (
-                <p className={styles.mapNote}>{t('approxLocationNote')}</p>
-              )}
-            </Section>
-          ) : null}
         </div>
       </div>
 
