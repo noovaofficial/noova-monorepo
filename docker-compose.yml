@@ -196,6 +196,13 @@ services:
       MAP_TILE_USER_AGENT: ${MAP_TILE_USER_AGENT:-Noova/1.0}
       NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
       NEXT_PUBLIC_SITE_URL: ${SITE_URL}
+    volumes:
+      # Кэш данных Next переживает выкладку. Без тома каждый деплой поднимает
+      # новый контейнер с пустым `.next/cache`, и все тайлы карты едут с
+      # тайл-сервера заново — у поставщика это оплаченные запросы, у
+      # волонтёрского сервера OSM повод для блокировки. Здесь же лежит кэш
+      # оптимизатора картинок: после выкладки он тоже переставал попадать.
+      - web_cache:/app/apps/web/.next/cache
     depends_on:
       api:
         condition: service_healthy
@@ -316,6 +323,7 @@ networks:
 
 volumes:
   dkim_keys:
+  web_cache:
   postgres_data:
   redis_data:
   minio_data:

@@ -61,6 +61,17 @@ REVALIDATE_SECRET=$(hex)
 MAIL_DOMAIN=$DOMAIN
 MAIL_FROM="Noova <noreply@$DOMAIN>"
 
+# Карта. Публичный сервер OpenStreetMap проксирование не запрещает, но
+# требует кэшировать плитки не меньше 7 дней (у нас 30) и слать понятный
+# User-Agent с контактом — по нему при проблемах напишут, а безымянный
+# блокируют без предупреждения. Коммерческим сервисам политика напоминает,
+# что доступ может быть отозван без предупреждения: если карты однажды
+# погаснут, меняется только эта строка (см. L-06 в
+# documentation/planning/legal.md). Пустое значение выключает карты — вместо
+# них остаётся текстовая сноска.
+MAP_TILE_URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
+MAP_TILE_USER_AGENT="Noova/1.0 (+https://$DOMAIN; mailto:$EMAIL)"
+
 IMAGE_PREFIX=noova
 IMAGE_TAG=latest
 EOF
@@ -69,5 +80,6 @@ chmod 600 "$ENV_FILE"
 printf '\033[32m✓ %s создан\033[0m (%s строк, права 600)\n' "$ENV_FILE" "$(grep -c . "$ENV_FILE")"
 printf '  Домен: https://%s\n' "$DOMAIN"
 printf '  Секреты: POSTGRES_PASSWORD, MINIO_ROOT_PASSWORD, IP_HASH_SALT,\n'
-printf '           INTERNAL_API_TOKEN, REVALIDATE_SECRET — сгенерированы\n\n'
+printf '           INTERNAL_API_TOKEN, REVALIDATE_SECRET — сгенерированы\n'
+printf '  Карта: tile.openstreetmap.org, контакт в User-Agent — %s\n\n' "$EMAIL"
 printf '  Сделайте копию файла вне сервера: без пароля базы дамп бесполезен.\n'

@@ -55,8 +55,13 @@ export async function GET(
   try {
     const response = await fetch(url, {
       headers: { 'user-agent': USER_AGENT },
-      // Тайлы неизменны: один и тот же квадрат карты не меняется днями.
-      next: { revalidate: 60 * 60 * 24 * 7 },
+      // Месяц, а не неделя. Политика OSMF требует кэшировать плитки не
+      // меньше 7 дней, но это её минимум, а не наша цель: карта города за
+      // месяц не меняется настолько, чтобы посетитель заметил, зато
+      // исходящих запросов к тайл-серверу становится в разы меньше. Для
+      // волонтёрского сервера это разница между «терпимо» и «поводом
+      // отозвать доступ».
+      next: { revalidate: 60 * 60 * 24 * 30 },
     });
 
     if (!response.ok) return new NextResponse(null, { status: 502 });
@@ -65,8 +70,8 @@ export async function GET(
       headers: {
         'content-type': response.headers.get('content-type') ?? 'image/png',
         // Кэш и у посетителя: повторный заход не должен снова дёргать
-        // поставщика через нас.
-        'cache-control': 'public, max-age=604800, immutable',
+        // поставщика через нас. Срок тот же, что у серверного кэша.
+        'cache-control': 'public, max-age=2592000, immutable',
       },
     });
   } catch {

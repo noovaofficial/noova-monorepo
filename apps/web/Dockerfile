@@ -44,6 +44,12 @@ COPY --from=build --chown=noova:nodejs /app/apps/web/.next/standalone ./
 COPY --from=build --chown=noova:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build --chown=noova:nodejs /app/apps/web/public ./apps/web/public
 
+# Каталог кэша заводим здесь, а не оставляем docker: под него подключён
+# именованный том, и том наследует владельца каталога из образа. Без этой
+# строки каталога в образе нет, том создаётся от root, а сервер работает
+# под noova — и кэш молча не пишется.
+RUN mkdir -p /app/apps/web/.next/cache && chown -R noova:nodejs /app/apps/web/.next
+
 USER noova
 EXPOSE 3000
 ENV PORT=3000
