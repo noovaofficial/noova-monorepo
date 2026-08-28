@@ -55,7 +55,7 @@ export function AreaMap({ lat, lng, radiusMeters = 1000, note, attribution }: Pr
 
       // Плитки через собственный домен: прямой запрос к тайл-серверу сообщил
       // бы ему адрес посетителя и то, какую анкету он смотрит.
-      L.tileLayer('/api/map/{z}/{x}/{y}.png', {
+      L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         maxZoom: MAX_ZOOM,
         attribution,
       }).addTo(map);

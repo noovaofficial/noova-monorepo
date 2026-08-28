@@ -59,7 +59,7 @@ export function LocationPicker({ value, onChange, fallback, radiusMeters = 1000 
 
       // Плитки через собственный домен: прямой запрос к тайл-серверу сообщил
       // бы ему адрес владелицы и то, какой участок она разглядывает.
-      L.tileLayer('/api/map/{z}/{x}/{y}.png', {
+      L.tileLayer('/tiles/{z}/{x}/{y}.png', {
         maxZoom: 18,
         attribution: '© OpenStreetMap',
       }).addTo(map);

@@ -59,7 +59,7 @@ export function CatalogMap({ kind, locale }: Props) {
         const map = L.map(containerRef.current).setView([FALLBACK.lat, FALLBACK.lng], 11);
         // Плитки через собственный домен: прямой запрос сообщил бы
         // тайл-серверу адрес посетителя и то, что он смотрит каталог 18+.
-        L.tileLayer('/api/map/{z}/{x}/{y}.png', {
+        L.tileLayer('/tiles/{z}/{x}/{y}.png', {
           maxZoom: 18,
           attribution: '© OpenStreetMap',
         }).addTo(map);

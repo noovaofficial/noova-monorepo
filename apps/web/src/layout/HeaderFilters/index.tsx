@@ -1,6 +1,6 @@
 'use client';
 
-import type { ServiceGroup } from '@noova/shared';
+import { cityFromPath, type ServiceGroup } from '@noova/shared';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -23,15 +23,24 @@ export function HeaderFilters({ catalog }: { catalog: ServiceGroup[] }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const onCatalog = pathname.startsWith('/catalog');
-  const kind = pathname.startsWith('/catalog/massage') ? 'massage' : 'escort';
+  // Каталог живёт под городским префиксом (N-32): `/berlin/catalog/escort`.
+  // Сравнивать надо с путём без города — иначе на каталоге не срабатывает
+  // ничего из того, что ниже.
+  const city = cityFromPath(pathname);
+  const inCity = city ? pathname.slice(city.length + 1) : pathname;
+
+  const onCatalog = inCity.startsWith('/catalog');
+  const kind = inCity.startsWith('/catalog/massage') ? 'massage' : 'escort';
   const active = onCatalog ? countActiveFilters(new URLSearchParams(searchParams.toString())) : 0;
-  const onMap = pathname.endsWith('/map');
+  const onMap = inCity.endsWith('/map');
 
   // Карта наследует текущие фильтры: переход «список ↔ карта» ничего
   // не сбрасывает, иначе выбранное приходится набирать заново.
   const mapQuery = onCatalog ? searchParams.toString() : '';
-  const mapHref = `/catalog/${kind}/map${mapQuery ? `?${mapQuery}` : ''}`;
+  // Город несём с собой. Без префикса ссылка ведёт на заглушку старого
+  // адреса, а та уводит в первый активный город списка — то есть из Берлина
+  // выкидывало в Амстердам.
+  const mapHref = `${city ? `/${city}` : ''}/catalog/${kind}/map${mapQuery ? `?${mapQuery}` : ''}`;
 
   return (
     <>

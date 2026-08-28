@@ -90,5 +90,10 @@ export default function proxy(request: NextRequest) {
 export const config = {
   // Пропускаем статику, служебные роуты Next и файлы для поисковиков —
   // языковой префикс им не нужен и он ломает их обнаружение.
-  matcher: ['/((?!api|_next|_vercel|robots.txt|sitemap.xml|favicon.ico|.*\\..*).*)'],
+  //
+  // `tiles` — прокси плиток карты: адрес у него без языка, и подставленный
+  // префикс превратил бы его в 404. Расширение `.png` и так подпадает под
+  // последнее правило, но полагаться на него не стоит: маршрут принимает
+  // адрес и без расширения.
+  matcher: ['/((?!api|tiles|_next|_vercel|robots.txt|sitemap.xml|favicon.ico|.*\\..*).*)'],
 };
