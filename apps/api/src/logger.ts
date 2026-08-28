@@ -19,9 +19,13 @@ export const loggerOptions: LoggerOptions = {
       '*.token',
       '*.tokenHash',
       // Тело письма содержит одноразовую ссылку — в журнал попадать не должно.
+      // Вёрстка несёт ту же ссылку дважды: в кнопке и в запасной строке.
       'text',
       '*.text',
       'mail.text',
+      'html',
+      '*.html',
+      'mail.html',
     ],
     remove: true,
   },

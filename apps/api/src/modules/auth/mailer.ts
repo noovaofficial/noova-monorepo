@@ -7,6 +7,9 @@ export type Mail = {
   to: string;
   subject: string;
   text: string;
+  /** Вёрстка. Текстовая версия обязательна и уходит рядом: письмо без неё
+   *  подозрительно для спам-фильтров и пусто в клиентах без HTML. */
+  html?: string;
 };
 
 export interface Mailer {
@@ -41,8 +44,10 @@ export class SmtpMailer implements Mailer {
       to: mail.to,
       subject: mail.subject,
       text: mail.text,
+      ...(mail.html ? { html: mail.html } : {}),
     });
-    // Тело письма не логируем никогда: в нём одноразовая ссылка.
+    // Тело письма не логируем никогда — ни текстом, ни версткой: в нём
+    // одноразовая ссылка.
     this.log.info({ to: mail.to, subject: mail.subject }, 'письмо отправлено');
   }
 
