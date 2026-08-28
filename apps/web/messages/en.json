@@ -341,7 +341,15 @@
     "deleteProfileConfirm": "Delete",
     "deleteWrongPassword": "Wrong password.",
     "deleteFailed": "Could not delete. Please try again.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "salonTitle": "My studio",
+    "salonCreate": "Add studio",
+    "salonCreateTitle": "New studio",
+    "salonEmpty": "No studio yet",
+    "salonEmptyHint": "Add the studio, fill it in and submit for review.",
+    "salonDisplayName": "Studio name",
+    "salonLimitReached": "A studio has one catalogue entry",
+    "hoursInvalid": "Check the opening hours: both start and end are required and must differ."
   },
   "moderation": {
     "title": "Moderation",

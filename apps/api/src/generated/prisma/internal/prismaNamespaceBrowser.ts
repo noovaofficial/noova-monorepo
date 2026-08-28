@@ -68,8 +68,7 @@ export const ModelName = {
   CommentReport: 'CommentReport',
   Favorite: 'Favorite',
   Company: 'Company',
-  CompanyPrice: 'CompanyPrice',
-  CompanyHours: 'CompanyHours',
+  ProfileHours: 'ProfileHours',
   CompanyContact: 'CompanyContact',
   ProfileContact: 'ProfileContact',
   ContactReveal: 'ContactReveal',
@@ -234,6 +233,12 @@ export const ProfileScalarFieldEnum = {
   displayName: 'displayName',
   description: 'description',
   companyId: 'companyId',
+  address: 'address',
+  directions: 'directions',
+  minSessionMinutes: 'minSessionMinutes',
+  bookingPolicy: 'bookingPolicy',
+  payments: 'payments',
+  amenities: 'amenities',
   ownerId: 'ownerId',
   cityId: 'cityId',
   districtId: 'districtId',
@@ -343,13 +348,8 @@ export const CompanyScalarFieldEnum = {
   kind: 'kind',
   name: 'name',
   description: 'description',
-  address: 'address',
-  directions: 'directions',
-  minSessionMinutes: 'minSessionMinutes',
-  bookingPolicy: 'bookingPolicy',
   languages: 'languages',
   payments: 'payments',
-  amenities: 'amenities',
   isActive: 'isActive',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
@@ -359,27 +359,15 @@ export const CompanyScalarFieldEnum = {
 export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
 
 
-export const CompanyPriceScalarFieldEnum = {
+export const ProfileHoursScalarFieldEnum = {
   id: 'id',
-  companyId: 'companyId',
-  title: 'title',
-  durationMinutes: 'durationMinutes',
-  priceCents: 'priceCents',
-  position: 'position'
-} as const
-
-export type CompanyPriceScalarFieldEnum = (typeof CompanyPriceScalarFieldEnum)[keyof typeof CompanyPriceScalarFieldEnum]
-
-
-export const CompanyHoursScalarFieldEnum = {
-  id: 'id',
-  companyId: 'companyId',
+  profileId: 'profileId',
   weekday: 'weekday',
   opensAt: 'opensAt',
   closesAt: 'closesAt'
 } as const
 
-export type CompanyHoursScalarFieldEnum = (typeof CompanyHoursScalarFieldEnum)[keyof typeof CompanyHoursScalarFieldEnum]
+export type ProfileHoursScalarFieldEnum = (typeof ProfileHoursScalarFieldEnum)[keyof typeof ProfileHoursScalarFieldEnum]
 
 
 export const CompanyContactScalarFieldEnum = {

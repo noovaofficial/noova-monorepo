@@ -109,7 +109,7 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
         <div className={styles.tags}>
           {profile.company ? (
             <Badge variant="company">
-              {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
+              {t('fromAgency', {
                 name: profile.company.name,
               })}
             </Badge>

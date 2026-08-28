@@ -160,18 +160,12 @@ export type Favorite = Prisma.FavoriteModel
  */
 export type Company = Prisma.CompanyModel
 /**
- * Model CompanyPrice
- * Прайс салона: общий, не привязанный к конкретной анкете (N-34).
- */
-export type CompanyPrice = Prisma.CompanyPriceModel
-/**
- * Model CompanyHours
+ * Model ProfileHours
  * Часы работы салона по дням недели (N-34).
  * 
- * Только у салона: у агентства нет помещения, в которое можно прийти, —
- * это то же различие, что и с адресом.
+ * Привязаны к анкете, а не к компании: салон и есть анкета.
  */
-export type CompanyHours = Prisma.CompanyHoursModel
+export type ProfileHours = Prisma.ProfileHoursModel
 /**
  * Model CompanyContact
  * 

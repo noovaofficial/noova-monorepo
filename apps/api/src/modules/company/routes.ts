@@ -21,43 +21,23 @@ const companySelect = {
   kind: true,
   name: true,
   description: true,
-  address: true,
-  isActive: true,
-  contacts: { orderBy: { position: 'asc' as const }, select: { type: true, value: true } },
-  hours: {
-    orderBy: { weekday: 'asc' as const },
-    select: { weekday: true, opensAt: true, closesAt: true },
-  },
-  directions: true,
-  minSessionMinutes: true,
-  bookingPolicy: true,
   languages: true,
   payments: true,
-  amenities: true,
-  prices: {
-    orderBy: { position: 'asc' as const },
-    select: { title: true, durationMinutes: true, priceCents: true },
-  },
+  isActive: true,
+  contacts: { orderBy: { position: 'asc' as const }, select: { type: true, value: true } },
   _count: { select: { profiles: true } },
 };
 
 type CompanyRow = {
   id: string;
   slug: string;
-  kind: 'agency' | 'salon';
+  kind: 'agency';
   name: string;
   description: string | null;
-  address: string | null;
   isActive: boolean;
   contacts: { type: string; value: string }[];
-  hours: { weekday: number; opensAt: number | null; closesAt: number | null }[];
-  directions: string | null;
-  minSessionMinutes: number | null;
-  bookingPolicy: 'appointment' | 'walk_in' | null;
   languages: string[];
   payments: ('cash' | 'card' | 'transfer')[];
-  amenities: string[];
-  prices: { title: string; durationMinutes: number; priceCents: number }[];
   _count: { profiles: number };
 };
 
@@ -67,22 +47,15 @@ const present = (row: CompanyRow) => ({
   kind: row.kind,
   name: row.name,
   description: row.description,
-  address: row.address,
   isActive: row.isActive,
   contacts: row.contacts as { type: CompanyInput['contacts'][number]['type']; value: string }[],
-  hours: row.hours,
-  directions: row.directions,
-  minSessionMinutes: row.minSessionMinutes,
-  bookingPolicy: row.bookingPolicy,
   languages: row.languages,
   payments: row.payments,
-  amenities: row.amenities,
-  prices: row.prices,
   profileCount: row._count.profiles,
 });
 
 /**
- * Компания есть только у агентства и салона. Проверяем тип рекламодателя,
+ * Компания есть только у агентства. Проверяем тип рекламодателя,
  * а не наличие записи: без этого индивидуалка завела бы себе компанию и
  * получила бы возможность вести чужие анкеты.
  */
@@ -94,8 +67,10 @@ async function companyOwnerOr403(fastify: FastifyInstance, userId: string) {
   if (!user || user.role !== 'advertiser') {
     throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
   }
-  if (user.advertiserKind !== 'agency' && user.advertiserKind !== 'salon') {
-    throw fastify.httpErrors.forbidden('Компания есть только у агентства и салона');
+  // Салон — это анкета, а не компания рядом с ней (N-34): у него нет и не
+  // должно быть отдельной записи компании.
+  if (user.advertiserKind !== 'agency') {
+    throw fastify.httpErrors.forbidden('Компания есть только у агентства');
   }
   return user.advertiserKind;
 }
@@ -131,28 +106,9 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const advertiserKind = await companyOwnerOr403(fastify, userId);
 
-      const {
-        slug,
-        kind,
-        name,
-        description,
-        address,
-        contacts,
-        hours,
-        directions,
-        minSessionMinutes,
-        bookingPolicy,
-        languages,
-        payments,
-        amenities,
-        prices,
-        isActive,
-      } = request.body;
-      const salon = kind === 'salon';
+      const { slug, kind, name, description, contacts, languages, payments, isActive } =
+        request.body;
 
-      // Тип компании берётся из типа учётной записи, а не из тела запроса:
-      // иначе агентство объявило бы себя салоном и получило адрес, которого
-      // у него быть не должно.
       if (kind !== advertiserKind) {
         throw fastify.httpErrors.badRequest(
           `Тип компании должен совпадать с типом учётной записи (${advertiserKind})`,
@@ -172,17 +128,8 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         kind,
         name,
         description: description ?? null,
-        // Адрес есть только у салона — контракт это уже проверил, но у
-        // агентства поле может прийти из формы прошлого типа.
-        address: salon ? (address ?? null) : null,
-        // Салонные поля обнуляем у агентства, а не полагаемся на форму:
-        // тип учётной записи мог смениться, а данные остаться.
-        directions: directions ?? null,
-        minSessionMinutes: salon ? (minSessionMinutes ?? null) : null,
-        bookingPolicy: salon ? (bookingPolicy ?? null) : null,
         languages,
         payments,
-        amenities: salon ? amenities : [],
         isActive,
       };
 
@@ -192,10 +139,6 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ...fields,
           ownerId: userId,
           contacts: { create: contacts.map((c, position) => ({ ...c, position })) },
-          hours: { create: salon ? hours : [] },
-          prices: {
-            create: salon ? prices.map((p, position) => ({ ...p, position })) : [],
-          },
         },
         update: {
           ...fields,
@@ -204,13 +147,6 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           contacts: {
             deleteMany: {},
             create: contacts.map((c, position) => ({ ...c, position })),
-          },
-          // Неделя переписывается целиком: день, убранный из формы, должен
-          // стать выходным, а не остаться прежним расписанием.
-          hours: { deleteMany: {}, create: salon ? hours : [] },
-          prices: {
-            deleteMany: {},
-            create: salon ? prices.map((p, position) => ({ ...p, position })) : [],
           },
         },
         select: companySelect,

@@ -10,7 +10,7 @@ import { addDistrict, fetchCities, updateCity, updateDistrict } from '@/modules/
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { EntityRow, emptyNames, label, NameFields, useRunner } from '../shared';
+import { emptyNames, label, NameFields, useRunner } from '../shared';
 
 /** Третий уровень: один город — его данные и его районы (N-32). */
 export function CityDetail({ countryCode, citySlug }: { countryCode: string; citySlug: string }) {

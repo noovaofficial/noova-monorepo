@@ -67,6 +67,10 @@ export function ProfileList() {
   const limitReached =
     profiles !== null && user.advertiserKind === 'individual' && profiles.length >= 1;
 
+  // Салон — это анкета, но называть её так в его кабинете значит путать:
+  // владелец салона заводит салон, а не «анкету» (N-34).
+  const isSalon = user.advertiserKind === 'salon';
+
   function onCreate(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -84,9 +88,9 @@ export function ProfileList() {
   return (
     <div className={styles.wrap}>
       <div className={styles.head}>
-        <h1 className={styles.title}>{t('title')}</h1>
+        <h1 className={styles.title}>{t(isSalon ? 'salonTitle' : 'title')}</h1>
         {!limitReached && !showForm ? (
-          <Button onClick={() => setShowForm(true)}>{t('create')}</Button>
+          <Button onClick={() => setShowForm(true)}>{t(isSalon ? 'salonCreate' : 'create')}</Button>
         ) : null}
       </div>
 
@@ -97,11 +101,11 @@ export function ProfileList() {
 
       {showForm ? (
         <form className={styles.section} onSubmit={onCreate}>
-          <h2 className={styles.sectionTitle}>{t('createTitle')}</h2>
+          <h2 className={styles.sectionTitle}>{t(isSalon ? 'salonCreateTitle' : 'createTitle')}</h2>
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="displayName">
-              {t('displayName')}
+              {t(isSalon ? 'salonDisplayName' : 'displayName')}
             </label>
             <input
               className={styles.input}
@@ -144,7 +148,7 @@ export function ProfileList() {
 
           <div className={styles.actions}>
             <Button type="submit" disabled={creating}>
-              {t('create')}
+              {t(isSalon ? 'salonCreate' : 'create')}
             </Button>
           </div>
         </form>
@@ -154,8 +158,8 @@ export function ProfileList() {
         <p className={styles.empty}>{t('loading')}</p>
       ) : profiles.length === 0 && !showForm ? (
         <div className={styles.empty}>
-          <p>{t('empty')}</p>
-          <p className={styles.hint}>{t('emptyHint')}</p>
+          <p>{t(isSalon ? 'salonEmpty' : 'empty')}</p>
+          <p className={styles.hint}>{t(isSalon ? 'salonEmptyHint' : 'emptyHint')}</p>
         </div>
       ) : (
         <div className={styles.list}>

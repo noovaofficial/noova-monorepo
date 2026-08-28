@@ -11,13 +11,17 @@ import type {
   UpdateProfileInput,
 } from '@noova/shared';
 import {
+  AMENITIES,
+  type Amenity,
   appearanceTypeSchema,
   bodyTypeSchema,
+  bookingPolicySchema,
   breastSizeSchema,
   breastTypeSchema,
   eyeColorSchema,
   hairColorSchema,
   type Locale,
+  type PaymentMethod,
   pubicHairSchema,
   SPOKEN_LANGUAGES,
 } from '@noova/shared';
@@ -93,12 +97,48 @@ function EnumSelect({
 /** Кнопка «Сохранить» живёт в боковой панели, вне <form> — их связывает id. */
 const FORM_ID = 'profile-editor-form';
 
+type HoursRow = { weekday: number; opensAt: string; closesAt: string };
+
+const emptyWeek = (): HoursRow[] =>
+  [1, 2, 3, 4, 5, 6, 7].map((weekday) => ({ weekday, opensAt: '', closesAt: '' }));
+
+/** «10:30» → 630. Формат даёт <input type="time">, разбирать вручную нечего. */
+const toMinutes = (value: string): number => {
+  const [h = '0', m = '0'] = value.split(':');
+  return Number(h) * 60 + Number(m);
+};
+
+const toHhmm = (minutes: number): string =>
+  `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+
+/**
+ * Какое сообщение показать по ответу сервера.
+ *
+ * Раньше любой 400 объявлялся ошибкой в контактах — предположение верное до
+ * появления салонных полей: ошибку в часах работы форма тоже называла
+ * контактами, и владелец правил не то. Теперь причина берётся из разбора по
+ * полям, который сервер и так присылает.
+ */
+function saveErrorKey(error: unknown): 'hoursInvalid' | 'contactInvalid' | 'saveFailed' {
+  if (!(error instanceof AccountError) || error.status !== 400) return 'saveFailed';
+
+  const fields = error.issues.map((issue) => issue.field);
+  if (fields.some((field) => field.startsWith('hours'))) return 'hoursInvalid';
+  if (fields.some((field) => field.startsWith('contacts'))) return 'contactInvalid';
+  // Разбора нет — остаётся прежнее предположение: остальные поля формы
+  // ограничены самим вводом, и до сервера некорректными почти не доходят.
+  return fields.length === 0 ? 'contactInvalid' : 'saveFailed';
+}
+
 export function ProfileEditor({ profileId }: { profileId: string }) {
   const t = useTranslations('account');
   // Язык для справочников: города и услуги переведены на стороне API.
   const locale = useLocale() as Locale;
   const tLang = useTranslations('languageNames');
-  const { status: sessionStatus } = useSession();
+  const { user, status: sessionStatus } = useSession();
+  // Салон — это анкета: его поля показываем в этой же форме (N-34).
+  const isSalon = user?.advertiserKind === 'salon';
+  const tc = useTranslations('company');
   const router = useRouter();
 
   const queryClient = useQueryClient();
@@ -118,6 +158,11 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
   const [deletePassword, setDeletePassword] = useState('');
   const [photos, setPhotos] = useState<OwnPhoto[]>([]);
   const [citySlug, setCitySlug] = useState('');
+  // --- Салон: адрес, часы и удобства заведения (N-34). Салон — это анкета,
+  // поэтому поля живут здесь, а не в отдельной форме компании.
+  const [payments, setPayments] = useState<PaymentMethod[]>([]);
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [hours, setHours] = useState<HoursRow[]>(() => emptyWeek());
   const [notice, setNotice] = useState<Notice>(null);
 
   const enabled = sessionStatus === 'authenticated';
@@ -139,13 +184,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
       setNotice({ kind: 'ok', key: 'saved' });
     },
     onError: (error) => {
-      // 400 от этой формы почти всегда про контакты: остальные поля ограничены
-      // самим вводом. Общее «не удалось сохранить» здесь бесполезно.
-      setNotice({
-        kind: 'error',
-        key:
-          error instanceof AccountError && error.status === 400 ? 'contactInvalid' : 'saveFailed',
-      });
+      setNotice({ kind: 'error', key: saveErrorKey(error) });
     },
   });
 
@@ -221,6 +260,20 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
     setPrices(profile.prices);
     setContacts(profile.contacts);
     setLanguages(profile.languages);
+    setPayments(profile.payments);
+    setAmenities(profile.amenities);
+    setHours(
+      emptyWeek().map((row) => {
+        const saved = profile.hours.find((h) => h.weekday === row.weekday);
+        return saved?.opensAt != null && saved.closesAt != null
+          ? {
+              weekday: row.weekday,
+              opensAt: toHhmm(saved.opensAt),
+              closesAt: toHhmm(saved.closesAt),
+            }
+          : row;
+      }),
+    );
     // Точку показываем только если её поставила владелица: выведенная из
     // района не «её выбор», и предлагать её сбросить нечего.
     setLocation(profile.hasManualLocation ? profile.location : null);
@@ -294,6 +347,25 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
             hasPiercing: data.get('hasPiercing') === 'on',
             hasTattoos: data.get('hasTattoos') === 'on',
             appearanceType: enumValue('appearanceType', appearanceTypeSchema.options),
+          }
+        : {}),
+      // Салонные поля шлём только салону: у анкеты человека адреса и часов
+      // работы быть не должно, и сервер их всё равно отбросит.
+      ...(isSalon
+        ? {
+            address: String(data.get('address') ?? '').trim() || null,
+            directions: String(data.get('directions') ?? '').trim() || null,
+            minSessionMinutes: num('minSessionMinutes'),
+            bookingPolicy: enumValue('bookingPolicy', bookingPolicySchema.options),
+            payments,
+            amenities: amenities as Amenity[],
+            hours: hours
+              .filter((h) => h.opensAt !== '' && h.closesAt !== '')
+              .map((h) => ({
+                weekday: h.weekday,
+                opensAt: toMinutes(h.opensAt),
+                closesAt: toMinutes(h.closesAt),
+              })),
           }
         : {}),
       services,
@@ -521,6 +593,153 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   </label>
                 </div>
               </div>
+            </div>
+          ) : null}
+
+          {/* Салон: адрес, часы и удобства заведения. Показываем только ему —
+              у анкеты человека адреса нет и быть не должно (N-34). */}
+          {isSalon ? (
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>{tc('cabinetSalon')}</h2>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="address">
+                  {tc('address')}
+                </label>
+                <input
+                  className={styles.input}
+                  id="address"
+                  name="address"
+                  defaultValue={profile?.address ?? ''}
+                  maxLength={300}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="directions">
+                  {tc('directions')}
+                </label>
+                <input
+                  className={styles.input}
+                  id="directions"
+                  name="directions"
+                  defaultValue={profile?.directions ?? ''}
+                  maxLength={500}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="bookingPolicy">
+                  {tc('booking')}
+                </label>
+                <select
+                  className={styles.input}
+                  id="bookingPolicy"
+                  name="bookingPolicy"
+                  defaultValue={profile?.bookingPolicy ?? ''}
+                >
+                  <option value="">—</option>
+                  <option value="appointment">{tc('booking_appointment')}</option>
+                  <option value="walk_in">{tc('booking_walk_in')}</option>
+                </select>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="minSessionMinutes">
+                  {tc('minSession')}
+                </label>
+                <input
+                  className={styles.input}
+                  id="minSessionMinutes"
+                  name="minSessionMinutes"
+                  type="number"
+                  min={15}
+                  max={1440}
+                  step={15}
+                  defaultValue={profile?.minSessionMinutes ?? ''}
+                />
+              </div>
+
+              <fieldset className={styles.field}>
+                <legend className={styles.label}>{tc('payments')}</legend>
+                <div className={styles.checkRow}>
+                  {(['cash', 'card', 'transfer'] as const).map((method) => (
+                    <label className={styles.check} key={method}>
+                      <input
+                        type="checkbox"
+                        checked={payments.includes(method)}
+                        onChange={(event) =>
+                          setPayments(
+                            event.target.checked
+                              ? [...payments, method]
+                              : payments.filter((p) => p !== method),
+                          )
+                        }
+                      />
+                      {tc(`payment_${method}`)}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className={styles.field}>
+                <legend className={styles.label}>{tc('amenities')}</legend>
+                <div className={styles.checkRow}>
+                  {AMENITIES.map((amenity) => (
+                    <label className={styles.check} key={amenity}>
+                      <input
+                        type="checkbox"
+                        checked={amenities.includes(amenity)}
+                        onChange={(event) =>
+                          setAmenities(
+                            event.target.checked
+                              ? [...amenities, amenity]
+                              : amenities.filter((a) => a !== amenity),
+                          )
+                        }
+                      />
+                      {tc(`amenity_${amenity}`)}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className={styles.field}>
+                <legend className={styles.label}>{tc('hours')}</legend>
+                <span className={styles.hint}>{tc('hoursHint')}</span>
+                {hours.map((row) => (
+                  <div className={styles.hoursRow} key={row.weekday}>
+                    <span className={styles.day}>{tc(`weekday_${row.weekday}`)}</span>
+                    <input
+                      className={styles.timeInput}
+                      type="time"
+                      aria-label={`${tc(`weekday_${row.weekday}`)} — ${tc('opensAt')}`}
+                      value={row.opensAt}
+                      onChange={(event) =>
+                        setHours(
+                          hours.map((h) =>
+                            h.weekday === row.weekday ? { ...h, opensAt: event.target.value } : h,
+                          ),
+                        )
+                      }
+                    />
+                    <span>—</span>
+                    <input
+                      className={styles.timeInput}
+                      type="time"
+                      aria-label={`${tc(`weekday_${row.weekday}`)} — ${tc('closesAt')}`}
+                      value={row.closesAt}
+                      onChange={(event) =>
+                        setHours(
+                          hours.map((h) =>
+                            h.weekday === row.weekday ? { ...h, closesAt: event.target.value } : h,
+                          ),
+                        )
+                      }
+                    />
+                  </div>
+                ))}
+              </fieldset>
             </div>
           ) : null}
 

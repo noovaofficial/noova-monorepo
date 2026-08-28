@@ -34,7 +34,8 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
           { href: '/account/profiles', label: t('quickProfiles') },
           // Компания есть только у агентства и салона: индивидуалка размещает
           // анкету от своего имени, посредника у неё нет.
-          ...(user.advertiserKind === 'agency' || user.advertiserKind === 'salon'
+          // Только агентству: у салона компании нет — он сам анкета (N-34).
+          ...(user.advertiserKind === 'agency'
             ? [{ href: '/account/company', label: t('quickCompany') }]
             : []),
           { href: '/account/profiles', label: t('quickAnalytics'), disabled: true },

@@ -1,4 +1,4 @@
-import type { CompanyHours } from '@noova/shared';
+import type { SalonHours } from '@noova/shared';
 import { getTranslations } from 'next-intl/server';
 import styles from './WorkingHours.module.css';
 
@@ -17,7 +17,7 @@ function hhmm(minutes: number): string {
  * «сегодня закрыто» без остального расписания не отвечает на его вопрос.
  * День, которого нет в данных, — выходной: салон заполняет только рабочие.
  */
-export async function WorkingHours({ hours, locale }: { hours: CompanyHours[]; locale: string }) {
+export async function WorkingHours({ hours, locale }: { hours: SalonHours[]; locale: string }) {
   if (hours.length === 0) return null;
 
   const t = await getTranslations({ locale, namespace: 'company' });
@@ -29,27 +29,26 @@ export async function WorkingHours({ hours, locale }: { hours: CompanyHours[]; l
   const today = new Date().getDay() || 7;
 
   return (
-    <section className={styles.wrap} aria-label={t('hours')}>
-      <h2 className={styles.title}>{t('hours')}</h2>
-      <dl className={styles.list}>
-        {week.map((weekday) => {
-          const day = byWeekday.get(weekday);
-          // Сужаем здесь, а не в разметке: контракт гарантирует, что поля
-          // заполнены парой, но тип этого не знает.
-          const open =
-            day?.opensAt != null && day.closesAt != null
-              ? { opensAt: day.opensAt, closesAt: day.closesAt }
-              : null;
-          return (
-            <div className={`${styles.row} ${weekday === today ? styles.today : ''}`} key={weekday}>
-              <dt className={styles.day}>{t(`weekday_${weekday}`)}</dt>
-              <dd className={open ? styles.time : styles.closed}>
-                {open ? `${hhmm(open.opensAt)} — ${hhmm(open.closesAt)}` : t('dayOff')}
-              </dd>
-            </div>
-          );
-        })}
-      </dl>
-    </section>
+    // Заголовок даёт секция снаружи: часы стоят в том же ряду блоков, что
+    // контакты и тарифы, и второй заголовок внутри дублировал бы её.
+    <dl className={styles.list}>
+      {week.map((weekday) => {
+        const day = byWeekday.get(weekday);
+        // Сужаем здесь, а не в разметке: контракт гарантирует, что поля
+        // заполнены парой, но тип этого не знает.
+        const open =
+          day?.opensAt != null && day.closesAt != null
+            ? { opensAt: day.opensAt, closesAt: day.closesAt }
+            : null;
+        return (
+          <div className={`${styles.row} ${weekday === today ? styles.today : ''}`} key={weekday}>
+            <dt className={styles.day}>{t(`weekday_${weekday}`)}</dt>
+            <dd className={open ? styles.time : styles.closed}>
+              {open ? `${hhmm(open.opensAt)} — ${hhmm(open.closesAt)}` : t('dayOff')}
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
   );
 }

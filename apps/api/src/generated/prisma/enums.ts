@@ -68,8 +68,7 @@ export type AdvertiserKind = (typeof AdvertiserKind)[keyof typeof AdvertiserKind
 
 
 export const CompanyKind = {
-  agency: 'agency',
-  salon: 'salon'
+  agency: 'agency'
 } as const
 
 export type CompanyKind = (typeof CompanyKind)[keyof typeof CompanyKind]

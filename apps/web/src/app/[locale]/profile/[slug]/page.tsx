@@ -3,11 +3,14 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Badge, badgeClass } from '@/design-system/components/Badge';
+import { Amenities } from '@/modules/catalog/components/Amenities';
 import { AreaMap } from '@/modules/catalog/components/AreaMap';
 import { Gallery } from '@/modules/catalog/components/Gallery';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
+import { SalonDetails } from '@/modules/catalog/components/SalonDetails';
 import { Section } from '@/modules/catalog/components/Section';
 import { SectionHead } from '@/modules/catalog/components/SectionHead';
+import { WorkingHours } from '@/modules/catalog/components/WorkingHours';
 import { CommentForm } from '@/modules/comments/components/CommentForm';
 import { CommentList } from '@/modules/comments/components/CommentList';
 import { ContactsCard } from '@/modules/contacts/components/ContactsCard';
@@ -94,6 +97,7 @@ export default async function ProfilePage({ params }: Props) {
   const tBust = await getTranslations({ locale, namespace: 'breastSize' });
   const tLook = await getTranslations({ locale, namespace: 'appearanceType' });
   const tLang = await getTranslations({ locale, namespace: 'languageNames' });
+  const tSalon = await getTranslations({ locale, namespace: 'company' });
 
   /**
    * Услуги приходят упорядоченными по каталогу, поэтому группируем по первому
@@ -184,13 +188,19 @@ export default async function ProfilePage({ params }: Props) {
         {profile.company ? (
           <div className={styles.headerCompanyRow}>
             <Link className={badgeClass('company')} href={`/company/${profile.company.slug}`}>
-              {t(profile.company.kind === 'salon' ? 'fromSalon' : 'fromAgency', {
+              {t('fromAgency', {
                 name: profile.company.name,
               })}
             </Link>
           </div>
         ) : null}
       </header>
+
+      {/* Салон — это анкета (N-34): часы работы и данные заведения живут
+          здесь, а не на отдельной странице компании. У анкеты человека эти
+          поля пусты, и блоки не отображаются. */}
+      {profile.address ? <p className={styles.salonAddress}>{profile.address}</p> : null}
+      <SalonDetails profile={profile} locale={locale} />
 
       <div className={styles.layout}>
         <div className={styles.gallerySticky}>
@@ -202,11 +212,36 @@ export default async function ProfilePage({ params }: Props) {
         </div>
 
         <div>
-          {/* Контакты первым блоком: ради них страницу и открывают.
+          {/* Часы работы первыми: у салона это первое, что выясняет
+              посетитель, — открыто ли вообще. Ради контактов страницу тоже
+              открывают, но звонить в закрытый салон незачем. */}
+          {profile.hours.length > 0 ? (
+            // Свёрнуты: расписание нужно не каждому, а семь строк заметно
+            // отодвигали бы контакты и тарифы вниз.
+            <Section title={tSalon('hours')} defaultOpen={false}>
+              <WorkingHours hours={profile.hours} locale={locale} />
+            </Section>
+          ) : null}
+
+          {/* Контакты следом: ради них страницу и открывают.
               Значений здесь нет — компонент забирает их отдельным запросом. */}
           {profile.contactTypes.length > 0 ? (
             <Section title={t('contacts')}>
               <ContactsCard slug={profile.slug} types={profile.contactTypes} />
+            </Section>
+          ) : null}
+
+          {/* Оплата между контактами и тарифами: посетитель узнал, как
+              связаться, и сразу — чем платить, до самих цен. */}
+          {profile.payments.length > 0 ? (
+            <Section title={tSalon('payments')}>
+              <ul className={styles.paymentList}>
+                {profile.payments.map((method) => (
+                  <li className={styles.payment} key={method}>
+                    {tSalon(`payment_${method}`)}
+                  </li>
+                ))}
+              </ul>
             </Section>
           ) : null}
 
@@ -237,16 +272,25 @@ export default async function ProfilePage({ params }: Props) {
             </div>
           </Section>
 
-          <Section title={t('params')}>
-            <div className={styles.params}>
-              {paramRows.map(([key, value]) => (
-                <div key={key} className={styles.param}>
-                  <span className={styles.paramKey}>{key}</span>
-                  <span>{value}</span>
-                </div>
-              ))}
-            </div>
-          </Section>
+          {/* Параметры — рост, вес, возраст, внешность — свойства человека.
+              У салона их нет: это заведение, и раздел был бы пустым или,
+              хуже, заполненным по недосмотру. Языки салона показываются
+              отдельно, в его собственном блоке (N-34).
+
+              `massage` и есть салон: только он заводит анкеты этого вида
+              (LISTING_KIND_BY_ADVERTISER). */}
+          {profile.kind === 'massage' ? null : (
+            <Section title={t('params')}>
+              <div className={styles.params}>
+                {paramRows.map(([key, value]) => (
+                  <div key={key} className={styles.param}>
+                    <span className={styles.paramKey}>{key}</span>
+                    <span>{value}</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          )}
 
           <Section title={t('description')}>
             <p className={styles.description}>{profile.description}</p>
@@ -268,6 +312,14 @@ export default async function ProfilePage({ params }: Props) {
                   </div>
                 </div>
               ))}
+            </Section>
+          ) : null}
+
+          {/* Удобства после услуг: сначала что делают, потом в каких
+              условиях. У анкеты человека список пуст, и секции нет. */}
+          {profile.amenities.length > 0 ? (
+            <Section title={tSalon('amenities')}>
+              <Amenities amenities={profile.amenities} locale={locale} />
             </Section>
           ) : null}
 

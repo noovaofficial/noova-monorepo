@@ -1,0 +1,41 @@
+/* Каждый день с новой строки: в две колонки неделя читается вразнобой —
+   глаз ищет «пятницу» то слева, то справа. */
+.list {
+  display: flex;
+  flex-direction: column;
+  max-width: 420px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Под последним днём линия висела бы ни к чему: делить дальше нечего. */
+.row:last-child {
+  border-bottom: none;
+}
+
+.today {
+  font-weight: 600;
+  color: var(--primaryText);
+}
+
+.day {
+  color: var(--secondaryText);
+}
+
+.today .day {
+  color: var(--primaryText);
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}
+
+.closed {
+  color: var(--secondaryText);
+}

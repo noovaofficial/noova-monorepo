@@ -76,7 +76,7 @@ type ProfileCardRow = {
   age: number | null;
   city: CityRow;
   district: { name: string; translations?: Translations } | null;
-  company: { slug: string; kind: 'agency' | 'salon'; name: string } | null;
+  company: { slug: string; kind: 'agency'; name: string } | null;
   photos: PhotoRow[];
   services?: { service: { key: string; translations?: Translations } }[];
   fromPriceCents: number | null;
@@ -110,6 +110,13 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
 }
 
 type ProfileDetailRow = Omit<ProfileCardRow, 'services'> & {
+  address: string | null;
+  directions: string | null;
+  minSessionMinutes: number | null;
+  bookingPolicy: 'appointment' | 'walk_in' | null;
+  payments: ('cash' | 'card' | 'transfer')[];
+  amenities: string[];
+  hours: { weekday: number; opensAt: number | null; closesAt: number | null }[];
   status: ProfileDetail['status'];
   description: string;
   heightCm: number | null;
@@ -168,6 +175,13 @@ export function toProfileDetail(
       incall: toMoney(p.incallCents),
       outcall: toMoney(p.outcallCents),
     })),
+    address: row.address,
+    directions: row.directions,
+    minSessionMinutes: row.minSessionMinutes,
+    bookingPolicy: row.bookingPolicy,
+    payments: row.payments,
+    amenities: row.amenities,
+    hours: row.hours,
     services: row.services.map((s) => ({
       key: s.service.key,
       group: s.service.group,

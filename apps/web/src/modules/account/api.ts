@@ -18,10 +18,18 @@ import { z } from 'zod';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
+/** Поле, на котором сервер отклонил запрос: `hours/0/closesAt`, `contacts`. */
+export type ValidationIssue = { field: string; code: string };
+
 export class AccountError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /**
+     * Разбор сервера по полям. Без него форма угадывала причину 400 — и
+     * ошибку в часах работы показывала как ошибку в контактах.
+     */
+    readonly issues: ValidationIssue[] = [],
   ) {
     super(message);
     this.name = 'AccountError';
@@ -44,11 +52,9 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
   });
 
   if (!response.ok) {
-    const message = await response
-      .json()
-      .then((body) => String(body?.message ?? ''))
-      .catch(() => '');
-    throw new AccountError(message, response.status);
+    const body = await response.json().catch(() => null);
+    const issues = Array.isArray(body?.issues) ? (body.issues as ValidationIssue[]) : [];
+    throw new AccountError(String(body?.message ?? ''), response.status, issues);
   }
 
   // 204 приходит без тела: `response.json()` на нём падает разбором.

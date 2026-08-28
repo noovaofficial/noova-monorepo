@@ -32,6 +32,13 @@ type OwnProfileRow = {
   publishedAt: Date | null;
   updatedAt: Date;
   prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
+  address: string | null;
+  directions: string | null;
+  minSessionMinutes: number | null;
+  bookingPolicy: 'appointment' | 'walk_in' | null;
+  payments: ('cash' | 'card' | 'transfer')[];
+  amenities: string[];
+  hours: { weekday: number; opensAt: number | null; closesAt: number | null }[];
   services: { isExtra: boolean; service: { key: string } }[];
   contacts: { type: OwnProfile['contacts'][number]['type']; value: string }[];
   photos: {
@@ -59,6 +66,14 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     status: row.status,
     displayName: row.displayName,
     description: row.description,
+    // Салонные поля: у анкеты человека они пусты (N-34).
+    address: row.address,
+    directions: row.directions,
+    minSessionMinutes: row.minSessionMinutes,
+    bookingPolicy: row.bookingPolicy,
+    payments: row.payments,
+    amenities: row.amenities,
+    hours: row.hours,
     city: { slug: row.city.slug, name: row.city.name },
     district: row.district ? { slug: row.district.slug, name: row.district.name } : null,
     age: row.age,
@@ -132,6 +147,16 @@ export const ownProfileSelect = {
   prices: {
     orderBy: { durationMinutes: 'asc' },
     select: { durationMinutes: true, incallCents: true, outcallCents: true },
+  },
+  address: true,
+  directions: true,
+  minSessionMinutes: true,
+  bookingPolicy: true,
+  payments: true,
+  amenities: true,
+  hours: {
+    orderBy: { weekday: 'asc' as const },
+    select: { weekday: true, opensAt: true, closesAt: true },
   },
   services: {
     // Убранная из справочника услуга не должна оставаться в форме: иначе

@@ -318,6 +318,13 @@ export type EnumProfileStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel> | $Enums.ProfileStatus
 }
 
+export type EnumBookingPolicyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel> | $Enums.BookingPolicy | null
+}
+
 export type EnumHairColorNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.HairColor | Prisma.EnumHairColorFieldRefInput<$PrismaModel> | null
   in?: $Enums.HairColor[] | Prisma.ListEnumHairColorFieldRefInput<$PrismaModel> | null
@@ -390,6 +397,16 @@ export type EnumProfileStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel>
+}
+
+export type EnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel> | $Enums.BookingPolicy | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
 }
 
 export type EnumHairColorNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -589,13 +606,6 @@ export type EnumCompanyKindFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel> | $Enums.CompanyKind
 }
 
-export type EnumBookingPolicyNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel> | $Enums.BookingPolicy | null
-}
-
 export type EnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
   in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
@@ -604,16 +614,6 @@ export type EnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
-}
-
-export type EnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel> | $Enums.BookingPolicy | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
 }
 
 export type EnumContactTypeFilter<$PrismaModel = never> = {
@@ -956,6 +956,13 @@ export type NestedEnumProfileStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel> | $Enums.ProfileStatus
 }
 
+export type NestedEnumBookingPolicyNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel> | $Enums.BookingPolicy | null
+}
+
 export type NestedEnumHairColorNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.HairColor | Prisma.EnumHairColorFieldRefInput<$PrismaModel> | null
   in?: $Enums.HairColor[] | Prisma.ListEnumHairColorFieldRefInput<$PrismaModel> | null
@@ -1028,6 +1035,16 @@ export type NestedEnumProfileStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumProfileStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel> | $Enums.BookingPolicy | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumHairColorNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -1200,13 +1217,6 @@ export type NestedEnumCompanyKindFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel> | $Enums.CompanyKind
 }
 
-export type NestedEnumBookingPolicyNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel> | $Enums.BookingPolicy | null
-}
-
 export type NestedEnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.CompanyKind | Prisma.EnumCompanyKindFieldRefInput<$PrismaModel>
   in?: $Enums.CompanyKind[] | Prisma.ListEnumCompanyKindFieldRefInput<$PrismaModel>
@@ -1215,16 +1225,6 @@ export type NestedEnumCompanyKindWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumCompanyKindFilter<$PrismaModel>
-}
-
-export type NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.BookingPolicy | Prisma.EnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  in?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.BookingPolicy[] | Prisma.ListEnumBookingPolicyFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumBookingPolicyNullableWithAggregatesFilter<$PrismaModel> | $Enums.BookingPolicy | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumBookingPolicyNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumContactTypeFilter<$PrismaModel = never> = {

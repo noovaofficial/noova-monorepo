@@ -7,7 +7,7 @@ import {
   queryArraySchema,
   slugSchema,
 } from './common';
-import { profileCompanySchema } from './company';
+import { paymentMethodSchema, profileCompanySchema } from './company';
 import { contactTypeSchema } from './contact';
 
 /**
@@ -60,6 +60,77 @@ export const priceSlotSchema = z.object({
   outcall: moneySchema.nullable(),
 });
 export type PriceSlot = z.infer<typeof priceSlotSchema>;
+
+/* ------------------------------------------------------------------------ *
+ * Салон. Салон — это анкета, а не сущность рядом с ней (решение владельца
+ * продукта): одна учётная запись салона = одна анкета в каталоге. Поэтому
+ * адрес, часы, удобства и запись живут здесь, а не в `Company`.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * Удобства салона. Закрытый набор, а не свободный текст: набранные руками,
+ * они разойдутся в написании («душ» / «Душ» / «есть душ») и не станут
+ * фильтром — та же причина, по которой отказались от свободных тегов анкеты.
+ */
+export const AMENITIES = [
+  'shower',
+  'sauna',
+  'parking',
+  'air_conditioning',
+  'separate_entrance',
+  'wifi',
+  'drinks',
+  'towels',
+  'accessible',
+] as const;
+export const amenitySchema = z.enum(AMENITIES);
+export type Amenity = z.infer<typeof amenitySchema>;
+
+/** Только по записи или принимают без неё. */
+export const bookingPolicySchema = z.enum(['appointment', 'walk_in']);
+export type BookingPolicy = z.infer<typeof bookingPolicySchema>;
+
+/** Минуты от полуночи: 0 — 00:00, 1439 — 23:59. */
+const minuteOfDaySchema = z
+  .number()
+  .int()
+  .min(0)
+  .max(24 * 60 - 1);
+
+/**
+ * Часы работы одного дня.
+ *
+ * Оба поля пустые — выходной. Заполнено одно — ошибка: «открыто с 10:00»
+ * без закрытия не говорит посетителю ничего.
+ *
+ * `closesAt` меньше `opensAt` означает переход через полночь: салон с
+ * 10:00 до 02:00 — обычное дело, и запрещать такой интервал значит
+ * заставлять заводить его двумя днями.
+ */
+export const salonHoursSchema = z
+  .object({
+    /** 1 — понедельник, 7 — воскресенье (ISO-8601). */
+    weekday: z.number().int().min(1).max(7),
+    opensAt: minuteOfDaySchema.nullable(),
+    closesAt: minuteOfDaySchema.nullable(),
+  })
+  .refine((v) => (v.opensAt === null) === (v.closesAt === null), {
+    path: ['closesAt'],
+    message: 'Укажите и начало, и конец — либо оставьте день выходным',
+  })
+  .refine((v) => v.opensAt === null || v.opensAt !== v.closesAt, {
+    path: ['closesAt'],
+    message: 'Начало и конец совпадают: это не интервал',
+  });
+export type SalonHours = z.infer<typeof salonHoursSchema>;
+
+/** Неделя целиком: ровно семь дней, без пропусков и повторов. */
+export const salonWeekSchema = z
+  .array(salonHoursSchema)
+  .max(7)
+  .refine((days) => new Set(days.map((d) => d.weekday)).size === days.length, {
+    message: 'День недели повторяется',
+  });
 
 export const serviceSchema = z.object({
   key: z.string(),
@@ -165,6 +236,14 @@ export const profileDetailSchema = profileCardSchema.extend({
   params: paramsSchema,
   prices: z.array(priceSlotSchema),
   services: z.array(serviceSchema),
+  /* --- Салон (N-34): у анкеты человека эти поля пусты. ------------------- */
+  address: z.string().nullable().default(null),
+  directions: z.string().nullable().default(null),
+  minSessionMinutes: z.number().int().nullable().default(null),
+  bookingPolicy: bookingPolicySchema.nullable().default(null),
+  payments: z.array(paymentMethodSchema).default([]),
+  amenities: z.array(z.string()).default([]),
+  hours: z.array(salonHoursSchema).default([]),
   /** Координаты намеренно огрублены до района — точный адрес не публикуется. */
   approxLocation: z.object({ lat: z.number(), lng: z.number() }).nullable(),
   /**

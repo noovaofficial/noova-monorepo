@@ -339,6 +339,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request) => {
       const { userId } = requireSession(request);
+      const { advertiserKind } = await advertiserOr403(fastify, userId);
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
       const body = request.body;
 
@@ -384,6 +385,18 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // из-за этого терять возможность сохранить свою анкету. Такие ключи
       // принимаем, новые снятые — нет.
       let serviceIdByKey: Map<string, string> | null = null;
+      // Салонные поля пишем только салону: у анкеты человека адреса и часов
+      // работы быть не должно, а форма прошлого типа могла их прислать.
+      const isSalon = advertiserKind === 'salon';
+      if (isSalon && body.hours !== undefined) {
+        await fastify.prisma.profileHours.deleteMany({ where: { profileId: owned.id } });
+        if (body.hours.length > 0) {
+          await fastify.prisma.profileHours.createMany({
+            data: body.hours.map((h) => ({ ...h, profileId: owned.id })),
+          });
+        }
+      }
+
       if (body.services) {
         const keys = [...new Set(body.services.map((s) => s.key))];
         const known = await fastify.prisma.service.findMany({
@@ -533,6 +546,17 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
             ...(body.appearanceType !== undefined ? { appearanceType: body.appearanceType } : {}),
             ...(body.smoker !== undefined ? { smoker: body.smoker } : {}),
             ...(body.prices !== undefined ? { fromPriceCents: lowestPriceCents(body.prices) } : {}),
+            // Салонные поля — только салону: анкета человека не заведение.
+            ...(isSalon && body.address !== undefined ? { address: body.address } : {}),
+            ...(isSalon && body.directions !== undefined ? { directions: body.directions } : {}),
+            ...(isSalon && body.minSessionMinutes !== undefined
+              ? { minSessionMinutes: body.minSessionMinutes }
+              : {}),
+            ...(isSalon && body.bookingPolicy !== undefined
+              ? { bookingPolicy: body.bookingPolicy }
+              : {}),
+            ...(isSalon && body.payments !== undefined ? { payments: body.payments } : {}),
+            ...(isSalon && body.amenities !== undefined ? { amenities: body.amenities } : {}),
           },
           select: ownProfileSelect,
         });

@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
-import { SalonDetails } from '@/modules/company/components/SalonDetails';
-import { WorkingHours } from '@/modules/company/components/WorkingHours';
 import { ApiError, fetchCompany } from '@/shared/api';
 import styles from './page.module.css';
 
@@ -35,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const t = await getTranslations({ locale, namespace: 'company' });
   return {
-    title: t(company.kind === 'salon' ? 'titleSalon' : 'titleAgency', { name: company.name }),
+    title: t('titleAgency', { name: company.name }),
     description: company.description ?? undefined,
     alternates: { canonical: `/${locale}/company/${slug}` },
   };
@@ -53,17 +51,10 @@ export default async function CompanyPage({ params }: Props) {
   return (
     <div className={styles.wrap}>
       <header className={styles.head}>
-        <span className={styles.kind}>{t(company.kind === 'salon' ? 'salon' : 'agency')}</span>
+        <span className={styles.kind}>{t('agency')}</span>
         <h1 className={styles.name}>{company.name}</h1>
 
         {/* Адрес есть только у салона — это и есть отличие от агентства. */}
-        {company.address ? <p className={styles.address}>{company.address}</p> : null}
-        {/* Часы работы перед описанием: посетитель салона сначала выясняет,
-            открыто ли, и только потом читает про интерьер. */}
-        <WorkingHours hours={company.hours} locale={locale} />
-
-        <SalonDetails company={company} locale={locale} />
-
         {company.description ? <p className={styles.description}>{company.description}</p> : null}
 
         {company.contacts.length > 0 ? (

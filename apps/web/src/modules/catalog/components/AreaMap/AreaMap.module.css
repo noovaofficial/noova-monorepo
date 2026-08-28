@@ -1,12 +1,26 @@
+/* Рамка держит подпись об источнике: будь она внутри окна, прокрутка
+   унесла бы её вместе с картой. */
+.frame {
+  position: relative;
+}
+
+/* Окно: показывает часть мозаики, остальное доступно прокруткой. */
+.viewport {
+  overflow: auto;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surfaceMuted);
+  /* Прокрутка обеими осями пальцем, без перехвата прокрутки страницы
+     за краем карты. */
+  touch-action: pan-x pan-y;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+/* Мозаика: размер задаётся в разметке, он больше окна. */
 .wrap {
   position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radiusMd);
-  background: var(--surfaceSunken);
-  /* Отношение сторон фиксировано: без него плитки догружаются и страница
-     дёргается — тот самый сдвиг разметки, который портит метрики. */
-  aspect-ratio: 3 / 2;
 }
 
 .tiles {

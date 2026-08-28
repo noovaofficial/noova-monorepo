@@ -1,0 +1,14 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  list-style: none;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 5px 12px;
+  font-size: var(--textSm);
+  background: var(--surface);
+}

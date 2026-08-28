@@ -60,9 +60,10 @@ enum AdvertiserKind {
 /// Компания рекламодателя. Индивидуалки здесь нет: она размещает себя, и
 /// заводить для неё «компанию из одного человека» значит выдумывать сущность
 /// ради единообразия.
+/// Компания есть только у агентства: салон — это анкета (N-34), и отдельной
+/// записи компании у него нет.
 enum CompanyKind {
   agency
-  salon
 }
 
 /// Параметры внешности. Enum, а не свободная строка: по строке фильтр
@@ -361,6 +362,27 @@ model Profile {
   companyId String?
   company   Company? @relation(fields: [companyId], references: [id])
 
+  /// --- Салон -------------------------------------------------------------
+  /// Салон — это анкета, а не отдельная сущность рядом с ней (решение
+  /// владельца продукта). Одна учётная запись салона = одна анкета в
+  /// каталоге; отдельных анкет массажисток нет.
+  ///
+  /// Поля заполняются только при `advertiserKind = salon`. Держать их здесь,
+  /// а не в `Company`, — значит не синхронизировать две записи: каталог,
+  /// фильтры, карта, избранное и модерация построены на `Profile`, и вторая
+  /// сущность в поиске потребовала бы учить их всех работать с двумя типами.
+  /// Точный адрес: у салона это заведение, а не человек, поэтому исключение
+  /// из правила приблизительных координат осознанное (arch/architecture.md §6).
+  address           String?
+  /// Как добраться словами: «5 минут от Zoologischer Garten».
+  directions        String?
+  minSessionMinutes Int?
+  bookingPolicy     BookingPolicy?
+  payments          PaymentMethod[] @default([])
+  /// Ключи из AMENITIES: закрытый набор, переводится словарями.
+  amenities         String[]        @default([])
+  hours             ProfileHours[]
+
   ownerId String
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
@@ -593,29 +615,11 @@ model Company {
   kind        CompanyKind
   name        String
   description String?
-  /// Только у салона. У агентства адреса нет — это и есть отличие.
-  address     String?
-
-  /// Как добраться: «5 минут от Zoologischer Garten». Свободный текст, а не
-  /// координаты: маршрут словами полезнее точки на карте, а точка уже есть
-  /// у города и района.
-  directions String?
-
-  /// Минимальная длительность сеанса, минуты. Салонное понятие: у анкеты
-  /// длительности задаются тарифами.
-  minSessionMinutes Int?
-
-  /// Нужна ли предварительная запись. Меняет сценарий визита целиком.
-  bookingPolicy BookingPolicy?
-
   /// Языки персонала — коды из SPOKEN_LANGUAGES.
-  languages String[] @default([])
+  languages   String[]    @default([])
 
-  /// Способы оплаты и удобства: закрытые наборы, переводятся словарями.
-  /// Списком строк, а не связью: домены не растут, и таблица ради девяти
-  /// значений добавила бы джойн без выгоды.
-  payments  PaymentMethod[] @default([])
-  amenities String[]        @default([])
+  /// Способы оплаты агентства. Удобства и часы — салонные, они у анкеты.
+  payments PaymentMethod[] @default([])
 
   /// Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
   isActive Boolean @default(true)
@@ -625,8 +629,6 @@ model Company {
 
   profiles Profile[]
   contacts CompanyContact[]
-  hours    CompanyHours[]
-  prices   CompanyPrice[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -651,30 +653,13 @@ enum PaymentMethod {
   transfer
 }
 
-/// Прайс салона: общий, не привязанный к конкретной анкете (N-34).
-model CompanyPrice {
-  id        String  @id @default(cuid())
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  /// Что именно: «Классический массаж», «Спа-программа».
-  title           String
-  durationMinutes Int
-  /// В центах, как и у анкет: копейки в Float однажды разойдутся.
-  priceCents      Int
-  position        Int    @default(0)
-
-  @@index([companyId, position])
-}
-
 /// Часы работы салона по дням недели (N-34).
 ///
-/// Только у салона: у агентства нет помещения, в которое можно прийти, —
-/// это то же различие, что и с адресом.
-model CompanyHours {
+/// Привязаны к анкете, а не к компании: салон и есть анкета.
+model ProfileHours {
   id        String  @id @default(cuid())
-  companyId String
-  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   /// 1 — понедельник, 7 — воскресенье. ISO-8601, как `Date.getISODay`:
   /// нумерация с нуля путается с воскресеньем как началом недели у Date.
@@ -686,7 +671,7 @@ model CompanyHours {
   opensAt  Int?
   closesAt Int?
 
-  @@unique([companyId, weekday])
+  @@unique([profileId, weekday])
 }
 
 model CompanyContact {

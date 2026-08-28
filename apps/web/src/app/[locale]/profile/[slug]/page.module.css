@@ -206,3 +206,26 @@
 .headerCompanyRow a {
   text-decoration: none;
 }
+
+/* Точный адрес заведения. Только у салона: у анкеты человека адреса нет
+   и быть не должно (arch/architecture.md §6). */
+.salonAddress {
+  color: var(--secondaryText);
+  margin-top: var(--space2);
+}
+
+/* Способы оплаты салона (N-34). */
+.paymentList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  list-style: none;
+}
+
+.payment {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 5px 12px;
+  font-size: var(--textSm);
+  background: var(--surface);
+}

@@ -341,7 +341,15 @@
     "deleteProfileConfirm": "Löschen",
     "deleteWrongPassword": "Falsches Passwort.",
     "deleteFailed": "Löschen fehlgeschlagen. Bitte erneut versuchen.",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "salonTitle": "Mein Studio",
+    "salonCreate": "Studio anlegen",
+    "salonCreateTitle": "Neues Studio",
+    "salonEmpty": "Studio noch nicht angelegt",
+    "salonEmptyHint": "Legen Sie das Studio an, füllen Sie es aus und senden Sie es zur Prüfung.",
+    "salonDisplayName": "Name des Studios",
+    "salonLimitReached": "Ein Studio hat einen Eintrag im Katalog",
+    "hoursInvalid": "Prüfen Sie die Öffnungszeiten: Anfang und Ende müssen beide gesetzt sein und dürfen nicht gleich sein."
   },
   "moderation": {
     "title": "Moderation",

@@ -1,9 +1,13 @@
 import { z } from 'zod';
 import { moneySchema, slugSchema } from './common';
+import { paymentMethodSchema } from './company';
 import { contactInputSchema, MAX_CONTACTS_PER_PROFILE, profileContactSchema } from './contact';
 import {
+  AMENITIES,
+  amenitySchema,
   appearanceTypeSchema,
   bodyTypeSchema,
+  bookingPolicySchema,
   breastSizeSchema,
   breastTypeSchema,
   eyeColorSchema,
@@ -11,6 +15,8 @@ import {
   listingKindSchema,
   profileStatusSchema,
   pubicHairSchema,
+  salonHoursSchema,
+  salonWeekSchema,
   verificationStatusSchema,
 } from './profile';
 
@@ -34,8 +40,10 @@ export const LISTING_KIND_BY_ADVERTISER: Record<AdvertiserKind, 'escort' | 'mass
 /** Сколько анкет разрешено. У индивидуалки ровно одна — она размещает себя. */
 export const PROFILE_LIMIT_BY_ADVERTISER: Record<AdvertiserKind, number> = {
   individual: 1,
+  // У салона одна анкета — она и есть салон (N-34). Отдельных анкет
+  // массажисток нет: салон показывается в каталоге одной записью.
+  salon: 1,
   agency: 50,
-  salon: 50,
 };
 
 export const priceSlotInputSchema = z.object({
@@ -84,6 +92,15 @@ export type ProfileServiceInput = z.infer<typeof profileServiceInputSchema>;
 
 export const updateProfileSchema = z.object({
   displayName: z.string().trim().min(2).max(60).optional(),
+  /* --- Салон. Заполняется только при advertiserKind = salon (N-34). ------ */
+  /** Точный адрес заведения. У анкеты человека адреса нет и быть не должно. */
+  address: z.string().trim().max(300).nullable().optional(),
+  directions: z.string().trim().max(500).nullable().optional(),
+  minSessionMinutes: z.number().int().min(15).max(1440).nullable().optional(),
+  bookingPolicy: bookingPolicySchema.nullable().optional(),
+  payments: z.array(paymentMethodSchema).max(3).optional(),
+  amenities: z.array(amenitySchema).max(AMENITIES.length).optional(),
+  hours: salonWeekSchema.optional(),
   description: z.string().max(4000).optional(),
   citySlug: slugSchema.optional(),
   districtSlug: slugSchema.nullable().optional(),
@@ -151,6 +168,14 @@ export const photoOrderSchema = z.object({
  * причину отказа модератора и статус верификации — то, что наружу не отдаётся.
  */
 export const ownProfileSchema = z.object({
+  /* --- Салон (N-34) ------------------------------------------------------ */
+  address: z.string().nullable(),
+  directions: z.string().nullable(),
+  minSessionMinutes: z.number().int().nullable(),
+  bookingPolicy: bookingPolicySchema.nullable(),
+  payments: z.array(paymentMethodSchema),
+  amenities: z.array(z.string()),
+  hours: z.array(salonHoursSchema),
   id: z.string(),
   slug: slugSchema,
   kind: listingKindSchema,

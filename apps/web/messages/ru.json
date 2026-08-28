@@ -341,7 +341,15 @@
     "deleteProfileConfirm": "Удалить",
     "deleteWrongPassword": "Неверный пароль.",
     "deleteFailed": "Не удалось удалить. Попробуйте ещё раз.",
-    "cancel": "Отмена"
+    "cancel": "Отмена",
+    "salonTitle": "Мой салон",
+    "salonCreate": "Создать салон",
+    "salonCreateTitle": "Новый салон",
+    "salonEmpty": "Салон пока не заведён",
+    "salonEmptyHint": "Заведите салон, заполните его и отправьте на проверку.",
+    "salonDisplayName": "Название салона",
+    "salonLimitReached": "У салона одна запись в каталоге",
+    "hoursInvalid": "Проверьте часы работы: нужны и начало, и конец, и они не должны совпадать."
   },
   "moderation": {
     "title": "Модерация",
