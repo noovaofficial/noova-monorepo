@@ -98,14 +98,15 @@ make help             # весь список
 
 Руководство разбито на три части:
 
-- [documentation/deploy/server.md](documentation/deploy/server.md) — провайдер, мощности,
-  DNS, подготовка машины, почта. Всё, что делается один раз.
-- [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск:
-  `make deploy SERVER=deploy@<IP>`.
-- [documentation/deploy/mail.md](documentation/deploy/mail.md) — почтовый релей на
-  отдельной машине, когда провайдер не открывает 25-й порт.
 - [documentation/deploy/entryPoint.md](documentation/deploy/entryPoint.md) — порядок
-  действий, осмотр базы, бэкапы.
+  действий, база, бэкапы. Точка входа.
+- [documentation/deploy/server.md](documentation/deploy/server.md) — провайдер, DNS,
+  подготовка машины.
+- [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск.
+- [documentation/deploy/mail.md](documentation/deploy/mail.md) — почтовый релей на
+  отдельной машине.
+- [documentation/deploy/migration.md](documentation/deploy/migration.md) — переезд на
+  другой домен или сервер.
 
 Коротко:
 

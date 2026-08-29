@@ -1,75 +1,42 @@
 # Почтовый релей
 
-Отдельная машина под отправку писем. Нужна, когда провайдер основного сервера
-держит исходящий 25-й порт закрытым — без него письма не уходят никуда, а
-регистрация и сброс пароля перестают работать.
+Отдельная машина под отправку, когда провайдер основного сервера держит
+исходящий 25-й закрытым. Общая часть про почту — [server.md](server.md) §4.
 
-Общая часть про почту — [server.md](server.md) §4.
+**Почему не внешний сервис.** SendPulse, SMTP2GO, Postmark, Resend, Elastic
+Email, Brevo прямо запрещают escort и adult в AUP; у Mailgun, Mailjet,
+SendGrid — оговорка про «obscene, indecent» на их усмотрение. Блокировка
+аккаунта останавливает вход на сайт. Плюс релей видит тело письма, а в нём
+одноразовая ссылка. Решение N-15 в силе, Postfix просто на второй машине.
 
----
+**Провайдер.** Открытый исходящий 25-й, разрешённый adult, юрисдикция ЕС/ЕЭЗ
+(L-09). Подтверждать письмом до оплаты.
 
-## Почему не внешний сервис
-
-SendPulse, SMTP2GO, Postmark, Resend, Elastic Email и Brevo прямо запрещают
-escort и adult в правилах использования. У Mailgun, Mailjet и SendGrid прямого
-запрета нет, но есть оговорка про «obscene, indecent» на их усмотрение.
-Блокировка аккаунта остановила бы вход на сайт целиком.
-
-Отдельно: релей видит тело письма, а в нём одноразовая ссылка на смену пароля.
-Мы вырезаем её из логов ([logger.ts](../../apps/api/src/logger.ts)) — отдавать
-её чужому сервису было бы непоследовательно.
-
-Решение N-15 в силе: Postfix свой, просто переехал на вторую машину.
-
-## Выбор провайдера
-
-Три условия, все подтверждать письмом **до оплаты**:
-
-1. Открытый исходящий порт 25 — многие блокируют по умолчанию.
-2. Разрешённый adult в условиях использования.
-3. Юрисдикция ЕС или ЕЭЗ, если важна гл. V GDPR. Молдова решения об
-   адекватности не имеет и требует Standard Contractual Clauses; Нидерланды,
-   Румыния, Финляндия, Исландия — внутри. См. L-09 в
-   [legal.md](../planning/legal.md).
-
-Сейчас релей стоит в Нидерландах у AlexHost; основной сервер — у vps.ac, там
-25-й закрыт наглухо («closed in order to prevent spam»).
+Файлы — [`infra/relay/`](../../infra/relay/).
 
 ---
 
 ## Настройка
 
-Файлы — в [`infra/relay/`](../../infra/relay/).
-
-### 1. Проверки до всего остального
+### 1. Проверки
 
 ```bash
-# исходящий 25-й — ради него всё и затевается
 timeout 8 bash -c 'exec 3<>/dev/tcp/aspmx.l.google.com/25 && head -1 <&3'
 ```
 
-`220 ... ESMTP` — открыт, молчание — закрыт, дальше идти незачем.
-
-Репутацию IP проверить на `spamhaus.org`. В списках — просить замену сразу,
-пока DNS не тронут.
+`220 ... ESMTP` — открыт, молчание — дальше идти незачем.
+IP проверить на `check.spamhaus.org`, в списках — просить замену.
 
 ### 2. Машина
-
-Тем же скриптом, что основную:
 
 ```bash
 ssh-copy-id -i ~/.ssh/<ключ>.pub root@<IP релея>
 make server-setup SERVER=root@<IP релея>
-```
-
-Затем `passwd deploy` и проверка вторым окном — [server.md](server.md) §3.
-
-Submission открыть **только** основному серверу. Пароль — вторая линия защиты,
-а не первая:
-
-```bash
+ssh root@<IP релея> passwd deploy
 sudo ufw allow from <IP основного> to any port 587 proto tcp
 ```
+
+Submission только основному серверу: открытый всему миру находят за часы.
 
 ### 3. DNS
 
@@ -80,15 +47,12 @@ sudo ufw allow from <IP основного> to any port 587 proto tcp
 | PTR | `mail.<домен>` — в панели провайдера или заявкой |
 | TXT `mail._domainkey` | **не трогать**, ключ переносится |
 
-Имя `mail.<домен>` должно совпадать в трёх местах: HELO контейнера, PTR и
-A-запись. Не сошлось — письма уходят в спам.
-
-Проверять через публичный резолвер, локальный может подменять ответы:
-
 ```bash
 dig +short A mail.<домен> @1.1.1.1
 dig +short -x <IP релея> @1.1.1.1
 ```
+
+Имя должно совпадать в трёх местах: HELO, PTR, A-запись.
 
 ### 4. Сертификат
 
@@ -99,8 +63,7 @@ scp -r infra/relay deploy@<IP релея>:~/relay
 ssh deploy@<IP релея> 'sudo ~/relay/certs.sh mail.<домен>'
 ```
 
-Скрипт ставит и хук продления. Без хука certbot обновил бы сертификат у себя,
-Postfix продолжил бы отдавать старый, и почта встала бы через 90 дней.
+Скрипт ставит хук продления — без него почта встала бы через 90 дней.
 
 ### 5. Запуск
 
@@ -115,97 +78,89 @@ chmod 600 .env
 docker compose up -d
 ```
 
-### 6. Перенос DKIM-ключа
+### 6. DKIM-ключ со старой машины
 
-Контейнер сгенерировал свой при первом старте. Заменяем ключом со старой
-машины — тогда запись `mail._domainkey` в DNS менять не придётся.
+Контейнер сгенерировал свой при первом старте — заменяем, тогда запись в DNS
+менять не придётся.
 
 ```bash
-# на основном сервере
-cd ~/noova
-docker compose exec -T smtp tar cf - -C /etc/opendkim/keys . > ~/dkim.tar
-chmod 600 ~/dkim.tar
-
+# на основном
+docker compose exec -T smtp tar cf - -C /etc/opendkim/keys . > ~/dkim.tar && chmod 600 ~/dkim.tar
 # перенос через свою машину
-scp deploy@<IP основного>:dkim.tar /tmp/
-scp /tmp/dkim.tar deploy@<IP релея>:dkim.tar
-
+scp deploy@<IP основного>:dkim.tar /tmp/ && scp /tmp/dkim.tar deploy@<IP релея>:dkim.tar
 # на релее
-cd ~/relay
 docker compose exec -T smtp tar xf - -C /etc/opendkim/keys < ~/dkim.tar
 docker compose restart smtp
 docker compose exec smtp cat /etc/opendkim/keys/<домен>.txt
 ```
 
-Последняя команда должна дать то же, что `dig +short TXT
-mail._domainkey.<домен> @1.1.1.1`.
-
-**Удалите архив со всех трёх машин** — в нём приватный ключ.
+Сверить с `dig +short TXT mail._domainkey.<домен> @1.1.1.1`.
+**Удалить архив со всех трёх машин** — в нём приватный ключ.
 
 ### 7. Основной сервер
 
-Дописать в `~/noova/.env` (`>>`, не `>` — иначе сотрёте пароль базы):
+```bash
+cat >> ~/noova/.env <<'EOF'
 
-```
 RELAY_HOST=[mail.<домен>]:587
 RELAY_USER=noreply@<домен>
-RELAY_PASSWORD=<тот же, что на релее>
+RELAY_PASSWORD=<тот же>
 RELAY_TLS_LEVEL=encrypt
+EOF
 ```
 
-Имя, а не IP: сертификат выписан на `mail.<домен>`, оно понадобится, если
-поднять уровень до `verify`. `RELAY_USER` и `RELAY_PASSWORD` есть в обоих
-файлах — две стороны одного логина, значения обязаны совпадать.
-
-**`RELAY_USER` обязан совпадать с адресом в `MAIL_FROM`.** Образ привязывает
-SASL-логин к отправителю: залогинившись как `relay@<домен>`, отправить письмо
-от `noreply@<домен>` нельзя — релей ответит `554 Sender address rejected`.
+`>>`, не `>` — иначе сотрёте пароль базы. Имя, не IP: сертификат выписан на
+`mail.<домен>`. `RELAY_USER` в обоих файлах одинаковый и равен адресу из
+`MAIL_FROM`.
 
 ```bash
 make deploy-files SERVER=deploy@<IP основного>
 make update SERVER=deploy@<IP основного>
 ```
 
-Образы не пересобираются.
-
 ---
 
 ## Проверка
 
 ```bash
-# на основном: очередь должна опустеть, накопившееся уйдёт само
-docker compose exec smtp postqueue -p
-# на релее: видно уходящие письма
-docker compose logs -f smtp
+docker compose exec smtp postqueue -p      # на основном: пусто
+docker compose logs -f smtp                # на релее
 ```
 
-Затем регистрация на сайте. Письмо не в спаме, в заголовках `dkim=pass` и
-`dmarc=pass` по своему домену. Финально — `mail-tester.com`.
+Ждём `sasl_username=noreply@<домен>` и `status=sent (250 ...)`.
+Затем регистрация на сайте, в заголовках `dkim=pass` и `dmarc=pass`.
+Финально — `mail-tester.com`.
+
+---
 
 ## Если письма не уходят
 
 | Симптом | Причина |
 |---|---|
-| `SSL_accept error from noova-api-1`, очередь Postfix при этом **пуста** | api не смог отдать письмо соседнему Postfix: nodemailer проверяет самоподписанный сертификат и рвёт соединение. Лечится `POSTFIX_smtpd_tls_security_level: none` — хоп идёт по внутренней сети Docker |
-| `authentication failed` в очереди основного | `RELAY_USER`/`RELAY_PASSWORD` разошлись между файлами. Сверять по `sasl_username=` в логе релея — там видно, чем именно представился основной |
-| `unable to canonify user and get auxprops` на релее | выбран DIGEST-MD5, он сверяет ещё и realm. Лечится `POSTFIX_smtp_sasl_mechanism_filter: plain, login` на основном |
-| `554 Sender address rejected: Access denied` при успешной аутентификации | образ переписал ссылки на карты с `hash:` на `lmdb:`, но сами карты не пересобрал: `check_sender_access` не может открыть файл, и проверка проваливается до финального `reject`. Лечится **пересозданием** контейнера (`up -d --force-recreate`), перезапуск не помогает |
-| `error: open database /etc/aliases.lmdb: No such file or directory` | та же поломка карт, тот же рецепт |
-| `certificate verify failed` | `RELAY_HOST` указан IP вместо `mail.<домен>`, или сертификат не выпущен |
+| `SSL_accept error from noova-api-1`, очередь Postfix **пуста** | nodemailer проверяет самоподписанный сертификат и рвёт соединение. `POSTFIX_smtpd_tls_security_level: none` на основном |
+| `authentication failed` | `RELAY_USER`/`RELAY_PASSWORD` разошлись. Сверять по `sasl_username=` в логе релея |
+| `unable to canonify user and get auxprops` | выбран DIGEST-MD5, он сверяет realm. `POSTFIX_smtp_sasl_mechanism_filter: plain, login` |
+| `sasl_username` не тот, что в `.env` | образ **дописывает** `sasl_passwd` при старте. Нужен `up -d --force-recreate`, не `restart` |
+| `554 Sender address rejected: Access denied` | образ переписал карты с `hash:` на `lmdb:`, но не пересобрал. Пересоздать контейнер |
+| `error: open database /etc/aliases.lmdb` | та же поломка карт, тот же рецепт |
+| `certificate verify failed` | в `RELAY_HOST` IP вместо имени, или сертификат не выпущен |
 | `Connection timed out` на релее | исходящий 25-й закрыт у провайдера релея |
 | `Connection refused` на основном | ufw на релее не пускает, или контейнер не поднят |
-| письма уходят, но в спам | PTR, SPF или DKIM не сходятся — прогнать `mail-tester.com` |
-| всё работало и встало через ~3 месяца | сертификат: проверить хук продления |
+| уходят, но в спам | PTR/SPF/DKIM — прогнать `mail-tester.com`; либо репутация нового домена |
+| встало через ~3 месяца | сертификат, проверить хук продления |
+
+**Общее правило:** у `boky/postfix` `restart` не применяет изменения
+окружения и накапливает состояние. Нужен `docker compose up -d --force-recreate`.
+
+---
 
 ## Обслуживание
 
-- **Прогрев.** Первые недели объём наращивать постепенно.
-- **Чёрные списки.** Периодически проверять IP релея на `spamhaus.org`.
-- **Сертификат** продлевается сам; проверить —
-  `sudo certbot renew --dry-run` на релее.
+- **Прогрев** — первые недели объём наращивать постепенно.
+- **Чёрные списки** — периодически проверять IP на `check.spamhaus.org`.
+- **Сертификат** — `sudo certbot renew --dry-run` на релее.
 
 ## Возврат к прямой отправке
 
-Если 25-й на основном сервере когда-нибудь откроют: удалить четыре строки
-`RELAY_*` из `~/noova/.env`, вернуть `A mail.<домен>` и `ip4:` в SPF на
-основной IP, запросить там PTR, перенести ключ обратно. Релей выключить.
+Удалить четыре строки `RELAY_*` из `~/noova/.env`, вернуть `A mail.<домен>` и
+`ip4:` в SPF на основной IP, запросить там PTR, перенести ключ обратно.
