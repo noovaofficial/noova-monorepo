@@ -6,7 +6,7 @@ SHELL := /bin/bash
         server-setup server-env update \
         reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify restore-media \
         build lint typecheck stack-up stack-down stack-logs backup restore \
-        deploy rollback
+        deploy rollback migrate-server
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -109,6 +109,12 @@ deploy-files: ## Скопировать на сервер файлы, котор
 # когда что-то пошло не так и цепочку надо разобрать на части.
 deploy: ## Выпуск на сервер целиком: сборка, перенос, запуск, проверка (SERVER=user@host)
 	@SERVER=$(SERVER) ./scripts/deploy.sh
+
+migrate-server: ## Переезд на другую машину (FROM=deploy@old TO=deploy@new KEY=… [RELAY=…])
+	@test -n "$(FROM)" || (echo "Укажите FROM=deploy@старый"; exit 1)
+	@test -n "$(TO)" || (echo "Укажите TO=deploy@новый"; exit 1)
+	@test -n "$(KEY)" || (echo "Укажите KEY=путь к закрытому ключу бэкапов"; exit 1)
+	FROM='$(FROM)' TO='$(TO)' KEY='$(KEY)' RELAY='$(RELAY)' DIR='$(DIR)' ./scripts/migrate-server.sh
 
 rollback: ## Вернуть прежний образ без миграций (SERVER=user@host TAG=<тег>)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)

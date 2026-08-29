@@ -206,7 +206,10 @@ PREV_TAG="$(grep -E '^IMAGE_TAG=' .env | tail -1 | cut -d= -f2- || true)"
 # контейнера backup ещё нет, и падать из-за этого незачем.
 if docker compose ps --status running --services 2>/dev/null | grep -qx backup; then
   echo "Дамп базы перед миграциями…"
-  docker compose exec -T backup /bin/sh /scripts/backup.sh || echo "! Дамп не снят — смотрите логи backup"
+  # </dev/null обязателен: этот блок уезжает heredoc'ом в `bash -s`, и без
+  # перенаправления `exec -T` вычитает остаток heredoc'а себе — запуск,
+  # ожидание healthy и сверка образов просто не выполнятся, а ssh вернёт ноль.
+  docker compose exec -T backup /bin/sh /scripts/backup.sh </dev/null || echo "! Дамп не снят — смотрите логи backup"
 fi
 
 # Тег уже записан на шаге переноса — вместе с образами, одним сеансом.
@@ -278,7 +281,7 @@ echo "Образы совпадают с выпуском $TAG."
 # админки (N-32/N-35), этот шаг начнёт затирать правки администратора —
 # его нужно будет убрать отсюда осознанно, а не обнаружить по потере данных.
 echo "Справочники…"
-docker compose exec -T api node dist/scripts/seed-reference.js
+docker compose exec -T api node dist/scripts/seed-reference.js </dev/null
 
 # Образы прошлых выпусков накапливаются по гигабайту: api около 1 ГБ.
 docker image prune -f >/dev/null 2>&1 || true

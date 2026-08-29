@@ -25,9 +25,20 @@ cd "$DIR" || fail "Нет каталога $DIR"
 
 mkdir -p "$OUT"
 
+# Каталог создаёт контейнер `backup`, а он работает под root — и тогда
+# openssl, запущенный здесь под обычным пользователем, не сможет положить
+# рядом зашифрованную копию. Проверяем сразу: иначе это выясняется в конце,
+# после дампа и архива, и всю работу приходится повторять.
+[ -w "$OUT" ] || fail "Нет прав на запись в $OUT (каталог принадлежит $(stat -c '%U' "$OUT" 2>/dev/null || echo root)).
+  Разово: sudo chown -R \$USER:\$USER $OUT"
+
 # --- база ------------------------------------------------------------------
 say "Дамп базы"
-docker compose exec -T backup /bin/sh /scripts/backup.sh
+# </dev/null обязателен. Этот скрипт уезжает на сервер через `bash -s`, то
+# есть bash читает его со stdin — а `exec -T` подключает тот же stdin к
+# контейнеру, и docker вычитывает остаток скрипта себе. Без перенаправления
+# всё после этой строки молча не выполняется, а ssh возвращает успех.
+docker compose exec -T backup /bin/sh /scripts/backup.sh </dev/null
 DUMP="$(ls -t "$OUT"/noova-*.sql.gz 2>/dev/null | head -1)"
 [ -n "$DUMP" ] || fail "Дамп не появился в $OUT"
 
@@ -36,10 +47,23 @@ DUMP="$(ls -t "$OUT"/noova-*.sql.gz 2>/dev/null | head -1)"
 # Снимок между дампом и архивом добавит файл, на который в базе нет строки;
 # обратный порядок дал бы строку без файла, то есть битую анкету.
 say "Снимок фотографий"
-VOLUME="$(docker compose config --format json 2>/dev/null \
-  | sed -n 's/.*"\([a-z0-9_-]*minio_data\)".*/\1/p' | head -1)"
-VOLUME="${VOLUME:-noova_minio_data}"
+# Имя тома спрашиваем у Docker, а не вычитываем из compose-файла: там лежит
+# короткое имя (`minio_data`), а Docker хранит его с префиксом проекта
+# (`noova_minio_data`). Разбор регуляркой давал первое и молча промахивался.
+#
+# Точнее всего — посмотреть, что в этом проекте примонтировано к /data.
+CID="$(docker compose ps -q minio 2>/dev/null || true)"
+VOLUME=""
+if [ -n "$CID" ]; then
+  VOLUME="$(docker inspect "$CID" \
+    --format '{{range .Mounts}}{{if eq .Destination "/data"}}{{.Name}}{{end}}{{end}}' 2>/dev/null || true)"
+fi
+# Контейнер может быть погашен — тогда ищем том по имени.
+[ -n "$VOLUME" ] || VOLUME="$(docker volume ls --format '{{.Name}}' | grep -E '_minio_data$' | head -1)"
+[ -n "$VOLUME" ] || fail "Не нашёл том с фотографиями.
+  Посмотреть, какие есть: docker volume ls | grep minio"
 docker volume inspect "$VOLUME" >/dev/null 2>&1 || fail "Тома $VOLUME нет"
+echo "  том: $VOLUME"
 
 MEDIA="$OUT/noova-media-${STAMP}.tar.gz"
 # Образ уже есть на машине — тот же, что у контейнера backup: лишнего не тянем.

@@ -85,84 +85,77 @@ dig +short TXT mail._domainkey.<новый> @1.1.1.1
 
 ## 2. Новый сервер, домен прежний
 
-### 2.1 Заранее
-
-Снизить TTL на `A @` до 300 секунд — за сутки до переезда.
-
-### 2.2 Подготовить машину
+### Одной командой
 
 ```bash
+# заранее: снизить TTL на A @ до 300 секунд, за сутки до переезда
 ssh-copy-id -i ~/.ssh/<ключ>.pub root@<новый IP>
 make server-setup SERVER=root@<новый IP>
 ssh root@<новый IP> passwd deploy
+
+make migrate-server FROM=deploy@<старый> TO=deploy@<новый> \
+                    KEY=~/noova-backup/backup-private.pem \
+                    RELAY=deploy@<релей>
 ```
 
-### 2.3 Снять копию со старого
+Скрипт снимает копию со старого, переносит `.env` и **образы** (без
+пересборки — на новой машине окажется ровно то, что работало на старой),
+разворачивает данные, поднимает стек и открывает 587-й на релее.
+
+`ssh-copy-id` и `passwd` остались ручными намеренно: без ключа у root
+`server-setup` откажется выключать пароли, и это единственная защита от
+неисправимой по сети ошибки.
+
+**Скрипт останавливается перед переключением DNS.** До него всё обратимо:
+старый сервер работает, трафик идёт на него. Дальше — вручную:
 
 ```bash
-make backup-fetch SERVER=deploy@<старый IP> DIR=~/noova-backup
-scp deploy@<старый IP>:noova/.env ~/noova-backup/env.old
+# 1. проверить новый, пока DNS смотрит на старый
+curl -H 'Host: <домен>' http://<новый IP>/healthz
+# 2. переключить A @ на новый IP
+dig +short A <домен> @1.1.1.1
+curl -I https://<домен>
+# 3. письмо (сброс пароля) уходит через релей
+# 4. через сутки-двое закрыть старый адрес на релее
+ssh <релей> 'sudo ufw status numbered && sudo ufw delete <номер>'
 ```
 
-**`.env` переносится целиком.** Сгенерировать заново нельзя: с другим
-`POSTGRES_PASSWORD` дамп не восстановится.
+Отказы скрипта:
 
-### 2.4 Развернуть
+| Сообщение | Что значит |
+|---|---|
+| `На <TO> уже есть noova/.env` | целевая машина не пустая; восстановление затёрло бы её базу |
+| `есть том noova_postgres_data` | то же, но остался от прошлой попытки |
+| `нет Docker или пользователь не в группе docker` | не сделан `make server-setup` |
+| `В .env старого сервера нет IMAGE_TAG` | старый сервер выпускался не через `make deploy` |
 
-```bash
-scp ~/noova-backup/env.old deploy@<новый IP>:noova/.env
-ssh deploy@<новый IP> 'chmod 600 noova/.env'
-make deploy SERVER=deploy@<новый IP>
-```
-
-`make server-env` **не запускать** — он сгенерирует новые секреты.
-
-### 2.5 Восстановить данные
+### Вручную, если скрипт не подходит
 
 ```bash
+make backup-fetch SERVER=deploy@<старый> DIR=~/noova-backup
+scp deploy@<старый>:noova/.env ~/noova-backup/env.old
+scp ~/noova-backup/env.old deploy@<новый>:noova/.env
+ssh deploy@<новый> 'chmod 600 noova/.env'
+make deploy SERVER=deploy@<новый>
+
 make backup-open FILE=~/noova-backup/noova-<stamp>.sql.gz.enc \
                  KEY=~/noova-backup/backup-private.pem
-scp ~/noova-backup/noova-<stamp>.sql.gz deploy@<новый IP>:noova/backups/
-scp ~/noova-backup/noova-media-<stamp>.tar.gz deploy@<новый IP>:noova/
+scp ~/noova-backup/noova-<stamp>.sql.gz deploy@<новый>:noova/backups/
+scp ~/noova-backup/noova-media-<stamp>.tar.gz deploy@<новый>:noova/
 
-ssh deploy@<новый IP>
+ssh deploy@<новый>
 cd ~/noova
 make restore DUMP=backups/noova-<stamp>.sql.gz
 make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
+
+ssh deploy@<релей> 'sudo ufw allow from <новый IP> to any port 587 proto tcp'
 ```
 
-Сначала база, потом фотографии.
+**`.env` переносится целиком.** `make server-env` не запускать — он
+сгенерирует новые секреты, и с другим `POSTGRES_PASSWORD` дамп не
+восстановится.
 
-### 2.6 Релей пропустит новый адрес
-
-```bash
-ssh deploy@<IP релея>
-sudo ufw allow from <новый IP> to any port 587 proto tcp
-sudo ufw status numbered            # старое правило удалить после переключения
-```
-
-Забыть этот шаг — письма встанут с `Connection refused`.
-
-### 2.7 Переключить DNS
-
-```bash
-# A @ → новый IP, затем:
-dig +short A <домен> @1.1.1.1
-curl -I https://<домен>
-```
-
-SPF не трогать: в нём IP релея, а не основного сервера.
-
-### 2.8 После проверки
-
-```bash
-ssh deploy@<IP релея> 'sudo ufw delete allow from <старый IP> to any port 587 proto tcp'
-```
-
-Старый сервер держать сутки-двое выключенным, но не удалённым. Потом
-удалять — вместе с ключом бэкапа, если он там лежал.
-
----
+Сначала база, потом фотографии. SPF не трогать: в нём IP релея.
 
 ## 3. Новый домен и новый сервер
 

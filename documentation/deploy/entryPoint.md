@@ -109,3 +109,14 @@ make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
 
 > Дампы содержат особую категорию по GDPR. `backups/` не в git, копии
 > шифруются до того, как покидают машину.
+
+### Если что-то не так
+
+| Симптом | Причина |
+|---|---|
+| `can't create /backups/…: nonexistent directory` | каталог `backups/` пересоздали при живом контейнере, bind-mount смотрит на удалённый inode. `docker compose up -d --force-recreate backup` |
+| `Permission denied` при шифровании | каталог принадлежит root (его создал контейнер). `sudo chown -R $USER:$USER ~/noova/backups` |
+| скрипт молча закончился после дампа | старая версия `snapshot.sh` без `</dev/null` у `exec -T` |
+
+Содержимое `backups/` удалять можно, сам каталог — нет, пока контейнер
+работает.
