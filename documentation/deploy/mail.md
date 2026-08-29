@@ -189,7 +189,8 @@ docker compose logs -f smtp
 | `SSL_accept error from noova-api-1`, очередь Postfix при этом **пуста** | api не смог отдать письмо соседнему Postfix: nodemailer проверяет самоподписанный сертификат и рвёт соединение. Лечится `POSTFIX_smtpd_tls_security_level: none` — хоп идёт по внутренней сети Docker |
 | `authentication failed` в очереди основного | `RELAY_USER`/`RELAY_PASSWORD` разошлись между файлами. Сверять по `sasl_username=` в логе релея — там видно, чем именно представился основной |
 | `unable to canonify user and get auxprops` на релее | выбран DIGEST-MD5, он сверяет ещё и realm. Лечится `POSTFIX_smtp_sasl_mechanism_filter: plain, login` на основном |
-| `554 Sender address rejected` при успешной аутентификации | `RELAY_USER` не совпадает с адресом в `MAIL_FROM` — образ привязывает логин к отправителю |
+| `554 Sender address rejected: Access denied` при успешной аутентификации | образ переписал ссылки на карты с `hash:` на `lmdb:`, но сами карты не пересобрал: `check_sender_access` не может открыть файл, и проверка проваливается до финального `reject`. Лечится **пересозданием** контейнера (`up -d --force-recreate`), перезапуск не помогает |
+| `error: open database /etc/aliases.lmdb: No such file or directory` | та же поломка карт, тот же рецепт |
 | `certificate verify failed` | `RELAY_HOST` указан IP вместо `mail.<домен>`, или сертификат не выпущен |
 | `Connection timed out` на релее | исходящий 25-й закрыт у провайдера релея |
 | `Connection refused` на основном | ufw на релее не пускает, или контейнер не поднят |
