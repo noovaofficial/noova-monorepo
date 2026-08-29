@@ -62,10 +62,15 @@ export function HeaderActions() {
   return (
     <>
       <div className={styles.anonymous}>
-        <Link href="/login" className={styles.hideSm}>
+        {/* На телефоне остаётся одна кнопка из двух, и это «Войти».
+            Места хватает ровно на одну, а вернуться в свою учётную запись
+            нужно чаще, чем завести новую: регистрируются раз, входят
+            постоянно. Путь к регистрации с телефона не пропадает — он есть
+            на самой странице входа. */}
+        <Link href="/login">
           <Button variant="secondary">{t('login')}</Button>
         </Link>
-        <Link href="/register">
+        <Link href="/register" className={styles.hideSm}>
           <Button variant="primary">{t('create')}</Button>
         </Link>
       </div>

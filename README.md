@@ -102,7 +102,7 @@ make help             # весь список
   DNS, подготовка машины, почта. Всё, что делается один раз.
 - [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск:
   `make deploy SERVER=deploy@<IP>`.
-- [documentation/deploy/deployment.md](documentation/deploy/deployment.md) — порядок
+- [documentation/deploy/entryPoint.md](documentation/deploy/entryPoint.md) — порядок
   действий, осмотр базы, бэкапы.
 
 Коротко:

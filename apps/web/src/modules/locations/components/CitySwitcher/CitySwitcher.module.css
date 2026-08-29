@@ -3,6 +3,11 @@
   align-items: center;
 }
 
+/* Значок метки вместо названия — только на телефоне. */
+.pin {
+  display: none;
+}
+
 .select {
   border: 1px solid var(--border);
   border-radius: var(--radiusSm);
@@ -17,4 +22,53 @@
 .select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
+}
+
+@media (max-width: 560px) {
+  /* Название города уступает место значку. Сам `select` не убираем и не
+     подменяем: он ложится поверх значка прозрачным слоем во всю площадь,
+     поэтому нажатие открывает родной список системы, а клавиатура и
+     скринридер работают как раньше. */
+  .wrap {
+    position: relative;
+    width: 34px;
+    height: 30px;
+  }
+
+  .pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--border);
+    border-radius: var(--radiusSm);
+    background: var(--surface);
+    color: var(--primaryText);
+  }
+
+  .pin svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    opacity: 0;
+    /* Safari на iOS не открывает список у элемента нулевой ширины, поэтому
+       именно opacity, а не width: 0. */
+    appearance: none;
+  }
+
+  /* Фокус с клавиатуры не виден на прозрачном элементе — подсвечиваем
+     значок под ним. */
+  .wrap:focus-within .pin {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
 }

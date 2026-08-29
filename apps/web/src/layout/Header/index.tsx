@@ -12,6 +12,7 @@ import { HeaderFilters } from '../HeaderFilters';
 import { LocaleSwitcher } from '../LocaleSwitcher';
 import { QuickLinks } from '../QuickLinks';
 import { ThemeToggle } from '../ThemeToggle';
+import { FilterIcon, MapIcon } from './icons';
 
 /** Быстрые фильтры пока статичны: подключаются к состоянию каталога,
  *  когда появится страница листинга с фильтрами. */
@@ -67,13 +68,18 @@ export async function Header() {
             <Suspense
               fallback={
                 <>
-                  <span className={styles.filterBtn}>{t('filters')}</span>
+                  <span className={styles.filterBtn}>
+                    <FilterIcon />
+                    <span className={styles.btnLabel}>{t('filters')}</span>
+                  </span>
                   <CityLink
                     className={styles.filterBtn}
                     href="/catalog/escort/map"
                     citySlugs={citySlugs}
                   >
-                    {t('mapView')}
+                    <MapIcon />
+                    <span className={styles.btnLabel}>{t('mapView')}</span>
+                    <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
                   </CityLink>
                 </>
               }
@@ -81,7 +87,10 @@ export async function Header() {
               <HeaderFilters catalog={catalog} />
             </Suspense>
 
-            <div className={styles.quickFilters}>
+            {/* Второй класс — только ради телефона: тот же контейнер несёт
+                разделы сотрудников (см. QuickLinks), и прятать его целиком
+                значило бы оставить их без навигации. */}
+            <div className={`${styles.quickFilters} ${styles.quickChips}`}>
               {QUICK_FILTERS.map((item) => (
                 <CityLink
                   key={item.key}
@@ -95,8 +104,13 @@ export async function Header() {
             </div>
           </QuickLinks>
 
-          <LocaleSwitcher />
-          <ThemeToggle />
+          {/* Язык и тема прижаты вправо. На широком экране их отодвигала
+              растянутая полоса чипов, но на телефоне она скрыта, и без
+              своего отступа переключатели липли к кнопке карты. */}
+          <div className={styles.rowEnd}>
+            <LocaleSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>

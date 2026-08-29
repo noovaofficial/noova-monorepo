@@ -4,6 +4,7 @@ import { cityFromPath, type ServiceGroup } from '@noova/shared';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { FilterIcon, MapIcon } from '@/layout/Header/icons';
 import { FilterPanel } from '@/modules/filters/components/FilterPanel';
 import { countActiveFilters } from '@/modules/filters/params';
 import { Link, usePathname } from '@/shared/i18n/navigation';
@@ -45,16 +46,12 @@ export function HeaderFilters({ catalog }: { catalog: ServiceGroup[] }) {
   return (
     <>
       <button type="button" className={styles.filterBtn} onClick={() => setOpen(true)}>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          aria-hidden="true"
-        >
-          <path d="M3 5h18M6 12h12M10 19h4" />
-        </svg>
-        <span>{t('filters')}</span>
+        <FilterIcon />
+        {/* На телефоне от кнопки остаётся значок: подпись занимала место,
+            которого во второй строке нет, а значок фильтра узнаётся сам.
+            Название остаётся доступным экранному диктору. */}
+        <span className={styles.btnLabel}>{t('filters')}</span>
+        <span className="visually-hidden">{t('filters')}</span>
         {active > 0 ? <span className={styles.filterCount}>{active}</span> : null}
       </button>
 
@@ -63,17 +60,11 @@ export function HeaderFilters({ catalog }: { catalog: ServiceGroup[] }) {
           показываем — возврат в список есть в её заголовке. */}
       {onMap ? null : (
         <Link className={styles.filterBtn} href={mapHref}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <path d="M9 3 3 6v15l6-3 6 3 6-3V3l-6 3-6-3Z" />
-            <path d="M9 3v15M15 6v15" />
-          </svg>
-          <span>{t('mapView')}</span>
+          <MapIcon />
+          {/* Подпись короче на телефоне: «Анкеты на карте» переносилось
+              в две строки и ломало высоту ряда. */}
+          <span className={styles.btnLabel}>{t('mapView')}</span>
+          <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
         </Link>
       )}
 

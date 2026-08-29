@@ -38,7 +38,12 @@
   color: var(--secondaryText);
 }
 
+/* Своя область наложения с нулевым уровнем: у Leaflet внутренние слои
+   пронумерованы с 400 и выше, и без неё карта накрывала панель фильтров
+   (--zOverlay: 100) — та открывалась, но оказывалась под картой. */
 .map {
+  position: relative;
+  z-index: 0;
   height: min(70vh, 620px);
   border: 1px solid var(--border);
   border-radius: var(--radiusLg);

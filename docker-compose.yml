@@ -237,6 +237,19 @@ services:
       ALLOWED_SENDER_DOMAINS: ${MAIL_DOMAIN}
       HOSTNAME: mail.${SITE_DOMAIN}
       DKIM_AUTOGENERATE: 'true'
+      # Внешний релей на время, пока провайдер держит 25-й порт закрытым.
+      # Пустой RELAYHOST — отправка напрямую, то есть поведение по умолчанию;
+      # убрать релей = стереть три строки из .env, образ не трогается.
+      #
+      # Почему релей прописан Postfix'у, а не в SMTP_HOST у api: так письмо
+      # по-прежнему подписывается нашим ключом (mail._domainkey), DMARC
+      # проходит по своему домену, и смена релея не требует правок в DNS.
+      RELAYHOST: ${RELAY_HOST:-}
+      RELAYHOST_USERNAME: ${RELAY_USER:-}
+      RELAYHOST_PASSWORD: ${RELAY_PASSWORD:-}
+      # С релеем шифрование обязательно: пароль уходит в открытую сеть.
+      # Без релея `may` — свой Postfix говорит с чужими серверами как получится.
+      POSTFIX_smtp_tls_security_level: ${RELAY_TLS_LEVEL:-may}
     volumes:
       - dkim_keys:/etc/opendkim/keys
     networks: [internal]

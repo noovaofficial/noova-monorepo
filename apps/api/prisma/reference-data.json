@@ -34,7 +34,92 @@
       "lat": 52.37403,
       "lng": 4.88969,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfja00awa8b0mdrtle8n",
+          "slug": "centrum",
+          "name": {
+            "de": "Centrum",
+            "en": "Centrum",
+            "ru": "Центр"
+          },
+          "lat": 52.3682393,
+          "lng": 4.9006605,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjd00b0a8b0ohnavash",
+          "slug": "de-pijp",
+          "name": {
+            "de": "De Pijp",
+            "en": "De Pijp",
+            "ru": "Де-Пейп"
+          },
+          "lat": 52.3533455,
+          "lng": 4.8969623,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfje00b4a8b0cjjqoul1",
+          "slug": "jordaan",
+          "name": {
+            "de": "Jordaan",
+            "en": "Jordaan",
+            "ru": "Йордан"
+          },
+          "lat": 52.3754157,
+          "lng": 4.8810958,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjj00bka8b04zg7w4zw",
+          "slug": "noord",
+          "name": {
+            "de": "Noord",
+            "en": "Noord",
+            "ru": "Норд"
+          },
+          "lat": 52.402572,
+          "lng": 4.935327,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjg00bca8b0rusnw3l3",
+          "slug": "oost",
+          "name": {
+            "de": "Oost",
+            "en": "Oost",
+            "ru": "Ост"
+          },
+          "lat": 52.3518137,
+          "lng": 4.9305528,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjf00b8a8b09hjbkm1s",
+          "slug": "oud-west",
+          "name": {
+            "de": "Oud-West",
+            "en": "Oud-West",
+            "ru": "Ауд-Вест"
+          },
+          "lat": 52.3648147,
+          "lng": 4.8697619,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfji00bga8b0g1nuxb0k",
+          "slug": "zuid",
+          "name": {
+            "de": "Zuid",
+            "en": "Zuid",
+            "ru": "Зёйд"
+          },
+          "lat": 52.3373435,
+          "lng": 4.8948052,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmt19tfre0001z7b0jevq7fcj",
@@ -159,7 +244,92 @@
       "lat": 53.0793,
       "lng": 8.8017,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfhw007ca8b0pptsup9a",
+          "slug": "findorff",
+          "name": {
+            "de": "Findorff",
+            "en": "Findorff",
+            "ru": "Финдорф"
+          },
+          "lat": 53.094685,
+          "lng": 8.808282,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfi0007oa8b07l1qsyyh",
+          "slug": "horn-lehe",
+          "name": {
+            "de": "Horn-Lehe",
+            "en": "Horn-Lehe",
+            "ru": "Хорн-Лее"
+          },
+          "lat": 53.103623,
+          "lng": 8.8818799,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhr0070a8b00ltsrnbd",
+          "slug": "mitte",
+          "name": {
+            "de": "Mitte",
+            "en": "Mitte",
+            "ru": "Митте"
+          },
+          "lat": 53.0786741,
+          "lng": 8.8109045,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfht0074a8b037o34spo",
+          "slug": "neustadt",
+          "name": {
+            "de": "Neustadt",
+            "en": "Neustadt",
+            "ru": "Нойштадт"
+          },
+          "lat": 53.0695355,
+          "lng": 8.7928381,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhu0078a8b0stc2g5ed",
+          "slug": "schwachhausen",
+          "name": {
+            "de": "Schwachhausen",
+            "en": "Schwachhausen",
+            "ru": "Швахгаузен"
+          },
+          "lat": 53.0854265,
+          "lng": 8.8363055,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhy007ka8b0x3fyxnkl",
+          "slug": "vegesack",
+          "name": {
+            "de": "Vegesack",
+            "en": "Vegesack",
+            "ru": "Фегезак"
+          },
+          "lat": 53.1705249,
+          "lng": 8.6238803,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhx007ga8b0izj6h4gk",
+          "slug": "walle",
+          "name": {
+            "de": "Walle",
+            "en": "Walle",
+            "ru": "Валле"
+          },
+          "lat": 53.1028746,
+          "lng": 8.783049,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyumw001q5nb0cxykcben",
@@ -173,7 +343,92 @@
       "lat": 52.0705,
       "lng": 4.3007,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfjw00cga8b0s15b0ixe",
+          "slug": "centrum",
+          "name": {
+            "de": "Centrum",
+            "en": "Centrum",
+            "ru": "Центр"
+          },
+          "lat": 52.0775985,
+          "lng": 4.3151231,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk200d0a8b0i0i6s5xe",
+          "slug": "escamp",
+          "name": {
+            "de": "Escamp",
+            "en": "Escamp",
+            "ru": "Эскамп"
+          },
+          "lat": 52.0442339,
+          "lng": 4.2812835,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk400d4a8b0s8a1gw98",
+          "slug": "haagse-hout",
+          "name": {
+            "de": "Haagse Hout",
+            "en": "Haagse Hout",
+            "ru": "Хагсе-Хаут"
+          },
+          "lat": 52.0922914,
+          "lng": 4.3304322,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjy00coa8b0qjfq31hs",
+          "slug": "laak",
+          "name": {
+            "de": "Laak",
+            "en": "Laak",
+            "ru": "Лаак"
+          },
+          "lat": 52.0631617,
+          "lng": 4.32146,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk100cwa8b0bmlbrxqc",
+          "slug": "loosduinen",
+          "name": {
+            "de": "Loosduinen",
+            "en": "Loosduinen",
+            "ru": "Лосдёйнен"
+          },
+          "lat": 52.0531565,
+          "lng": 4.2348285,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjx00cka8b0j4a7dwmy",
+          "slug": "scheveningen",
+          "name": {
+            "de": "Scheveningen",
+            "en": "Scheveningen",
+            "ru": "Схевенинген"
+          },
+          "lat": 52.1067449,
+          "lng": 4.2736937,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk000csa8b00jr5f98u",
+          "slug": "segbroek",
+          "name": {
+            "de": "Segbroek",
+            "en": "Segbroek",
+            "ru": "Сегбрук"
+          },
+          "lat": 52.0770088,
+          "lng": 4.2674089,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyuig000q5nb0gwu3h07x",
@@ -187,7 +442,92 @@
       "lat": 51.5136,
       "lng": 7.4653,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfgp0050a8b0tv4rsoiu",
+          "slug": "aplerbeck",
+          "name": {
+            "de": "Aplerbeck",
+            "en": "Aplerbeck",
+            "ru": "Аплербек"
+          },
+          "lat": 51.4896852,
+          "lng": 7.5623082,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgs0058a8b0fvqk0t9q",
+          "slug": "brackel",
+          "name": {
+            "de": "Brackel",
+            "en": "Brackel",
+            "ru": "Бракель"
+          },
+          "lat": 51.5279321,
+          "lng": 7.5490138,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgr0054a8b0zkcndfpb",
+          "slug": "eving",
+          "name": {
+            "de": "Eving",
+            "en": "Eving",
+            "ru": "Эвинг"
+          },
+          "lat": 51.5558445,
+          "lng": 7.476573,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgj004sa8b0kc16tsdm",
+          "slug": "hoerde",
+          "name": {
+            "de": "Hörde",
+            "en": "Hörde",
+            "ru": "Хёрде"
+          },
+          "lat": 51.4884311,
+          "lng": 7.4972451,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgl004wa8b0m86lpob5",
+          "slug": "hombruch",
+          "name": {
+            "de": "Hombruch",
+            "en": "Hombruch",
+            "ru": "Хомбрух"
+          },
+          "lat": 51.4647031,
+          "lng": 7.43704,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgu005ca8b0rj8g9m6m",
+          "slug": "huckarde",
+          "name": {
+            "de": "Huckarde",
+            "en": "Huckarde",
+            "ru": "Хукарде"
+          },
+          "lat": 51.5317893,
+          "lng": 7.4156554,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgi004oa8b06fs7ql75",
+          "slug": "mitte",
+          "name": {
+            "de": "Innenstadt",
+            "en": "Innenstadt",
+            "ru": "Инненштадт"
+          },
+          "lat": 51.5090745,
+          "lng": 7.491317,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyukb00165nb0roe6bpqn",
@@ -201,7 +541,92 @@
       "lat": 51.0504,
       "lng": 13.7373,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfi2007sa8b0claqvxqc",
+          "slug": "altstadt",
+          "name": {
+            "de": "Altstadt",
+            "en": "Altstadt",
+            "ru": "Альтштадт"
+          },
+          "lat": 51.0523842,
+          "lng": 13.7381876,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfi70084a8b0inw96jjd",
+          "slug": "blasewitz",
+          "name": {
+            "de": "Blasewitz",
+            "en": "Blasewitz",
+            "ru": "Блазевиц"
+          },
+          "lat": 51.0521778,
+          "lng": 13.7990205,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfie008ga8b07g7c58c2",
+          "slug": "loebtau",
+          "name": {
+            "de": "Löbtau",
+            "en": "Löbtau",
+            "ru": "Лёбтау"
+          },
+          "lat": 51.0413452,
+          "lng": 13.6984581,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfi4007wa8b0qlwuvk09",
+          "slug": "neustadt",
+          "name": {
+            "de": "Neustadt",
+            "en": "Neustadt",
+            "ru": "Нойштадт"
+          },
+          "lat": 51.0755656,
+          "lng": 13.7682546,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfi80088a8b0iofcf24z",
+          "slug": "pieschen",
+          "name": {
+            "de": "Pieschen",
+            "en": "Pieschen",
+            "ru": "Пишен"
+          },
+          "lat": 51.0831018,
+          "lng": 13.7225624,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfia008ca8b07azsi3t2",
+          "slug": "plauen",
+          "name": {
+            "de": "Plauen",
+            "en": "Plauen",
+            "ru": "Плауэн"
+          },
+          "lat": 51.026885,
+          "lng": 13.7081376,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfi60080a8b02da801k4",
+          "slug": "striesen",
+          "name": {
+            "de": "Striesen",
+            "en": "Striesen",
+            "ru": "Штризен"
+          },
+          "lat": 51.0434696,
+          "lng": 13.7860506,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyui0000m5nb0l0sdpvxv",
@@ -215,7 +640,92 @@
       "lat": 51.2277,
       "lng": 6.7735,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfg5003wa8b0n1t8f3cp",
+          "slug": "altstadt",
+          "name": {
+            "de": "Altstadt",
+            "en": "Altstadt",
+            "ru": "Альтштадт"
+          },
+          "lat": 51.2259125,
+          "lng": 6.7735672,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfg90044a8b0i1nm2hfp",
+          "slug": "bilk",
+          "name": {
+            "de": "Bilk",
+            "en": "Bilk",
+            "ru": "Бильк"
+          },
+          "lat": 51.2027583,
+          "lng": 6.7851015,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgf004ka8b0k128dquw",
+          "slug": "derendorf",
+          "name": {
+            "de": "Derendorf",
+            "en": "Derendorf",
+            "ru": "Дерендорф"
+          },
+          "lat": 51.2445487,
+          "lng": 6.7922488,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgd004ga8b0kpb45kw6",
+          "slug": "flingern",
+          "name": {
+            "de": "Flingern",
+            "en": "Flingern",
+            "ru": "Флингерн"
+          },
+          "lat": 51.2313815,
+          "lng": 6.8132378,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgc004ca8b0ty4aqqx1",
+          "slug": "friedrichstadt",
+          "name": {
+            "de": "Friedrichstadt",
+            "en": "Friedrichstadt",
+            "ru": "Фридрихштадт"
+          },
+          "lat": 51.2135645,
+          "lng": 6.7816997,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgb0048a8b0je6jd6ua",
+          "slug": "oberkassel",
+          "name": {
+            "de": "Oberkassel",
+            "en": "Oberkassel",
+            "ru": "Оберкассель"
+          },
+          "lat": 51.2295816,
+          "lng": 6.7554498,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfg80040a8b0eazw4id9",
+          "slug": "pempelfort",
+          "name": {
+            "de": "Pempelfort",
+            "en": "Pempelfort",
+            "ru": "Пемпельфорт"
+          },
+          "lat": 51.2396009,
+          "lng": 6.7796845,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyult001i5nb0pn7rz2rp",
@@ -229,7 +739,92 @@
       "lat": 51.4344,
       "lng": 6.7623,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfj700aoa8b0ya5qk6u5",
+          "slug": "hamborn",
+          "name": {
+            "de": "Hamborn",
+            "en": "Hamborn",
+            "ru": "Хамборн"
+          },
+          "lat": 51.492381,
+          "lng": 6.7732976,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj200a8a8b0hmsvd3wz",
+          "slug": "hochfeld",
+          "name": {
+            "de": "Hochfeld",
+            "en": "Hochfeld",
+            "ru": "Хохфельд"
+          },
+          "lat": 51.4191438,
+          "lng": 6.7550194,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj300aca8b031s5t976",
+          "slug": "meiderich",
+          "name": {
+            "de": "Meiderich",
+            "en": "Meiderich",
+            "ru": "Майдерих"
+          },
+          "lat": 51.4682939,
+          "lng": 6.7748552,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj000a4a8b08dxgnbsh",
+          "slug": "mitte",
+          "name": {
+            "de": "Duisburg-Mitte",
+            "en": "Duisburg-Mitte",
+            "ru": "Митте"
+          },
+          "lat": 51.4186953,
+          "lng": 6.7719389,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj800asa8b0dvx3rh4t",
+          "slug": "neudorf",
+          "name": {
+            "de": "Neudorf",
+            "en": "Neudorf",
+            "ru": "Нойдорф"
+          },
+          "lat": 51.4218258,
+          "lng": 6.7858042,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj600aka8b0ob4uat73",
+          "slug": "rheinhausen",
+          "name": {
+            "de": "Rheinhausen",
+            "en": "Rheinhausen",
+            "ru": "Райнхаузен"
+          },
+          "lat": 51.4029342,
+          "lng": 6.7070812,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfj500aga8b08osqcis1",
+          "slug": "ruhrort",
+          "name": {
+            "de": "Ruhrort",
+            "en": "Ruhrort",
+            "ru": "Рурорт"
+          },
+          "lat": 51.450016,
+          "lng": 6.7488702,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyujb000y5nb0lyiu2snt",
@@ -243,7 +838,92 @@
       "lat": 51.4556,
       "lng": 7.0116,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfh2005oa8b0pb9ovnat",
+          "slug": "altenessen",
+          "name": {
+            "de": "Altenessen",
+            "en": "Altenessen",
+            "ru": "Альтенэссен"
+          },
+          "lat": 51.4912248,
+          "lng": 7.0082355,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfh4005sa8b067tl20gj",
+          "slug": "borbeck",
+          "name": {
+            "de": "Borbeck",
+            "en": "Borbeck",
+            "ru": "Борбек"
+          },
+          "lat": 51.4729243,
+          "lng": 6.9490832,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfha0064a8b07em705gd",
+          "slug": "kettwig",
+          "name": {
+            "de": "Kettwig",
+            "en": "Kettwig",
+            "ru": "Кеттвиг"
+          },
+          "lat": 51.3635478,
+          "lng": 6.9540871,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfh0005ka8b0udxv2lhu",
+          "slug": "ruettenscheid",
+          "name": {
+            "de": "Rüttenscheid",
+            "en": "Rüttenscheid",
+            "ru": "Рюттеншайд"
+          },
+          "lat": 51.4353172,
+          "lng": 7.0069854,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfgw005ga8b0a6s2drff",
+          "slug": "stadtkern",
+          "name": {
+            "de": "Stadtkern",
+            "en": "Stadtkern",
+            "ru": "Штадткерн"
+          },
+          "lat": 51.4568812,
+          "lng": 7.0114658,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfh6005wa8b0o4neb6ad",
+          "slug": "steele",
+          "name": {
+            "de": "Steele",
+            "en": "Steele",
+            "ru": "Штеле"
+          },
+          "lat": 51.4477081,
+          "lng": 7.0771986,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfh80060a8b0sd2db972",
+          "slug": "werden",
+          "name": {
+            "de": "Werden",
+            "en": "Werden",
+            "ru": "Верден"
+          },
+          "lat": 51.3882195,
+          "lng": 7.0028334,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyuh3000e5nb0gi8k1a1n",
@@ -257,7 +937,92 @@
       "lat": 50.1109,
       "lng": 8.6821,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatffj002ga8b051w79gmw",
+          "slug": "bahnhofsviertel",
+          "name": {
+            "de": "Bahnhofsviertel",
+            "en": "Bahnhofsviertel",
+            "ru": "Банхофсфиртель"
+          },
+          "lat": 50.1084107,
+          "lng": 8.6681512,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfft0030a8b0junzs0eh",
+          "slug": "bockenheim",
+          "name": {
+            "de": "Bockenheim",
+            "en": "Bockenheim",
+            "ru": "Бокенхайм"
+          },
+          "lat": 50.1233115,
+          "lng": 8.6460563,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffn002oa8b0c5uf34d0",
+          "slug": "bornheim",
+          "name": {
+            "de": "Bornheim",
+            "en": "Bornheim",
+            "ru": "Борнхайм"
+          },
+          "lat": 50.1297313,
+          "lng": 8.7106117,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffg002ca8b0rl2oxhvh",
+          "slug": "innenstadt",
+          "name": {
+            "de": "Innenstadt",
+            "en": "Innenstadt",
+            "ru": "Инненштадт"
+          },
+          "lat": 50.1145581,
+          "lng": 8.6835914,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffp002sa8b05hwbhomu",
+          "slug": "nordend",
+          "name": {
+            "de": "Nordend",
+            "en": "Nordend",
+            "ru": "Нордэнд"
+          },
+          "lat": 50.1249136,
+          "lng": 8.67795,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffm002ka8b0thevawek",
+          "slug": "sachsenhausen",
+          "name": {
+            "de": "Sachsenhausen",
+            "en": "Sachsenhausen",
+            "ru": "Заксенхаузен"
+          },
+          "lat": 50.1002618,
+          "lng": 8.6835988,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffr002wa8b0btgks609",
+          "slug": "westend",
+          "name": {
+            "de": "Westend",
+            "en": "Westend",
+            "ru": "Вестэнд"
+          },
+          "lat": 50.118164,
+          "lng": 8.6625889,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmt7h31k60004ckb0up9vohap",
@@ -271,7 +1036,92 @@
       "lat": 53.551086,
       "lng": 9.993682,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfdz0004a8b0mlvv19ng",
+          "slug": "altona",
+          "name": {
+            "de": "Altona",
+            "en": "Altona",
+            "ru": "Альтона"
+          },
+          "lat": 53.5496598,
+          "lng": 9.945352,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfe20008a8b0qahhrrit",
+          "slug": "eimsbuettel",
+          "name": {
+            "de": "Eimsbüttel",
+            "en": "Eimsbüttel",
+            "ru": "Эймсбюттель"
+          },
+          "lat": 53.5729372,
+          "lng": 9.9582607,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfe9000ga8b0qr3ae803",
+          "slug": "hafencity",
+          "name": {
+            "de": "HafenCity",
+            "en": "HafenCity",
+            "ru": "Хафенсити"
+          },
+          "lat": 53.5429127,
+          "lng": 9.9958346,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfeh000oa8b0u0ql0sv8",
+          "slug": "harburg",
+          "name": {
+            "de": "Harburg",
+            "en": "Harburg",
+            "ru": "Харбург"
+          },
+          "lat": 53.4562216,
+          "lng": 9.9872112,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfe5000ca8b0n2revw9b",
+          "slug": "st-georg",
+          "name": {
+            "de": "St. Georg",
+            "en": "St. Georg",
+            "ru": "Санкт-Георг"
+          },
+          "lat": 53.5571491,
+          "lng": 10.0142558,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfdg0000a8b0ap74cke6",
+          "slug": "st-pauli",
+          "name": {
+            "de": "St. Pauli",
+            "en": "St. Pauli",
+            "ru": "Санкт-Паули"
+          },
+          "lat": 53.5539347,
+          "lng": 9.9594316,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfeb000ka8b07vs0hsij",
+          "slug": "wandsbek",
+          "name": {
+            "de": "Wandsbek",
+            "en": "Wandsbek",
+            "ru": "Вандсбек"
+          },
+          "lat": 53.5760029,
+          "lng": 10.0755348,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyuks001a5nb00p7vjn39",
@@ -285,7 +1135,92 @@
       "lat": 52.3759,
       "lng": 9.732,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfio0098a8b04l9yf8c8",
+          "slug": "kleefeld",
+          "name": {
+            "de": "Kleefeld",
+            "en": "Kleefeld",
+            "ru": "Клеефельд"
+          },
+          "lat": 52.375679,
+          "lng": 9.7957755,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfig008oa8b02vpyqd29",
+          "slug": "linden",
+          "name": {
+            "de": "Linden",
+            "en": "Linden",
+            "ru": "Линден"
+          },
+          "lat": 52.3571986,
+          "lng": 9.7063547,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfii008sa8b0m1l2f9gj",
+          "slug": "list",
+          "name": {
+            "de": "List",
+            "en": "List",
+            "ru": "Лист"
+          },
+          "lat": 52.3961351,
+          "lng": 9.7570513,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfif008ka8b0duplq167",
+          "slug": "mitte",
+          "name": {
+            "de": "Mitte",
+            "en": "Mitte",
+            "ru": "Митте"
+          },
+          "lat": 52.3756854,
+          "lng": 9.749101,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfil0090a8b0ot1v25ix",
+          "slug": "nordstadt",
+          "name": {
+            "de": "Nordstadt",
+            "en": "Nordstadt",
+            "ru": "Нордштадт"
+          },
+          "lat": 52.3851317,
+          "lng": 9.7187507,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfij008wa8b0y01nvzq0",
+          "slug": "suedstadt",
+          "name": {
+            "de": "Südstadt",
+            "en": "Südstadt",
+            "ru": "Зюдштадт"
+          },
+          "lat": 52.3600544,
+          "lng": 9.7553948,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfin0094a8b0qgthv1eh",
+          "slug": "vahrenwald",
+          "name": {
+            "de": "Vahrenwald",
+            "en": "Vahrenwald",
+            "ru": "Фаренвальд"
+          },
+          "lat": 52.3972264,
+          "lng": 9.7381952,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyugm000a5nb07lcxp0l2",
@@ -299,7 +1234,92 @@
       "lat": 50.9375,
       "lng": 6.9603,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfez001ka8b0nhw562oc",
+          "slug": "altstadt",
+          "name": {
+            "de": "Altstadt",
+            "en": "Altstadt",
+            "ru": "Альтштадт"
+          },
+          "lat": 50.9384798,
+          "lng": 6.9605148,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatff8001wa8b0kunkmyqb",
+          "slug": "deutz",
+          "name": {
+            "de": "Deutz",
+            "en": "Deutz",
+            "ru": "Дойц"
+          },
+          "lat": 50.9367586,
+          "lng": 6.9730461,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatff4001oa8b0px3j9kej",
+          "slug": "ehrenfeld",
+          "name": {
+            "de": "Ehrenfeld",
+            "en": "Ehrenfeld",
+            "ru": "Эренфельд"
+          },
+          "lat": 50.9488643,
+          "lng": 6.9198935,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffc0024a8b0adtpzwtd",
+          "slug": "lindenthal",
+          "name": {
+            "de": "Lindenthal",
+            "en": "Lindenthal",
+            "ru": "Линденталь"
+          },
+          "lat": 50.9298969,
+          "lng": 6.9143995,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffe0028a8b0ncwey0m0",
+          "slug": "muelheim",
+          "name": {
+            "de": "Mülheim",
+            "en": "Mülheim",
+            "ru": "Мюльхайм"
+          },
+          "lat": 50.9659028,
+          "lng": 7.0077998,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatff6001sa8b0xhdd47hy",
+          "slug": "nippes",
+          "name": {
+            "de": "Nippes",
+            "en": "Nippes",
+            "ru": "Ниппес"
+          },
+          "lat": 50.988649,
+          "lng": 6.9357275,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffa0020a8b028w3c10i",
+          "slug": "suelz",
+          "name": {
+            "de": "Sülz",
+            "en": "Sülz",
+            "ru": "Зюльц"
+          },
+          "lat": 50.9189277,
+          "lng": 6.9240929,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyuiu000u5nb07no7ce3v",
@@ -313,7 +1333,92 @@
       "lat": 51.3397,
       "lng": 12.3731,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfhg006ga8b04j7q26w9",
+          "slug": "connewitz",
+          "name": {
+            "de": "Connewitz",
+            "en": "Connewitz",
+            "ru": "Конневиц"
+          },
+          "lat": 51.3032502,
+          "lng": 12.3720368,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhk006oa8b0cp50gxjo",
+          "slug": "gohlis",
+          "name": {
+            "de": "Gohlis",
+            "en": "Gohlis",
+            "ru": "Голис"
+          },
+          "lat": 51.36706,
+          "lng": 12.3766732,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhi006ka8b0s6e222kp",
+          "slug": "plagwitz",
+          "name": {
+            "de": "Plagwitz",
+            "en": "Plagwitz",
+            "ru": "Плагвиц"
+          },
+          "lat": 51.3281994,
+          "lng": 12.3382998,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfho006wa8b056a935vb",
+          "slug": "reudnitz",
+          "name": {
+            "de": "Reudnitz",
+            "en": "Reudnitz",
+            "ru": "Ройдниц"
+          },
+          "lat": 51.335919,
+          "lng": 12.3995116,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhm006sa8b0kxq4vihd",
+          "slug": "schleussig",
+          "name": {
+            "de": "Schleußig",
+            "en": "Schleußig",
+            "ru": "Шлойсиг"
+          },
+          "lat": 51.3237026,
+          "lng": 12.3416294,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhe006ca8b01cff2aqf",
+          "slug": "suedvorstadt",
+          "name": {
+            "de": "Südvorstadt",
+            "en": "Südvorstadt",
+            "ru": "Зюдфорштадт"
+          },
+          "lat": 51.3225214,
+          "lng": 12.3746133,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfhc0068a8b0vkjxa0nu",
+          "slug": "zentrum",
+          "name": {
+            "de": "Zentrum",
+            "en": "Zentrum",
+            "ru": "Центр"
+          },
+          "lat": 51.3402743,
+          "lng": 12.376417,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyug100065nb0de26jw15",
@@ -327,7 +1432,92 @@
       "lat": 48.1374,
       "lng": 11.5755,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfej000sa8b0fhuf9i53",
+          "slug": "altstadt-lehel",
+          "name": {
+            "de": "Altstadt-Lehel",
+            "en": "Altstadt-Lehel",
+            "ru": "Альтштадт-Лехель"
+          },
+          "lat": 48.1378285,
+          "lng": 11.5745823,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfex001ga8b0l2cisgrd",
+          "slug": "bogenhausen",
+          "name": {
+            "de": "Bogenhausen",
+            "en": "Bogenhausen",
+            "ru": "Богенхаузен"
+          },
+          "lat": 48.1452222,
+          "lng": 11.6149771,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfer0014a8b0g82axoyb",
+          "slug": "haidhausen",
+          "name": {
+            "de": "Haidhausen",
+            "en": "Haidhausen",
+            "ru": "Хайдхаузен"
+          },
+          "lat": 48.1326627,
+          "lng": 11.6011221,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfel000wa8b0kwf29ttr",
+          "slug": "maxvorstadt",
+          "name": {
+            "de": "Maxvorstadt",
+            "en": "Maxvorstadt",
+            "ru": "Максфорштадт"
+          },
+          "lat": 48.1510916,
+          "lng": 11.5624179,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfev001ca8b09j29vnju",
+          "slug": "neuhausen",
+          "name": {
+            "de": "Neuhausen",
+            "en": "Neuhausen",
+            "ru": "Нойхаузен"
+          },
+          "lat": 48.1542217,
+          "lng": 11.5315172,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfep0010a8b0b7gkvlw8",
+          "slug": "schwabing",
+          "name": {
+            "de": "Schwabing",
+            "en": "Schwabing",
+            "ru": "Швабинг"
+          },
+          "lat": 48.168926,
+          "lng": 11.5899503,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfet0018a8b0qhzejnip",
+          "slug": "sendling",
+          "name": {
+            "de": "Sendling",
+            "en": "Sendling",
+            "ru": "Зендлинг"
+          },
+          "lat": 48.1180125,
+          "lng": 11.5390832,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyul7001e5nb0ys91amk7",
@@ -341,7 +1531,92 @@
       "lat": 49.4521,
       "lng": 11.0767,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfiq009ca8b0fxz637ph",
+          "slug": "altstadt",
+          "name": {
+            "de": "Altstadt",
+            "en": "Altstadt",
+            "ru": "Альтштадт"
+          },
+          "lat": 49.4514045,
+          "lng": 11.0747163,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfir009ga8b0nfc43p9k",
+          "slug": "gostenhof",
+          "name": {
+            "de": "Gostenhof",
+            "en": "Gostenhof",
+            "ru": "Гостенхоф"
+          },
+          "lat": 49.4476663,
+          "lng": 11.0581931,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfiy009wa8b0vua8butu",
+          "slug": "maxfeld",
+          "name": {
+            "de": "Maxfeld",
+            "en": "Maxfeld",
+            "ru": "Максфельд"
+          },
+          "lat": 49.4633221,
+          "lng": 11.0849499,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfit009ka8b08pcgjhyi",
+          "slug": "st-johannis",
+          "name": {
+            "de": "St. Johannis",
+            "en": "St. Johannis",
+            "ru": "Санкт-Йоханнис"
+          },
+          "lat": 49.4585661,
+          "lng": 11.0663398,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfiz00a0a8b0dhrkv4zm",
+          "slug": "steinbuehl",
+          "name": {
+            "de": "Steinbühl",
+            "en": "Steinbühl",
+            "ru": "Штайнбюль"
+          },
+          "lat": 49.4401403,
+          "lng": 11.0685445,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfiu009oa8b03gnkhj09",
+          "slug": "suedstadt",
+          "name": {
+            "de": "Südstadt",
+            "en": "Südstadt",
+            "ru": "Зюдштадт"
+          },
+          "lat": 49.4257629,
+          "lng": 11.0596819,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfiw009sa8b0is9mi30j",
+          "slug": "woehrd",
+          "name": {
+            "de": "Wöhrd",
+            "en": "Wöhrd",
+            "ru": "Вёрд"
+          },
+          "lat": 49.453549,
+          "lng": 11.0948927,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyumd001m5nb0tyzzkf08",
@@ -355,7 +1630,92 @@
       "lat": 51.9244,
       "lng": 4.4777,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfjl00boa8b0b6tqf61g",
+          "slug": "centrum",
+          "name": {
+            "de": "Centrum",
+            "en": "Centrum",
+            "ru": "Центр"
+          },
+          "lat": 51.9199618,
+          "lng": 4.4798986,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfju00cca8b0piby0cgy",
+          "slug": "charlois",
+          "name": {
+            "de": "Charlois",
+            "en": "Charlois",
+            "ru": "Шарлуа"
+          },
+          "lat": 51.8835701,
+          "lng": 4.4778129,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjn00bsa8b0qb1naugg",
+          "slug": "delfshaven",
+          "name": {
+            "de": "Delfshaven",
+            "en": "Delfshaven",
+            "ru": "Делфсхавен"
+          },
+          "lat": 51.9081039,
+          "lng": 4.4483726,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjr00c4a8b0j8y8tjps",
+          "slug": "feijenoord",
+          "name": {
+            "de": "Feijenoord",
+            "en": "Feijenoord",
+            "ru": "Фейеноорд"
+          },
+          "lat": 51.9072468,
+          "lng": 4.5068656,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjt00c8a8b027ehq9j4",
+          "slug": "hillegersberg",
+          "name": {
+            "de": "Hillegersberg",
+            "en": "Hillegersberg",
+            "ru": "Хиллегерсберг"
+          },
+          "lat": 51.9549095,
+          "lng": 4.4928642,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjo00bwa8b09vp4kyqz",
+          "slug": "kralingen",
+          "name": {
+            "de": "Kralingen",
+            "en": "Kralingen",
+            "ru": "Кралинген"
+          },
+          "lat": 51.9259546,
+          "lng": 4.5083405,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfjp00c0a8b0d8r565sv",
+          "slug": "noord",
+          "name": {
+            "de": "Noord",
+            "en": "Noord",
+            "ru": "Норд"
+          },
+          "lat": 51.9330231,
+          "lng": 4.4722707,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyuhk000i5nb092cpiszp",
@@ -369,7 +1729,92 @@
       "lat": 48.7758,
       "lng": 9.1829,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfg2003oa8b0n56i2koh",
+          "slug": "bad-cannstatt",
+          "name": {
+            "de": "Bad Cannstatt",
+            "en": "Bad Cannstatt",
+            "ru": "Бад-Каннштатт"
+          },
+          "lat": 48.8048828,
+          "lng": 9.2146797,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffu0034a8b0nwjb0heo",
+          "slug": "mitte",
+          "name": {
+            "de": "Mitte",
+            "en": "Mitte",
+            "ru": "Митте"
+          },
+          "lat": 48.7759,
+          "lng": 9.1798,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffw0038a8b0ucz5juwc",
+          "slug": "nord",
+          "name": {
+            "de": "Nord",
+            "en": "Nord",
+            "ru": "Норд"
+          },
+          "lat": 48.7978226,
+          "lng": 9.1917133,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfg1003ka8b0kpuz0j1p",
+          "slug": "ost",
+          "name": {
+            "de": "Ost",
+            "en": "Ost",
+            "ru": "Ост"
+          },
+          "lat": 48.7821428,
+          "lng": 9.2079413,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatffy003ca8b0fqierh24",
+          "slug": "sued",
+          "name": {
+            "de": "Süd",
+            "en": "Süd",
+            "ru": "Зюд"
+          },
+          "lat": 48.764201,
+          "lng": 9.1679265,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfg4003sa8b0l2gimj1y",
+          "slug": "vaihingen",
+          "name": {
+            "de": "Vaihingen",
+            "en": "Vaihingen",
+            "ru": "Файхинген"
+          },
+          "lat": 48.7314075,
+          "lng": 9.1097281,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfg0003ga8b0atay0r07",
+          "slug": "west",
+          "name": {
+            "de": "West",
+            "en": "West",
+            "ru": "Вест"
+          },
+          "lat": 48.7739006,
+          "lng": 9.1632873,
+          "isActive": true
+        }
+      ]
     },
     {
       "id": "cmtabyund001u5nb0l2ielsgb",
@@ -383,7 +1828,92 @@
       "lat": 52.0907,
       "lng": 5.1214,
       "isActive": true,
-      "districts": []
+      "districts": [
+        {
+          "id": "cmtdatfk500d8a8b06p9r6flw",
+          "slug": "binnenstad",
+          "name": {
+            "de": "Binnenstad",
+            "en": "Binnenstad",
+            "ru": "Биннестад"
+          },
+          "lat": 52.0886017,
+          "lng": 5.116184,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfke00dwa8b00jdzgoi4",
+          "slug": "leidsche-rijn",
+          "name": {
+            "de": "Leidsche Rijn",
+            "en": "Leidsche Rijn",
+            "ru": "Лейдсе-Рейн"
+          },
+          "lat": 52.0827104,
+          "lng": 5.0378431,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk700dca8b0rnjjgpb2",
+          "slug": "lombok",
+          "name": {
+            "de": "Lombok",
+            "en": "Lombok",
+            "ru": "Ломбок"
+          },
+          "lat": 52.0912231,
+          "lng": 5.099599,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfka00dka8b0rdhrky0k",
+          "slug": "noordoost",
+          "name": {
+            "de": "Noordoost",
+            "en": "Noordoost",
+            "ru": "Нордост"
+          },
+          "lat": 52.1051288,
+          "lng": 5.1355489,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfk800dga8b06yzn9xw2",
+          "slug": "oost",
+          "name": {
+            "de": "Oost",
+            "en": "Oost",
+            "ru": "Ост"
+          },
+          "lat": 52.0775687,
+          "lng": 5.143016,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfkd00dsa8b0kewku1ct",
+          "slug": "overvecht",
+          "name": {
+            "de": "Overvecht",
+            "en": "Overvecht",
+            "ru": "Овервехт"
+          },
+          "lat": 52.1205408,
+          "lng": 5.1096366,
+          "isActive": true
+        },
+        {
+          "id": "cmtdatfkb00doa8b0d6lpobq3",
+          "slug": "zuid",
+          "name": {
+            "de": "Zuid",
+            "en": "Zuid",
+            "ru": "Зёйд"
+          },
+          "lat": 52.0642612,
+          "lng": 5.1297577,
+          "isActive": true
+        }
+      ]
     }
   ],
   "serviceGroups": [
