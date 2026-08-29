@@ -102,6 +102,8 @@ make help             # весь список
   DNS, подготовка машины, почта. Всё, что делается один раз.
 - [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск:
   `make deploy SERVER=deploy@<IP>`.
+- [documentation/deploy/mail.md](documentation/deploy/mail.md) — почтовый релей на
+  отдельной машине, когда провайдер не открывает 25-й порт.
 - [documentation/deploy/entryPoint.md](documentation/deploy/entryPoint.md) — порядок
   действий, осмотр базы, бэкапы.
 

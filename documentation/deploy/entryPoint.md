@@ -6,6 +6,7 @@
 |---|---|
 | [server.md](server.md) | провайдер, мощности, DNS, подготовка машины, почта |
 | [release.md](release.md) | `.env` и выпуск: `make deploy` |
+| [mail.md](mail.md) | почтовый релей на отдельной машине |
 | этот файл | порядок, осмотр базы, бэкапы, переезд домена |
 
 ---
@@ -23,6 +24,7 @@
 | 5 | `make server-env SERVER=… DOMAIN=… EMAIL=…` | [release.md](release.md) §1 |
 | 6 | `make deploy SERVER=…` | [release.md](release.md) §2 |
 | 7 | Забрать DKIM из контейнера, добавить `TXT` в DNS | [server.md](server.md) §4 |
+| 7а | Если 25-й порт закрыт — поднять релей | [mail.md](mail.md) |
 | 8 | Накатить справочники: города, районы, услуги | [release.md](release.md) §3 |
 | 9 | Создать первого администратора | [release.md](release.md) §4 |
 | 10 | Проверить, что письмо доходит не в спам | [server.md](server.md) §4 |

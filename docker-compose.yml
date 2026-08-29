@@ -247,9 +247,24 @@ services:
       RELAYHOST: ${RELAY_HOST:-}
       RELAYHOST_USERNAME: ${RELAY_USER:-}
       RELAYHOST_PASSWORD: ${RELAY_PASSWORD:-}
+      # Только PLAIN. По умолчанию образ ставит фильтр, где первым идёт
+      # DIGEST-MD5, а он сверяет ещё и realm: на релее пользователь заведён
+      # в sasldb с областью из домена, сервер же представляется myhostname —
+      # `mail.<домен>`. Области расходятся, и получается
+      # `unable to canonify user and get auxprops` при верном пароле.
+      # PLAIN сравнивает логин с паролем и ничего больше. Канал шифрован
+      # (smtp_tls_security_level=encrypt), открытым текстом пароль не уходит.
+      POSTFIX_smtp_sasl_mechanism_filter: plain, login
       # С релеем шифрование обязательно: пароль уходит в открытую сеть.
       # Без релея `may` — свой Postfix говорит с чужими серверами как получится.
       POSTFIX_smtp_tls_security_level: ${RELAY_TLS_LEVEL:-may}
+      # А вот на входе TLS выключен намеренно. Сюда стучится только api из
+      # соседнего контейнера по внутренней сети Docker — трафик машину не
+      # покидает. Сертификат у Postfix самоподписанный, nodemailer его
+      # проверяет, не может подтвердить и рвёт соединение: в логе это
+      # `SSL_accept error ... lost connection after STARTTLS`, а письма молча
+      # копятся в Redis и не доходят даже до очереди Postfix.
+      POSTFIX_smtpd_tls_security_level: none
     volumes:
       - dkim_keys:/etc/opendkim/keys
     networks: [internal]

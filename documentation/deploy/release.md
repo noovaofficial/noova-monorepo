@@ -124,7 +124,7 @@ chmod 600 .env
 | Переменная | Пример |
 |---|---|
 | `RELAY_HOST` | `[smtp.eu.mailgun.org]:587` — квадратные скобки обязательны |
-| `RELAY_USER` | `postmaster@noova.cc` |
+| `RELAY_USER` | `noreply@noova.cc` — обязан совпадать с адресом в `MAIL_FROM` |
 | `RELAY_PASSWORD` | пароль SMTP-учётки релея, не пароль от кабинета |
 | `RELAY_TLS_LEVEL` | `encrypt` — с релеем обязательно, иначе пароль уйдёт открытым |
 

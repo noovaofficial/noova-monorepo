@@ -40,14 +40,24 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Postfix читает ключ до того, как сбросит права, поэтому root:root и 640
-# ему достаточно. Копия, а не симлинк на /etc/letsencrypt: внутрь контейнера
-# смонтирован только ./certs, и симлинк указывал бы в никуда.
+# Права. Ключ читает smtpd, а он к этому моменту уже под пользователем
+# postfix — uid 100, gid 102 в этом образе (он печатает их при старте:
+# «System accounts: postfix=100:102»). Поэтому и каталог, и ключ отдаём
+# группе 102: с root:root smtpd не пройдёт внутрь каталога и оборвёт
+# TLS-рукопожатие с «lost connection after STARTTLS», не сказав почему.
+#
+# Числа, а не имена: на хосте таких пользователей нет, сопоставление идёт
+# по идентификаторам. Сменится образ — сверьтесь с его логом старта.
+#
+# Копия, а не симлинк на /etc/letsencrypt: внутрь контейнера смонтирован
+# только ./certs, и симлинк указывал бы в никуда.
 # ---------------------------------------------------------------------------
+POSTFIX_GID="${POSTFIX_GID:-102}"
+
 say "Кладу в $DIR/certs"
-install -d -m 750 "$DIR/certs"
-install -m 644 "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
-install -m 640 "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
+install -d -m 750 -o root -g "$POSTFIX_GID" "$DIR/certs"
+install -m 644 -o root -g "$POSTFIX_GID" "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
+install -m 640 -o root -g "$POSTFIX_GID" "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
 
 # ---------------------------------------------------------------------------
 # Продление. Сертификат живёт 90 дней, и без хука обновится он сам, а копии
@@ -59,8 +69,8 @@ install -d -m 755 /etc/letsencrypt/renewal-hooks/deploy
 cat > /etc/letsencrypt/renewal-hooks/deploy/relay.sh <<EOF
 #!/usr/bin/env bash
 set -eu
-install -m 644 "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
-install -m 640 "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
+install -m 644 -o root -g $POSTFIX_GID "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
+install -m 640 -o root -g $POSTFIX_GID "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
 cd "$DIR" && docker compose restart smtp
 EOF
 chmod +x /etc/letsencrypt/renewal-hooks/deploy/relay.sh

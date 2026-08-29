@@ -215,65 +215,8 @@ docker compose exec smtp cat /etc/opendkim/keys/<домен>.txt
 ### Если порт 25 не откроют
 
 Так и вышло у vps.ac: «closed in order to prevent spam», открывать не будут.
+Внешний ESP не подходит — SendPulse, Postmark, Resend, Brevo и подобные
+запрещают тематику каталога в AUP. Postfix переезжает на вторую машину у
+провайдера, который 25-й держит открытым.
 
-**Внешний ESP не подходит.** SendPulse, SMTP2GO, Postmark, Resend, Elastic
-Email и Brevo прямо запрещают escort и adult в AUP; у Mailgun, Mailjet и
-SendGrid прямого запрета нет, но есть оговорка про «obscene, indecent» на их
-усмотрение. Блокировка аккаунта останавливает регистрацию и сброс пароля — то
-есть вход на сайт. Плюс релей видит тело письма, а в нём одноразовая ссылка.
-Решение N-15 остаётся в силе: Postfix свой, просто переезжает на вторую машину.
-
-Провайдер под релей выбирается по трём условиям: открытый исходящий 25-й,
-разрешённый adult, и — если важна гл. V GDPR — юрисдикция ЕС/ЕЭЗ. Молдова
-(AlexHost) решения об адекватности не имеет, Румыния, Финляндия и Исландия
-(FlokiNET) — внутри. Условия подтверждать письмом **до оплаты**, см. L-09 в
-`documentation/planning/legal.md`.
-
-#### Порядок
-
-1. **Подготовить машину** тем же скриптом, что основную: `ssh-copy-id`, затем
-   `make server-setup SERVER=root@<IP релея>`.
-2. **Ограничить submission** адресом основного сервера. Пароль — вторая линия,
-   а не первая:
-   ```bash
-   ufw allow from <IP основного сервера> to any port 587 proto tcp
-   ```
-3. **Перенести DKIM-ключ** со старой машины — тогда запись `mail._domainkey`
-   в DNS менять не придётся:
-   ```bash
-   # на основном сервере
-   docker compose exec -T smtp tar cf - -C /etc/opendkim/keys . > dkim.tar
-   scp dkim.tar deploy@<IP релея>:relay/
-   # на релее, после первого запуска контейнера
-   docker compose exec -T smtp tar xf - -C /etc/opendkim/keys < dkim.tar
-   docker compose restart smtp
-   ```
-4. **DNS:** `A mail.<домен>` и `ip4:` в SPF перевести на IP релея. PTR на
-   этот IP → `mail.<домен>` — заявкой провайдеру.
-5. **Сертификат** для `mail.<домен>` на релее: `sudo ./certs.sh mail.<домен>`
-   из `infra/relay/`. Скрипт ставит и хук продления — без него почта встала бы
-   через 90 дней.
-6. **Запуск:** `infra/relay/docker-compose.yml` плюс `.env` рядом с ним:
-   ```
-   MAIL_DOMAIN=<домен>
-   RELAY_USER=relay@<домен>
-   RELAY_PASSWORD=<случайный, openssl rand -base64 24>
-   ```
-7. **Основной сервер**, четыре строки в `~/noova/.env`:
-   ```
-   RELAY_HOST=[mail.<домен>]:587
-   RELAY_USER=relay@<домен>
-   RELAY_PASSWORD=<тот же пароль>
-   RELAY_TLS_LEVEL=encrypt
-   ```
-   Затем `make deploy-files SERVER=…` и `make update SERVER=…` — образы не
-   пересобираются.
-
-Релей прописан контейнеру `smtp`, а не в `SMTP_HOST` у `api`. Так Postfix
-остаётся отправителем, письмо подписывается **нашим** ключом, DMARC проходит
-по своему домену, а смена релея не трогает DNS. Возврат к прямой отправке,
-если 25-й когда-нибудь откроют, — удалить эти четыре строки.
-
-**Проверка.** На основном сервере очередь должна опустеть
-(`docker compose exec smtp postqueue -p`), в заголовках пришедшего письма —
-`dkim=pass` и `dmarc=pass` по своему домену.
+Порядок целиком — [mail.md](mail.md).
