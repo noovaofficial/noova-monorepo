@@ -134,6 +134,9 @@ services:
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM}
       PUBLIC_SITE_URL: ${SITE_URL}
+      # Из него собираются ссылки на неодобренные фотографии — их отдаёт сам
+      # api, а не хранилище. В проде домен общий, пути разводит Caddy.
+      PUBLIC_API_URL: ${SITE_URL}
       SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-30}
       IP_HASH_SALT: ${IP_HASH_SALT}
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}

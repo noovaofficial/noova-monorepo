@@ -5,7 +5,6 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env } from '../../env.js';
 import { VARIANT_WIDTHS } from './images.js';
 
@@ -54,14 +53,42 @@ export async function moveObject(from: string, to: string): Promise<void> {
 }
 
 /**
- * Ссылка на неодобренное фото для владельца и модератора. Живёт минуты:
- * это снимок реального человека, и постоянная ссылка разошлась бы дальше,
- * чем нужно.
+ * Чтение объекта для раздачи через API. Нужно неодобренным фотографиям:
+ * анонимно их бакет не отдаёт, а подписанная ссылка здесь не работает —
+ * подписант знает только внутренний адрес хранилища (`http://minio:9000`),
+ * и такую ссылку браузер не откроет. Пробовать подписывать против внешнего
+ * адреса тоже нечего: Caddy переписывает путь, подставляя имя бакета, а
+ * подпись считается по пути, и MinIO ответит SignatureDoesNotMatch.
+ *
+ * Поэтому байты идёт отдавать сам API, проверяя права на каждый запрос.
+ * Заодно исчезает ссылка, работающая у любого, кому её переслали.
  */
-export function signedUrl(key: string, expiresInSeconds = 600): Promise<string> {
-  return getSignedUrl(client, new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }), {
-    expiresIn: expiresInSeconds,
-  });
+export async function getObject(key: string): Promise<{
+  body: NodeJS.ReadableStream;
+  contentType: string;
+  contentLength?: number;
+}> {
+  const out = await client.send(new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+  if (!out.Body) throw new Error(`Объект пуст: ${key}`);
+  return {
+    body: out.Body as NodeJS.ReadableStream,
+    contentType: out.ContentType ?? 'application/octet-stream',
+    ...(out.ContentLength === undefined ? {} : { contentLength: out.ContentLength }),
+  };
+}
+
+/** Адрес, по которому владелец видит своё неодобренное фото. */
+export function ownPhotoUrl(photoId: string, variant = 'card'): string {
+  return `${apiBase()}/api/v1/me/photos/${photoId}/file?variant=${variant}`;
+}
+
+/** То же для модератора: он смотрит чужие анкеты, права другие. */
+export function moderationPhotoUrl(photoId: string, variant = 'card'): string {
+  return `${apiBase()}/api/v1/moderation/photos/${photoId}/file?variant=${variant}`;
+}
+
+function apiBase(): string {
+  return env.PUBLIC_API_URL.replace(/\/$/, '');
 }
 
 export function publicUrl(key: string): string {

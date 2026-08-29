@@ -7,11 +7,12 @@ import { requireSession } from '../../plugins/session.js';
 import { ImageError, MAX_PHOTOS_PER_PROFILE, MAX_UPLOAD_BYTES, processImage } from './images.js';
 import {
   deleteObject,
+  getObject,
   isPublicKey,
+  ownPhotoUrl,
   PENDING_PREFIX,
   publicUrl,
   putObject,
-  signedUrl,
 } from './storage.js';
 
 async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profileId: string) {
@@ -36,14 +37,14 @@ type PhotoRow = {
 
 /**
  * Ссылка зависит от того, одобрено ли фото: одобренное лежит в публичном
- * префиксе и отдаётся напрямую, неодобренное — только по подписанной ссылке
- * на несколько минут.
+ * префиксе и отдаётся хранилищем напрямую, неодобренное — через API, с
+ * проверкой прав на каждый запрос.
  */
 async function toOwnPhoto(row: PhotoRow) {
   const cardKey = `${row.storageKey}/card.webp`;
   return {
     id: row.id,
-    url: isPublicKey(row.storageKey) ? publicUrl(cardKey) : await signedUrl(cardKey),
+    url: isPublicKey(row.storageKey) ? publicUrl(cardKey) : ownPhotoUrl(row.id),
     blurDataUrl: row.blurDataUrl,
     width: row.width,
     height: row.height,
@@ -54,6 +55,43 @@ async function toOwnPhoto(row: PhotoRow) {
 }
 
 export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
+  /**
+   * Файл неодобренной фотографии. Пока снимок не прошёл модерацию, он лежит
+   * в `pending/`, а этот префикс бакет анонимно не отдаёт — иначе ссылку
+   * можно было бы угадать. Владелец получает его отсюда: сессия проверяется
+   * на каждый запрос, и переслать ссылку другому нельзя.
+   */
+  fastify.get(
+    '/me/photos/:id/file',
+    {
+      onRequest: fastify.requireAuth,
+      schema: {
+        tags: ['photos'],
+        params: z.object({ id: z.string().min(1) }),
+        querystring: z.object({ variant: z.enum(['thumb', 'card', 'full']).default('card') }),
+      },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+      const photo = await fastify.prisma.photo.findFirst({
+        // Владение проверяем связью с анкетой, а не отдельным полем: у фото
+        // владельца нет, он есть у анкеты, и подмена id тут ничего не даст.
+        where: { id: request.params.id, deletedAt: null, profile: { ownerId: userId } },
+        select: { storageKey: true },
+      });
+      if (!photo) throw fastify.httpErrors.notFound('Фотография не найдена');
+
+      const { body, contentType, contentLength } = await getObject(
+        `${photo.storageKey}/${request.query.variant}.webp`,
+      );
+      // private: снимок конкретного человека, в общих кэшах ему не место.
+      reply.header('cache-control', 'private, max-age=300');
+      reply.type(contentType);
+      if (contentLength !== undefined) reply.header('content-length', contentLength);
+      return reply.send(body);
+    },
+  );
+
   fastify.post(
     '/me/profiles/:id/photos',
     {

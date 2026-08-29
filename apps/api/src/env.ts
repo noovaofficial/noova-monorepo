@@ -30,6 +30,14 @@ const envSchema = z.object({
   /** Публичный адрес фронта — из него собираются ссылки в письмах. */
   PUBLIC_SITE_URL: z.string().default('http://localhost:3000'),
 
+  /**
+   * Публичный адрес самого API. Из него собираются ссылки на неодобренные
+   * фотографии: они отдаются не из хранилища, а этим сервисом, с проверкой
+   * прав на каждый запрос. В проде совпадает с адресом сайта — Caddy разводит
+   * их по путям; локально порт другой.
+   */
+  PUBLIC_API_URL: z.string().default('http://localhost:4000'),
+
   /** Куда стучаться за сбросом кэша фронта. Пустое значение отключает сброс. */
   WEB_REVALIDATE_URL: z.string().default('http://localhost:3000/api/revalidate'),
   REVALIDATE_SECRET: z.string().default(''),

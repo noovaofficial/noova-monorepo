@@ -16,7 +16,7 @@ import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
-import { isPublicKey, publicUrl, signedUrl } from '../photos/storage.js';
+import { getObject, isPublicKey, moderationPhotoUrl, publicUrl } from '../photos/storage.js';
 
 const profileSelect = {
   id: true,
@@ -94,6 +94,38 @@ function toManagedUser(row: ManagedUserRow) {
 export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
   // Весь префикс закрыт ролью, а не спрятан в интерфейсе.
   const guard = fastify.requireRole('moderator', 'admin');
+
+  /**
+   * Файл фотографии для модератора. Он смотрит чужие анкеты, поэтому
+   * владение не проверяется — достаточно роли. Одобренные сюда не ходят:
+   * для них есть публичный префикс.
+   */
+  fastify.get(
+    '/moderation/photos/:id/file',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        querystring: z.object({ variant: z.enum(['thumb', 'card', 'full']).default('card') }),
+      },
+    },
+    async (request, reply) => {
+      const photo = await fastify.prisma.photo.findFirst({
+        where: { id: request.params.id, deletedAt: null },
+        select: { storageKey: true },
+      });
+      if (!photo) throw fastify.httpErrors.notFound('Фотография не найдена');
+
+      const { body, contentType, contentLength } = await getObject(
+        `${photo.storageKey}/${request.query.variant}.webp`,
+      );
+      reply.header('cache-control', 'private, max-age=300');
+      reply.type(contentType);
+      if (contentLength !== undefined) reply.header('content-length', contentLength);
+      return reply.send(body);
+    },
+  );
 
   fastify.get(
     '/moderation/queue/count',
@@ -201,13 +233,13 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           },
         });
 
-        // Ссылки подписанные: непроверенное фото не отдаётся публично даже
-        // модератору — только по короткоживущей ссылке.
+        // Непроверенное фото не отдаётся публично даже модератору: файл
+        // идёт через API, роль проверяется на каждый запрос.
         for (const photo of photos) {
           items.push({
             kind: 'photo',
             id: photo.id,
-            url: await signedUrl(`${photo.storageKey}/card.webp`),
+            url: moderationPhotoUrl(photo.id),
             width: photo.width,
             height: photo.height,
             createdAt: photo.createdAt.toISOString(),
@@ -1038,11 +1070,10 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         photos: await Promise.all(
           profile.photos.map(async (photo) => ({
             id: photo.id,
-            // Одобренное лежит в публичном префиксе, остальное — только
-            // по короткоживущей подписи.
+            // Одобренное лежит в публичном префиксе, остальное идёт через API.
             url: isPublicKey(photo.storageKey)
               ? publicUrl(`${photo.storageKey}/card.webp`)
-              : await signedUrl(`${photo.storageKey}/card.webp`),
+              : moderationPhotoUrl(photo.id),
             isApproved: photo.isApproved,
             rejectedReason: photo.rejectedReason,
           })),
