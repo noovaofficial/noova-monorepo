@@ -1,4 +1,5 @@
 import type { Locale } from '@noova/shared';
+import { LOGO_CID } from './logo.js';
 
 /**
  * Вёрстка письма: одна общая рамка для всех трёх писем авторизации.
@@ -8,11 +9,13 @@ import type { Locale } from '@noova/shared';
  * инлайновые стили (Gmail вырезает `<style>` в некоторых режимах), ширина
  * 600px (шире обрезается в панели просмотра), шрифты только системные.
  *
- * **Ни одной картинки.** Логотип — текстом. Любая внешняя картинка требует
- * от получателя разрешить загрузку, а до тех пор письмо выглядит поломанным;
- * и она же работает как счётчик открытий — почтовый сервер видит, кто и когда
- * прочитал письмо с каталога 18+. Для нас это та же утечка особой категории,
- * ради которой плитки карты идут через свой домен.
+ * **Ни одной внешней картинки.** Знак едет вложением внутри письма и
+ * подключается по `cid:` (см. logo.ts). Ссылка на картинку не годится: она
+ * требует от получателя разрешить загрузку, а до тех пор письмо выглядит
+ * поломанным, и она же работает счётчиком открытий — сервер видит, кто и
+ * когда прочитал письмо с каталога 18+. Для нас это та же утечка особой
+ * категории, ради которой плитки карты идут через свой домен. Вложение
+ * наружу не ходит вовсе.
  *
  * **Ни одного редиректа-трекера.** Ссылка в письме ведёт прямо на сайт.
  * Обёртка вида `go2_link_tracker?url=...` ломает и доверие получателя
@@ -26,6 +29,8 @@ const COLOR = {
   text: '#251a24',
   muted: '#6e5f6a',
   border: '#e7ddda',
+  /** Плашка внутри карточки: между фоном страницы и белым. */
+  panel: '#f7f1ef',
   brand: '#e0457b',
   onBrand: '#ffffff',
 } as const;
@@ -57,6 +62,35 @@ export type EmailContent = {
   action?: Action;
   /** Мелким шрифтом под разделителем: срок жизни ссылки и что делать, если это не вы. */
   note?: string;
+};
+
+/**
+ * Предупреждение о мошенниках. Каталоги 18+ копируют и пишут их посетителям
+ * от имени площадки — просят «подтвердить пароль», уводят в мессенджеры.
+ * Дешевле всего это ломается тем, что человек заранее знает: мы так не пишем.
+ * Стоит в каждом письме, а не только в первом: помнить будут последнее.
+ */
+const SECURITY: Record<Locale, string> = {
+  de: 'Noova fragt niemals per E-Mail nach Ihrem Passwort und schreibt Sie nie zuerst in Messengern an. Erhalten Sie eine solche Nachricht, ist es Betrug.',
+  en: 'Noova never asks for your password by email and never messages you first on any messenger. If you get such a message, it is a scam.',
+  ru: 'Noova никогда не спрашивает пароль в письмах и не пишет первой в мессенджерах. Если вам пришло такое сообщение — это мошенники.',
+};
+
+/**
+ * Куда писать. Стоит рядом с предупреждением о мошенниках намеренно: «мы не
+ * пишем первыми» работает вдвое лучше, когда тут же сказано, откуда мы всё-таки
+ * пишем. Источник значений — страница контактов, apps/web/.../contact/page.tsx.
+ */
+const SUPPORT = {
+  telegram: '@noovasupport',
+  telegramHref: 'https://t.me/noovasupport',
+  email: 'support@noova.cc',
+} as const;
+
+const SUPPORT_LABEL: Record<Locale, string> = {
+  de: 'Fragen? Schreiben Sie uns:',
+  en: 'Questions? Get in touch:',
+  ru: 'Вопросы — пишите нам:',
 };
 
 /** Подвал. Ответить на письмо нельзя — почтовый ящик только на отправку. */
@@ -101,13 +135,14 @@ export function renderEmail(locale: Locale, content: EmailContent): string {
   const footnote = note
     ? `
               <tr>
-                <td style="padding:0 0 16px 0;">
-                  <div style="border-top:1px solid ${COLOR.border};font-size:1px;line-height:1px;">&nbsp;</div>
-                </td>
-              </tr>
-              <tr>
-                <td align="left" style="font-family:${FONT};font-size:13px;line-height:20px;color:${COLOR.muted};">
-                  ${esc(note)}
+                <td style="padding:0;">
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                      <td bgcolor="${COLOR.panel}" style="background:${COLOR.panel};border-radius:8px;padding:14px 16px;font-family:${FONT};font-size:13px;line-height:20px;color:${COLOR.muted};">
+                        ${esc(note)}
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>`
     : '';
@@ -128,8 +163,20 @@ ${preheader}
 
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="width:600px;max-width:600px;background:${COLOR.card};border-radius:12px;">
         <tr>
-          <td style="padding:24px 24px 8px 24px;font-family:${FONT};font-size:28px;font-weight:700;line-height:34px;color:${COLOR.text};">
-            noova
+          <td style="padding:24px 24px 8px 24px;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="44" style="width:44px;">
+                  <!-- Вложение, а не ссылка. Клиент, прячущий встроенные
+                       картинки, покажет alt — слово рядом всё равно на месте. -->
+                  <img src="cid:${LOGO_CID}" width="44" height="44" alt="noova"
+                       style="display:block;width:44px;height:44px;border:0;outline:none;text-decoration:none;">
+                </td>
+                <td style="padding-left:12px;font-family:${FONT};font-size:28px;font-weight:700;line-height:34px;color:${COLOR.text};">
+                  noova
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
@@ -153,6 +200,22 @@ ${preheader}
       </table>
 
       <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="width:600px;max-width:600px;">
+        <tr>
+          <td style="padding:16px 0 0 0;">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+                <td bgcolor="${COLOR.card}" style="background:${COLOR.card};border:1px solid ${COLOR.border};border-radius:12px;padding:14px 16px;font-family:${FONT};font-size:12px;line-height:18px;color:${COLOR.muted};">
+                  ${esc(SUPPORT_LABEL[locale])}
+                  <a href="${SUPPORT.telegramHref}" target="_blank" rel="noopener" style="color:${COLOR.brand};text-decoration:none;">${SUPPORT.telegram}</a>
+                  &nbsp;·&nbsp;
+                  <a href="mailto:${SUPPORT.email}" style="color:${COLOR.brand};text-decoration:none;">${SUPPORT.email}</a>
+                  <br><br>
+                  ${esc(SECURITY[locale])}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
         <tr>
           <td align="center" style="padding:16px 24px 0 24px;font-family:${FONT};font-size:12px;line-height:18px;color:${COLOR.muted};">
             ${esc(FOOTER[locale])}

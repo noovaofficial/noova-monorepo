@@ -2,6 +2,7 @@ import { DEFAULT_LOCALE, isLocale, type Locale } from '@noova/shared';
 import type { FastifyBaseLogger } from 'fastify';
 import nodemailer, { type Transporter } from 'nodemailer';
 import { env, isProduction } from '../../env.js';
+import { LOGO_ATTACHMENT } from './logo.js';
 
 export type Mail = {
   to: string;
@@ -44,7 +45,11 @@ export class SmtpMailer implements Mailer {
       to: mail.to,
       subject: mail.subject,
       text: mail.text,
-      ...(mail.html ? { html: mail.html } : {}),
+      // Знак прикладывается здесь, а не кладётся в Mail: письма ждут своей
+      // очереди в Redis в виде JSON, и трёхкилобайтный Buffer раздувал бы
+      // каждую запись — при том что картинка у всех писем одна и та же.
+      // Только к версии с версткой: в текстовой ссылаться на неё нечему.
+      ...(mail.html ? { html: mail.html, attachments: [LOGO_ATTACHMENT] } : {}),
     });
     // Тело письма не логируем никогда — ни текстом, ни версткой: в нём
     // одноразовая ссылка.
