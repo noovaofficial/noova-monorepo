@@ -4,7 +4,7 @@ SHELL := /bin/bash
 
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
         server-setup server-env update \
-        reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify restore-media \
+        reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify backup-check restore-media \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback migrate-server
 
@@ -164,6 +164,9 @@ backup-open: ## Расшифровать копию (FILE=…​.enc KEY=~/noova
 	@test -n "$(KEY)" || (echo "Укажите KEY=путь к закрытому ключу"; exit 1)
 	openssl smime -decrypt -binary -inform DER -in '$(FILE)' -inkey '$(KEY)' -out '$(FILE:.enc=)'
 	@echo "Расшифровано: $(FILE:.enc=)"
+
+backup-check: ## Проверить копию целиком: расшифровать, развернуть, сверить фото (DIR=~/noova-backup)
+	DIR='$(DIR)' KEY='$(KEY)' STAMP='$(STAMP)' ./infra/backup/check.sh
 
 backup-verify: ## Проверить копию восстановлением в отдельную БД (FILE=…​.sql.gz)
 	@test -n "$(FILE)" || (echo "Укажите FILE=путь к расшифрованному дампу"; exit 1)

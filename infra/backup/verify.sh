@@ -50,11 +50,16 @@ PHOTOS="$(psql_run -d "$DB" -tAc 'select count(*) from "Photo";' 2>/dev/null | t
 
 printf '\n  таблиц: %s\n  анкет:  %s\n  фото:   %s\n\n' "$TABLES" "$PROFILES" "$PHOTOS"
 
+# Машиночитаемый отчёт для check.sh — ему нужно число фотографий, чтобы
+# сверить его с архивом. Парсить вывод выше было бы хрупко.
+if [ -n "${REPORT_FILE:-}" ]; then
+  printf 'tables=%s\nprofiles=%s\nphotos=%s\nrows=%s\n' \
+    "$TABLES" "$PROFILES" "$PHOTOS" "$ROWS" > "$REPORT_FILE"
+fi
+
 [ "$TABLES" -gt 0 ] 2>/dev/null || fail "В восстановленной базе нет таблиц — копия непригодна"
 printf '\033[32m✓ Копия разворачивается.\033[0m Временная база удалена.\n'
 
 # Фотографии проверяются отдельно: строка в базе без файла в хранилище — это
-# битая анкета, и в дампе такого не видно.
-printf '\nАрхив фотографий проверяйте рядом:\n'
-printf '  tar tzf noova-media-<stamp>.tar.gz | head\n'
-printf '  число объектов должно быть сопоставимо с числом фото выше.\n'
+# битая анкета, и в дампе такого не видно. Сверку делает check.sh.
+[ -n "${REPORT_FILE:-}" ] || printf '\nФотографии этим не проверены. Сверить: make backup-check\n'

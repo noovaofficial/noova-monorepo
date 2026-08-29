@@ -89,13 +89,23 @@ make backup-fetch SERVER=deploy@<IP> DIR=~/noova-backup
 ### Проверить
 
 ```bash
-make backup-open FILE=~/noova-backup/noova-<stamp>.sql.gz.enc \
-                 KEY=~/noova-backup/backup-private.pem
-make backup-verify FILE=~/noova-backup/noova-<stamp>.sql.gz
-tar tzf ~/noova-backup/noova-media-<stamp>.tar.gz | wc -l   # сверить с выводом verify
+make infra-up                       # нужен стенд: дамп разворачивается в него
+make backup-check                   # свежая копия в ~/noova-backup
+make backup-check STAMP=20260829T145907Z
 ```
 
-`backup-verify` разворачивает дамп в отдельную базу, текущую не трогает.
+Расшифровывает пару, разворачивает дамп в **отдельную** базу, считает объекты
+в архиве и сверяет их с числом строк в `Photo`. Расшифрованные файлы живут во
+временном каталоге и удаляются на выходе, в том числе при ошибке.
+
+Фотографий в архиве меньше, чем в базе — отказ: у этих анкет картинки не
+откроются. Больше — предупреждение: снимок базы делается раньше архива, лишний
+файл безвреден.
+
+> В архиве **нет файлов `.webp`** и быть не должно. MinIO хранит объект
+> каталогом с именем объекта, а байты кладёт внутрь — в `xl.meta` для мелких,
+> в `part.N` для крупных. Искать `*.webp` бесполезно, `backup-check` считает
+> каталоги.
 
 ### Восстановить
 
