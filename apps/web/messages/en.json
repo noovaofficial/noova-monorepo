@@ -84,7 +84,7 @@
     "perHour": "/hour",
     "ad": "Ad",
     "fromAgency": "Agency {name}",
-    "fromSalon": "Studio {name}"
+    "fromSalon": "Massage studio {name}"
   },
   "profile": {
     "prices": "Rates",
@@ -130,7 +130,7 @@
     "comments": "Reviews",
     "reportSection": "Report",
     "mapAttribution": "© OpenStreetMap",
-    "fromSalon": "Studio {name}",
+    "fromSalon": "Massage studio {name}",
     "fromAgency": "Agency {name}"
   },
   "footer": {
@@ -222,8 +222,8 @@
     "emailNotVerified": "Email not confirmed",
     "advertiserIndividual": "Individual profile",
     "advertiserIndividualHint": "One profile in your own name",
-    "advertiserSalon": "Studio",
-    "advertiserSalonHint": "Several listings of a massage studio with an address",
+    "advertiserSalon": "Massage studio",
+    "advertiserSalonHint": "One massage studio listing — with address and opening hours",
     "advertiserKind": "Listing type",
     "moderation": "Moderation",
     "staff": "Staff",
@@ -343,13 +343,13 @@
     "deleteWrongPassword": "Wrong password.",
     "deleteFailed": "Could not delete. Please try again.",
     "cancel": "Cancel",
-    "salonTitle": "My studio",
-    "salonCreate": "Add studio",
-    "salonCreateTitle": "New studio",
-    "salonEmpty": "No studio yet",
-    "salonEmptyHint": "Add the studio, fill it in and submit for review.",
-    "salonDisplayName": "Studio name",
-    "salonLimitReached": "A studio has one catalogue entry",
+    "salonTitle": "My massage studio",
+    "salonCreate": "Add massage studio",
+    "salonCreateTitle": "New massage studio",
+    "salonEmpty": "No massage studio yet",
+    "salonEmptyHint": "Add the massage studio, fill it in and submit for review.",
+    "salonDisplayName": "Massage studio name",
+    "salonLimitReached": "A massage studio has one catalogue entry",
     "hoursInvalid": "Check the opening hours: both start and end are required and must differ."
   },
   "moderation": {
@@ -651,7 +651,7 @@
     "title": "Publishing a profile",
     "lead": "One monthly price, no cut of any arrangement and no hidden extras.",
     "plan_individual": "Independent",
-    "plan_salon": "Salon",
+    "plan_salon": "Massage studio",
     "plan_agency": "Agency",
     "price": "€{amount}",
     "perMonth": "per month",
@@ -733,9 +733,9 @@
     "cannotDelete": "Chosen in {count} listings — deleting would break the links. Disable instead."
   },
   "company": {
-    "salon": "Studio",
+    "salon": "Massage studio",
     "agency": "Agency",
-    "titleSalon": "Studio {name}",
+    "titleSalon": "Massage studio {name}",
     "titleAgency": "Agency {name}",
     "profiles": "{count, plural, one {# listing} other {# listings}}",
     "noProfiles": "No published listings yet",
@@ -761,7 +761,7 @@
     "failed": "Could not save",
     "checkFields": "Check the fields",
     "cabinetAgency": "Agency details",
-    "cabinetSalon": "Studio details",
+    "cabinetSalon": "Massage studio details",
     "weekday_1": "Monday",
     "weekday_2": "Tuesday",
     "weekday_3": "Wednesday",
@@ -799,6 +799,16 @@
     "priceTitle": "Title",
     "duration": "Duration",
     "price": "Price",
-    "addPrice": "Add item"
+    "addPrice": "Add item",
+    "nameHint": "How the studio is called for guests — this appears in the catalogue",
+    "descriptionHint": "What sets you apart: massage types, atmosphere, experience",
+    "directionsHint": "Landmarks from the stop, entrance, floor, doorbell",
+    "minSessionHint": "In minutes. Shorter bookings are not accepted",
+    "contactValueHint": "Phone with country code, messenger handle or link",
+    "pricesHint": "Service, duration and price in euros",
+    "allDay": "Open around the clock",
+    "allDayHint": "All seven days, no days off. Hours are filled in automatically.",
+    "aroundTheClock": "Around the clock",
+    "allDayShort": "24 h"
   }
 }

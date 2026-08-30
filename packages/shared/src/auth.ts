@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { MIN_AGE } from './common';
+import { LOCALES } from './locales';
 
 export const userRoleSchema = z.enum(['client', 'advertiser', 'moderator', 'admin']);
 export type UserRole = z.infer<typeof userRoleSchema>;
@@ -32,6 +33,19 @@ export const birthYearSchema = z
   .min(currentYear - 100)
   .max(currentYear - MIN_AGE);
 
+/**
+ * Язык интерфейса на момент регистрации. Им уходят письма и он сохраняется
+ * пользователю.
+ *
+ * Раньше язык брался из `Accept-Language`, и это было неверно: заголовок
+ * говорит о настройках браузера, а не о том, какой язык человек выбрал на
+ * сайте. Русскоязычный браузер получал русские письма, даже если сайт был
+ * открыт на немецком.
+ *
+ * Необязательное: старые клиенты и curl обойдутся заголовком.
+ */
+const localeFieldSchema = z.enum(LOCALES).optional();
+
 export const registerClientSchema = z.object({
   role: z.literal('client'),
   email: emailSchema,
@@ -41,6 +55,7 @@ export const registerClientSchema = z.object({
   name: z.string().trim().min(1).max(60).optional(),
   birthYear: birthYearSchema.optional(),
   gender: genderSchema.optional(),
+  locale: localeFieldSchema,
 });
 export type RegisterClientInput = z.infer<typeof registerClientSchema>;
 
@@ -52,6 +67,7 @@ export const registerAdvertiserSchema = z.object({
   // Выводить это из первой созданной анкеты нельзя — проверять нужно раньше,
   // чем анкета появилась.
   advertiserKind: z.enum(['individual', 'agency', 'salon']),
+  locale: localeFieldSchema,
 });
 export type RegisterAdvertiserInput = z.infer<typeof registerAdvertiserSchema>;
 

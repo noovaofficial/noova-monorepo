@@ -124,6 +124,25 @@ export const salonHoursSchema = z
   });
 export type SalonHours = z.infer<typeof salonHoursSchema>;
 
+/**
+ * Круглосуточно — это не отдельный флаг в базе, а вся неделя, заполненная
+ * сутками. Отдельное поле пришлось бы держать в согласии с часами, а
+ * рассогласование здесь означает неверное расписание на витрине.
+ *
+ * Конец — 23:59, а не 00:00: схема выше запрещает совпадение начала и конца
+ * («это не интервал»), и полуночь-в-полуночь она бы не пропустила.
+ */
+export const AROUND_THE_CLOCK = { opensAt: 0, closesAt: 24 * 60 - 1 } as const;
+
+/** Признак для интерфейса: и редактор, и витрина должны понимать его одинаково. */
+export function isAroundTheClock(hours: readonly SalonHours[]): boolean {
+  if (hours.length !== 7) return false;
+  if (new Set(hours.map((h) => h.weekday)).size !== 7) return false;
+  return hours.every(
+    (h) => h.opensAt === AROUND_THE_CLOCK.opensAt && h.closesAt === AROUND_THE_CLOCK.closesAt,
+  );
+}
+
 /** Неделя целиком: ровно семь дней, без пропусков и повторов. */
 export const salonWeekSchema = z
   .array(salonHoursSchema)

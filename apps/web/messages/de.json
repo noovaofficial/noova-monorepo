@@ -84,7 +84,7 @@
     "perHour": "/Stunde",
     "ad": "Anzeige",
     "fromAgency": "Agentur {name}",
-    "fromSalon": "Studio {name}"
+    "fromSalon": "Massagestudio {name}"
   },
   "profile": {
     "prices": "Preise",
@@ -130,7 +130,7 @@
     "comments": "Bewertungen",
     "reportSection": "Melden",
     "mapAttribution": "© OpenStreetMap",
-    "fromSalon": "Studio {name}",
+    "fromSalon": "Massagestudio {name}",
     "fromAgency": "Agentur {name}"
   },
   "footer": {
@@ -222,8 +222,8 @@
     "emailNotVerified": "E-Mail nicht bestätigt",
     "advertiserIndividual": "Einzelanzeige",
     "advertiserIndividualHint": "Eine Anzeige im eigenen Namen",
-    "advertiserSalon": "Studio",
-    "advertiserSalonHint": "Mehrere Anzeigen eines Massagestudios mit Adresse",
+    "advertiserSalon": "Massagestudio",
+    "advertiserSalonHint": "Ein Eintrag des Massagestudios — mit Adresse und Öffnungszeiten",
     "advertiserKind": "Anzeigenart",
     "moderation": "Moderation",
     "staff": "Mitarbeiter",
@@ -343,13 +343,13 @@
     "deleteWrongPassword": "Falsches Passwort.",
     "deleteFailed": "Löschen fehlgeschlagen. Bitte erneut versuchen.",
     "cancel": "Abbrechen",
-    "salonTitle": "Mein Studio",
-    "salonCreate": "Studio anlegen",
-    "salonCreateTitle": "Neues Studio",
-    "salonEmpty": "Studio noch nicht angelegt",
-    "salonEmptyHint": "Legen Sie das Studio an, füllen Sie es aus und senden Sie es zur Prüfung.",
-    "salonDisplayName": "Name des Studios",
-    "salonLimitReached": "Ein Studio hat einen Eintrag im Katalog",
+    "salonTitle": "Mein Massagestudio",
+    "salonCreate": "Massagestudio anlegen",
+    "salonCreateTitle": "Neues Massagestudio",
+    "salonEmpty": "Massagestudio noch nicht angelegt",
+    "salonEmptyHint": "Legen Sie das Massagestudio an, füllen Sie es aus und senden Sie es zur Prüfung.",
+    "salonDisplayName": "Name des Massagestudios",
+    "salonLimitReached": "Ein Massagestudio hat einen Eintrag im Katalog",
     "hoursInvalid": "Prüfen Sie die Öffnungszeiten: Anfang und Ende müssen beide gesetzt sein und dürfen nicht gleich sein."
   },
   "moderation": {
@@ -651,7 +651,7 @@
     "title": "Profil veröffentlichen",
     "lead": "Ein Monatspreis, kein Anteil an Absprachen und keine versteckten Zusatzkosten.",
     "plan_individual": "Selbstständig",
-    "plan_salon": "Salon",
+    "plan_salon": "Massagestudio",
     "plan_agency": "Agentur",
     "price": "{amount} €",
     "perMonth": "pro Monat",
@@ -733,9 +733,9 @@
     "cannotDelete": "In {count} Anzeigen gewählt — Löschen würde die Verknüpfungen zerreißen. Stattdessen deaktivieren."
   },
   "company": {
-    "salon": "Studio",
+    "salon": "Massagestudio",
     "agency": "Agentur",
-    "titleSalon": "Studio {name}",
+    "titleSalon": "Massagestudio {name}",
     "titleAgency": "Agentur {name}",
     "profiles": "{count, plural, one {# Anzeige} other {# Anzeigen}}",
     "noProfiles": "Noch keine veröffentlichten Anzeigen",
@@ -761,7 +761,7 @@
     "failed": "Konnte nicht gespeichert werden",
     "checkFields": "Felder prüfen",
     "cabinetAgency": "Agenturdaten",
-    "cabinetSalon": "Studiodaten",
+    "cabinetSalon": "Daten des Massagestudios",
     "weekday_1": "Montag",
     "weekday_2": "Dienstag",
     "weekday_3": "Mittwoch",
@@ -799,6 +799,16 @@
     "priceTitle": "Bezeichnung",
     "duration": "Dauer",
     "price": "Preis",
-    "addPrice": "Position hinzufügen"
+    "addPrice": "Position hinzufügen",
+    "nameHint": "Wie das Studio für Gäste heißt — so erscheint es im Katalog",
+    "descriptionHint": "Was Sie ausmacht: Massagearten, Atmosphäre, Erfahrung des Teams",
+    "directionsHint": "Orientierung ab Haltestelle, Eingang, Etage, Klingel",
+    "minSessionHint": "In Minuten. Kürzere Termine werden nicht angenommen",
+    "contactValueHint": "Telefon mit Ländervorwahl, Messenger-Name oder Link",
+    "pricesHint": "Leistung, Dauer und Preis in Euro",
+    "allDay": "Rund um die Uhr geöffnet",
+    "allDayHint": "Alle sieben Tage, ohne Ruhetag. Die Zeiten werden automatisch gesetzt.",
+    "aroundTheClock": "Rund um die Uhr",
+    "allDayShort": "24 Std."
   }
 }

@@ -2,11 +2,12 @@
 
 import {
   type AdvertiserKind,
+  type Locale,
   type RegisterInput,
   registerAdvertiserSchema,
   registerClientSchema,
 } from '@noova/shared';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AuthError, errorKeyFor, register } from '@/modules/auth/api';
@@ -37,6 +38,8 @@ const KIND_HINT: Record<AdvertiserKind, string> = {
 
 export function RegisterForm() {
   const t = useTranslations('auth');
+  // Локаль интерфейса уходит на сервер: ею отправляются письма.
+  const locale = useLocale() as Locale;
   const [role, setRole] = useState<Role>('client');
   const [advertiserKind, setAdvertiserKind] = useState<AdvertiserKind>('individual');
   const [pending, setPending] = useState(false);
@@ -76,8 +79,11 @@ export function RegisterForm() {
             ...(optional('gender')
               ? { gender: optional('gender') as 'male' | 'female' | 'other' }
               : {}),
+            // Язык интерфейса, а не браузера: письма должны прийти на том
+            // языке, на котором человек сейчас смотрит сайт.
+            locale,
           }
-        : { role: 'advertiser', email, password, advertiserKind };
+        : { role: 'advertiser', email, password, advertiserKind, locale };
 
     // Проверяем тем же контрактом, что и сервер: пользователь видит причину
     // сразу и под нужным полем, а не общее «не удалось» после запроса.

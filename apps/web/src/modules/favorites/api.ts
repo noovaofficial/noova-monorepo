@@ -1,4 +1,9 @@
-import { type FavoriteItem, favoriteIdsSchema, favoriteItemSchema } from '@noova/shared';
+import {
+  type FavoriteItem,
+  favoriteIdsSchema,
+  favoriteItemSchema,
+  type Locale,
+} from '@noova/shared';
 import { z } from 'zod';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -27,8 +32,13 @@ export async function fetchFavoriteIds(): Promise<string[]> {
   return favoriteIdsSchema.parse(await response.json()).ids;
 }
 
-export async function fetchFavorites(): Promise<FavoriteItem[]> {
-  const response = await call('/me/favorites');
+/**
+ * Локаль обязательна: названия услуг и районов лежат в базе переводами, и без
+ * параметра API отдаёт язык по умолчанию — немецкий. На странице избранного
+ * это выглядело как немецкие теги у русского или английского интерфейса.
+ */
+export async function fetchFavorites(locale: Locale): Promise<FavoriteItem[]> {
+  const response = await call(`/me/favorites?locale=${locale}`);
   return z.array(favoriteItemSchema).parse(await response.json());
 }
 

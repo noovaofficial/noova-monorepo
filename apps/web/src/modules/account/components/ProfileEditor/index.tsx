@@ -13,6 +13,7 @@ import type {
 import {
   AMENITIES,
   type Amenity,
+  AROUND_THE_CLOCK,
   appearanceTypeSchema,
   bodyTypeSchema,
   bookingPolicySchema,
@@ -163,7 +164,33 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
   const [payments, setPayments] = useState<PaymentMethod[]>([]);
   const [amenities, setAmenities] = useState<string[]>([]);
   const [hours, setHours] = useState<HoursRow[]>(() => emptyWeek());
+  // Что стояло в дне до того, как его отметили круглосуточным. Снятие галочки
+  // возвращает прежнее время, а не оставляет сутки, которых владелица не
+  // вводила. Ключ — день недели.
+  const [hoursBefore, setHoursBefore] = useState<Record<number, HoursRow>>({});
   const [notice, setNotice] = useState<Notice>(null);
+
+  // Сутки в том же виде, в каком их держат поля времени.
+  const DAY_OPENS = toHhmm(AROUND_THE_CLOCK.opensAt);
+  const DAY_CLOSES = toHhmm(AROUND_THE_CLOCK.closesAt);
+  const isDayAllDay = (row: HoursRow) => row.opensAt === DAY_OPENS && row.closesAt === DAY_CLOSES;
+  // Общая галочка не хранится отдельно, а выводится из дней: два источника
+  // правды здесь означали бы расписание, расходящееся с флагом над ним.
+  const allDay = hours.length === 7 && hours.every(isDayAllDay);
+
+  /** Отметить или снять сутки у одного дня, запомнив прежнее время. */
+  function setDayAllDay(weekday: number, on: boolean) {
+    const current = hours.find((h) => h.weekday === weekday);
+    if (on && current) setHoursBefore({ ...hoursBefore, [weekday]: current });
+    setHours(
+      hours.map((h) => {
+        if (h.weekday !== weekday) return h;
+        if (on) return { weekday, opensAt: DAY_OPENS, closesAt: DAY_CLOSES };
+        const back = hoursBefore[weekday];
+        return back && !isDayAllDay(back) ? back : { weekday, opensAt: '', closesAt: '' };
+      }),
+    );
+  }
 
   const enabled = sessionStatus === 'authenticated';
 
@@ -613,6 +640,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   defaultValue={profile?.address ?? ''}
                   maxLength={300}
                 />
+                <span className={styles.hint}>{tc('addressHint')}</span>
               </div>
 
               <div className={styles.field}>
@@ -626,6 +654,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   defaultValue={profile?.directions ?? ''}
                   maxLength={500}
                 />
+                <span className={styles.hint}>{tc('directionsHint')}</span>
               </div>
 
               <div className={styles.field}>
@@ -658,6 +687,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   step={15}
                   defaultValue={profile?.minSessionMinutes ?? ''}
                 />
+                <span className={styles.hint}>{tc('minSessionHint')}</span>
               </div>
 
               <fieldset className={styles.field}>
@@ -706,7 +736,38 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
 
               <fieldset className={styles.field}>
                 <legend className={styles.label}>{tc('hours')}</legend>
-                <span className={styles.hint}>{tc('hoursHint')}</span>
+
+                <label className={styles.check}>
+                  <input
+                    type="checkbox"
+                    checked={allDay}
+                    onChange={(event) => {
+                      const on = event.target.checked;
+                      if (on) {
+                        setHoursBefore(Object.fromEntries(hours.map((h) => [h.weekday, h])));
+                        setHours(
+                          hours.map((h) => ({
+                            weekday: h.weekday,
+                            opensAt: DAY_OPENS,
+                            closesAt: DAY_CLOSES,
+                          })),
+                        );
+                      } else {
+                        setHours(
+                          hours.map((h) => {
+                            const back = hoursBefore[h.weekday];
+                            return back && !isDayAllDay(back)
+                              ? back
+                              : { weekday: h.weekday, opensAt: '', closesAt: '' };
+                          }),
+                        );
+                      }
+                    }}
+                  />
+                  {tc('allDay')}
+                </label>
+
+                <span className={styles.hint}>{allDay ? tc('allDayHint') : tc('hoursHint')}</span>
                 {hours.map((row) => (
                   <div className={styles.hoursRow} key={row.weekday}>
                     <span className={styles.day}>{tc(`weekday_${row.weekday}`)}</span>
@@ -714,6 +775,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                       className={styles.timeInput}
                       type="time"
                       aria-label={`${tc(`weekday_${row.weekday}`)} — ${tc('opensAt')}`}
+                      disabled={isDayAllDay(row)}
                       value={row.opensAt}
                       onChange={(event) =>
                         setHours(
@@ -728,6 +790,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                       className={styles.timeInput}
                       type="time"
                       aria-label={`${tc(`weekday_${row.weekday}`)} — ${tc('closesAt')}`}
+                      disabled={isDayAllDay(row)}
                       value={row.closesAt}
                       onChange={(event) =>
                         setHours(
@@ -737,6 +800,15 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                         )
                       }
                     />
+                    <label className={styles.dayAllDay}>
+                      <input
+                        type="checkbox"
+                        checked={isDayAllDay(row)}
+                        aria-label={`${tc(`weekday_${row.weekday}`)} — ${tc('allDay')}`}
+                        onChange={(event) => setDayAllDay(row.weekday, event.target.checked)}
+                      />
+                      {tc('allDayShort')}
+                    </label>
                   </div>
                 ))}
               </fieldset>

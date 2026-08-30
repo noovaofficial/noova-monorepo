@@ -138,6 +138,7 @@ export function CompanyEditor() {
             minLength={2}
             maxLength={120}
           />
+          <span className={styles.hint}>{t('nameHint')}</span>
         </div>
 
         <div className={styles.field}>
@@ -167,6 +168,7 @@ export function CompanyEditor() {
             rows={5}
             maxLength={4000}
           />
+          <span className={styles.hint}>{t('descriptionHint')}</span>
         </div>
 
         <fieldset className={styles.fieldset}>
@@ -246,6 +248,7 @@ export function CompanyEditor() {
                   )
                 }
                 placeholder={t('contactValue')}
+                title={t('contactValueHint')}
               />
               <Button
                 type="button"

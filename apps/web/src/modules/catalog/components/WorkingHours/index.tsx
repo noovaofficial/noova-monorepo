@@ -1,4 +1,4 @@
-import type { SalonHours } from '@noova/shared';
+import { isAroundTheClock, type SalonHours } from '@noova/shared';
 import { getTranslations } from 'next-intl/server';
 import styles from './WorkingHours.module.css';
 
@@ -21,6 +21,13 @@ export async function WorkingHours({ hours, locale }: { hours: SalonHours[]; loc
   if (hours.length === 0) return null;
 
   const t = await getTranslations({ locale, namespace: 'company' });
+
+  // Семь одинаковых строк «00:00 — 23:59» посетитель читать не станет, а
+  // вопрос у него ровно один: открыто ли сейчас. Отвечаем одной строкой.
+  if (isAroundTheClock(hours)) {
+    return <p className={styles.allDay}>{t('aroundTheClock')}</p>;
+  }
+
   const byWeekday = new Map(hours.map((h) => [h.weekday, h]));
 
   // Порядок недели фиксированный, с понедельника: в данных дни могут идти

@@ -44,7 +44,10 @@ export const queryKeys = {
 
   /** Клиентские функции. */
   favoriteIds: () => ['favorite-ids'] as const,
-  favorites: () => ['favorites'] as const,
+  // Локаль в ключе: названия услуг приходят с сервера переведёнными, и после
+  // смены языка кэш прошлого языка показывать нельзя.
+  favorites: (locale?: string) =>
+    (locale ? ['favorites', locale] : ['favorites']) as readonly unknown[],
   ownComment: (slug: string) => ['own-comment', slug] as const,
 } as const;
 

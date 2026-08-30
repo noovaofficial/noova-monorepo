@@ -21,8 +21,8 @@ export function FavoritesList({ locale }: { locale: string }) {
   const router = useRouter();
 
   const list = useQuery({
-    queryKey: queryKeys.favorites(),
-    queryFn: fetchFavorites,
+    queryKey: queryKeys.favorites(locale),
+    queryFn: () => fetchFavorites(locale as Locale),
     enabled: status === 'authenticated' && user?.role === 'client',
   });
 

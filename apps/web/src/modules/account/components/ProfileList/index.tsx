@@ -1,6 +1,6 @@
 'use client';
 
-import type { Locale } from '@noova/shared';
+import { type Locale, PROFILE_LIMIT_BY_ADVERTISER } from '@noova/shared';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
@@ -64,8 +64,15 @@ export function ProfileList() {
     return <p className={styles.empty}>{t('onlyAdvertisers')}</p>;
   }
 
+  // Лимит берём из общей таблицы, а не пересчитываем здесь: раньше условие
+  // проверяло только `individual`, и салон видел кнопку «создать» при уже
+  // заведённой записи — форма открывалась, а отказ приходил только с сервера.
+  // Тип не задан — не блокируем: сервер всё равно проверит, а лишний отказ
+  // на пустом месте хуже лишней кнопки.
   const limitReached =
-    profiles !== null && user.advertiserKind === 'individual' && profiles.length >= 1;
+    profiles !== null &&
+    user.advertiserKind !== null &&
+    profiles.length >= PROFILE_LIMIT_BY_ADVERTISER[user.advertiserKind];
 
   // Салон — это анкета, но называть её так в его кабинете значит путать:
   // владелец салона заводит салон, а не «анкету» (N-34).
