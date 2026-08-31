@@ -81,6 +81,14 @@ for FILE in "$DUMP" "$MEDIA"; do
   rm -f "$FILE"
 done
 
+# --- ротация ---------------------------------------------------------------
+# Сервер — перевалочный пункт, а не архив: долго копии хранит машина-хранилище
+# (PULL_KEEP_DAYS). Здесь держим несколько дней, чтобы у хранилища было
+# несколько попыток забрать снимок, если ночью оно было недоступно.
+KEEP="${SNAPSHOT_KEEP_DAYS:-3}"
+find "$OUT" -name 'noova-*.enc' -type f -mtime "+${KEEP}" -print -delete
+
 printf '\n\033[32mСнимок готов:\033[0m\n'
 ls -lh "${DUMP}.enc" "${MEDIA}.enc" | awk '{printf "  %s  %s\n", $5, $9}'
 printf '\nЗабрать: make backup-fetch SERVER=deploy@<IP>\n'
+printf 'Хранилище заберёт само, если настроено: make backup-storage\n'

@@ -5,6 +5,7 @@ SHELL := /bin/bash
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
         server-setup server-env update \
         reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify backup-check restore-media \
+        backup-cron backup-storage backup-allow-pull backup-storage-check \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback migrate-server
 
@@ -158,6 +159,29 @@ backup-fetch: backup-snapshot ## Снять копию и забрать её к
 	mkdir -p '$(DIR)'
 	scp $(SERVER):noova/backups/'*.enc' '$(DIR)/'
 	@echo "Забрано в $(DIR). Расшифровать: make backup-open FILE=… KEY=…"
+
+# --- вывоз копий на вторую машину ------------------------------------------
+# Хранилище само ходит на прод и забирает копии (pull). Обратное направление
+# положило бы ключ с правом записи на прод: кто получил прод — стёр бы и архив.
+
+backup-cron: ## Ночной снимок по расписанию на проде (SERVER=deploy@host)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
+	ssh $(SERVER) 'bash -s' < infra/backup/cron-install.sh
+
+backup-storage: ## Настроить машину-хранилище (STORAGE=user@host SERVER=deploy@прод)
+	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host прода"; exit 1)
+	scp infra/backup/pull.sh infra/backup/storage-setup.sh $(STORAGE):
+	ssh $(STORAGE) "bash storage-setup.sh '$(SERVER)'"
+
+backup-allow-pull: ## Разрешить хранилищу забирать копии (SERVER=… KEY='ssh-ed25519 …')
+	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host прода"; exit 1)
+	@test -n "$(KEY)" || (echo "Укажите KEY='ssh-ed25519 … noova-pull' — его печатает backup-storage"; exit 1)
+	ssh $(SERVER) 'bash -s -- "$(KEY)"' < infra/backup/allow-pull.sh
+
+backup-storage-check: ## Что лежит на хранилище и как прошла последняя ночь (STORAGE=user@host)
+	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
+	ssh $(STORAGE) 'ls -lh ~/backups | tail -8; echo; tail -5 ~/noova-pull.log'
 
 backup-open: ## Расшифровать копию (FILE=…​.enc KEY=~/noova-backup/backup-private.pem)
 	@test -n "$(FILE)" || (echo "Укажите FILE=путь.enc"; exit 1)
