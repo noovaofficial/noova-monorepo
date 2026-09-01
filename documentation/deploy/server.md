@@ -51,7 +51,9 @@ dig +short A mail.<домен> @1.1.1.1
 
 ## 2. Мощности
 
-Девять контейнеров: postgres, redis, minio, api, web, caddy, smtp, jobs, backup.
+Восемь контейнеров: postgres, redis, minio, api, web, caddy, smtp, jobs.
+Копии на сервере не хранятся и отдельного контейнера под них нет — снимок
+забирает машина-хранилище потоком (см. entryPoint.md).
 
 - **RAM 4 ГБ — минимум.** `api` ограничен 768 МБ, Next 200–300 МБ, Postgres
   и MinIO по 256 МБ, sharp даёт всплески. На 2 ГБ начнёт свопить.

@@ -4,8 +4,8 @@ SHELL := /bin/bash
 
 .PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
         server-setup server-env update \
-        reference-from-dev reference-from-server reference-to-server backup-key backup-snapshot backup-fetch backup-open backup-verify backup-check restore-media \
-        backup-cron backup-storage backup-allow-pull backup-storage-check \
+        reference-from-dev reference-from-server reference-to-server backup-key backup-fetch backup-open backup-verify backup-check restore-media \
+        backup-storage backup-allow-pull backup-storage-check backup-storage-verify \
         build lint typecheck stack-up stack-down stack-logs backup restore \
         deploy rollback migrate-server
 
@@ -150,29 +150,29 @@ backup-key: ## Создать пару ключей для шифрования 
 	@test -n "$(DIR)" || (echo "Укажите DIR=~/noova-backup"; exit 1)
 	./infra/backup/make-key.sh '$(DIR)'
 
-backup-snapshot: ## Снимок на сервере: база + фотографии, зашифровано (SERVER=deploy@host)
+backup-fetch: ## Снять копию с сервера себе, потоком (SERVER=deploy@host DIR=куда)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
-	ssh $(SERVER) 'cd noova && bash -s' < infra/backup/snapshot.sh
-
-backup-fetch: backup-snapshot ## Снять копию и забрать её к себе (SERVER=… DIR=куда)
 	@test -n "$(DIR)" || (echo "Укажите DIR=куда сложить"; exit 1)
-	mkdir -p '$(DIR)'
-	scp $(SERVER):noova/backups/'*.enc' '$(DIR)/'
-	@echo "Забрано в $(DIR). Расшифровать: make backup-open FILE=… KEY=…"
+	./infra/backup/fetch.sh '$(SERVER)' '$(DIR)'
 
 # --- вывоз копий на вторую машину ------------------------------------------
-# Хранилище само ходит на прод и забирает копии (pull). Обратное направление
-# положило бы ключ с правом записи на прод: кто получил прод — стёр бы и архив.
+# Хранилище само ходит на прод и снимает копию (pull), сервер её у себя не
+# хранит вовсе. Обратное направление положило бы ключ с правом записи на прод:
+# кто получил прод — стёр бы и архив. Расписание живёт на хранилище.
 
-backup-cron: ## Ночной снимок по расписанию на проде (SERVER=deploy@host)
-	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)
-	ssh $(SERVER) 'bash -s' < infra/backup/cron-install.sh
-
-backup-storage: ## Настроить машину-хранилище (STORAGE=user@host SERVER=deploy@прод)
+backup-storage: ## Настроить хранилище (STORAGE=user@host SERVER=deploy@прод KEY=закрытый ключ)
 	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host прода"; exit 1)
-	scp infra/backup/pull.sh infra/backup/storage-setup.sh $(STORAGE):
-	ssh $(STORAGE) "bash storage-setup.sh '$(SERVER)'"
+	@test -n "$(KEY)" || (echo "Укажите KEY=~/noova-backup/backup-private.pem — хранилище проверяет копии само"; exit 1)
+	@test -f "$(KEY)" || (echo "Нет файла $(KEY)"; exit 1)
+	scp infra/backup/pull.sh infra/backup/storage-verify.sh infra/backup/storage-prune.sh \
+		infra/backup/storage-setup.sh $(STORAGE):
+	scp '$(KEY)' $(STORAGE):backup-private.pem
+	ssh $(STORAGE) "chmod 600 backup-private.pem && bash storage-setup.sh '$(SERVER)'"
+
+backup-storage-verify: ## Проверить копию на хранилище вручную (STORAGE=user@host [STAMP=…])
+	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
+	ssh $(STORAGE) "bash storage-verify.sh '$(STAMP)'"
 
 backup-allow-pull: ## Разрешить хранилищу забирать копии (SERVER=… KEY='ssh-ed25519 …')
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host прода"; exit 1)
@@ -181,7 +181,7 @@ backup-allow-pull: ## Разрешить хранилищу забирать к�
 
 backup-storage-check: ## Что лежит на хранилище и как прошла последняя ночь (STORAGE=user@host)
 	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
-	ssh $(STORAGE) 'ls -lh ~/backups | tail -8; echo; tail -5 ~/noova-pull.log'
+	ssh $(STORAGE) 'ls -lh ~/backups; echo; cat ~/backups/*.ok 2>/dev/null; echo; tail -12 ~/noova-pull.log'
 
 backup-open: ## Расшифровать копию (FILE=…​.enc KEY=~/noova-backup/backup-private.pem)
 	@test -n "$(FILE)" || (echo "Укажите FILE=путь.enc"; exit 1)
@@ -196,12 +196,16 @@ backup-verify: ## Проверить копию восстановлением �
 	@test -n "$(FILE)" || (echo "Укажите FILE=путь к расшифрованному дампу"; exit 1)
 	./infra/backup/verify.sh '$(FILE)'
 
-backup: ## Сделать дамп БД прямо сейчас
-	docker compose exec -T backup /bin/sh /scripts/backup.sh
+backup: ## Дамп локальной БД разработки в backups/ (на сервере копий не держим)
+	@mkdir -p backups
+	@STAMP=$$(date -u +%Y%m%dT%H%M%SZ); \
+		docker compose -f docker-compose.dev.yml exec -T postgres sh -c \
+			'pg_dump -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" --format=plain --no-owner --no-acl --clean --if-exists' \
+		| gzip -9 > backups/noova-$$STAMP.sql.gz && echo "backups/noova-$$STAMP.sql.gz"
 
-restore: ## Восстановить из дампа: make restore DUMP=backups/noova-<stamp>.sql.gz
+restore: ## Восстановить БД из расшифрованного дампа (DUMP=путь.sql.gz)
 	@test -n "$(DUMP)" || (echo "Укажите DUMP=путь"; exit 1)
-	docker compose exec -T postgres /bin/sh /scripts/restore.sh /$(DUMP)
+	./infra/backup/restore.sh '$(DUMP)'
 
 restore-media: ## Восстановить фотографии: make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
 	@test -n "$(ARCHIVE)" || (echo "Укажите ARCHIVE=путь"; exit 1)

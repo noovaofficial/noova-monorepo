@@ -140,13 +140,14 @@ make deploy SERVER=deploy@<новый>
 
 make backup-open FILE=~/noova-backup/noova-<stamp>.sql.gz.enc \
                  KEY=~/noova-backup/backup-private.pem
-scp ~/noova-backup/noova-<stamp>.sql.gz deploy@<новый>:noova/backups/
+scp ~/noova-backup/noova-<stamp>.sql.gz deploy@<новый>:noova/
 scp ~/noova-backup/noova-media-<stamp>.tar.gz deploy@<новый>:noova/
 
 ssh deploy@<новый>
 cd ~/noova
-make restore DUMP=backups/noova-<stamp>.sql.gz
+./infra/backup/restore.sh noova-<stamp>.sql.gz
 make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
+rm -f noova-<stamp>.sql.gz noova-media-<stamp>.tar.gz   # открытые копии на сервере не оставляем
 
 ssh deploy@<релей> 'sudo ufw allow from <новый IP> to any port 587 proto tcp'
 ```

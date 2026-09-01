@@ -189,6 +189,27 @@ retry scp -q docker-compose.yml "$SERVER:$REMOTE_DIR/"
 retry scp -q infra/caddy/Caddyfile "$SERVER:$REMOTE_DIR/infra/caddy/"
 retry scp -q infra/backup/*.sh "$SERVER:$REMOTE_DIR/infra/backup/"
 
+step "Дамп базы перед миграциями"
+# Раньше дамп снимался на самом сервере, в контейнер `backup`. Теперь копий
+# на сервере не держим, поэтому дамп уезжает сюда потоком. Только база:
+# архив фотографий на выпуске не нужен, а весит много.
+#
+# Неудача здесь выпуск не останавливает: ночная копия на хранилище есть, а
+# ради страховки блокировать выкладку смысла нет.
+if ssh "$SERVER" "test -f $REMOTE_DIR/backup-public.pem" 2>/dev/null; then
+  mkdir -p backups
+  PRE="backups/pre-deploy-$(date -u +%Y%m%dT%H%M%SZ).sql.gz.enc"
+  if ssh "$SERVER" "cd $REMOTE_DIR && bash infra/backup/stream.sh db" > "$PRE.partial"; then
+    mv "$PRE.partial" "$PRE"
+    printf '  ✓ %s\n' "$PRE"
+  else
+    rm -f "$PRE.partial"
+    printf '\033[33m  ! дамп не снят — выпуск продолжается\033[0m\n'
+  fi
+else
+  printf '\033[33m  ! на сервере нет backup-public.pem — дамп пропущен\033[0m\n'
+fi
+
 # ---------------------------------------------------------------------------
 # Запуск. Всё, что дальше, выполняется на сервере одним сеансом: разрывать
 # его на отдельные ssh-вызовы значит терять состояние между шагами.
@@ -201,16 +222,6 @@ REMOTE_DIR="$1"; PREFIX="$2"; TAG="$3"; TIMEOUT="$4"
 cd "$REMOTE_DIR"
 
 PREV_TAG="$(grep -E '^IMAGE_TAG=' .env | tail -1 | cut -d= -f2- || true)"
-
-# Дамп перед миграциями. Только если стек уже поднимался: на первом выпуске
-# контейнера backup ещё нет, и падать из-за этого незачем.
-if docker compose ps --status running --services 2>/dev/null | grep -qx backup; then
-  echo "Дамп базы перед миграциями…"
-  # </dev/null обязателен: этот блок уезжает heredoc'ом в `bash -s`, и без
-  # перенаправления `exec -T` вычитает остаток heredoc'а себе — запуск,
-  # ожидание healthy и сверка образов просто не выполнятся, а ssh вернёт ноль.
-  docker compose exec -T backup /bin/sh /scripts/backup.sh </dev/null || echo "! Дамп не снят — смотрите логи backup"
-fi
 
 # Тег уже записан на шаге переноса — вместе с образами, одним сеансом.
 # Здесь только сверяем, что дошло ожидаемое: расхождение означает, что

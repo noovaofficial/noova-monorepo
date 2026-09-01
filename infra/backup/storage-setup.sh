@@ -20,8 +20,18 @@ HOST="${FROM#*@}"
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 PULL="$HERE/pull.sh"
-[ -f "$PULL" ] || fail "Рядом нет pull.sh — везите оба файла: make backup-storage"
-chmod +x "$PULL"
+for F in pull.sh storage-verify.sh storage-prune.sh; do
+	[ -f "$HERE/$F" ] || fail "Рядом нет $F — везите скрипты целиком: make backup-storage"
+	chmod +x "$HERE/$F"
+done
+
+# Закрытый ключ. Без него копию не проверить, а непроверенная копия — не
+# копия, поэтому настройка без ключа не имеет смысла и здесь прерывается.
+PRIVATE="${PULL_PRIVATE_KEY:-$HOME/backup-private.pem}"
+[ -f "$PRIVATE" ] || fail "Нет закрытого ключа $PRIVATE.
+  Он нужен здесь, чтобы проверять копии без участия человека.
+  Привезти: make backup-storage STORAGE=… SERVER=… KEY=~/noova-backup/backup-private.pem"
+chmod 600 "$PRIVATE"
 
 KEY="$HOME/.ssh/noova-pull"
 DEST="${PULL_DEST:-$HOME/backups}"
@@ -65,7 +75,10 @@ cat > "$CONF" <<CONFEOF
 PULL_FROM=$FROM
 PULL_KEY=$KEY
 PULL_DEST=$DEST
-PULL_KEEP_DAYS=${PULL_KEEP_DAYS:-30}
+PULL_PRIVATE_KEY=$PRIVATE
+# Сколько ежедневных копий держать. Сверх них ротация оставляет одну
+# недельную и одну месячную — см. storage-prune.sh.
+PULL_KEEP_DAILY=${PULL_KEEP_DAILY:-2}
 PULL_MIN_FRESH_HOURS=${PULL_MIN_FRESH_HOURS:-26}
 # Необязательно: URL внешнего монитора, пинг уходит только при успехе.
 PULL_PING_URL=${PULL_PING_URL:-}
@@ -87,3 +100,5 @@ ssh-keygen -F "$HOST" -l | sed 's/^/  /' || true
 printf '\nТеперь у себя на машине выполните:\n\n'
 printf '  make backup-allow-pull SERVER=%s KEY=%s\n\n' "$FROM" "'$(cat "$KEY.pub")'"
 printf 'После этого проверьте вручную:\n  bash %s\n' "$PULL"
+printf '\nХранение: %s ежедневных + недельная + месячная.\n' "${PULL_KEEP_DAILY:-2}"
+printf 'Лишнее удаляется только после успешной проверки свежей копии.\n'

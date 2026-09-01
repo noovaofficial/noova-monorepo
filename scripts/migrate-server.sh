@@ -86,16 +86,22 @@ mkdir -p "$DIR"
 # ---------------------------------------------------------------------------
 step "1/7 Снимок со старого сервера"
 # ---------------------------------------------------------------------------
-# Снимок делается тем же скриптом, что и обычный бэкап: сначала база, потом
-# фотографии. Порядок не случаен — снимок между ними добавит файл без строки
-# в базе (безвредно), обратный порядок дал бы строку без файла.
-$SSH "$FROM" "cd $REMOTE_DIR && bash -s" < infra/backup/snapshot.sh
-scp -q "$FROM:$REMOTE_DIR/backups/*.enc" "$DIR/"
-ok "забрано в $DIR"
+# Снимок идёт потоком прямо сюда: на сервере копии не хранятся, забирать
+# оттуда нечего. Сначала база, потом фотографии — порядок не случаен: снимок
+# между ними добавит файл без строки в базе (безвредно), обратный порядок дал
+# бы строку без файла, то есть битую анкету.
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+DUMP_ENC="$DIR/noova-${STAMP}.sql.gz.enc"
+MEDIA_ENC="$DIR/noova-media-${STAMP}.tar.gz.enc"
 
-DUMP_ENC="$(ls -t "$DIR"/noova-*.sql.gz.enc | head -1)"
-MEDIA_ENC="$(ls -t "$DIR"/noova-media-*.tar.gz.enc | head -1)"
-[ -n "$DUMP_ENC" ] && [ -n "$MEDIA_ENC" ] || fail "В $DIR нет пары дамп+фотографии"
+$SSH "$FROM" "cd $REMOTE_DIR && bash infra/backup/stream.sh db" > "$DUMP_ENC.partial" \
+  || { rm -f "$DUMP_ENC.partial"; fail "Снимок базы не удался"; }
+mv "$DUMP_ENC.partial" "$DUMP_ENC"
+
+$SSH "$FROM" "cd $REMOTE_DIR && bash infra/backup/stream.sh media" > "$MEDIA_ENC.partial" \
+  || { rm -f "$MEDIA_ENC.partial" "$DUMP_ENC"; fail "Снимок фотографий не удался"; }
+mv "$MEDIA_ENC.partial" "$MEDIA_ENC"
+ok "снято в $DIR"
 
 for f in "$DUMP_ENC" "$MEDIA_ENC"; do
   openssl smime -decrypt -binary -inform DER -in "$f" -inkey "$KEY" -out "${f%.enc}"
