@@ -105,10 +105,18 @@ make backup-fetch SERVER=deploy@<IP> DIR=~/noova-backup
 Порядок (сначала `make deploy-files`, чтобы скрипты были на сервере):
 
 ```bash
-make backup-storage STORAGE=<user>@<IP хранилища> SERVER=deploy@<IP прода> \
+ssh-copy-id -i ~/.ssh/<ваш ключ>.pub root@<IP хранилища>   # до всего остального
+make server-setup SERVER=root@<IP хранилища> ROLE=storage
+make backup-storage STORAGE=deploy@<IP хранилища> SERVER=deploy@<IP прода> \
     KEY=~/noova-backup/backup-private.pem
 make backup-allow-pull SERVER=deploy@<IP прода> KEY='ssh-ed25519 … noova-pull'
 ```
+
+`ROLE=storage` — та же подготовка машины, что и для прода (пользователь
+`deploy`, вход только по ключу, root и пароли закрыты, своп), но без Docker и
+без открытых 80/443: контейнеров здесь нет, публиковать нечего, а лишний порт
+на машине с закрытым ключом — площадь атаки в обмен ни на что. Заодно
+доставляются `cron`, `openssl` и `curl`, без которых копии молча не поедут.
 
 Расписания на сервере нет: снимок инициирует хранилище, у него же и крон.
 

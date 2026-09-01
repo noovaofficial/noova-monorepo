@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 #
-# Подготовка чистого сервера: пользователь, SSH, Docker, периметр, своп.
-# Повторяет шаги 1–5 из documentation/deploy/server.md §3.
+# Подготовка чистого сервера: пользователь, SSH, периметр, своп и — для
+# прикладной машины — Docker. Повторяет шаги 1–5 из
+# documentation/deploy/server.md §3.
 #
 #   ssh root@<IP> 'bash -s' < infra/server/setup.sh
+#   ssh root@<IP> 'ROLE=storage bash -s' < infra/server/setup.sh
+#
+# Две роли, потому что машины разные:
+#
+#   app     (по умолчанию) — здесь работает стек: нужен Docker, открыты 80 и 443.
+#   storage — машина-хранилище копий: ни контейнеров, ни веб-портов. Docker ей
+#             не нужен (проверка копий идёт потоком, без Postgres), а лишний
+#             открытый порт на машине, где лежит закрытый ключ шифрования, —
+#             это площадь атаки в обмен ни на что.
 #
 # Шага 0 здесь нет намеренно: свой ключ на сервер кладут ДО запуска этого
 # скрипта, командой `ssh-copy-id`. Иначе скрипт выключит парольный вход, а
@@ -15,12 +25,17 @@ set -euo pipefail
 
 USER_NAME="${DEPLOY_USER:-deploy}"
 SWAP_MB="${SWAP_MB:-2048}"
+ROLE="${ROLE:-app}"
 
 say() { printf '\033[36m▸ %s\033[0m\n' "$1"; }
 ok() { printf '  ✓ %s\n' "$1"; }
 fail() { printf '\033[31m✗ %s\033[0m\n' "$1" >&2; exit 1; }
 
 [ "$(id -u)" -eq 0 ] || fail "Запускать от root: ssh root@<IP> 'bash -s' < infra/server/setup.sh"
+case "$ROLE" in
+  app|storage) ;;
+  *) fail "ROLE=$ROLE — допустимо app или storage" ;;
+esac
 
 # ---------------------------------------------------------------------------
 # Проверка до изменений: есть ли чем заходить после того, как пароли выключат.
@@ -32,7 +47,7 @@ if [ ! -s "$ROOT_KEYS" ]; then
   Сначала, со своей машины: ssh-copy-id -i ~/.ssh/<ключ>.pub root@<IP>
   Без этого скрипт выключит парольный вход, и зайти будет нечем."
 fi
-ok "ключ root на месте ($(grep -c . "$ROOT_KEYS") шт.)"
+ok "ключ root на месте ($(grep -c . "$ROOT_KEYS") шт.), роль: $ROLE"
 
 # ---------------------------------------------------------------------------
 say "1. Пользователь $USER_NAME"
@@ -92,14 +107,40 @@ ok "root и пароли закрыты, проверено по sshd -T"
 
 # ---------------------------------------------------------------------------
 say "3. Docker"
-if command -v docker >/dev/null 2>&1; then
+if [ "$ROLE" = storage ]; then
+  # Хранилищу контейнеры не нужны: снимок приходит потоком, а проверка копии
+  # обходится openssl, gzip и tar. Ставить сюда Docker значит расширять
+  # поверхность машины ради ничего.
+  ok "роль storage — пропускаю"
+elif command -v docker >/dev/null 2>&1; then
   ok "уже установлен ($(docker --version))"
 else
   curl -fsSL https://get.docker.com | sh
   ok "установлен"
 fi
-usermod -aG docker "$USER_NAME"
-ok "$USER_NAME добавлен в группу docker"
+if [ "$ROLE" = app ]; then
+  usermod -aG docker "$USER_NAME"
+  ok "$USER_NAME добавлен в группу docker"
+fi
+
+# Хранилищу нужны cron (расписание снимков), openssl (шифрование и проверка)
+# и curl (пинг монитору). На минимальных образах их может не быть, а узнается
+# это далеко не сразу — первой пропущенной ночью.
+if [ "$ROLE" = storage ]; then
+  MISSING=""
+  for C in crontab openssl curl; do
+    command -v "$C" >/dev/null 2>&1 || MISSING="$MISSING $C"
+  done
+  if [ -n "$MISSING" ]; then
+    apt-get update -qq
+    # crontab лежит в пакете cron — имена не совпадают.
+    apt-get install -y -qq $(printf '%s' "$MISSING" | sed 's/crontab/cron/') >/dev/null
+    systemctl enable --now cron >/dev/null 2>&1 || true
+    ok "доустановлено:$MISSING"
+  else
+    ok "cron, openssl и curl на месте"
+  fi
+fi
 
 # ---------------------------------------------------------------------------
 say "4. Периметр"
@@ -107,10 +148,16 @@ say "4. Периметр"
 # отправляет и портов не публикует.
 if command -v ufw >/dev/null 2>&1; then
   ufw allow 22/tcp >/dev/null
-  ufw allow 80/tcp >/dev/null
-  ufw allow 443/tcp >/dev/null
+  if [ "$ROLE" = app ]; then
+    ufw allow 80/tcp >/dev/null
+    ufw allow 443/tcp >/dev/null
+    OPENED="открыты 22, 80, 443"
+  else
+    # Хранилище ничего не публикует: оно само ходит на прод по ssh.
+    OPENED="открыт только 22"
+  fi
   ufw --force enable >/dev/null
-  ok "открыты 22, 80, 443"
+  ok "$OPENED"
 else
   printf '  ! ufw не установлен — периметр не настроен\n'
 fi
@@ -130,7 +177,11 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-printf '\n\033[32mСервер готов.\033[0m Дальше:\n'
+printf '\n\033[32mМашина готова (роль %s).\033[0m Дальше:\n' "$ROLE"
 printf '  1. passwd %s          — пароль для sudo, если ещё не задан\n' "$USER_NAME"
 printf '  2. ssh %s@<IP>        — проверить ВТОРЫМ окном, не закрывая текущее\n' "$USER_NAME"
-printf '  3. .env на сервере    — infra/server/make-env.sh\n'
+if [ "$ROLE" = app ]; then
+  printf '  3. .env на сервере    — infra/server/make-env.sh\n'
+else
+  printf '  3. make backup-storage STORAGE=%s@<IP> SERVER=deploy@<прод> KEY=~/noova-backup/backup-private.pem\n' "$USER_NAME"
+fi

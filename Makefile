@@ -83,9 +83,9 @@ images-ship: images ## Отправить образы прямо на серв�
 # Первый шаг руками намеренно: без ключа root скрипт откажется закрывать
 # парольный вход, и это правильно — иначе машина закроется снаружи.
 
-server-setup: ## Подготовить чистый сервер: пользователь, SSH, Docker, ufw, своп (SERVER=root@host)
+server-setup: ## Подготовить чистую машину (SERVER=root@host [ROLE=app|storage])
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=root@host"; exit 1)
-	ssh $(SERVER) 'bash -s' < infra/server/setup.sh
+	ssh $(SERVER) "ROLE='$(ROLE)' bash -s" < infra/server/setup.sh
 
 server-env: ## Создать .env на сервере (SERVER=deploy@host DOMAIN=noova.cc EMAIL=admin@…)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=deploy@host"; exit 1)

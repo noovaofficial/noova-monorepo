@@ -234,7 +234,10 @@ ACTUAL_TAG="$(grep -E '^IMAGE_TAG=' .env | tail -1 | cut -d= -f2-)"
 
 # --no-build обязателен: исходников на сервере нет, и без флага compose
 # молча попытался бы собрать образ сам.
-docker compose up -d --no-build
+# --remove-orphans: удалённый из compose сервис иначе продолжает работать —
+# compose лишь предупреждает о нём. Так снятый контейнер `backup` ещё сутками
+# писал бы дампы на диск сервера, где копий быть не должно.
+docker compose up -d --no-build --remove-orphans
 
 echo "Жду готовности api и web (до ${TIMEOUT}с)…"
 deadline=$(( $(date +%s) + TIMEOUT ))

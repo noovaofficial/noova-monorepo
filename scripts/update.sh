@@ -26,5 +26,9 @@ if [ -n "$NEWEST" ] && [ "$NEWEST" != "$TAG" ]; then
   printf '  Переключиться: sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=%s/" .env && make update\033[0m\n\n' "$NEWEST"
 fi
 
-docker compose up -d --no-build
+# --remove-orphans: удалённый из compose сервис иначе продолжает работать —
+# compose лишь предупреждает о «лишнем» контейнере и оставляет его жить. Так
+# после отказа от контейнера `backup` он ещё сутками писал бы дампы на диск
+# сервера, где копий быть не должно.
+docker compose up -d --no-build --remove-orphans
 docker compose ps --format 'table {{.Service}}\t{{.Status}}'
