@@ -122,3 +122,55 @@
   color: var(--tertiaryText);
   line-height: var(--leadingNormal);
 }
+
+/* Внутренняя валюта: карточка перед тарифами. Цена в GlowCoin ничего не
+   значит, пока не сказано, что это и почём — поэтому объяснение стоит
+   выше цифр, а не сноской под ними. */
+.currency {
+  display: flex;
+  gap: var(--space4);
+  padding: var(--space5);
+  margin-bottom: var(--space6);
+  background: var(--featuredSubtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.currencyIcon {
+  flex: none;
+  color: var(--featured);
+}
+
+.currencyName {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space1);
+}
+
+/* Тикер и курс — одной строкой: это справочная приписка к названию,
+   и отдельным абзацем она весит больше, чем стоит. */
+.currencyMeta {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space2);
+}
+
+.currencyTicker {
+  font-weight: 600;
+  color: var(--primaryText);
+}
+
+.currencyText {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  margin: 0;
+}
+
+/* Цена в GlowCoin — основная единица, € под ней справочный ориентир
+   (payments.md §6). Порядок строк повторяет этот порядок важности. */
+.planPriceEur {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+  margin-top: 2px;
+}

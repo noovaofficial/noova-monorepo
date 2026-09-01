@@ -5,11 +5,13 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import { fetchQueueCount } from '@/modules/moderation/api';
 import { isStaffRole, sectionsFor } from '@/modules/moderation/staff-sections';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './HeaderActions.module.css';
+import { MenuIcon } from './icons';
 
 export function HeaderActions() {
   const t = useTranslations('nav');
@@ -102,6 +104,7 @@ export function HeaderActions() {
                 Порядок и подписи обязаны совпадать: это одни и те же разделы. */}
             {sectionsFor(user?.role).map((section) => (
               <Link key={section.key} href={section.href} className={styles.item} role="menuitem">
+                <MenuIcon name={section.key} className={styles.itemIcon} />
                 {ta(section.key)}
                 {section.key === 'moderation' && queueCount > 0 ? (
                   <span className={styles.queueBadge}>{queueCount}</span>
@@ -110,13 +113,24 @@ export function HeaderActions() {
             ))}
 
             {user?.role === 'advertiser' ? (
-              <Link href="/account/profiles" className={styles.item} role="menuitem">
-                {ta('myProfiles')}
-              </Link>
+              <>
+                <Link href="/account/profiles" className={styles.item} role="menuitem">
+                  <MenuIcon name="myProfiles" className={styles.itemIcon} />
+                  {ta('myProfiles')}
+                </Link>
+                {/* Кошелёк — рядом с анкетами, а не под настройками: анкета без
+                    оплаченного срока не публикуется, и путь к пополнению должен
+                    быть в одном движении с путём к анкетам. */}
+                <Link href="/account/glowcoin" className={styles.item} role="menuitem">
+                  <GlowCoinIcon className={styles.itemCoin} size={16} />
+                  {ta('myGlowcoin')}
+                </Link>
+              </>
             ) : null}
 
             {user?.role === 'client' ? (
               <Link href="/account/favorites" className={styles.item} role="menuitem">
+                <MenuIcon name="favorites" className={styles.itemIcon} />
                 {ta('favorites')}
               </Link>
             ) : null}
@@ -125,12 +139,14 @@ export function HeaderActions() {
                 записи, а сотрудников заводит и убирает администратор. */}
             {isStaff ? null : (
               <Link href="/account/settings" className={styles.item} role="menuitem">
+                <MenuIcon name="settings" className={styles.itemIcon} />
                 {ta('settings')}
               </Link>
             )}
 
             <div className={styles.separator} />
             <button type="button" className={styles.item} role="menuitem" onClick={onSignOut}>
+              <MenuIcon name="logout" className={styles.itemIcon} />
               {ta('logout')}
             </button>
           </div>

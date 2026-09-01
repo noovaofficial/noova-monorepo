@@ -69,8 +69,11 @@
   z-index: var(--zOverlay);
 }
 
+/* Строка меню: значок, подпись, при необходимости счётчик у правого края. */
 .item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
   width: 100%;
   text-align: left;
   padding: 9px 12px;
@@ -121,8 +124,10 @@
   flex: none;
 }
 
+/* Счётчик прижат к правому краю строки: у пунктов разной длины он иначе
+   вставал бы в разных местах и перестал бы читаться как один столбец. */
 .queueBadge {
-  float: right;
+  margin-left: auto;
   min-width: 18px;
   height: 18px;
   padding: 0 5px;
@@ -133,4 +138,22 @@
   font-weight: 700;
   text-align: center;
   line-height: 18px;
+}
+
+/* Значки строк меню наследуют цвет подписи и подсвечиваются вместе с ней:
+   свой цвет сделал бы их вторым уровнем внимания, которого у них нет. */
+.itemIcon {
+  flex: none;
+  opacity: 0.75;
+}
+
+.item:hover .itemIcon {
+  opacity: 1;
+}
+
+/* Монета GlowCoin — исключение: это знак валюты, и в сером виде он теряет
+   единственное, чем отличается от прочих значков. */
+.itemCoin {
+  flex: none;
+  color: var(--featured);
 }

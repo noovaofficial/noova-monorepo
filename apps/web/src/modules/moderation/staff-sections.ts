@@ -11,7 +11,14 @@ import type { UserRole } from '@noova/shared';
  * совпадать, иначе один и тот же раздел называется в шапке и в меню по-разному.
  */
 export type StaffSection = {
-  key: 'moderation' | 'staff' | 'allUsers' | 'log' | 'locations' | 'serviceCatalog';
+  key:
+    | 'moderation'
+    | 'staff'
+    | 'allUsers'
+    | 'log'
+    | 'locations'
+    | 'serviceCatalog'
+    | 'monetization';
   href: string;
   /** Состав персонала и состав стран — решения владельца, не оператора очереди. */
   adminOnly?: boolean;
@@ -24,6 +31,9 @@ export const STAFF_SECTIONS: StaffSection[] = [
   { key: 'log', href: '/moderation/log' },
   { key: 'locations', href: '/admin/locations', adminOnly: true },
   { key: 'serviceCatalog', href: '/admin/services', adminOnly: true },
+  // Цены и бонусы — деньги проекта, а не операционная работа очереди:
+  // модератор их не видит и не меняет.
+  { key: 'monetization', href: '/admin/monetization', adminOnly: true },
 ];
 
 export const isStaffRole = (role?: UserRole): boolean => role === 'moderator' || role === 'admin';

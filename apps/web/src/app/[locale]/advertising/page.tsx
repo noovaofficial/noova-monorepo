@@ -1,19 +1,26 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
+import { gcToEur, MIN_PLAN_GC } from '@/modules/billing/pricing';
 import styles from '@/modules/content/components/ContentPage/ContentPage.module.css';
 import { Link } from '@/shared/i18n/navigation';
 
 type Props = { params: Promise<{ locale: string }> };
 
 /**
- * Тарифы размещения. Числа держим здесь, а не в словарях: цена одна на все
- * языки, и три копии в трёх файлах однажды разойдутся — в одном из них
+ * Тарифы размещения. Числа берём из общего прайса, а не из словарей: цена одна
+ * на все языки, и три копии в трёх файлах однажды разойдутся — в одном из них
  * останется старая.
+ *
+ * Показываем только нижнюю границу — месячный срок. Полная сетка (сроки,
+ * доп.анкеты агентства, бонусная лестница пополнений) живёт в кабинете перед
+ * оплатой: на витрине она превращает страницу в прайс-лист и ничего не
+ * объясняет тому, кто ещё выбирает.
  */
 const PLANS = [
-  { key: 'individual', price: 10 },
-  { key: 'salon', price: 30 },
-  { key: 'agency', price: 50 },
+  { key: 'individual', gc: MIN_PLAN_GC.individual },
+  { key: 'salon', gc: MIN_PLAN_GC.salon },
+  { key: 'agency', gc: MIN_PLAN_GC.agency },
 ] as const;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -40,14 +47,27 @@ export default async function AdvertisingPage({ params }: Props) {
       <h1 className={styles.title}>{t('title')}</h1>
       <p className={styles.lead}>{t('lead')}</p>
 
+      <div className={styles.currency}>
+        <GlowCoinIcon className={styles.currencyIcon} size={40} />
+        <div>
+          <div className={styles.currencyName}>{t('currencyName')}</div>
+          <div className={styles.currencyMeta}>
+            <span className={styles.currencyTicker}>{t('currencyTicker')}</span> ·{' '}
+            {t('currencyRate')}
+          </div>
+          <p className={styles.currencyText}>{t('currencyText')}</p>
+        </div>
+      </div>
+
       <div className={styles.plans}>
         {PLANS.map((plan) => (
           <div className={styles.plan} key={plan.key}>
             <div className={styles.planName}>{t(`plan_${plan.key}`)}</div>
             <div className={styles.planPrice}>
-              {t('price', { amount: plan.price })}
+              {t('priceFrom', { amount: plan.gc })}
               <span className={styles.planPeriod}> {t('perMonth')}</span>
             </div>
+            <div className={styles.planPriceEur}>{t('priceEur', { amount: gcToEur(plan.gc) })}</div>
           </div>
         ))}
       </div>

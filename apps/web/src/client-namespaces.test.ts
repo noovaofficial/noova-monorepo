@@ -66,6 +66,7 @@ describe('разделы словаря для браузера', () => {
     const allowed: Record<string, RegExp> = {
       account: /^modules\/account\//,
       settings: /^modules\/account\//,
+      billing: /^modules\/billing\//,
       admin: /^modules\/moderation\//,
       moderation: /^modules\/moderation\//,
       locations: /^modules\/locations\//,

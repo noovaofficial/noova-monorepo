@@ -107,3 +107,46 @@
   font-size: var(--textSm);
   color: var(--secondaryText);
 }
+
+/* Подписка: пары «что — сколько». Описательный список, а не таблица —
+   строк три, и таблица здесь была бы разметкой ради разметки. */
+.rows {
+  margin: 0 0 var(--space4);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space4);
+  padding: var(--space2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowLabel {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.rowValue {
+  margin: 0;
+  font-size: var(--textSm);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Остаток дней — приписка к дате, а не второе значение: одним весом
+   они спорили бы за внимание. */
+.rowHint {
+  font-weight: 400;
+  color: var(--tertiaryText);
+}
+
+.rowLink {
+  font-size: var(--textSm);
+  color: var(--link);
+}

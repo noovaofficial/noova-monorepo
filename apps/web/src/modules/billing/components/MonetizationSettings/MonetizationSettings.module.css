@@ -1,0 +1,193 @@
+.wrap {
+  max-width: 860px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space3);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.lead {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin-bottom: var(--space4);
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  margin-bottom: var(--space5);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+  background: var(--warningSubtle);
+  color: var(--warning);
+}
+
+.section {
+  padding: var(--space5);
+  margin-bottom: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space2);
+}
+
+.hint {
+  font-size: var(--textXs);
+  line-height: var(--leadingNormal);
+  color: var(--tertiaryText);
+  margin-bottom: var(--space4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.input {
+  font: inherit;
+  font-size: var(--textSm);
+  font-variant-numeric: tabular-nums;
+  padding: 8px 10px;
+  width: 100%;
+  color: var(--primaryText);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.input:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.static {
+  font-size: var(--textSm);
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+/* Валюта: название и тикер не редактируются, курс редактируется. Три поля
+   в ряд, потому что читаются они вместе — «GlowCoin, GC, 10 за евро». */
+.currencyRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space4);
+}
+
+/* Таблицы прайса и лестницы — сетка, а не <table>: часть колонок вычисляемые,
+   и им нужна своя подпись под значением, чего ячейка таблицы не даёт даром. */
+.grid {
+  display: grid;
+  gap: var(--space3);
+  /* По верхнему краю: под полем цены стоит подпись «€/мес», и по нижнему
+     краю название типа размещения вставало бы вровень с ней, а не с полем. */
+  align-items: start;
+}
+
+.tiers {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.prices {
+  grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(0, 1fr));
+}
+
+/* Доп. анкета одна, и колонка с её названием повторяла бы заголовок раздела. */
+.seats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Шапка сетки видна, пока колонки стоят в ряд. На телефоне колонок нет,
+   и подпись переезжает в саму ячейку — иначе значения превращаются
+   в столбик чисел без смысла. */
+.gridHead {
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+  padding-bottom: var(--space1);
+}
+
+/* Строка сетки — обёртка ради ключа React, а не ради разметки: `contents`
+   убирает её из раскладки, и ячейки остаются детьми самой сетки. */
+.rowGroup {
+  display: contents;
+}
+
+.kind {
+  font-size: var(--textSm);
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+.computed {
+  font-size: var(--textSm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 8px 0;
+}
+
+.sub {
+  display: block;
+  font-size: var(--textXs);
+  font-weight: 400;
+  color: var(--tertiaryText);
+}
+
+.cellLabel {
+  display: none;
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: var(--tertiaryText);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+@media (max-width: 700px) {
+  /* Одна колонка: четыре поля в ряд на телефоне ужимаются до нечитаемых
+     двух символов, а горизонтальная прокрутка внутри формы теряет строки. */
+  .tiers,
+  .prices,
+  .seats {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .gridHead {
+    display: none;
+  }
+
+  .cellLabel {
+    display: block;
+  }
+}

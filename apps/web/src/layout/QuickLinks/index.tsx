@@ -38,6 +38,9 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
           ...(user.advertiserKind === 'agency'
             ? [{ href: '/account/company', label: t('quickCompany') }]
             : []),
+          // Кошелёк — всем трём типам размещения: платят одинаково, разница
+          // только в цене срока.
+          { href: '/account/glowcoin', label: t('quickGlowcoin') },
           { href: '/account/profiles', label: t('quickAnalytics'), disabled: true },
         ]
       : [];
