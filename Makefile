@@ -181,7 +181,11 @@ backup-allow-pull: ## Разрешить хранилищу забирать к�
 
 backup-storage-check: ## Что лежит на хранилище и как прошла последняя ночь (STORAGE=user@host)
 	@test -n "$(STORAGE)" || (echo "Укажите STORAGE=user@host хранилища"; exit 1)
-	ssh $(STORAGE) 'ls -lh ~/backups; echo; cat ~/backups/*.ok 2>/dev/null; echo; tail -12 ~/noova-pull.log'
+	@ssh $(STORAGE) 'ls -lh ~/backups; \
+		echo; cat ~/backups/*.ok 2>/dev/null; \
+		if ls ~/backups/*.bad >/dev/null 2>&1; then echo; echo "! ЕСТЬ КОПИИ, НЕ ПРОШЕДШИЕ ПРОВЕРКУ:"; ls -1 ~/backups/*.bad; fi; \
+		echo; crontab -l 2>/dev/null | grep pull.sh || echo "! расписание не установлено"; \
+		echo; tail -12 ~/noova-pull.log 2>/dev/null || echo "журнала ещё нет — по расписанию не запускалось ни разу"'
 
 backup-open: ## Расшифровать копию (FILE=…​.enc KEY=~/noova-backup/backup-private.pem)
 	@test -n "$(FILE)" || (echo "Укажите FILE=путь.enc"; exit 1)
