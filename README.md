@@ -96,17 +96,15 @@ make help             # весь список
 
 ## Развёртывание на сервере
 
-Руководство разбито на три части:
+Точка входа — [documentation/deploy/README.md](documentation/deploy/README.md):
+порядок первого развёртывания и ссылки на остальное.
 
-- [documentation/deploy/entryPoint.md](documentation/deploy/entryPoint.md) — порядок
-  действий, база, бэкапы. Точка входа.
-- [documentation/deploy/server.md](documentation/deploy/server.md) — провайдер, DNS,
-  подготовка машины.
-- [documentation/deploy/release.md](documentation/deploy/release.md) — `.env` и выпуск.
-- [documentation/deploy/mail.md](documentation/deploy/mail.md) — почтовый релей на
-  отдельной машине.
-- [documentation/deploy/migration.md](documentation/deploy/migration.md) — переезд на
-  другой домен или сервер.
+- [vps.md](documentation/deploy/vps.md) — подготовка машин: Prod, SMTP, Backup.
+- [prod.md](documentation/deploy/prod.md) — `.env` и выпуск прода.
+- [smtp.md](documentation/deploy/smtp.md) — почтовый релей.
+- [backup.md](documentation/deploy/backup.md) — резервные копии.
+- [migration.md](documentation/deploy/migration.md) — переезд на другой домен
+  или сервер.
 
 Коротко:
 
@@ -174,7 +172,7 @@ make backup-allow-pull SERVER=deploy@<IP прода> KEY='ssh-ed25519 … noova-
 ```bash
 make backup-fetch SERVER=deploy@<IP> DIR=~/noova-backup   # разово, себе
 make backup-check DIR=~/noova-backup                      # проверить у себя
-make restore DUMP=~/noova-backup/noova-<stamp>.sql.gz     # разрушительно
+make backup-storage-check STORAGE=deploy@<IP хранилища>   # как прошла ночь
 ```
 
 Две вещи, о которых стоит помнить:
@@ -189,7 +187,7 @@ make restore DUMP=~/noova-backup/noova-<stamp>.sql.gz     # разрушител
 > `backups/` в git не попадает и на сервере не используется — он остаётся
 > только как локальный каталог разработки.
 
-Подробности и разбор неполадок — [entryPoint.md](documentation/deploy/entryPoint.md).
+Восстановление, разбор неполадок и настройка — [backup.md](documentation/deploy/backup.md).
 
 ## Что уже готово
 

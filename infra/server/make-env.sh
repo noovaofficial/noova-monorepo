@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Создание `.env` на сервере. Повторяет шаблон из
-# documentation/deploy/release.md §1.
+# documentation/deploy/prod.md §1.
 #
 #   ssh deploy@<IP> 'bash -s' -- noova.cc admin@example.com < infra/server/make-env.sh
 #

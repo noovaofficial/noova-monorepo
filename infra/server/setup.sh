@@ -2,7 +2,7 @@
 #
 # Подготовка чистого сервера: пользователь, SSH, периметр, своп и — для
 # прикладной машины — Docker. Повторяет шаги 1–5 из
-# documentation/deploy/server.md §3.
+# documentation/deploy/vps.md.
 #
 #   ssh root@<IP> 'bash -s' < infra/server/setup.sh
 #   ssh root@<IP> 'ROLE=storage bash -s' < infra/server/setup.sh
