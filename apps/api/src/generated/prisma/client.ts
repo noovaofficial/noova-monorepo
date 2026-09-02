@@ -178,11 +178,11 @@ export type CompanyContact = Prisma.CompanyContactModel
  */
 export type ProfileContact = Prisma.ProfileContactModel
 /**
- * Model ContactReveal
- * Журнал раскрытий: антифрод и статистика откликов для владелицы.
+ * Model ProfileEvent
+ * Журнал событий анкеты: антифрод по раскрытиям и статистика для владелицы.
  * Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
  */
-export type ContactReveal = Prisma.ContactRevealModel
+export type ProfileEvent = Prisma.ProfileEventModel
 /**
  * Model PriceSlot
  * 

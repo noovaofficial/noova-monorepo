@@ -460,7 +460,7 @@ model Profile {
   favorites    Favorite[]
   comments     ProfileComment[]
   contacts     ProfileContact[]
-  reveals      ContactReveal[]
+  events       ProfileEvent[]
   reports      ProfileReport[]
   prices       PriceSlot[]
   services     ProfileService[]
@@ -729,19 +729,47 @@ model ProfileContact {
   @@index([profileId, position])
 }
 
-/// Журнал раскрытий: антифрод и статистика откликов для владелицы.
+/// Что произошло с анкетой. Четыре события одной воронки: увидел карточку —
+/// отметил — запросил контакты — позвонил. Разными таблицами их держать
+/// незачем: у всех четырёх один и тот же набор полей, один срок хранения и
+/// один запрос статистики, а склейка четырёх выборок в одну воронку — это
+/// работа, которой при общей таблице просто нет.
+enum ProfileEventKind {
+  /// Открытие страницы анкеты. Дедуплицируется окном в 30 минут, иначе
+  /// F5 и возврат «назад» показывали бы владелице чужой интерес там, где
+  /// был один человек.
+  view
+  /// Добавление в избранное. Снятие отметки события не создаёт: считаем
+  /// проявленный интерес, а не текущее состояние списка — оно и так
+  /// лежит в `Favorite`.
+  favorite
+  /// Нажатие «показать контакты».
+  contact_reveal
+  /// Переход по самому контакту: звонок или мессенджер.
+  contact_click
+}
+
+/// Журнал событий анкеты: антифрод по раскрытиям и статистика для владелицы.
 /// Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
-model ContactReveal {
-  id        String   @id @default(cuid())
+model ProfileEvent {
+  id        String           @id @default(cuid())
   profileId String
-  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  /// Заполнен, только если раскрывал вошедший пользователь: вход не требуется.
+  profile   Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  kind      ProfileEventKind
+  /// Только у `contact_click`: по какому именно каналу ушли. У раскрытия
+  /// его нет — кнопка одна на всю карточку, дробить нечего.
+  contactType ContactType?
+  /// Заполнен, только если действовал вошедший пользователь: ни просмотр,
+  /// ни раскрытие входа не требуют. Он же делит статистику на
+  /// зарегистрированных и гостей — отдельного флага для этого не нужно.
   userId    String?
   /// Соль плюс хэш, не сырой адрес — журнал не должен сам стать базой ПД.
   ipHash    String
-  createdAt DateTime @default(now())
+  createdAt DateTime         @default(now())
 
-  @@index([profileId, createdAt])
+  // Основной индекс статистики: анкета × событие, отсортированные по времени.
+  @@index([profileId, kind, createdAt])
+  // Чистка по сроку идёт по всей таблице разом, без разбора анкет.
   @@index([createdAt])
 }
 

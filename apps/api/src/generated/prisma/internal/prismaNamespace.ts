@@ -417,7 +417,7 @@ export const ModelName = {
   ProfileHours: 'ProfileHours',
   CompanyContact: 'CompanyContact',
   ProfileContact: 'ProfileContact',
-  ContactReveal: 'ContactReveal',
+  ProfileEvent: 'ProfileEvent',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -448,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1932,77 +1932,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    ContactReveal: {
-      payload: Prisma.$ContactRevealPayload<ExtArgs>
-      fields: Prisma.ContactRevealFieldRefs
+    ProfileEvent: {
+      payload: Prisma.$ProfileEventPayload<ExtArgs>
+      fields: Prisma.ProfileEventFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.ContactRevealFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload> | null
+          args: Prisma.ProfileEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.ContactRevealFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         findFirst: {
-          args: Prisma.ContactRevealFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload> | null
+          args: Prisma.ProfileEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.ContactRevealFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         findMany: {
-          args: Prisma.ContactRevealFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>[]
+          args: Prisma.ProfileEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>[]
         }
         create: {
-          args: Prisma.ContactRevealCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         createMany: {
-          args: Prisma.ContactRevealCreateManyArgs<ExtArgs>
+          args: Prisma.ProfileEventCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.ContactRevealCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>[]
+          args: Prisma.ProfileEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>[]
         }
         delete: {
-          args: Prisma.ContactRevealDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         update: {
-          args: Prisma.ContactRevealUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         deleteMany: {
-          args: Prisma.ContactRevealDeleteManyArgs<ExtArgs>
+          args: Prisma.ProfileEventDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.ContactRevealUpdateManyArgs<ExtArgs>
+          args: Prisma.ProfileEventUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.ContactRevealUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>[]
+          args: Prisma.ProfileEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>[]
         }
         upsert: {
-          args: Prisma.ContactRevealUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ContactRevealPayload>
+          args: Prisma.ProfileEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventPayload>
         }
         aggregate: {
-          args: Prisma.ContactRevealAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateContactReveal>
+          args: Prisma.ProfileEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProfileEvent>
         }
         groupBy: {
-          args: Prisma.ContactRevealGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ContactRevealGroupByOutputType>[]
+          args: Prisma.ProfileEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileEventGroupByOutputType>[]
         }
         count: {
-          args: Prisma.ContactRevealCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ContactRevealCountAggregateOutputType> | number
+          args: Prisma.ProfileEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileEventCountAggregateOutputType> | number
         }
       }
     }
@@ -3454,15 +3454,17 @@ export const ProfileContactScalarFieldEnum = {
 export type ProfileContactScalarFieldEnum = (typeof ProfileContactScalarFieldEnum)[keyof typeof ProfileContactScalarFieldEnum]
 
 
-export const ContactRevealScalarFieldEnum = {
+export const ProfileEventScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
+  kind: 'kind',
+  contactType: 'contactType',
   userId: 'userId',
   ipHash: 'ipHash',
   createdAt: 'createdAt'
 } as const
 
-export type ContactRevealScalarFieldEnum = (typeof ContactRevealScalarFieldEnum)[keyof typeof ContactRevealScalarFieldEnum]
+export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
 
 
 export const PriceSlotScalarFieldEnum = {
@@ -4088,6 +4090,20 @@ export type ListEnumContactTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$
 
 
 /**
+ * Reference to a field of type 'ProfileEventKind'
+ */
+export type EnumProfileEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProfileEventKind'>
+    
+
+
+/**
+ * Reference to a field of type 'ProfileEventKind[]'
+ */
+export type ListEnumProfileEventKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProfileEventKind[]'>
+    
+
+
+/**
  * Reference to a field of type 'VerificationStatus'
  */
 export type EnumVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationStatus'>
@@ -4355,7 +4371,7 @@ export type GlobalOmitConfig = {
   profileHours?: Prisma.ProfileHoursOmit
   companyContact?: Prisma.CompanyContactOmit
   profileContact?: Prisma.ProfileContactOmit
-  contactReveal?: Prisma.ContactRevealOmit
+  profileEvent?: Prisma.ProfileEventOmit
   priceSlot?: Prisma.PriceSlotOmit
   service?: Prisma.ServiceOmit
   serviceTranslation?: Prisma.ServiceTranslationOmit

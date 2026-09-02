@@ -9,6 +9,7 @@ import { blockProfile, fetchModeratedProfile, unblockProfile } from '@/modules/m
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
+import { PhotoViewer } from '../PhotoViewer';
 
 const euro = (cents: number | null) => (cents === null ? '—' : `${Math.round(cents / 100)} €`);
 
@@ -22,6 +23,7 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const queryClient = useQueryClient();
   const [blocking, setBlocking] = useState(false);
   const [reason, setReason] = useState('');
+  const [viewing, setViewing] = useState<number | null>(null);
 
   const review = useQuery({
     queryKey: queryKeys.moderatedProfile(profileId),
@@ -126,15 +128,39 @@ export function ProfileReview({ profileId }: { profileId: string }) {
         </div>
       )}
 
+      {viewing !== null ? (
+        <PhotoViewer
+          photos={profile.photos.map((photo) => ({ url: photo.fullUrl }))}
+          index={viewing}
+          onClose={() => setViewing(null)}
+          onStep={(delta) =>
+            setViewing((current) =>
+              current === null
+                ? null
+                : (current + delta + profile.photos.length) % profile.photos.length,
+            )
+          }
+        />
+      ) : null}
+
       {profile.photos.length > 0 ? (
         <div className={styles.list} style={{ marginBottom: 'var(--space5)' }}>
-          {profile.photos.map((photo) => (
+          {profile.photos.map((photo, index) => (
             <div className={styles.card} key={photo.id}>
               <div className={styles.cardPhoto}>
-                {/* Ссылка на неодобренное фото подписанная и живёт минуты —
-                    оптимизатор Next закэшировал бы её и отдавал битую. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo.url} alt="" loading="lazy" />
+                {/* Открывается во весь экран, и оттуда листается стрелками:
+                    в ряду карточек детали фотографии не разглядеть. */}
+                <button
+                  type="button"
+                  className={styles.openPhoto}
+                  onClick={() => setViewing(index)}
+                  aria-label={t('photoOpen')}
+                >
+                  {/* Ссылка на неодобренное фото подписанная и живёт минуты —
+                      оптимизатор Next закэшировал бы её и отдавал битую. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photo.url} alt="" loading="lazy" />
+                </button>
                 {!photo.isApproved ? (
                   <span className={`${styles.badge} ${styles.badgeBlocked}`}>
                     {t('photoPendingBadge')}

@@ -543,7 +543,7 @@ export type ProfileWhereInput = {
   favorites?: Prisma.FavoriteListRelationFilter
   comments?: Prisma.ProfileCommentListRelationFilter
   contacts?: Prisma.ProfileContactListRelationFilter
-  reveals?: Prisma.ContactRevealListRelationFilter
+  events?: Prisma.ProfileEventListRelationFilter
   reports?: Prisma.ProfileReportListRelationFilter
   prices?: Prisma.PriceSlotListRelationFilter
   services?: Prisma.ProfileServiceListRelationFilter
@@ -606,7 +606,7 @@ export type ProfileOrderByWithRelationInput = {
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
   comments?: Prisma.ProfileCommentOrderByRelationAggregateInput
   contacts?: Prisma.ProfileContactOrderByRelationAggregateInput
-  reveals?: Prisma.ContactRevealOrderByRelationAggregateInput
+  events?: Prisma.ProfileEventOrderByRelationAggregateInput
   reports?: Prisma.ProfileReportOrderByRelationAggregateInput
   prices?: Prisma.PriceSlotOrderByRelationAggregateInput
   services?: Prisma.ProfileServiceOrderByRelationAggregateInput
@@ -672,7 +672,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   favorites?: Prisma.FavoriteListRelationFilter
   comments?: Prisma.ProfileCommentListRelationFilter
   contacts?: Prisma.ProfileContactListRelationFilter
-  reveals?: Prisma.ContactRevealListRelationFilter
+  events?: Prisma.ProfileEventListRelationFilter
   reports?: Prisma.ProfileReportListRelationFilter
   prices?: Prisma.PriceSlotListRelationFilter
   services?: Prisma.ProfileServiceListRelationFilter
@@ -831,7 +831,7 @@ export type ProfileCreateInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -890,7 +890,7 @@ export type ProfileUncheckedCreateInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -949,7 +949,7 @@ export type ProfileUpdateInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -1008,7 +1008,7 @@ export type ProfileUncheckedUpdateInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -1661,18 +1661,18 @@ export type ProfileUpdateOneRequiredWithoutContactsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutContactsInput, Prisma.ProfileUpdateWithoutContactsInput>, Prisma.ProfileUncheckedUpdateWithoutContactsInput>
 }
 
-export type ProfileCreateNestedOneWithoutRevealsInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutRevealsInput, Prisma.ProfileUncheckedCreateWithoutRevealsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutRevealsInput
+export type ProfileCreateNestedOneWithoutEventsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutEventsInput, Prisma.ProfileUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutEventsInput
   connect?: Prisma.ProfileWhereUniqueInput
 }
 
-export type ProfileUpdateOneRequiredWithoutRevealsNestedInput = {
-  create?: Prisma.XOR<Prisma.ProfileCreateWithoutRevealsInput, Prisma.ProfileUncheckedCreateWithoutRevealsInput>
-  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutRevealsInput
-  upsert?: Prisma.ProfileUpsertWithoutRevealsInput
+export type ProfileUpdateOneRequiredWithoutEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutEventsInput, Prisma.ProfileUncheckedCreateWithoutEventsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutEventsInput
+  upsert?: Prisma.ProfileUpsertWithoutEventsInput
   connect?: Prisma.ProfileWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutRevealsInput, Prisma.ProfileUpdateWithoutRevealsInput>, Prisma.ProfileUncheckedUpdateWithoutRevealsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutEventsInput, Prisma.ProfileUpdateWithoutEventsInput>, Prisma.ProfileUncheckedUpdateWithoutEventsInput>
 }
 
 export type ProfileCreateNestedOneWithoutPricesInput = {
@@ -1811,7 +1811,7 @@ export type ProfileCreateWithoutOwnerInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -1869,7 +1869,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -2002,7 +2002,7 @@ export type ProfileCreateWithoutCityInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -2060,7 +2060,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -2144,7 +2144,7 @@ export type ProfileCreateWithoutDistrictInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -2202,7 +2202,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -2286,7 +2286,7 @@ export type ProfileCreateWithoutPhotosInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -2344,7 +2344,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -2418,7 +2418,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -2476,7 +2476,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -2535,7 +2535,7 @@ export type ProfileCreateWithoutReportsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseCreateNestedOneWithoutProfileInput
@@ -2593,7 +2593,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseUncheckedCreateNestedOneWithoutProfileInput
@@ -2667,7 +2667,7 @@ export type ProfileUpdateWithoutReportsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUpdateOneWithoutProfileNestedInput
@@ -2725,7 +2725,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUncheckedUpdateOneWithoutProfileNestedInput
@@ -2782,7 +2782,7 @@ export type ProfileCreateWithoutCommentsInput = {
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -2840,7 +2840,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -2914,7 +2914,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -2972,7 +2972,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -3030,7 +3030,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -3088,7 +3088,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -3162,7 +3162,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -3220,7 +3220,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -3278,7 +3278,7 @@ export type ProfileCreateWithoutCompanyInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -3336,7 +3336,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -3420,7 +3420,7 @@ export type ProfileCreateWithoutHoursInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -3478,7 +3478,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -3552,7 +3552,7 @@ export type ProfileUpdateWithoutHoursInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -3610,7 +3610,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -3668,7 +3668,7 @@ export type ProfileCreateWithoutContactsInput = {
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -3726,7 +3726,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -3800,7 +3800,7 @@ export type ProfileUpdateWithoutContactsInput = {
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -3858,7 +3858,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -3866,7 +3866,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   promoSlots?: Prisma.PromoSlotUncheckedUpdateManyWithoutProfileNestedInput
 }
 
-export type ProfileCreateWithoutRevealsInput = {
+export type ProfileCreateWithoutEventsInput = {
   id?: string
   slug: string
   kind?: $Enums.ListingKind
@@ -3924,7 +3924,7 @@ export type ProfileCreateWithoutRevealsInput = {
   promoSlots?: Prisma.PromoSlotCreateNestedManyWithoutProfileInput
 }
 
-export type ProfileUncheckedCreateWithoutRevealsInput = {
+export type ProfileUncheckedCreateWithoutEventsInput = {
   id?: string
   slug: string
   kind?: $Enums.ListingKind
@@ -3982,23 +3982,23 @@ export type ProfileUncheckedCreateWithoutRevealsInput = {
   promoSlots?: Prisma.PromoSlotUncheckedCreateNestedManyWithoutProfileInput
 }
 
-export type ProfileCreateOrConnectWithoutRevealsInput = {
+export type ProfileCreateOrConnectWithoutEventsInput = {
   where: Prisma.ProfileWhereUniqueInput
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutRevealsInput, Prisma.ProfileUncheckedCreateWithoutRevealsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutEventsInput, Prisma.ProfileUncheckedCreateWithoutEventsInput>
 }
 
-export type ProfileUpsertWithoutRevealsInput = {
-  update: Prisma.XOR<Prisma.ProfileUpdateWithoutRevealsInput, Prisma.ProfileUncheckedUpdateWithoutRevealsInput>
-  create: Prisma.XOR<Prisma.ProfileCreateWithoutRevealsInput, Prisma.ProfileUncheckedCreateWithoutRevealsInput>
+export type ProfileUpsertWithoutEventsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutEventsInput, Prisma.ProfileUncheckedUpdateWithoutEventsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutEventsInput, Prisma.ProfileUncheckedCreateWithoutEventsInput>
   where?: Prisma.ProfileWhereInput
 }
 
-export type ProfileUpdateToOneWithWhereWithoutRevealsInput = {
+export type ProfileUpdateToOneWithWhereWithoutEventsInput = {
   where?: Prisma.ProfileWhereInput
-  data: Prisma.XOR<Prisma.ProfileUpdateWithoutRevealsInput, Prisma.ProfileUncheckedUpdateWithoutRevealsInput>
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutEventsInput, Prisma.ProfileUncheckedUpdateWithoutEventsInput>
 }
 
-export type ProfileUpdateWithoutRevealsInput = {
+export type ProfileUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
@@ -4056,7 +4056,7 @@ export type ProfileUpdateWithoutRevealsInput = {
   promoSlots?: Prisma.PromoSlotUpdateManyWithoutProfileNestedInput
 }
 
-export type ProfileUncheckedUpdateWithoutRevealsInput = {
+export type ProfileUncheckedUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
@@ -4165,7 +4165,7 @@ export type ProfileCreateWithoutPricesInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseCreateNestedOneWithoutProfileInput
@@ -4223,7 +4223,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseUncheckedCreateNestedOneWithoutProfileInput
@@ -4297,7 +4297,7 @@ export type ProfileUpdateWithoutPricesInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUpdateOneWithoutProfileNestedInput
@@ -4355,7 +4355,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUncheckedUpdateOneWithoutProfileNestedInput
@@ -4413,7 +4413,7 @@ export type ProfileCreateWithoutServicesInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseCreateNestedOneWithoutProfileInput
@@ -4471,7 +4471,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   verification?: Prisma.VerificationCaseUncheckedCreateNestedOneWithoutProfileInput
@@ -4545,7 +4545,7 @@ export type ProfileUpdateWithoutServicesInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUpdateOneWithoutProfileNestedInput
@@ -4603,7 +4603,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   verification?: Prisma.VerificationCaseUncheckedUpdateOneWithoutProfileNestedInput
@@ -4661,7 +4661,7 @@ export type ProfileCreateWithoutVerificationInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -4719,7 +4719,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -4793,7 +4793,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -4851,7 +4851,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -4909,7 +4909,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -4967,7 +4967,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -5041,7 +5041,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -5099,7 +5099,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -5156,7 +5156,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -5214,7 +5214,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -5288,7 +5288,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -5346,7 +5346,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -5404,7 +5404,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
@@ -5462,7 +5462,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
-  reveals?: Prisma.ContactRevealUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
   reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
   prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
   services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
@@ -5536,7 +5536,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -5594,7 +5594,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -5697,7 +5697,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -5755,7 +5755,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -5903,7 +5903,7 @@ export type ProfileUpdateWithoutCityInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -5961,7 +5961,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -6109,7 +6109,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -6167,7 +6167,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -6315,7 +6315,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
@@ -6373,7 +6373,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
-  reveals?: Prisma.ContactRevealUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
   reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
   prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
   services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
@@ -6438,7 +6438,7 @@ export type ProfileCountOutputType = {
   favorites: number
   comments: number
   contacts: number
-  reveals: number
+  events: number
   reports: number
   prices: number
   services: number
@@ -6452,7 +6452,7 @@ export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   favorites?: boolean | ProfileCountOutputTypeCountFavoritesArgs
   comments?: boolean | ProfileCountOutputTypeCountCommentsArgs
   contacts?: boolean | ProfileCountOutputTypeCountContactsArgs
-  reveals?: boolean | ProfileCountOutputTypeCountRevealsArgs
+  events?: boolean | ProfileCountOutputTypeCountEventsArgs
   reports?: boolean | ProfileCountOutputTypeCountReportsArgs
   prices?: boolean | ProfileCountOutputTypeCountPricesArgs
   services?: boolean | ProfileCountOutputTypeCountServicesArgs
@@ -6514,8 +6514,8 @@ export type ProfileCountOutputTypeCountContactsArgs<ExtArgs extends runtime.Type
 /**
  * ProfileCountOutputType without action
  */
-export type ProfileCountOutputTypeCountRevealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ContactRevealWhereInput
+export type ProfileCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProfileEventWhereInput
 }
 
 /**
@@ -6602,7 +6602,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   favorites?: boolean | Prisma.Profile$favoritesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
   contacts?: boolean | Prisma.Profile$contactsArgs<ExtArgs>
-  reveals?: boolean | Prisma.Profile$revealsArgs<ExtArgs>
+  events?: boolean | Prisma.Profile$eventsArgs<ExtArgs>
   reports?: boolean | Prisma.Profile$reportsArgs<ExtArgs>
   prices?: boolean | Prisma.Profile$pricesArgs<ExtArgs>
   services?: boolean | Prisma.Profile$servicesArgs<ExtArgs>
@@ -6770,7 +6770,7 @@ export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   favorites?: boolean | Prisma.Profile$favoritesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
   contacts?: boolean | Prisma.Profile$contactsArgs<ExtArgs>
-  reveals?: boolean | Prisma.Profile$revealsArgs<ExtArgs>
+  events?: boolean | Prisma.Profile$eventsArgs<ExtArgs>
   reports?: boolean | Prisma.Profile$reportsArgs<ExtArgs>
   prices?: boolean | Prisma.Profile$pricesArgs<ExtArgs>
   services?: boolean | Prisma.Profile$servicesArgs<ExtArgs>
@@ -6805,7 +6805,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
     comments: Prisma.$ProfileCommentPayload<ExtArgs>[]
     contacts: Prisma.$ProfileContactPayload<ExtArgs>[]
-    reveals: Prisma.$ContactRevealPayload<ExtArgs>[]
+    events: Prisma.$ProfileEventPayload<ExtArgs>[]
     reports: Prisma.$ProfileReportPayload<ExtArgs>[]
     prices: Prisma.$PriceSlotPayload<ExtArgs>[]
     services: Prisma.$ProfileServicePayload<ExtArgs>[]
@@ -7315,7 +7315,7 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   favorites<T extends Prisma.Profile$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Profile$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.Profile$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  reveals<T extends Prisma.Profile$revealsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$revealsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactRevealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  events<T extends Prisma.Profile$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.Profile$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   prices<T extends Prisma.Profile$pricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PriceSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   services<T extends Prisma.Profile$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7995,27 +7995,27 @@ export type Profile$contactsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * Profile.reveals
+ * Profile.events
  */
-export type Profile$revealsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Profile$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the ContactReveal
+   * Select specific fields to fetch from the ProfileEvent
    */
-  select?: Prisma.ContactRevealSelect<ExtArgs> | null
+  select?: Prisma.ProfileEventSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the ContactReveal
+   * Omit specific fields from the ProfileEvent
    */
-  omit?: Prisma.ContactRevealOmit<ExtArgs> | null
+  omit?: Prisma.ProfileEventOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ContactRevealInclude<ExtArgs> | null
-  where?: Prisma.ContactRevealWhereInput
-  orderBy?: Prisma.ContactRevealOrderByWithRelationInput | Prisma.ContactRevealOrderByWithRelationInput[]
-  cursor?: Prisma.ContactRevealWhereUniqueInput
+  include?: Prisma.ProfileEventInclude<ExtArgs> | null
+  where?: Prisma.ProfileEventWhereInput
+  orderBy?: Prisma.ProfileEventOrderByWithRelationInput | Prisma.ProfileEventOrderByWithRelationInput[]
+  cursor?: Prisma.ProfileEventWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ContactRevealScalarFieldEnum | Prisma.ContactRevealScalarFieldEnum[]
+  distinct?: Prisma.ProfileEventScalarFieldEnum | Prisma.ProfileEventScalarFieldEnum[]
 }
 
 /**

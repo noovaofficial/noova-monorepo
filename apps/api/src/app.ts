@@ -13,6 +13,7 @@ import { isProduction } from './env.js';
 import { loggerOptions } from './logger.js';
 import { accountRoutes } from './modules/account/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
+import { analyticsRoutes } from './modules/analytics/routes.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { billingRoutes } from './modules/billing/routes.js';
 import { commentRoutes } from './modules/comments/routes.js';
@@ -138,6 +139,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(promoRoutes);
       await api.register(billingRoutes);
       await api.register(verificationRoutes);
+      await api.register(analyticsRoutes);
     },
     { prefix: '/api/v1' },
   );

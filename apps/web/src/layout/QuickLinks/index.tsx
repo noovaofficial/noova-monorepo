@@ -42,7 +42,7 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
           // только в цене срока.
           { href: '/account/subscription', label: t('quickSubscription') },
           { href: '/account/glowcoin', label: t('quickGlowcoin') },
-          { href: '/account/profiles', label: t('quickAnalytics'), disabled: true },
+          { href: '/account/analytics', label: t('quickAnalytics') },
         ]
       : [];
 

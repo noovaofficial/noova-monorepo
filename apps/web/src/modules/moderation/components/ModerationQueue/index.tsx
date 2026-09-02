@@ -21,6 +21,7 @@ import { queryKeys, queryPrefixes } from '@/shared/query-keys';
 import { BlockedProfiles } from '../BlockedProfiles';
 import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
+import { PhotoViewer } from '../PhotoViewer';
 import { UserList } from '../UserList';
 import { VerificationRequests } from '../VerificationRequests';
 
@@ -58,6 +59,9 @@ export function ModerationQueue() {
   const [tab, setTab] = useState<Tab>('all');
   const [rejecting, setRejecting] = useState<string | null>(null);
   const [reason, setReason] = useState('');
+  // Открытый во весь экран снимок. Один за раз: карточки очереди между собой
+  // не связаны, листать их нечем.
+  const [viewing, setViewing] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const isStaff = user?.role === 'moderator' || user?.role === 'admin';
@@ -163,10 +167,19 @@ export function ModerationQueue() {
             <div className={styles.card} key={key(item)}>
               {item.kind === 'photo' ? (
                 <div className={styles.cardPhoto}>
-                  {/* Ссылка подписанная и живёт минуты — оптимизатор Next
-                      закэшировал бы её и отдавал битую после истечения. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.url} alt="" loading="lazy" />
+                  {/* Открывается во весь экран: по карточке решение о
+                      фотографии не принять. */}
+                  <button
+                    type="button"
+                    className={styles.openPhoto}
+                    onClick={() => setViewing(item.fullUrl)}
+                    aria-label={t('photoOpen')}
+                  >
+                    {/* Ссылка подписанная и живёт минуты — оптимизатор Next
+                        закэшировал бы её и отдавал битую после истечения. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={item.url} alt="" loading="lazy" />
+                  </button>
                 </div>
               ) : null}
 
@@ -308,6 +321,15 @@ export function ModerationQueue() {
               )}
             </div>
           ))}
+          {viewing ? (
+            <PhotoViewer
+              photos={[{ url: viewing }]}
+              index={0}
+              onClose={() => setViewing(null)}
+              onStep={() => undefined}
+            />
+          ) : null}
+
           <LoadMore
             shown={items.length}
             total={total}

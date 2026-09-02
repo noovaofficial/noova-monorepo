@@ -22,6 +22,7 @@ export type MenuIconName =
   | 'billingOps'
   | 'myProfiles'
   | 'subscription'
+  | 'analytics'
   | 'favorites'
   | 'settings'
   | 'logout';
@@ -82,6 +83,9 @@ const PATHS: Record<MenuIconName, string[]> = {
     'M8 3.5v4M16 3.5v4',
     'm9.5 15 1.8 1.8 3.4-3.6',
   ],
+  // Три столбика от общего основания — статистика. Столбики, а не кривая
+  // линия: в самом отчёте нарисованы ровно они.
+  analytics: ['M4 20h16', 'M7.5 20v-6', 'M12 20V6.5', 'M16.5 20v-9'],
   favorites: [
     'M12 20.3s-7.5-4.6-7.5-9.8A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.2-7.5 9.8-7.5 9.8Z',
   ],

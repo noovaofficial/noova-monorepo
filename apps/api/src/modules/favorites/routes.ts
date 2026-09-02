@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { localeQuerySchema } from '../../i18n.js';
 import { toProfileCard } from '../../mappers.js';
 import { requireSession } from '../../plugins/session.js';
+import { recordProfileEvent } from '../analytics/events.js';
 import { cardSelect } from '../profiles/routes.js';
 
 export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
@@ -82,13 +83,24 @@ export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
 
       // PUT идемпотентен по определению: повторное нажатие не должно ни
-      // создавать дубль, ни падать конфликтом. Составной ключ и upsert
-      // дают это без предварительной проверки и без гонки.
-      await fastify.prisma.favorite.upsert({
-        where: { clientId_profileId: { clientId: userId, profileId: profile.id } },
-        create: { clientId: userId, profileId: profile.id },
-        update: {},
+      // создавать дубль, ни падать конфликтом. Составной ключ и
+      // `skipDuplicates` дают это без предварительной проверки и без гонки.
+      //
+      // `createMany`, а не `upsert`: он единственный отвечает, появилась ли
+      // строка на самом деле. Для статистики это и есть вопрос — повторное
+      // нажатие на уже отмеченную анкету не новый интерес, а промах пальца,
+      // и считать его вторым добавлением нельзя.
+      const { count } = await fastify.prisma.favorite.createMany({
+        data: { clientId: userId, profileId: profile.id },
+        skipDuplicates: true,
       });
+
+      if (count > 0) {
+        await recordProfileEvent(fastify, request, {
+          kind: 'favorite',
+          profileId: profile.id,
+        });
+      }
 
       return reply.status(204).send(null);
     },

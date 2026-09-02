@@ -239,6 +239,7 @@
     "advertiserAgency": "Agentur",
     "advertiserAgencyHint": "Mehrere Begleitanzeigen, ohne eigene Adresse",
     "myGlowcoin": "Meine GlowCoin",
+    "analytics": "Statistik",
     "monetization": "Monetarisierung",
     "subscription": "Abonnement",
     "billingOps": "Vorgänge"
@@ -377,6 +378,33 @@
     "verifyPhoto_together": "Gesicht zusammen mit dem Dokument",
     "verifyHint_together": "Halten Sie das Dokument neben Ihr Gesicht, sodass beides sichtbar ist.",
     "verifyPrivacy": "Die Aufnahmen sieht nur ein Moderator. Sie werden nie veröffentlicht und nach der Entscheidung gelöscht."
+  },
+  "analytics": {
+    "title": "Statistik",
+    "loading": "Wird geladen…",
+    "loadFailed": "Die Statistik konnte nicht geladen werden. Bitte Seite neu laden.",
+    "onlyAdvertisers": "Die Statistik steht nur Inserenten zur Verfügung.",
+    "periodLabel": "Zeitraum",
+    "period_d7": "7 Tage",
+    "period_d30": "30 Tage",
+    "period_d90": "90 Tage",
+    "rangeHint": "{from} – {to}, nach Tagen",
+    "chartLabel": "{metric} nach Tagen im gewählten Zeitraum",
+    "metric_views": "Profilaufrufe",
+    "metric_favorites": "Zu Favoriten hinzugefügt",
+    "metric_contactReveals": "Kontakte angezeigt",
+    "metric_contactClicks": "Klicks auf Kontakte",
+    "metricShort_views": "Aufrufe",
+    "metricShort_favorites": "Favoriten",
+    "metricShort_contactReveals": "Angezeigt",
+    "metricShort_contactClicks": "Klicks",
+    "splitRegistered": "{count} angemeldet",
+    "splitAnonymous": "{count} Gäste",
+    "contactsTitle": "Nach Kanal",
+    "contactsEmpty": "Es wurde noch kein Kontakt angeklickt.",
+    "profilesTitle": "Nach Profil",
+    "columnProfile": "Profil",
+    "note": "Eigene Besuche werden nicht gezählt. Ein erneuter Aufruf desselben Profils durch dieselbe Person zählt einmal pro 30 Minuten. „Angezeigt“ heißt: „Kontakte anzeigen“ gedrückt; „Klick“ heißt: Nummer gewählt oder Messenger geöffnet. Die Daten werden 12 Monate gespeichert."
   },
   "moderation": {
     "title": "Moderation",
@@ -518,7 +546,11 @@
     "profileStatus_published": "Veröffentlicht",
     "profileStatus_paused": "Deaktiviert",
     "profileStatus_rejected": "Abgelehnt",
-    "profileStatus_banned": "Gesperrt"
+    "profileStatus_banned": "Gesperrt",
+    "photoOpen": "Foto öffnen",
+    "photoClose": "Schließen",
+    "photoPrev": "Zurück",
+    "photoNext": "Weiter"
   },
   "admin": {
     "title": "Mitarbeiter",

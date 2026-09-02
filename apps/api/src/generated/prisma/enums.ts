@@ -227,6 +227,16 @@ export const PaymentMethod = {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
+export const ProfileEventKind = {
+  view: 'view',
+  favorite: 'favorite',
+  contact_reveal: 'contact_reveal',
+  contact_click: 'contact_click'
+} as const
+
+export type ProfileEventKind = (typeof ProfileEventKind)[keyof typeof ProfileEventKind]
+
+
 export const PlanTerm = {
   m1: 'm1',
   m6: 'm6',

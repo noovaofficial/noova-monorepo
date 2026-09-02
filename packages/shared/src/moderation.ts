@@ -37,6 +37,8 @@ export const photoQueueItemSchema = z.object({
   id: z.string(),
   /** Подписанная ссылка: неодобренное фото недоступно публично. */
   url: z.string(),
+  /** Тот же снимок в полном размере — для просмотра во весь экран. */
+  fullUrl: z.string(),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   createdAt: z.string().datetime(),
@@ -138,6 +140,7 @@ export const moderatedProfileSchema = z.object({
     z.object({
       id: z.string(),
       url: z.string(),
+      fullUrl: z.string(),
       isApproved: z.boolean(),
       rejectedReason: z.string().nullable(),
     }),

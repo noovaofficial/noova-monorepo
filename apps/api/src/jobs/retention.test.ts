@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { purgeContactReveals } from '../modules/profiles/retention.js';
+import { purgeProfileEvents } from '../modules/profiles/retention.js';
 import { purgeAuthTokens, purgeDeletedAccounts, purgeModerationActions } from './retention.js';
 
 const NOW = new Date('2027-01-01T00:00:00Z');
@@ -10,7 +10,7 @@ function fakePrisma(count = 3) {
   return {
     deleteMany,
     client: {
-      contactReveal: { deleteMany },
+      profileEvent: { deleteMany },
       authToken: { deleteMany },
       moderationAction: { deleteMany },
       // biome-ignore lint/suspicious/noExplicitAny: см. выше
@@ -19,9 +19,9 @@ function fakePrisma(count = 3) {
 }
 
 describe('сроки хранения', () => {
-  it('журнал раскрытий режется ровно по переданному сроку', () => {
+  it('журнал событий анкет режется ровно по переданному сроку', () => {
     const { client, deleteMany } = fakePrisma();
-    return purgeContactReveals(client, 365, NOW).then(() => {
+    return purgeProfileEvents(client, 365, NOW).then(() => {
       const cutoff = deleteMany.mock.calls[0]?.[0].where.createdAt.lt as Date;
       // Граница ровно на сроке: лишний день здесь — лишний день хранения
       // следа «этот адрес смотрел эту анкету».

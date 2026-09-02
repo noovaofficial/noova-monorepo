@@ -8,7 +8,7 @@ import { expireListings } from '../modules/billing/listing.js';
 import { expireTopPlacements } from '../modules/billing/top.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
-import { purgeContactReveals } from '../modules/profiles/retention.js';
+import { purgeProfileEvents } from '../modules/profiles/retention.js';
 import { purgeVerificationDocuments } from '../modules/verification/service.js';
 import { postRevalidate } from '../plugins/revalidate.js';
 import { purgeAuthTokens, purgeDeletedAccounts, purgeModerationActions } from './retention.js';
@@ -61,8 +61,8 @@ export const JOBS: Job[] = [
     run: (prisma) => purgeAuthTokens(prisma, env.RETENTION_AUTH_TOKENS_DAYS),
   },
   {
-    name: 'contact-reveals',
-    run: (prisma) => purgeContactReveals(prisma, env.RETENTION_CONTACT_REVEALS_DAYS),
+    name: 'profile-events',
+    run: (prisma) => purgeProfileEvents(prisma, env.RETENTION_PROFILE_EVENTS_DAYS),
   },
   {
     name: 'deleted-accounts',

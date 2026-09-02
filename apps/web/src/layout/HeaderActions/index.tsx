@@ -131,6 +131,13 @@ export function HeaderActions() {
                   <GlowCoinIcon className={styles.itemCoin} size={16} />
                   {ta('myGlowcoin')}
                 </Link>
+                {/* Статистика последней в блоке размещения: за ней заходят
+                    реже, чем за анкетами и сроком, но искать её нужно там же,
+                    а не среди настроек учётной записи. */}
+                <Link href="/account/analytics" className={styles.item} role="menuitem">
+                  <MenuIcon name="analytics" className={styles.itemIcon} />
+                  {ta('analytics')}
+                </Link>
               </>
             ) : null}
 

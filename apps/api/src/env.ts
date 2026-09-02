@@ -77,7 +77,9 @@ const envSchema = z.object({
     .default(6 * 60 * 60),
   RETENTION_DELETED_PHOTOS_DAYS: z.coerce.number().int().min(1).default(30),
   RETENTION_AUTH_TOKENS_DAYS: z.coerce.number().int().min(1).default(7),
-  RETENTION_CONTACT_REVEALS_DAYS: z.coerce.number().int().min(1).default(365),
+  /** Журнал событий анкет: просмотры, избранное, раскрытия и клики по
+   *  контактам. Срок задаёт и глубину отчёта в кабинете. */
+  RETENTION_PROFILE_EVENTS_DAYS: z.coerce.number().int().min(1).default(365),
   RETENTION_MODERATION_ACTIONS_DAYS: z.coerce.number().int().min(1).default(365),
   /** Снимки документов после решения по заявке. Данные особой категории:
    *  срок короткий, спор о решении за это время успевают поднять. */

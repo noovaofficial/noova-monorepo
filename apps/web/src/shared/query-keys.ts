@@ -43,6 +43,8 @@ export const queryKeys = {
   topupOrder: (id: string) => ['topup-order', id] as const,
   top: () => ['top'] as const,
   billingOperations: (query: string) => ['billing-operations', query] as const,
+  /** Период — часть ключа: иначе переключение отдавало бы прежний отчёт. */
+  analytics: (period: string) => ['analytics', period] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>
     [

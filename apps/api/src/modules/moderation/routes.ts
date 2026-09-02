@@ -275,6 +275,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         kind: 'photo' as const,
         id: photo.id,
         url: moderationPhotoUrl(photo.id),
+        fullUrl: moderationPhotoUrl(photo.id, 'full'),
         width: photo.width,
         height: photo.height,
         createdAt: photo.createdAt.toISOString(),
@@ -1276,6 +1277,9 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
             url: isPublicKey(photo.storageKey)
               ? publicUrl(`${photo.storageKey}/card.webp`)
               : moderationPhotoUrl(photo.id),
+            fullUrl: isPublicKey(photo.storageKey)
+              ? publicUrl(`${photo.storageKey}/full.webp`)
+              : moderationPhotoUrl(photo.id, 'full'),
             isApproved: photo.isApproved,
             rejectedReason: photo.rejectedReason,
           })),

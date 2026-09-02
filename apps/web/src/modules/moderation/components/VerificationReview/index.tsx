@@ -10,6 +10,7 @@ import { approveIdentity, fetchVerification, rejectIdentity } from '@/modules/mo
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
+import { PhotoViewer } from '../PhotoViewer';
 
 /**
  * Заявка на верификацию личности целиком (D-12): три снимка и решение.
@@ -26,6 +27,8 @@ export function VerificationReview({ requestId }: { requestId: string }) {
 
   const [rejecting, setRejecting] = useState(false);
   const [reason, setReason] = useState('');
+  // Открытый снимок. null — закрыто; индекс, а не url, чтобы работали стрелки.
+  const [viewing, setViewing] = useState<number | null>(null);
 
   const isStaff = user?.role === 'moderator' || user?.role === 'admin';
   const item = useQuery({
@@ -100,17 +103,45 @@ export function VerificationReview({ requestId }: { requestId: string }) {
         <p className={`${styles.notice} ${styles.noticeInfo}`}>{t('identityPurged')}</p>
       ) : (
         <div className={styles.identityPhotos}>
-          {VERIFICATION_PHOTO_KINDS.map((kind) => (
+          {VERIFICATION_PHOTO_KINDS.map((kind, index) => (
             <figure className={styles.identityPhoto} key={kind}>
-              {/* Ссылка подписана сессией и живёт минуты: оптимизатор Next
-                  закэшировал бы документ на диске — здесь это недопустимо. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={data.photos[kind]} alt="" />
+              {/* Снимок целиком — кнопкой: в сетке документ не прочитать,
+                  а решение принимают именно по надписям в нём. */}
+              <button
+                type="button"
+                className={styles.identityOpenPhoto}
+                onClick={() => setViewing(index)}
+                aria-label={t('photoOpen')}
+              >
+                {/* Ссылка подписана сессией и живёт минуты: оптимизатор Next
+                    закэшировал бы документ на диске — здесь это недопустимо. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={data.photos[kind]} alt="" />
+              </button>
               <figcaption className={styles.identityCaption}>{t(`identity_${kind}`)}</figcaption>
             </figure>
           ))}
         </div>
       )}
+
+      {viewing !== null ? (
+        <PhotoViewer
+          photos={VERIFICATION_PHOTO_KINDS.map((kind) => ({
+            url: data.photos[kind] ?? '',
+            caption: t(`identity_${kind}`),
+          }))}
+          index={viewing}
+          onClose={() => setViewing(null)}
+          onStep={(delta) =>
+            setViewing((current) =>
+              current === null
+                ? null
+                : (current + delta + VERIFICATION_PHOTO_KINDS.length) %
+                  VERIFICATION_PHOTO_KINDS.length,
+            )
+          }
+        />
+      ) : null}
 
       {!decided ? (
         <div className={styles.cardActions} style={{ padding: 0 }}>

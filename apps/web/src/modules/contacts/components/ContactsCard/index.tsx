@@ -5,6 +5,7 @@ import { contactHref } from '@noova/shared';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { trackContactClick } from '@/modules/analytics/api';
 import { RevealError, revealContacts } from '@/modules/contacts/api';
 import { ContactIcon } from '../ContactIcon';
 import styles from './ContactsCard.module.css';
@@ -53,6 +54,13 @@ export function ContactsCard({ slug, types }: Props) {
             // rel закрывает доступ к window.opener.
             target={contact.type === 'phone' ? undefined : '_blank'}
             rel="noreferrer nofollow"
+            /* Клик по контакту — вторая ступень отклика: раскрытие говорит,
+               что номер увидели, и только клик — что по нему пошли. Переход
+               ничем не задерживается: маяк уходит с `keepalive` и об ошибке
+               не сообщает, потому что помешать звонку он не вправе. */
+            onClick={() => {
+              void trackContactClick(slug, contact.type);
+            }}
           >
             <ContactIcon className={styles.icon} type={contact.type} />
             <span className={styles.type}>{t(contact.type)}</span>

@@ -239,6 +239,7 @@
     "advertiserAgency": "Agency",
     "advertiserAgencyHint": "Several escort listings, no address of its own",
     "myGlowcoin": "My GlowCoin",
+    "analytics": "Analytics",
     "monetization": "Monetization",
     "subscription": "Subscription",
     "billingOps": "Operations"
@@ -377,6 +378,33 @@
     "verifyPhoto_together": "Face together with the document",
     "verifyHint_together": "Hold the document next to your face so both are visible.",
     "verifyPrivacy": "Only a moderator sees these photos. They are never published and are deleted after the decision."
+  },
+  "analytics": {
+    "title": "Analytics",
+    "loading": "Loading…",
+    "loadFailed": "Could not load the statistics. Try refreshing the page.",
+    "onlyAdvertisers": "Statistics are available to profile owners only.",
+    "periodLabel": "Period",
+    "period_d7": "7 days",
+    "period_d30": "30 days",
+    "period_d90": "90 days",
+    "rangeHint": "{from} – {to}, by day",
+    "chartLabel": "{metric} by day over the selected period",
+    "metric_views": "Profile views",
+    "metric_favorites": "Added to favourites",
+    "metric_contactReveals": "Contacts shown",
+    "metric_contactClicks": "Contact clicks",
+    "metricShort_views": "Views",
+    "metricShort_favorites": "Favourites",
+    "metricShort_contactReveals": "Shown",
+    "metricShort_contactClicks": "Clicks",
+    "splitRegistered": "{count} signed in",
+    "splitAnonymous": "{count} guests",
+    "contactsTitle": "By channel",
+    "contactsEmpty": "No one has followed a contact yet.",
+    "profilesTitle": "By profile",
+    "columnProfile": "Profile",
+    "note": "Your own visits are not counted. A repeat view of the same profile by the same visitor counts once every 30 minutes. “Shown” means pressing “Show contacts”; “click” means following the number or opening the messenger. Data is kept for 12 months."
   },
   "moderation": {
     "title": "Moderation",
@@ -518,7 +546,11 @@
     "profileStatus_published": "Published",
     "profileStatus_paused": "Unpublished",
     "profileStatus_rejected": "Rejected",
-    "profileStatus_banned": "Blocked"
+    "profileStatus_banned": "Blocked",
+    "photoOpen": "Open photo",
+    "photoClose": "Close",
+    "photoPrev": "Previous",
+    "photoNext": "Next"
   },
   "admin": {
     "title": "Staff",

@@ -239,6 +239,7 @@
     "advertiserAgency": "Агентство",
     "advertiserAgencyHint": "Несколько анкет сопровождения, своего адреса нет",
     "myGlowcoin": "Мои GlowCoin",
+    "analytics": "Аналитика",
     "monetization": "Монетизация",
     "subscription": "Подписка",
     "billingOps": "Операции"
@@ -377,6 +378,33 @@
     "verifyPhoto_together": "Лицо вместе с документом",
     "verifyHint_together": "Держите документ рядом с лицом, чтобы было видно и то и другое.",
     "verifyPrivacy": "Снимки видит только модератор. Они не публикуются и удаляются после решения."
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "loading": "Загружаем…",
+    "loadFailed": "Не удалось загрузить статистику. Попробуйте обновить страницу.",
+    "onlyAdvertisers": "Статистика доступна только владельцам анкет.",
+    "periodLabel": "Период",
+    "period_d7": "7 дней",
+    "period_d30": "30 дней",
+    "period_d90": "90 дней",
+    "rangeHint": "С {from} по {to}, по дням",
+    "chartLabel": "{metric} по дням за выбранный период",
+    "metric_views": "Просмотры анкеты",
+    "metric_favorites": "Добавили в избранное",
+    "metric_contactReveals": "Показы контактов",
+    "metric_contactClicks": "Клики по контактам",
+    "metricShort_views": "Просмотры",
+    "metricShort_favorites": "Избранное",
+    "metricShort_contactReveals": "Показы",
+    "metricShort_contactClicks": "Клики",
+    "splitRegistered": "{count} вошли",
+    "splitAnonymous": "{count} гостей",
+    "contactsTitle": "По каналам связи",
+    "contactsEmpty": "По контактам ещё не переходили.",
+    "profilesTitle": "По анкетам",
+    "columnProfile": "Анкета",
+    "note": "Ваши собственные заходы не считаются. Повторный просмотр одной анкеты одним посетителем засчитывается раз в 30 минут. «Показ» — это нажатие «Показать контакты», «клик» — переход по самому номеру или в мессенджер. Данные хранятся 12 месяцев."
   },
   "moderation": {
     "title": "Модерация",
@@ -518,7 +546,11 @@
     "profileStatus_published": "Опубликована",
     "profileStatus_paused": "Снята",
     "profileStatus_rejected": "Отклонена",
-    "profileStatus_banned": "Заблокирована"
+    "profileStatus_banned": "Заблокирована",
+    "photoOpen": "Открыть снимок",
+    "photoClose": "Закрыть",
+    "photoPrev": "Предыдущий",
+    "photoNext": "Следующий"
   },
   "admin": {
     "title": "Сотрудники",

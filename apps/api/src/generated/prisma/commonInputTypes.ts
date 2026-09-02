@@ -633,6 +633,40 @@ export type EnumContactTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumContactTypeFilter<$PrismaModel>
 }
 
+export type EnumProfileEventKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProfileEventKind | Prisma.EnumProfileEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel> | $Enums.ProfileEventKind
+}
+
+export type EnumContactTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactType | Prisma.EnumContactTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel> | $Enums.ContactType | null
+}
+
+export type EnumProfileEventKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProfileEventKind | Prisma.EnumProfileEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProfileEventKindWithAggregatesFilter<$PrismaModel> | $Enums.ProfileEventKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel>
+}
+
+export type EnumContactTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactType | Prisma.EnumContactTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumContactTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ContactType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel>
+}
+
 export type EnumVerificationStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.VerificationStatus | Prisma.EnumVerificationStatusFieldRefInput<$PrismaModel>
   in?: $Enums.VerificationStatus[] | Prisma.ListEnumVerificationStatusFieldRefInput<$PrismaModel>
@@ -1388,6 +1422,40 @@ export type NestedEnumContactTypeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumContactTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumContactTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumProfileEventKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProfileEventKind | Prisma.EnumProfileEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel> | $Enums.ProfileEventKind
+}
+
+export type NestedEnumContactTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactType | Prisma.EnumContactTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel> | $Enums.ContactType | null
+}
+
+export type NestedEnumProfileEventKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ProfileEventKind | Prisma.EnumProfileEventKindFieldRefInput<$PrismaModel>
+  in?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ProfileEventKind[] | Prisma.ListEnumProfileEventKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumProfileEventKindWithAggregatesFilter<$PrismaModel> | $Enums.ProfileEventKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumProfileEventKindFilter<$PrismaModel>
+}
+
+export type NestedEnumContactTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ContactType | Prisma.EnumContactTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ContactType[] | Prisma.ListEnumContactTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumContactTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ContactType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumContactTypeNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumVerificationStatusFilter<$PrismaModel = never> = {

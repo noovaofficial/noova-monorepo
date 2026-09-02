@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Badge, badgeClass } from '@/design-system/components/Badge';
+import { ViewTracker } from '@/modules/analytics/components/ViewTracker';
 import { Amenities } from '@/modules/catalog/components/Amenities';
 import { AreaMap } from '@/modules/catalog/components/AreaMap';
 import { Gallery } from '@/modules/catalog/components/Gallery';
@@ -147,6 +148,10 @@ export default async function ProfilePage({ params }: Props) {
 
   return (
     <>
+      {/* Просмотр считается маяком из браузера: страница кэшируется, и по
+          её рендеру считались бы протухания кэша, а не посетители. */}
+      <ViewTracker slug={profile.slug} />
+
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD из провалидированных схемой данных, сериализуется JSON.stringify

@@ -45,6 +45,8 @@ export const PUBLIC_CLIENT_NAMESPACES = [
 export const PRIVATE_CLIENT_NAMESPACES = [
   'account',
   'admin',
+  // Статистика анкет — только у их владельца, в кабинете.
+  'analytics',
   // Кошелёк GlowCoin: баланс и пополнение — только в кабинете.
   'billing',
   // Данные агентства и салона — только в кабинете (N-33).

@@ -71,7 +71,7 @@ export const ModelName = {
   ProfileHours: 'ProfileHours',
   CompanyContact: 'CompanyContact',
   ProfileContact: 'ProfileContact',
-  ContactReveal: 'ContactReveal',
+  ProfileEvent: 'ProfileEvent',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -404,15 +404,17 @@ export const ProfileContactScalarFieldEnum = {
 export type ProfileContactScalarFieldEnum = (typeof ProfileContactScalarFieldEnum)[keyof typeof ProfileContactScalarFieldEnum]
 
 
-export const ContactRevealScalarFieldEnum = {
+export const ProfileEventScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
+  kind: 'kind',
+  contactType: 'contactType',
   userId: 'userId',
   ipHash: 'ipHash',
   createdAt: 'createdAt'
 } as const
 
-export type ContactRevealScalarFieldEnum = (typeof ContactRevealScalarFieldEnum)[keyof typeof ContactRevealScalarFieldEnum]
+export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
 
 
 export const PriceSlotScalarFieldEnum = {

@@ -1,0 +1,239 @@
+.wrap {
+  max-width: 860px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Периоды — тот же ряд «таблеток», что фильтры каталога: переключение
+   отрезка времени и переключение фильтра для человека одно и то же. */
+.periods {
+  display: flex;
+  gap: var(--space1);
+  padding: var(--space1);
+  background: var(--surfaceMuted);
+  border-radius: var(--radiusPill);
+}
+
+.period {
+  padding: var(--space2) var(--space4);
+  border: none;
+  border-radius: var(--radiusPill);
+  background: transparent;
+  color: var(--secondaryText);
+  font: inherit;
+  font-size: var(--textSm);
+  cursor: pointer;
+}
+
+.period:hover {
+  color: var(--primaryText);
+}
+
+.periodSelected,
+.periodSelected:hover {
+  background: var(--surface);
+  color: var(--primaryText);
+  font-weight: 600;
+  box-shadow: var(--shadowSm);
+}
+
+/* Воронка в одну строку: ступени читаются слева направо, и перенос
+   на вторую строку рвал бы этот порядок. На узком экране — в два столбца,
+   парами, чтобы карточка не сжималась до нечитаемой. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space3);
+  margin-bottom: var(--space6);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space1);
+  padding: var(--space4);
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.metric:hover {
+  border-color: var(--borderStrong);
+}
+
+/* Выбранная карточка — источник графика ниже, и связь между ними держится
+   только на цвете: рамка бренда повторяет цвет столбиков. */
+.metricSelected,
+.metricSelected:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadowSm);
+}
+
+.metricName {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.metricValue {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  line-height: var(--leadingTight);
+}
+
+.metricSplit {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.card {
+  padding: var(--space5);
+  margin-bottom: var(--space6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin: 0 0 var(--space2);
+}
+
+.hint {
+  margin: 0 0 var(--space4);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.channels {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.channel {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  align-items: center;
+  gap: var(--space3);
+  font-size: var(--textSm);
+}
+
+.channelName {
+  color: var(--secondaryText);
+}
+
+.channelBar {
+  height: 8px;
+  border-radius: var(--radiusPill);
+  background: var(--surfaceSunken);
+  overflow: hidden;
+}
+
+.channelFill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+}
+
+.channelValue {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.channelShare {
+  font-weight: 400;
+  color: var(--tertiaryText);
+}
+
+/* Таблица анкет шире экрана телефона и прокручивается сама, а не растягивает
+   страницу: горизонтальная прокрутка всего кабинета ломает и остальное. */
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--textSm);
+}
+
+.table th,
+.table td {
+  padding: var(--space2) var(--space3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.table thead th {
+  font-size: var(--textXs);
+  font-weight: 400;
+  color: var(--tertiaryText);
+  white-space: nowrap;
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.nameCell {
+  font-weight: 600;
+}
+
+.numCell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  line-height: var(--leadingRelaxed);
+}
+
+.empty,
+.err {
+  padding: var(--space6) 0;
+  color: var(--secondaryText);
+}
+
+.err {
+  color: var(--danger);
+}
+
+@media (max-width: 720px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .channel {
+    grid-template-columns: 90px 1fr auto;
+  }
+}

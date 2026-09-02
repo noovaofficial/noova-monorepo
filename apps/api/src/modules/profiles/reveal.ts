@@ -1,19 +1,7 @@
-import { createHash } from 'node:crypto';
 import { revealedContactsSchema, slugSchema } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { env } from '../../env.js';
-
-/**
- * Журнал раскрытий не должен сам стать базой персональных данных: адрес
- * посетителя в нём лежит хэшем с общей солью. Соль постоянная, иначе
- * записи одного человека перестанут схлопываться и журнал потеряет смысл
- * как антифрод; из-за этого хэш обратим перебором адресов — поэтому строки
- * и живут ограниченный срок, а не вечно.
- */
-export function hashIp(ip: string): string {
-  return createHash('sha256').update(`${env.IP_HASH_SALT}:${ip}`).digest('hex');
-}
+import { recordProfileEvent } from '../analytics/events.js';
 
 export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
@@ -49,13 +37,9 @@ export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       // Журнал пишем и при пустом списке: попытка добраться до контактов —
       // это то же событие, и для антифрода важна именно она.
-      await fastify.prisma.contactReveal.create({
-        data: {
-          profileId: profile.id,
-          // Сессия читается на каждом запросе и здесь просто может отсутствовать.
-          userId: request.session?.userId ?? null,
-          ipHash: hashIp(request.ip),
-        },
+      await recordProfileEvent(fastify, request, {
+        kind: 'contact_reveal',
+        profileId: profile.id,
       });
 
       return {

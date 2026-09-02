@@ -1,7 +1,7 @@
 import { createProfileReportSchema, isUrgentReason, slugSchema } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { hashIp } from '../profiles/reveal.js';
+import { hashIp } from '../analytics/events.js';
 
 export const reportRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(

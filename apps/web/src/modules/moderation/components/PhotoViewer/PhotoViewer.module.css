@@ -1,0 +1,74 @@
+.viewer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zOverlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space6);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
+}
+
+/* Снимок во всю доступную высоту: модератор разбирает надпись в документе,
+   и уменьшать его ради полей незачем. */
+.image {
+  position: relative;
+  max-width: min(100%, 1280px);
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radiusMd);
+}
+
+.close {
+  position: absolute;
+  top: var(--space4);
+  right: var(--space4);
+  z-index: 1;
+  padding: 8px 16px;
+  border-radius: var(--radiusPill);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font: inherit;
+  font-size: var(--textSm);
+  cursor: pointer;
+}
+
+.step {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.prev { left: var(--space4); }
+.next { right: var(--space4); }
+
+.caption {
+  position: absolute;
+  bottom: var(--space5);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: var(--radiusPill);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: var(--textSm);
+}
