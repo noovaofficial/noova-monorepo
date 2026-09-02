@@ -7,7 +7,7 @@ import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../GlowCoinWallet/GlowCoinWallet.module.css';
 
-const TERMINAL = new Set(['paid', 'expired', 'canceled', 'failed']);
+const TERMINAL = new Set(['paid', 'partial', 'expired', 'canceled', 'failed']);
 
 /**
  * Страница возврата с кассы. Возврат — навигация, а не факт оплаты:
@@ -44,6 +44,8 @@ export function TopupStatus({ orderId }: { orderId: string }) {
 
           {data.status === 'paid' ? (
             <p className={styles.ok}>{t('checkoutPaid', { gc: data.grantedGc })}</p>
+          ) : data.status === 'partial' ? (
+            <p className={styles.note}>{t('checkoutPartial', { id: data.id })}</p>
           ) : data.status === 'expired' ? (
             <p className={styles.err}>{t('checkoutExpired')}</p>
           ) : data.status === 'canceled' ? (

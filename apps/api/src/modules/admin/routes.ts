@@ -3,6 +3,7 @@ import {
   moderationLogEntrySchema,
   moderationLogQuerySchema,
   type moderationSubjectRefSchema,
+  pageSchema,
   staffMemberSchema,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
@@ -10,6 +11,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireSession } from '../../plugins/session.js';
 import { hashPassword } from '../auth/passwords.js';
+import { decodeCursor, encodeCursor } from '../profiles/query.js';
 
 /**
  * Раскрывает предмет решения. Один запрос на тип, а не по строке на запись:
@@ -290,7 +292,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['admin'],
         querystring: moderationLogQuerySchema,
-        response: { 200: z.array(moderationLogEntrySchema) },
+        response: { 200: pageSchema(moderationLogEntrySchema) },
       },
     },
     async (request) => {
@@ -298,14 +300,19 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Модератору подменяем фильтр на него самого, что бы ни пришло в запросе.
       const moderatorId = session.role === 'admin' ? request.query.moderatorId : session.userId;
 
-      const rows = await fastify.prisma.moderationAction.findMany({
-        where: {
-          ...(moderatorId ? { moderatorId } : {}),
-          ...(request.query.subjectType ? { subjectType: request.query.subjectType } : {}),
-          ...(request.query.decision ? { decision: request.query.decision } : {}),
-        },
-        orderBy: { createdAt: 'desc' },
-        take: request.query.limit,
+      const { limit } = request.query;
+      const cursorId = decodeCursor(request.query.cursor);
+      const where = {
+        ...(moderatorId ? { moderatorId } : {}),
+        ...(request.query.subjectType ? { subjectType: request.query.subjectType } : {}),
+        ...(request.query.decision ? { decision: request.query.decision } : {}),
+      };
+
+      const fetched = await fastify.prisma.moderationAction.findMany({
+        where,
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        take: limit + 1,
+        ...(cursorId ? { cursor: { id: cursorId }, skip: 1 } : {}),
         select: {
           id: true,
           subjectType: true,
@@ -317,9 +324,11 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
 
+      const hasMore = fetched.length > limit;
+      const rows = fetched.slice(0, limit);
       const subjects = await resolveSubjects(fastify, rows);
 
-      return rows.map((row) => ({
+      const items = rows.map((row) => ({
         id: row.id,
         moderatorEmail: row.moderator.email,
         moderatorId: row.moderator.id,
@@ -330,6 +339,12 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         reason: row.reason,
         createdAt: row.createdAt.toISOString(),
       }));
+
+      return {
+        items,
+        nextCursor: hasMore ? encodeCursor(rows[rows.length - 1]?.id ?? '') : null,
+        total: await fastify.prisma.moderationAction.count({ where }),
+      };
     },
   );
 };

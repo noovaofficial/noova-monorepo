@@ -1,11 +1,14 @@
 import {
   blockedProfileSchema,
+  blockedProfilesQuerySchema,
   blockSchema,
   isUrgentReason,
   managedUserSchema,
   moderatedProfileSchema,
+  pageSchema,
   queueCountSchema,
   queueItemSchema,
+  queueQuerySchema,
   rejectionSchema,
   userSearchSchema,
 } from '@noova/shared';
@@ -24,6 +27,7 @@ import {
   moderationPhotoUrl,
   publicUrl,
 } from '../photos/storage.js';
+import { decodeCursor, encodeCursor } from '../profiles/query.js';
 
 const profileSelect = {
   id: true,
@@ -181,191 +185,279 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Очередь: четыре источника, один список. Листается курсором, который
+   * несёт вид и id последней записи: страница добирается из текущего вида,
+   * а когда он кончается — переходит к следующему. Так вкладка «Все» тоже
+   * листается до конца, а не показывает первые N каждого вида.
+   *
+   * Срочные жалобы идут отдельным видом перед обычными: раньше они
+   * поднимались сортировкой в памяти, а с курсором порядок обязан жить в
+   * запросе — иначе страницы перекрывались бы.
+   */
+  type QueueSource = 'verification' | 'photo' | 'comment' | 'reportUrgent' | 'report';
+  const QUEUE_ORDER: QueueSource[] = ['verification', 'photo', 'comment', 'reportUrgent', 'report'];
+  const URGENT_REASONS = ['underage', 'coercion'] as const;
+  type Item = z.infer<typeof queueItemSchema>;
+
+  // Явный тип, а не вывод из тернарника: объединение двух форм Prisma не
+  // принимает как аргумент, а необязательные поля — принимает.
+  const after = (id: string | undefined): { cursor?: { id: string }; skip?: number } =>
+    id ? { cursor: { id }, skip: 1 } : {};
+
+  const queueLoaders: Record<
+    QueueSource,
+    (afterId: string | undefined, take: number) => Promise<Item[]>
+  > = {
+    verification: async (afterId, take) => {
+      const cases = await fastify.prisma.verificationCase.findMany({
+        where: { status: 'pending' },
+        orderBy: [{ submittedAt: 'asc' }, { id: 'asc' }],
+        take,
+        ...after(afterId),
+        select: {
+          id: true,
+          submittedAt: true,
+          ageConfirmed: true,
+          identityConfirmed: true,
+          profile: {
+            select: {
+              ...profileSelect,
+              _count: { select: { photos: { where: { deletedAt: null } } } },
+            },
+          },
+        },
+      });
+      return cases.map((item) => ({
+        kind: 'verification' as const,
+        id: item.id,
+        submittedAt: item.submittedAt?.toISOString() ?? null,
+        ageConfirmed: item.ageConfirmed,
+        identityConfirmed: item.identityConfirmed,
+        photoCount: item.profile._count.photos,
+        profile: {
+          id: item.profile.id,
+          slug: item.profile.slug,
+          displayName: item.profile.displayName,
+          kind: item.profile.kind,
+          cityName: item.profile.city.name,
+        },
+      }));
+    },
+    photo: async (afterId, take) => {
+      const photos = await fastify.prisma.photo.findMany({
+        where: { isApproved: false, deletedAt: null },
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        take,
+        ...after(afterId),
+        select: {
+          id: true,
+          storageKey: true,
+          width: true,
+          height: true,
+          createdAt: true,
+          profile: { select: profileSelect },
+        },
+      });
+      // Непроверенное фото не отдаётся публично даже модератору: файл
+      // идёт через API, роль проверяется на каждый запрос.
+      return photos.map((photo) => ({
+        kind: 'photo' as const,
+        id: photo.id,
+        url: moderationPhotoUrl(photo.id),
+        width: photo.width,
+        height: photo.height,
+        createdAt: photo.createdAt.toISOString(),
+        profile: {
+          id: photo.profile.id,
+          slug: photo.profile.slug,
+          displayName: photo.profile.displayName,
+          kind: photo.profile.kind,
+          cityName: photo.profile.city.name,
+        },
+      }));
+    },
+    comment: async (afterId, take) => {
+      const comments = await fastify.prisma.profileComment.findMany({
+        // Новые на проверку и опубликованные, на которые пожаловались:
+        // и то и другое — незакрытая работа модератора.
+        where: {
+          OR: [
+            { status: 'pending' },
+            { status: 'published', reports: { some: { resolvedAt: null } } },
+          ],
+        },
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        take,
+        ...after(afterId),
+        select: {
+          id: true,
+          body: true,
+          status: true,
+          createdAt: true,
+          author: { select: { clientProfile: { select: { nickname: true } } } },
+          profile: { select: { id: true, slug: true, displayName: true, city: true } },
+          reports: {
+            where: { resolvedAt: null },
+            orderBy: { createdAt: 'asc' },
+            select: { id: true, reason: true, createdAt: true },
+          },
+        },
+      });
+      return comments.map((comment) => ({
+        kind: 'comment' as const,
+        id: comment.id,
+        body: comment.body,
+        status: comment.status,
+        authorNickname: comment.author.clientProfile?.nickname ?? 'Гость',
+        createdAt: comment.createdAt.toISOString(),
+        profile: {
+          id: comment.profile.id,
+          slug: comment.profile.slug,
+          displayName: comment.profile.displayName,
+          cityName: comment.profile.city.name,
+        },
+        reports: comment.reports.map((report) => ({
+          id: report.id,
+          reason: report.reason,
+          createdAt: report.createdAt.toISOString(),
+        })),
+      }));
+    },
+    reportUrgent: (afterId, take) => loadReports(afterId, take, true),
+    report: (afterId, take) => loadReports(afterId, take, false),
+  };
+
+  async function loadReports(afterId: string | undefined, take: number, urgent: boolean) {
+    const reports = await fastify.prisma.profileReport.findMany({
+      where: {
+        resolvedAt: null,
+        reason: urgent ? { in: [...URGENT_REASONS] } : { notIn: [...URGENT_REASONS] },
+      },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      take,
+      ...after(afterId),
+      select: {
+        id: true,
+        reason: true,
+        details: true,
+        createdAt: true,
+        reporter: { select: { email: true } },
+        profile: { select: { id: true, slug: true, displayName: true, city: true } },
+      },
+    });
+    if (reports.length === 0) return [];
+
+    // Несколько независимых жалоб на одну анкету — сигнал сам по себе.
+    // Считаем по базе, а не по странице: другие жалобы могут быть на
+    // соседних страницах.
+    const grouped = await fastify.prisma.profileReport.groupBy({
+      by: ['profileId'],
+      where: { resolvedAt: null, profileId: { in: reports.map((r) => r.profile.id) } },
+      _count: { _all: true },
+    });
+    const openByProfile = new Map(grouped.map((g) => [g.profileId, g._count._all]));
+
+    return reports.map((report) => ({
+      kind: 'report' as const,
+      id: report.id,
+      reason: report.reason,
+      details: report.details,
+      isUrgent: isUrgentReason(report.reason),
+      reporterEmail: report.reporter?.email ?? null,
+      createdAt: report.createdAt.toISOString(),
+      profile: {
+        id: report.profile.id,
+        slug: report.profile.slug,
+        displayName: report.profile.displayName,
+        cityName: report.profile.city.name,
+      },
+      otherOpenReports: (openByProfile.get(report.profile.id) ?? 1) - 1,
+    }));
+  }
+
+  function queueTotal(sources: QueueSource[]): Promise<number> {
+    const counts = sources.map((source) => {
+      switch (source) {
+        case 'verification':
+          return fastify.prisma.verificationCase.count({ where: { status: 'pending' } });
+        case 'photo':
+          return fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } });
+        case 'comment':
+          return fastify.prisma.profileComment.count({
+            where: {
+              OR: [
+                { status: 'pending' },
+                { status: 'published', reports: { some: { resolvedAt: null } } },
+              ],
+            },
+          });
+        case 'reportUrgent':
+          return fastify.prisma.profileReport.count({
+            where: { resolvedAt: null, reason: { in: [...URGENT_REASONS] } },
+          });
+        case 'report':
+          return fastify.prisma.profileReport.count({
+            where: { resolvedAt: null, reason: { notIn: [...URGENT_REASONS] } },
+          });
+      }
+    });
+    return Promise.all(counts).then((values) => values.reduce((sum, n) => sum + n, 0));
+  }
+
   fastify.get(
     '/moderation/queue',
     {
       onRequest: guard,
       schema: {
         tags: ['moderation'],
-        querystring: z.object({
-          kind: z.enum(['photo', 'verification', 'comment', 'report']).optional(),
-        }),
-        response: { 200: z.array(queueItemSchema) },
+        querystring: queueQuerySchema,
+        response: { 200: pageSchema(queueItemSchema) },
       },
     },
     async (request) => {
-      const wanted = request.query.kind;
-      const items: z.infer<typeof queueItemSchema>[] = [];
+      const { kind, limit } = request.query;
+      const sources: QueueSource[] = kind
+        ? kind === 'report'
+          ? ['reportUrgent', 'report']
+          : [kind]
+        : QUEUE_ORDER;
 
-      if (!wanted || wanted === 'verification') {
-        const cases = await fastify.prisma.verificationCase.findMany({
-          where: { status: 'pending' },
-          orderBy: { submittedAt: 'asc' },
-          take: 50,
-          select: {
-            id: true,
-            submittedAt: true,
-            ageConfirmed: true,
-            identityConfirmed: true,
-            profile: {
-              select: {
-                ...profileSelect,
-                _count: { select: { photos: { where: { deletedAt: null } } } },
-              },
-            },
-          },
-        });
+      // Курсор — «вид:id». Неизвестный вид означает чужой или устаревший
+      // курсор: начинаем сначала, а не падаем.
+      const raw = decodeCursor(request.query.cursor);
+      const separator = raw?.indexOf(':') ?? -1;
+      const cursorSource = raw && separator > 0 ? (raw.slice(0, separator) as QueueSource) : null;
+      const cursorId = raw && separator > 0 ? raw.slice(separator + 1) : undefined;
+      let index = cursorSource ? sources.indexOf(cursorSource) : 0;
+      if (index < 0) index = 0;
 
-        for (const item of cases) {
-          items.push({
-            kind: 'verification',
-            id: item.id,
-            submittedAt: item.submittedAt?.toISOString() ?? null,
-            ageConfirmed: item.ageConfirmed,
-            identityConfirmed: item.identityConfirmed,
-            photoCount: item.profile._count.photos,
-            profile: {
-              id: item.profile.id,
-              slug: item.profile.slug,
-              displayName: item.profile.displayName,
-              kind: item.profile.kind,
-              cityName: item.profile.city.name,
-            },
-          });
-        }
+      const items: Item[] = [];
+      const wanted = limit + 1;
+      for (let i = index; i < sources.length && items.length < wanted; i += 1) {
+        const source = sources[i] as QueueSource;
+        const afterId = i === index && cursorSource === source ? cursorId : undefined;
+        items.push(...(await queueLoaders[source](afterId, wanted - items.length)));
       }
 
-      if (!wanted || wanted === 'photo') {
-        const photos = await fastify.prisma.photo.findMany({
-          where: { isApproved: false, deletedAt: null },
-          orderBy: { createdAt: 'asc' },
-          take: 50,
-          select: {
-            id: true,
-            storageKey: true,
-            width: true,
-            height: true,
-            createdAt: true,
-            profile: { select: profileSelect },
-          },
-        });
+      const hasMore = items.length > limit;
+      const page = items.slice(0, limit);
+      const last = page[page.length - 1];
+      // Вид последней записи — по её принадлежности к источнику: у жалобы
+      // это ещё и срочность.
+      const lastSource: QueueSource | null = last
+        ? last.kind === 'report'
+          ? last.isUrgent
+            ? 'reportUrgent'
+            : 'report'
+          : last.kind
+        : null;
 
-        // Непроверенное фото не отдаётся публично даже модератору: файл
-        // идёт через API, роль проверяется на каждый запрос.
-        for (const photo of photos) {
-          items.push({
-            kind: 'photo',
-            id: photo.id,
-            url: moderationPhotoUrl(photo.id),
-            width: photo.width,
-            height: photo.height,
-            createdAt: photo.createdAt.toISOString(),
-            profile: {
-              id: photo.profile.id,
-              slug: photo.profile.slug,
-              displayName: photo.profile.displayName,
-              kind: photo.profile.kind,
-              cityName: photo.profile.city.name,
-            },
-          });
-        }
-      }
-
-      if (!wanted || wanted === 'comment') {
-        const comments = await fastify.prisma.profileComment.findMany({
-          // Новые на проверку и опубликованные, на которые пожаловались:
-          // и то и другое — незакрытая работа модератора.
-          where: {
-            OR: [
-              { status: 'pending' },
-              { status: 'published', reports: { some: { resolvedAt: null } } },
-            ],
-          },
-          orderBy: { createdAt: 'asc' },
-          take: 50,
-          select: {
-            id: true,
-            body: true,
-            status: true,
-            createdAt: true,
-            author: { select: { clientProfile: { select: { nickname: true } } } },
-            profile: { select: { id: true, slug: true, displayName: true, city: true } },
-            reports: {
-              where: { resolvedAt: null },
-              orderBy: { createdAt: 'asc' },
-              select: { id: true, reason: true, createdAt: true },
-            },
-          },
-        });
-
-        for (const comment of comments) {
-          items.push({
-            kind: 'comment',
-            id: comment.id,
-            body: comment.body,
-            status: comment.status,
-            authorNickname: comment.author.clientProfile?.nickname ?? 'Гость',
-            createdAt: comment.createdAt.toISOString(),
-            profile: {
-              id: comment.profile.id,
-              slug: comment.profile.slug,
-              displayName: comment.profile.displayName,
-              cityName: comment.profile.city.name,
-            },
-            reports: comment.reports.map((report) => ({
-              id: report.id,
-              reason: report.reason,
-              createdAt: report.createdAt.toISOString(),
-            })),
-          });
-        }
-      }
-
-      if (!wanted || wanted === 'report') {
-        const reports = await fastify.prisma.profileReport.findMany({
-          where: { resolvedAt: null },
-          // Срочные первыми, дальше по давности: жалоба на
-          // несовершеннолетнюю не должна ждать за десятком сообщений о спаме.
-          orderBy: [{ createdAt: 'asc' }],
-          take: 100,
-          select: {
-            id: true,
-            reason: true,
-            details: true,
-            createdAt: true,
-            reporter: { select: { email: true } },
-            profile: { select: { id: true, slug: true, displayName: true, city: true } },
-          },
-        });
-
-        const openByProfile = new Map<string, number>();
-        for (const report of reports) {
-          openByProfile.set(report.profile.id, (openByProfile.get(report.profile.id) ?? 0) + 1);
-        }
-
-        const mapped = reports.map((report) => ({
-          kind: 'report' as const,
-          id: report.id,
-          reason: report.reason,
-          details: report.details,
-          isUrgent: isUrgentReason(report.reason),
-          reporterEmail: report.reporter?.email ?? null,
-          createdAt: report.createdAt.toISOString(),
-          profile: {
-            id: report.profile.id,
-            slug: report.profile.slug,
-            displayName: report.profile.displayName,
-            cityName: report.profile.city.name,
-          },
-          // Несколько независимых жалоб на одну анкету — сигнал сам по себе.
-          otherOpenReports: (openByProfile.get(report.profile.id) ?? 1) - 1,
-        }));
-
-        mapped.sort((a, b) => Number(b.isUrgent) - Number(a.isUrgent));
-        items.push(...mapped);
-      }
-
-      return items;
+      return {
+        items: page,
+        nextCursor: hasMore && last && lastSource ? encodeCursor(`${lastSource}:${last.id}`) : null,
+        total: await queueTotal(sources),
+      };
     },
   );
 
@@ -835,16 +927,20 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       onRequest: guard,
       schema: {
         tags: ['moderation'],
-        querystring: z.object({ limit: z.coerce.number().int().min(1).max(100).default(50) }),
-        response: { 200: z.array(blockedProfileSchema) },
+        querystring: blockedProfilesQuerySchema,
+        response: { 200: pageSchema(blockedProfileSchema) },
       },
     },
     async (request) => {
-      const rows = await fastify.prisma.profile.findMany({
+      const { limit } = request.query;
+      const cursorId = decodeCursor(request.query.cursor);
+      const fetched = await fastify.prisma.profile.findMany({
         where: { status: 'banned' },
         // По свежести блокировки: `updatedAt` меняется в момент решения.
-        orderBy: { updatedAt: 'desc' },
-        take: request.query.limit,
+        // id вторым ключом: у курсора порядок обязан быть однозначным.
+        orderBy: [{ updatedAt: 'desc' }, { id: 'desc' }],
+        take: limit + 1,
+        ...(cursorId ? { cursor: { id: cursorId }, skip: 1 } : {}),
         select: {
           id: true,
           slug: true,
@@ -856,6 +952,9 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           owner: { select: { email: true, bannedAt: true } },
         },
       });
+
+      const hasMore = fetched.length > limit;
+      const rows = fetched.slice(0, limit);
 
       // Кто и когда заблокировал — в журнале решений; берём последнюю запись
       // по каждой анкете, чтобы показать дату отдельно от `updatedAt`,
@@ -874,7 +973,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         if (!blockedAt.has(action.subjectId)) blockedAt.set(action.subjectId, action.createdAt);
       }
 
-      return rows.map((row) => ({
+      const items = rows.map((row) => ({
         id: row.id,
         slug: row.slug,
         displayName: row.displayName,
@@ -888,6 +987,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         blockedAt: blockedAt.get(row.id)?.toISOString() ?? null,
         updatedAt: row.updatedAt.toISOString(),
       }));
+
+      return {
+        items,
+        nextCursor: hasMore ? encodeCursor(rows[rows.length - 1]?.id ?? '') : null,
+        total: await fastify.prisma.profile.count({ where: { status: 'banned' } }),
+      };
     },
   );
 
@@ -898,22 +1003,29 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['moderation'],
         querystring: userSearchSchema,
-        response: { 200: z.array(managedUserSchema) },
+        response: { 200: pageSchema(managedUserSchema) },
       },
     },
     async (request) => {
       const { query, limit } = request.query;
+      const cursorId = decodeCursor(request.query.cursor);
+      const where = {
+        ...(query ? { email: { contains: query, mode: 'insensitive' as const } } : {}),
+        ...(request.query.blocked === 'true' ? { bannedAt: { not: null } } : {}),
+        ...(request.query.role ? { role: request.query.role } : {}),
+      };
 
-      const rows = await fastify.prisma.user.findMany({
-        where: {
-          ...(query ? { email: { contains: query, mode: 'insensitive' } } : {}),
-          ...(request.query.blocked === 'true' ? { bannedAt: { not: null } } : {}),
-          ...(request.query.role ? { role: request.query.role } : {}),
-        },
+      const fetched = await fastify.prisma.user.findMany({
+        where,
         // Заблокированных показываем по свежести блокировки, остальных — по
         // дате регистрации: в таблице блокировок интересны последние решения.
-        orderBy: request.query.blocked === 'true' ? { bannedAt: 'desc' } : { createdAt: 'desc' },
-        take: limit,
+        // id вторым ключом — ради однозначного курсора.
+        orderBy:
+          request.query.blocked === 'true'
+            ? [{ bannedAt: 'desc' }, { id: 'desc' }]
+            : [{ createdAt: 'desc' }, { id: 'desc' }],
+        take: limit + 1,
+        ...(cursorId ? { cursor: { id: cursorId }, skip: 1 } : {}),
         select: {
           id: true,
           email: true,
@@ -928,19 +1040,26 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
 
-      return rows.map((row) => ({
-        id: row.id,
-        email: row.email,
-        role: row.role,
-        isEmailVerified: row.emailVerifiedAt !== null,
-        isBlocked: row.bannedAt !== null,
-        banReason: row.banReason,
-        bannedAt: row.bannedAt?.toISOString() ?? null,
-        nickname: row.clientProfile?.nickname ?? null,
-        profileCount: row._count.profiles,
-        glowcoinBalance: row.glowcoinBalance,
-        createdAt: row.createdAt.toISOString(),
-      }));
+      const hasMore = fetched.length > limit;
+      const rows = fetched.slice(0, limit);
+
+      return {
+        items: rows.map((row) => ({
+          id: row.id,
+          email: row.email,
+          role: row.role,
+          isEmailVerified: row.emailVerifiedAt !== null,
+          isBlocked: row.bannedAt !== null,
+          banReason: row.banReason,
+          bannedAt: row.bannedAt?.toISOString() ?? null,
+          nickname: row.clientProfile?.nickname ?? null,
+          profileCount: row._count.profiles,
+          glowcoinBalance: row.glowcoinBalance,
+          createdAt: row.createdAt.toISOString(),
+        })),
+        nextCursor: hasMore ? encodeCursor(rows[rows.length - 1]?.id ?? '') : null,
+        total: await fastify.prisma.user.count({ where }),
+      };
     },
   );
 

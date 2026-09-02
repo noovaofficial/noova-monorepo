@@ -1,7 +1,7 @@
 'use client';
 
 import { adjustBalanceInputSchema, type ManagedUser, type UserRole } from '@noova/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -15,6 +15,7 @@ import {
   verifyUserEmail,
 } from '@/modules/moderation/api';
 import { queryKeys } from '@/shared/query-keys';
+import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
 
 const ROLES: UserRole[] = ['client', 'advertiser', 'moderator', 'admin'];
@@ -60,9 +61,12 @@ export function UserList({
   // так же, как причина блокировки.
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const list = useQuery({
+  const list = useInfiniteQuery({
     queryKey: queryKeys.users(debounced, blockedOnly, role || undefined),
-    queryFn: () => fetchUsers(debounced || undefined, blockedOnly, role || undefined),
+    queryFn: ({ pageParam }) =>
+      fetchUsers(debounced || undefined, blockedOnly, role || undefined, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last) => last.nextCursor,
   });
 
   // Блокировка меняет и общий список, и таблицу заблокированных — гасим
@@ -119,7 +123,8 @@ export function UserList({
     },
   });
 
-  const users = list.data ?? null;
+  const users = list.data ? list.data.pages.flatMap((page) => page.items) : null;
+  const total = list.data?.pages[0]?.total ?? null;
   const busy =
     verify.isPending ||
     block.isPending ||
@@ -379,6 +384,13 @@ export function UserList({
               </div>
             );
           })}
+          <LoadMore
+            shown={users.length}
+            total={total}
+            hasMore={list.hasNextPage}
+            loading={list.isFetchingNextPage}
+            onMore={() => void list.fetchNextPage()}
+          />
         </div>
       )}
     </>

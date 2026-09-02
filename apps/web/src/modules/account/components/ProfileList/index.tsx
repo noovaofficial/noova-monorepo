@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AccountError, createProfile, fetchCities, fetchOwnProfiles } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { fetchPriceBook } from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -25,6 +26,12 @@ export function ProfileList() {
 
   const enabled = sessionStatus === 'authenticated';
   const list = useQuery({ queryKey: queryKeys.ownProfiles(), queryFn: fetchOwnProfiles, enabled });
+  const book = useQuery({
+    queryKey: queryKeys.priceBook(),
+    queryFn: fetchPriceBook,
+    enabled,
+    staleTime: 60 * 1000,
+  });
   // Справочник городов меняется раз в год — свежесть держим долгую, иначе
   // он перезапрашивается на каждом заходе в кабинет без всякой пользы.
   const cityList = useQuery({
@@ -71,10 +78,15 @@ export function ProfileList() {
   // заведённой записи — форма открывалась, а отказ приходил только с сервера.
   // Тип не задан — не блокируем: сервер всё равно проверит, а лишний отказ
   // на пустом месте хуже лишней кнопки.
-  const limitReached =
-    profiles !== null &&
-    user.advertiserKind !== null &&
-    profiles.length >= PROFILE_LIMIT_BY_ADVERTISER[user.advertiserKind];
+  // Предел агентства — из прайса на сервере (D-07): его меняет админ, и
+  // кабинет не должен показывать число из кода, когда настройка другая.
+  const limit =
+    user.advertiserKind === null
+      ? null
+      : user.advertiserKind === 'agency'
+        ? (book.data?.agencyProfileLimit ?? PROFILE_LIMIT_BY_ADVERTISER.agency)
+        : PROFILE_LIMIT_BY_ADVERTISER[user.advertiserKind];
+  const limitReached = profiles !== null && limit !== null && profiles.length >= limit;
 
   // Салон — это анкета, но называть её так в его кабинете значит путать:
   // владелец салона заводит салон, а не «анкету» (N-34).

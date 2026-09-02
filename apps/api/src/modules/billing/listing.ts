@@ -5,6 +5,10 @@ import {
   TERM_MONTHS,
 } from '@noova/shared';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
+import type { Mail } from '../auth/mailer.js';
+import { localeOf } from '../auth/mailer.js';
+import { listingExpiredMail, listingGraceMail, listingReminderMail } from './mails.js';
 import { applyMovement, toListing } from './wallet.js';
 
 /**
@@ -107,6 +111,8 @@ export function activateListing(
             term: activation.term,
             status: 'active',
             expiresAt,
+            // За новый срок напоминаем заново.
+            reminderSentAt: null,
             // Дата активации сдвигается только при рестарте: у продления
             // размещение не прерывалось, и «активно с» остаётся прежним.
             ...(current.status === 'active' ? {} : { activatedAt: now }),
@@ -164,44 +170,107 @@ export function listingTransition(
   return null;
 }
 
+export type ExpiryOptions = {
+  graceDays: number;
+  /** За сколько дней до конца срока напоминать. */
+  reminderDays: number;
+  now?: Date;
+  /** Отправка письма. Нет — молча: так задачу можно гонять без почты. */
+  notify?: (mail: Mail) => Promise<unknown>;
+  /** Сброс кэша витрины по тегам. */
+  revalidate?: (tags: string[]) => void;
+};
+
 /**
- * Задача цикла (jobs/tasks.ts). Возвращает число размещений, сменивших
- * состояние. Истечение снимает опубликованные анкеты владельца с
- * публикации с пометкой `unpaidAt` — по ней активация вернёт их обратно.
+ * Задача цикла (jobs/tasks.ts). Возвращает число размещений, по которым
+ * что-то сделано: напоминание, льготные дни, снятие с публикации.
  *
- * Кэш витрины здесь не сбрасывается: у процесса задач нет доступа к
- * фронту, и снятая анкета исчезает из каталога по истечении ISR.
+ * Истечение снимает опубликованные анкеты владельца с публикации с пометкой
+ * `unpaidAt` — по ней активация вернёт их обратно — и сбрасывает кэш
+ * витрины по их слугам. Письма уходят на языке владельца: он их и читает.
+ * Сбой почты не останавливает переход: без письма плохо, без снятия —
+ * бесплатное размещение.
  */
 export async function expireListings(
   prisma: PrismaClient,
-  graceDays: number,
-  now: Date = new Date(),
+  options: ExpiryOptions,
 ): Promise<number> {
+  const now = options.now ?? new Date();
+  const notify = async (mail: Mail) => {
+    try {
+      await options.notify?.(mail);
+    } catch {
+      // Очередь писем недоступна — переход состояния важнее письма.
+    }
+  };
+  let changed = 0;
+
+  // Напоминание — один раз за срок: `reminderSentAt` сбрасывает продление.
+  const soon = await prisma.listing.findMany({
+    where: {
+      status: 'active',
+      reminderSentAt: null,
+      expiresAt: { gt: now, lte: new Date(now.getTime() + options.reminderDays * DAY_MS) },
+    },
+    select: { id: true, expiresAt: true, user: { select: { email: true, locale: true } } },
+  });
+  for (const listing of soon) {
+    const locale = localeOf(listing.user.locale);
+    await notify({ to: listing.user.email, ...listingReminderMail(locale, listing.expiresAt) });
+    await prisma.listing.update({ where: { id: listing.id }, data: { reminderSentAt: now } });
+    changed += 1;
+  }
+
   const candidates = await prisma.listing.findMany({
     where: {
       OR: [
         { status: 'active', expiresAt: { lte: now } },
-        { status: 'grace', expiresAt: { lte: new Date(now.getTime() - graceDays * DAY_MS) } },
+        {
+          status: 'grace',
+          expiresAt: { lte: new Date(now.getTime() - options.graceDays * DAY_MS) },
+        },
       ],
     },
-    select: { id: true, userId: true, status: true, expiresAt: true },
+    select: {
+      id: true,
+      userId: true,
+      status: true,
+      expiresAt: true,
+      user: { select: { email: true, locale: true } },
+    },
   });
 
-  let changed = 0;
   for (const listing of candidates) {
-    const next = listingTransition(listing, graceDays, now);
+    const next = listingTransition(listing, options.graceDays, now);
     if (!next) continue;
+    const locale = localeOf(listing.user.locale);
 
-    await prisma.$transaction(async (tx) => {
+    const unpublished = await prisma.$transaction(async (tx) => {
       await tx.listing.update({ where: { id: listing.id }, data: { status: next } });
-      if (next === 'expired') {
+      if (next !== 'expired') return [] as string[];
+      const published = await tx.profile.findMany({
+        where: { ownerId: listing.userId, status: 'published' },
+        select: { id: true, slug: true },
+      });
+      if (published.length > 0) {
         await tx.profile.updateMany({
-          where: { ownerId: listing.userId, status: 'published' },
+          where: { id: { in: published.map((profile) => profile.id) } },
           data: { status: 'paused', unpaidAt: now },
         });
       }
+      return published.map((profile) => profile.slug);
     });
     changed += 1;
+
+    if (next === 'grace') {
+      const graceEndsAt = new Date(listing.expiresAt.getTime() + options.graceDays * DAY_MS);
+      await notify({ to: listing.user.email, ...listingGraceMail(locale, graceEndsAt) });
+    } else {
+      await notify({ to: listing.user.email, ...listingExpiredMail(locale) });
+      if (unpublished.length > 0) {
+        options.revalidate?.([PROFILES_TAG, ...unpublished.map(profileTag)]);
+      }
+    }
   }
 
   return changed;

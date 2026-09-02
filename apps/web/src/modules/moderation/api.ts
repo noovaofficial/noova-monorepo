@@ -8,6 +8,8 @@ import {
   managedUserSchema,
   moderatedProfileSchema,
   moderationLogEntrySchema,
+  type Page,
+  pageSchema,
   type QueueCount,
   type QueueItem,
   queueCountSchema,
@@ -61,9 +63,14 @@ export function fetchQueueCount(): Promise<QueueCount> {
 }
 
 export function fetchQueue(
-  kind?: 'photo' | 'verification' | 'comment' | 'report',
-): Promise<QueueItem[]> {
-  return call(`/moderation/queue${kind ? `?kind=${kind}` : ''}`, z.array(queueItemSchema));
+  kind: 'photo' | 'verification' | 'comment' | 'report' | undefined,
+  cursor: string | null = null,
+): Promise<Page<QueueItem>> {
+  const params = new URLSearchParams();
+  if (kind) params.set('kind', kind);
+  if (cursor) params.set('cursor', cursor);
+  const qs = params.toString();
+  return call(`/moderation/queue${qs ? `?${qs}` : ''}`, pageSchema(queueItemSchema));
 }
 
 export function approvePhoto(id: string) {
@@ -81,8 +88,11 @@ export function approveVerification(id: string) {
   return call(`/moderation/verifications/${id}/approve`, ackSchema, { method: 'POST' });
 }
 
-export function fetchBlockedProfiles(): Promise<BlockedProfile[]> {
-  return call('/moderation/blocked-profiles', z.array(blockedProfileSchema));
+export function fetchBlockedProfiles(cursor: string | null = null): Promise<Page<BlockedProfile>> {
+  return call(
+    `/moderation/blocked-profiles${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`,
+    pageSchema(blockedProfileSchema),
+  );
 }
 
 export function blockProfile(id: string, reason: string) {
@@ -140,8 +150,10 @@ export function fetchUsers(
   query?: string,
   blockedOnly = false,
   role?: UserRole,
-): Promise<ManagedUser[]> {
+  cursor: string | null = null,
+): Promise<Page<ManagedUser>> {
   const params = new URLSearchParams();
+  if (cursor) params.set('cursor', cursor);
   if (query) params.set('query', query);
   // Тип учётной записи: в разделе «Все пользователи» их четыре вида, и без
   // фильтра список превращается в ленту, по которой ищут глазами.
@@ -150,7 +162,7 @@ export function fetchUsers(
   // конкретного человека и понять, кого заблокировали, — разные задачи.
   if (blockedOnly) params.set('blocked', 'true');
   const qs = params.toString();
-  return call(`/moderation/users${qs ? `?${qs}` : ''}`, z.array(managedUserSchema));
+  return call(`/moderation/users${qs ? `?${qs}` : ''}`, pageSchema(managedUserSchema));
 }
 
 /** Мгновенное удаление учётки — только админ. 204 без тела. */
@@ -192,13 +204,15 @@ export type ModerationLogFilters = {
 
 export function fetchModerationLog(
   filters: ModerationLogFilters = {},
-): Promise<ModerationLogEntry[]> {
+  cursor: string | null = null,
+): Promise<Page<ModerationLogEntry>> {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
+  if (cursor) params.set('cursor', cursor);
   const qs = params.toString();
-  return call(`/admin/moderation-log${qs ? `?${qs}` : ''}`, z.array(moderationLogEntrySchema));
+  return call(`/admin/moderation-log${qs ? `?${qs}` : ''}`, pageSchema(moderationLogEntrySchema));
 }
 
 export function setStaffBlocked(id: string, blocked: boolean): Promise<StaffMember> {

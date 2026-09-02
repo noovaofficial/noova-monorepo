@@ -1,16 +1,26 @@
+import type { Redis } from 'ioredis';
+import { pino } from 'pino';
 import { env } from '../env.js';
 import type { PrismaClient } from '../generated/prisma/client.js';
+import { loggerOptions } from '../logger.js';
+import { pushMail } from '../modules/auth/mail-queue.js';
 import { expireListings } from '../modules/billing/listing.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
 import { purgeContactReveals } from '../modules/profiles/retention.js';
+import { postRevalidate } from '../plugins/revalidate.js';
 import { purgeAuthTokens, purgeDeletedAccounts, purgeModerationActions } from './retention.js';
+
+const log = pino({ ...loggerOptions, name: 'jobs' });
+
+/** Что есть у процесса задач кроме базы. Redis — для очереди писем. */
+export type JobDeps = { redis?: Redis };
 
 export type Job = {
   name: string;
   /** Сколько записей убрано. Число попадает в лог — молчаливая чистка
    *  неотличима от незапущенной. */
-  run: (prisma: PrismaClient) => Promise<number>;
+  run: (prisma: PrismaClient, deps: JobDeps) => Promise<number>;
 };
 
 /**
@@ -25,7 +35,14 @@ export const JOBS: Job[] = [
     // Истечение размещений (payments.md, этап 5): активные → льготные дни →
     // снятие с публикации. Число — сколько размещений сменили состояние.
     name: 'listing-expiry',
-    run: (prisma) => expireListings(prisma, env.LISTING_GRACE_DAYS),
+    run: (prisma, deps) =>
+      expireListings(prisma, {
+        graceDays: env.LISTING_GRACE_DAYS,
+        reminderDays: env.LISTING_REMINDER_DAYS,
+        // Письма — через очередь API: у процесса задач своего SMTP нет.
+        notify: deps.redis ? (mail) => pushMail(deps.redis as Redis, mail) : undefined,
+        revalidate: (tags) => postRevalidate(tags, log),
+      }),
   },
   {
     name: 'deleted-photos',

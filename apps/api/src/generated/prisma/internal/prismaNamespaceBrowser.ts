@@ -555,6 +555,7 @@ export const ListingScalarFieldEnum = {
   term: 'term',
   activatedAt: 'activatedAt',
   expiresAt: 'expiresAt',
+  reminderSentAt: 'reminderSentAt',
   autoRenew: 'autoRenew',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -34,6 +34,7 @@ export type ListingMinAggregateOutputType = {
   term: $Enums.PlanTerm | null
   activatedAt: Date | null
   expiresAt: Date | null
+  reminderSentAt: Date | null
   autoRenew: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -47,6 +48,7 @@ export type ListingMaxAggregateOutputType = {
   term: $Enums.PlanTerm | null
   activatedAt: Date | null
   expiresAt: Date | null
+  reminderSentAt: Date | null
   autoRenew: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -60,6 +62,7 @@ export type ListingCountAggregateOutputType = {
   term: number
   activatedAt: number
   expiresAt: number
+  reminderSentAt: number
   autoRenew: number
   createdAt: number
   updatedAt: number
@@ -75,6 +78,7 @@ export type ListingMinAggregateInputType = {
   term?: true
   activatedAt?: true
   expiresAt?: true
+  reminderSentAt?: true
   autoRenew?: true
   createdAt?: true
   updatedAt?: true
@@ -88,6 +92,7 @@ export type ListingMaxAggregateInputType = {
   term?: true
   activatedAt?: true
   expiresAt?: true
+  reminderSentAt?: true
   autoRenew?: true
   createdAt?: true
   updatedAt?: true
@@ -101,6 +106,7 @@ export type ListingCountAggregateInputType = {
   term?: true
   activatedAt?: true
   expiresAt?: true
+  reminderSentAt?: true
   autoRenew?: true
   createdAt?: true
   updatedAt?: true
@@ -187,6 +193,7 @@ export type ListingGroupByOutputType = {
   term: $Enums.PlanTerm
   activatedAt: Date
   expiresAt: Date
+  reminderSentAt: Date | null
   autoRenew: boolean
   createdAt: Date
   updatedAt: Date
@@ -221,6 +228,7 @@ export type ListingWhereInput = {
   term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
@@ -235,6 +243,7 @@ export type ListingOrderByWithRelationInput = {
   term?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -252,6 +261,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
@@ -266,6 +276,7 @@ export type ListingOrderByWithAggregationInput = {
   term?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -285,6 +296,7 @@ export type ListingScalarWhereWithAggregatesInput = {
   term?: Prisma.EnumPlanTermWithAggregatesFilter<"Listing"> | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
+  reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
   autoRenew?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
@@ -297,6 +309,7 @@ export type ListingCreateInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -311,6 +324,7 @@ export type ListingUncheckedCreateInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -323,6 +337,7 @@ export type ListingUpdateInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +352,7 @@ export type ListingUncheckedUpdateInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -350,6 +366,7 @@ export type ListingCreateManyInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -362,6 +379,7 @@ export type ListingUpdateManyMutationInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -375,6 +393,7 @@ export type ListingUncheckedUpdateManyInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,6 +417,7 @@ export type ListingCountOrderByAggregateInput = {
   term?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -411,6 +431,7 @@ export type ListingMaxOrderByAggregateInput = {
   term?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -424,6 +445,7 @@ export type ListingMinOrderByAggregateInput = {
   term?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  reminderSentAt?: Prisma.SortOrder
   autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -482,6 +504,7 @@ export type ListingCreateWithoutUserInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -494,6 +517,7 @@ export type ListingUncheckedCreateWithoutUserInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -536,6 +560,7 @@ export type ListingScalarWhereInput = {
   term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
+  reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
   autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
@@ -548,6 +573,7 @@ export type ListingCreateManyUserInput = {
   term: $Enums.PlanTerm
   activatedAt?: Date | string
   expiresAt: Date | string
+  reminderSentAt?: Date | string | null
   autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -560,6 +586,7 @@ export type ListingUpdateWithoutUserInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -572,6 +599,7 @@ export type ListingUncheckedUpdateWithoutUserInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,6 +612,7 @@ export type ListingUncheckedUpdateManyWithoutUserInput = {
   term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,6 +628,7 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   term?: boolean
   activatedAt?: boolean
   expiresAt?: boolean
+  reminderSentAt?: boolean
   autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -613,6 +643,7 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   term?: boolean
   activatedAt?: boolean
   expiresAt?: boolean
+  reminderSentAt?: boolean
   autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -627,6 +658,7 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   term?: boolean
   activatedAt?: boolean
   expiresAt?: boolean
+  reminderSentAt?: boolean
   autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -641,12 +673,13 @@ export type ListingSelectScalar = {
   term?: boolean
   activatedAt?: boolean
   expiresAt?: boolean
+  reminderSentAt?: boolean
   autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "kind" | "status" | "term" | "activatedAt" | "expiresAt" | "autoRenew" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "kind" | "status" | "term" | "activatedAt" | "expiresAt" | "reminderSentAt" | "autoRenew" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -670,6 +703,11 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     term: $Enums.PlanTerm
     activatedAt: Date
     expiresAt: Date
+    /**
+     * Когда ушло письмо «срок скоро выйдет». Сбрасывается продлением: за
+     * новый срок напоминаем заново.
+     */
+    reminderSentAt: Date | null
     /**
      * Не используется: автопродления нет (D-09). Колонка остаётся до
      * следующего выпуска — образ прошлого выпуска ещё читает её.
@@ -1108,6 +1146,7 @@ export interface ListingFieldRefs {
   readonly term: Prisma.FieldRef<"Listing", 'PlanTerm'>
   readonly activatedAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Listing", 'DateTime'>
+  readonly reminderSentAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly autoRenew: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Listing", 'DateTime'>

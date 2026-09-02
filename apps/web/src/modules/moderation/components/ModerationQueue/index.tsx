@@ -1,7 +1,7 @@
 'use client';
 
 import type { QueueItem } from '@noova/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -19,6 +19,7 @@ import {
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys, queryPrefixes } from '@/shared/query-keys';
 import { BlockedProfiles } from '../BlockedProfiles';
+import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
 import { UserList } from '../UserList';
 
@@ -77,9 +78,13 @@ export function ModerationQueue() {
     : undefined;
   const isQueueTab = tab === 'all' || queueKind !== undefined;
 
-  const queue = useQuery({
+  // Страницы курсором: инвалидация группы перезапрашивает все загруженные,
+  // и обработанная карточка исчезает, где бы она ни была.
+  const queue = useInfiniteQuery({
     queryKey: queryKeys.queue(queueKind),
-    queryFn: () => fetchQueue(queueKind),
+    queryFn: ({ pageParam }) => fetchQueue(queueKind, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last) => last.nextCursor,
     enabled: status === 'authenticated' && isStaff && isQueueTab,
   });
 
@@ -97,7 +102,8 @@ export function ModerationQueue() {
     },
   });
 
-  const items = queue.data ?? null;
+  const items = queue.data ? queue.data.pages.flatMap((page) => page.items) : null;
+  const total = queue.data?.pages[0]?.total ?? null;
   const busy = decision.isPending;
   const error = decision.isError ? 'actionFailed' : queue.isError ? 'loadFailed' : null;
 
@@ -297,6 +303,13 @@ export function ModerationQueue() {
               )}
             </div>
           ))}
+          <LoadMore
+            shown={items.length}
+            total={total}
+            hasMore={queue.hasNextPage}
+            loading={queue.isFetchingNextPage}
+            onMore={() => void queue.fetchNextPage()}
+          />
         </div>
       )}
     </div>

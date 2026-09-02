@@ -4,6 +4,7 @@ import {
   adjustBalanceInputSchema,
   adjustBalanceResultSchema,
   billingConfigInputSchema,
+  billingOperationsSchema,
   createTopupInputSchema,
   createTopupResultSchema,
   currentListingSchema,
@@ -309,6 +310,148 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       },
     );
   });
+
+  // --- Операции для админа (этап 6) ---------------------------------------
+
+  /**
+   * Поиск по заказам и движениям: по почте, номеру заказа или токену Paymento.
+   * Один запрос на оба списка — «я заплатил, а GlowCoin нет» разбирают, глядя
+   * на заказ и на журнал рядом.
+   */
+  fastify.get(
+    '/admin/billing/operations',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        querystring: z.object({
+          query: z.string().trim().max(200).optional(),
+          limit: z.coerce.number().int().min(1).max(200).default(50),
+        }),
+        response: { 200: billingOperationsSchema },
+      },
+    },
+    async (request) => {
+      const { query, limit } = request.query;
+      const byEmail = query
+        ? { user: { email: { contains: query, mode: 'insensitive' as const } } }
+        : null;
+
+      const [orders, transactions] = await Promise.all([
+        fastify.prisma.topupOrder.findMany({
+          where: query
+            ? { OR: [{ id: query }, { providerToken: query }, ...(byEmail ? [byEmail] : [])] }
+            : {},
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          include: { user: { select: { email: true } } },
+        }),
+        fastify.prisma.billingTransaction.findMany({
+          where: query
+            ? { OR: [{ id: query }, { providerRef: query }, ...(byEmail ? [byEmail] : [])] }
+            : {},
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          include: {
+            user: { select: { email: true } },
+            createdBy: { select: { email: true } },
+          },
+        }),
+      ]);
+
+      return {
+        orders: orders.map((order) => ({
+          ...toTopupOrder(order),
+          email: order.user?.email ?? null,
+          providerToken: order.providerToken,
+          providerStatus: order.providerStatus,
+        })),
+        transactions: transactions.map((row) => ({
+          ...toTransaction(row),
+          email: row.user?.email ?? null,
+          provider: row.provider,
+          providerRef: row.providerRef,
+          createdByEmail: row.createdBy?.email ?? null,
+        })),
+      };
+    },
+  );
+
+  /** Выгрузка журнала за период — для бухгалтерии. Даты включительно. */
+  fastify.get(
+    '/admin/billing/transactions.csv',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        querystring: z.object({
+          from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+          to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        }),
+      },
+    },
+    async (request, reply) => {
+      const from = new Date(`${request.query.from}T00:00:00.000Z`);
+      const to = new Date(`${request.query.to}T23:59:59.999Z`);
+      if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime()) || from > to) {
+        throw fastify.httpErrors.badRequest('Неверный период');
+      }
+
+      const rows = await fastify.prisma.billingTransaction.findMany({
+        where: { createdAt: { gte: from, lte: to } },
+        orderBy: { createdAt: 'asc' },
+        take: 50_000,
+        include: {
+          user: { select: { email: true } },
+          createdBy: { select: { email: true } },
+        },
+      });
+
+      // Экранирование по RFC 4180: кавычки удваиваются, поле с запятой,
+      // кавычкой или переводом строки берётся в кавычки.
+      const cell = (value: string | number | null | undefined): string => {
+        const text = value === null || value === undefined ? '' : String(value);
+        return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+      };
+      const header = [
+        'created_at',
+        'kind',
+        'gc_amount',
+        'eur_paid',
+        'bonus_percent',
+        'provider',
+        'provider_ref',
+        'user_email',
+        'created_by',
+        'note',
+      ];
+      const lines = rows.map((row) =>
+        [
+          row.createdAt.toISOString(),
+          row.kind,
+          row.gcAmount,
+          row.eurPaidCents === null ? '' : (row.eurPaidCents / 100).toFixed(2),
+          row.bonusPercent,
+          row.provider,
+          row.providerRef,
+          row.user?.email ?? '',
+          row.createdBy?.email ?? '',
+          row.note,
+        ]
+          .map(cell)
+          .join(','),
+      );
+
+      // BOM — чтобы Excel открыл UTF-8 с кириллицей без вопросов.
+      return reply
+        .header('content-type', 'text/csv; charset=utf-8')
+        .header(
+          'content-disposition',
+          `attachment; filename="noova-glowcoin-${request.query.from}-${request.query.to}.csv"`,
+        )
+        .send(`\uFEFF${[header.join(','), ...lines].join('\r\n')}\r\n`);
+    },
+  );
 
   /**
    * Ручная корректировка (`ADJUSTMENT`). Стоит раньше кассы намеренно: она

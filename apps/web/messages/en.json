@@ -238,7 +238,8 @@
     "advertiserAgencyHint": "Several escort listings, no address of its own",
     "myGlowcoin": "My GlowCoin",
     "monetization": "Monetization",
-    "subscription": "Subscription"
+    "subscription": "Subscription",
+    "billingOps": "Operations"
   },
   "account": {
     "title": "My profiles",
@@ -449,7 +450,10 @@
     "adjustInsufficient": "Not enough GlowCoin on the balance for this debit.",
     "deleteUser": "Delete",
     "deleteUserHint": "Deletion is immediate and irreversible: profiles, photos, reviews and favorites disappear. Moderation and GlowCoin logs remain without an owner.",
-    "deleteUserConfirm": "Delete permanently"
+    "deleteUserConfirm": "Delete permanently",
+    "showMore": "Show more",
+    "shownOf": "Showing {shown, number} of {total, number}",
+    "shownCount": "Showing {shown, number}"
   },
   "admin": {
     "title": "Staff",
@@ -733,7 +737,32 @@
     "listingExpiredNotice": "The subscription has expired and the profile is unpublished. It returns to the catalog automatically after payment.",
     "listingNoneNotice": "No subscription: the profile can be published only after the listing is paid.",
     "listingNoticeExtend": "Renew subscription →",
-    "listingNoticePay": "Pay for subscription →"
+    "listingNoticePay": "Pay for subscription →",
+    "checkoutPartial": "A partial amount was received. Paymento does not report how much, so support will credit the actual amount — contact us with order number {id}.",
+    "opsTitle": "Operations",
+    "opsLead": "Top-up orders and GlowCoin movements. Search by email, order number or Paymento token.",
+    "opsSearch": "Email, order number or token",
+    "opsOrders": "Top-up orders",
+    "opsTransactions": "GlowCoin movements",
+    "opsEmpty": "Nothing found.",
+    "opsPartialHint": "Partial amount: check what was received in the Paymento dashboard and credit it via an adjustment in the user list.",
+    "opsBy": "by {email}",
+    "opsToken": "token",
+    "opsOrder": "order",
+    "opsProviderStatus": "Paymento status {code}",
+    "orderStatus_created": "Created",
+    "orderStatus_pending": "Awaiting payment",
+    "orderStatus_partial": "Partial amount",
+    "orderStatus_paid": "Paid",
+    "orderStatus_expired": "Expired",
+    "orderStatus_canceled": "Canceled",
+    "orderStatus_failed": "Failed",
+    "opsCsvTitle": "Journal export",
+    "opsCsvHint": "CSV for a period, both dates inclusive. Opens in Excel and Numbers.",
+    "opsCsvFrom": "From",
+    "opsCsvTo": "To",
+    "opsCsvButton": "Download CSV",
+    "opsCsvFailed": "Could not export."
   },
   "about": {
     "title": "About the project",

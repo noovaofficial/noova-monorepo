@@ -202,6 +202,8 @@ export type ActivateListingResult = z.infer<typeof activateListingResultSchema>;
 export const topupOrderStatusSchema = z.enum([
   'created',
   'pending',
+  // Неполная сумма: Paymento не сообщает, сколько пришло, — разбирает админ.
+  'partial',
   'paid',
   'expired',
   'canceled',
@@ -233,3 +235,28 @@ export const createTopupResultSchema = z.object({
   paymentUrl: z.string().url(),
 });
 export type CreateTopupResult = z.infer<typeof createTopupResultSchema>;
+
+// --- Операции для админа (этап 6) --------------------------------------------
+
+export const adminTopupOrderSchema = topupOrderSchema.extend({
+  email: z.string().nullable(),
+  providerToken: z.string().nullable(),
+  providerStatus: z.number().int().nullable(),
+});
+export type AdminTopupOrder = z.infer<typeof adminTopupOrderSchema>;
+
+export const adminTransactionSchema = billingTransactionSchema.extend({
+  email: z.string().nullable(),
+  provider: z.string().nullable(),
+  providerRef: z.string().nullable(),
+  /** Кто провёл корректировку — для `ADJUSTMENT`. */
+  createdByEmail: z.string().nullable(),
+});
+export type AdminTransaction = z.infer<typeof adminTransactionSchema>;
+
+/** Ответ поиска по операциям: заказы и движения по одному запросу. */
+export const billingOperationsSchema = z.object({
+  orders: z.array(adminTopupOrderSchema),
+  transactions: z.array(adminTransactionSchema),
+});
+export type BillingOperations = z.infer<typeof billingOperationsSchema>;

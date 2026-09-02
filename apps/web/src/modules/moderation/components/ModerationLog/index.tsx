@@ -1,13 +1,14 @@
 'use client';
 
 import { moderationSubjectSchema } from '@noova/shared';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchModerationLog, fetchStaff } from '@/modules/moderation/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
+import { LoadMore } from '../LoadMore';
 import styles from './ModerationLog.module.css';
 
 const SUBJECT_LABEL: Record<string, string> = {
@@ -39,11 +40,16 @@ export function ModerationLog() {
   });
 
   const filters = { moderatorId, subjectType, decision };
-  const { data: entries = null, isError } = useQuery({
+  const log = useInfiniteQuery({
     queryKey: queryKeys.moderationLog(filters),
-    queryFn: () => fetchModerationLog(filters),
+    queryFn: ({ pageParam }) => fetchModerationLog(filters, pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last) => last.nextCursor,
     enabled: status === 'authenticated' && isStaff,
   });
+  const entries = log.data ? log.data.pages.flatMap((page) => page.items) : null;
+  const total = log.data?.pages[0]?.total ?? null;
+  const isError = log.isError;
 
   if (status === 'loading') return <p className={styles.empty}>…</p>;
 
@@ -164,6 +170,13 @@ export function ModerationLog() {
               </div>
             );
           })}
+          <LoadMore
+            shown={entries.length}
+            total={total}
+            hasMore={log.hasNextPage}
+            loading={log.isFetchingNextPage}
+            onMore={() => void log.fetchNextPage()}
+          />
         </div>
       )}
     </div>

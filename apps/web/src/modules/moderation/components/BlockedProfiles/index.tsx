@@ -1,11 +1,12 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/design-system/components/Button';
 import { fetchBlockedProfiles, unblockProfile } from '@/modules/moderation/api';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
+import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
 
 /**
@@ -17,9 +18,11 @@ export function BlockedProfiles() {
   const t = useTranslations('moderation');
   const queryClient = useQueryClient();
 
-  const list = useQuery({
+  const list = useInfiniteQuery({
     queryKey: queryKeys.blockedProfiles(),
-    queryFn: fetchBlockedProfiles,
+    queryFn: ({ pageParam }) => fetchBlockedProfiles(pageParam),
+    initialPageParam: null as string | null,
+    getNextPageParam: (last) => last.nextCursor,
   });
 
   const unblock = useMutation({
@@ -30,7 +33,8 @@ export function BlockedProfiles() {
     },
   });
 
-  const items = list.data ?? null;
+  const items = list.data ? list.data.pages.flatMap((page) => page.items) : null;
+  const total = list.data?.pages[0]?.total ?? null;
 
   if (list.isError) {
     return <p className={styles.empty}>{t('loadFailed')}</p>;
@@ -80,6 +84,13 @@ export function BlockedProfiles() {
           </div>
         ))}
       </div>
+      <LoadMore
+        shown={items.length}
+        total={total}
+        hasMore={list.hasNextPage}
+        loading={list.isFetchingNextPage}
+        onMore={() => void list.fetchNextPage()}
+      />
     </>
   );
 }

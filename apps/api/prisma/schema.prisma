@@ -941,6 +941,9 @@ model Listing {
 
   activatedAt DateTime @default(now())
   expiresAt   DateTime
+  /// Когда ушло письмо «срок скоро выйдет». Сбрасывается продлением: за
+  /// новый срок напоминаем заново.
+  reminderSentAt DateTime?
   /// Не используется: автопродления нет (D-09). Колонка остаётся до
   /// следующего выпуска — образ прошлого выпуска ещё читает её.
   autoRenew   Boolean  @default(true)
@@ -957,6 +960,9 @@ model Listing {
 enum TopupOrderStatus {
   created
   pending
+  /// Получена неполная сумма. Paymento не сообщает, сколько именно, —
+  /// зачисление по факту делает админ корректировкой.
+  partial
   paid
   expired
   canceled

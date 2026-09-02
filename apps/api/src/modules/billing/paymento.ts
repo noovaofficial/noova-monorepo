@@ -135,9 +135,11 @@ export function mapOrderStatus(providerStatus: number): TopupOrderStatus | null 
     case PaymentoStatus.Approve:
       return 'paid';
     case PaymentoStatus.Pending:
-    case PaymentoStatus.PartialPaid:
     case PaymentoStatus.WaitingToConfirm:
       return 'pending';
+    // Недоплата — отдельное состояние: заказ не ждёт сеть, а ждёт человека.
+    case PaymentoStatus.PartialPaid:
+      return 'partial';
     case PaymentoStatus.Timeout:
       return 'expired';
     case PaymentoStatus.UserCanceled:

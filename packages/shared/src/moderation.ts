@@ -61,6 +61,15 @@ export const queueItemSchema = z.discriminatedUnion('kind', [
 ]);
 export type QueueItem = z.infer<typeof queueItemSchema>;
 
+/** Очередь листается курсором: у неё четыре источника, и курсор несёт
+ *  ещё и вид, с которого продолжать. Клиент его не разбирает. */
+export const queueQuerySchema = z.object({
+  kind: z.enum(['photo', 'verification', 'comment', 'report']).optional(),
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(30),
+});
+export type QueueQuery = z.infer<typeof queueQuerySchema>;
+
 export const queueCountSchema = z.object({
   photos: z.number().int().nonnegative(),
   verifications: z.number().int().nonnegative(),
@@ -161,6 +170,7 @@ export const userSearchSchema = z.object({
   /** Тип учётной записи. Пусто — все: у раздела «Все пользователи» это норма. */
   role: userRoleSchema.optional(),
   limit: z.coerce.number().int().min(1).max(50).default(25),
+  cursor: z.string().optional(),
 });
 
 /**
@@ -232,6 +242,7 @@ export const moderationLogQuerySchema = z.object({
   subjectType: moderationSubjectSchema.optional(),
   decision: moderationDecisionSchema.optional(),
   limit: z.coerce.number().int().min(1).max(200).default(50),
+  cursor: z.string().optional(),
 });
 
 export const createStaffSchema = z.object({
@@ -240,3 +251,8 @@ export const createStaffSchema = z.object({
   role: staffRoleSchema,
 });
 export type CreateStaffInput = z.infer<typeof createStaffSchema>;
+
+export const blockedProfilesQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+});

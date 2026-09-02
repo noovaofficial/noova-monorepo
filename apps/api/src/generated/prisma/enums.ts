@@ -258,6 +258,7 @@ export type BillingTransactionKind = (typeof BillingTransactionKind)[keyof typeo
 export const TopupOrderStatus = {
   created: 'created',
   pending: 'pending',
+  partial: 'partial',
   paid: 'paid',
   expired: 'expired',
   canceled: 'canceled',

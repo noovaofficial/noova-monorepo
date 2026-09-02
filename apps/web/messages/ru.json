@@ -238,7 +238,8 @@
     "advertiserAgencyHint": "Несколько анкет сопровождения, своего адреса нет",
     "myGlowcoin": "Мои GlowCoin",
     "monetization": "Монетизация",
-    "subscription": "Подписка"
+    "subscription": "Подписка",
+    "billingOps": "Операции"
   },
   "account": {
     "title": "Мои анкеты",
@@ -449,7 +450,10 @@
     "adjustInsufficient": "На балансе недостаточно GlowCoin для такого списания.",
     "deleteUser": "Удалить",
     "deleteUserHint": "Удаление мгновенное и необратимое: анкеты, фото, отзывы и избранное исчезнут. Журналы модерации и операций GlowCoin останутся без владельца.",
-    "deleteUserConfirm": "Удалить безвозвратно"
+    "deleteUserConfirm": "Удалить безвозвратно",
+    "showMore": "Показать ещё",
+    "shownOf": "Показано {shown, number} из {total, number}",
+    "shownCount": "Показано {shown, number}"
   },
   "admin": {
     "title": "Сотрудники",
@@ -733,7 +737,32 @@
     "listingExpiredNotice": "Подписка истекла, анкета снята с публикации. После оплаты она вернётся в каталог сама.",
     "listingNoneNotice": "Подписки нет: опубликовать анкету можно только после оплаты размещения.",
     "listingNoticeExtend": "Продлить подписку →",
-    "listingNoticePay": "Оплатить подписку →"
+    "listingNoticePay": "Оплатить подписку →",
+    "checkoutPartial": "Пришла неполная сумма. Paymento не сообщает, сколько именно, поэтому зачисление по факту сделает поддержка — напишите нам, номер заказа {id}.",
+    "opsTitle": "Операции",
+    "opsLead": "Заказы на пополнение и движения GlowCoin. Поиск по почте, номеру заказа или токену Paymento.",
+    "opsSearch": "Почта, номер заказа или токен",
+    "opsOrders": "Заказы на пополнение",
+    "opsTransactions": "Движения GlowCoin",
+    "opsEmpty": "Ничего не найдено.",
+    "opsPartialHint": "Неполная сумма: уточните полученное в кабинете Paymento и зачислите корректировкой в списке пользователей.",
+    "opsBy": "провёл {email}",
+    "opsToken": "токен",
+    "opsOrder": "заказ",
+    "opsProviderStatus": "статус Paymento {code}",
+    "orderStatus_created": "Создан",
+    "orderStatus_pending": "Ожидает оплаты",
+    "orderStatus_partial": "Неполная сумма",
+    "orderStatus_paid": "Оплачен",
+    "orderStatus_expired": "Истёк",
+    "orderStatus_canceled": "Отменён",
+    "orderStatus_failed": "Ошибка",
+    "opsCsvTitle": "Выгрузка журнала",
+    "opsCsvHint": "CSV за период, обе даты включительно. Открывается в Excel и Numbers.",
+    "opsCsvFrom": "С",
+    "opsCsvTo": "По",
+    "opsCsvButton": "Скачать CSV",
+    "opsCsvFailed": "Не удалось выгрузить."
   },
   "about": {
     "title": "О проекте",

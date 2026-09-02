@@ -5,6 +5,8 @@ import {
   activateListingResultSchema,
   adjustBalanceResultSchema,
   type BillingConfigInput,
+  type BillingOperations,
+  billingOperationsSchema,
   type CreateTopupInput,
   type CreateTopupResult,
   createTopupResultSchema,
@@ -98,3 +100,20 @@ export const createTopup = (input: CreateTopupInput): Promise<CreateTopupResult>
 
 export const fetchTopupOrder = (id: string): Promise<TopupOrder> =>
   call(`/billing/topups/${encodeURIComponent(id)}`, topupOrderSchema);
+
+/** Поиск по заказам и движениям — админ. */
+export const fetchBillingOperations = (query: string): Promise<BillingOperations> =>
+  call(
+    `/admin/billing/operations${query ? `?query=${encodeURIComponent(query)}` : ''}`,
+    billingOperationsSchema,
+  );
+
+/** Журнал за период файлом. Возвращает содержимое — сохранение делает вызывающий. */
+export async function downloadTransactionsCsv(from: string, to: string): Promise<Blob> {
+  const response = await fetch(
+    `${BASE}/api/v1/admin/billing/transactions.csv?from=${from}&to=${to}`,
+    { credentials: 'include', cache: 'no-store' },
+  );
+  if (!response.ok) throw new BillingError('Не удалось выгрузить', response.status);
+  return response.blob();
+}

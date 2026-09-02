@@ -11,7 +11,7 @@ import { type EmailContent, renderEmail } from './email-layout.js';
  * Поэтому текст остаётся полноценным письмом, а не подписью «смотрите
  * картинку».
  */
-type Copy = {
+export type Copy = {
   subject: string;
   heading: string;
   intro: string;
@@ -116,7 +116,7 @@ function plain(copy: Copy, link?: string): string {
   return parts.join('\n\n');
 }
 
-function build(copy: Copy, locale: Locale, link?: string) {
+export function buildMail(copy: Copy, locale: Locale, link?: string) {
   const content: EmailContent = {
     heading: copy.heading,
     intro: copy.intro,
@@ -133,13 +133,13 @@ function build(copy: Copy, locale: Locale, link?: string) {
 }
 
 export function verifyEmailMail(locale: Locale, link: string) {
-  return build(VERIFY[locale], locale, link);
+  return buildMail(VERIFY[locale], locale, link);
 }
 
 export function resetPasswordMail(locale: Locale, link: string) {
-  return build(RESET[locale], locale, link);
+  return buildMail(RESET[locale], locale, link);
 }
 
 export function emailTakenMail(locale: Locale) {
-  return build(TAKEN[locale], locale);
+  return buildMail(TAKEN[locale], locale);
 }

@@ -94,6 +94,8 @@ const envSchema = z.object({
    * зависит от способа оплаты.
    */
   LISTING_GRACE_DAYS: z.coerce.number().int().min(0).default(3),
+  /** За сколько дней до конца срока напоминать письмом. */
+  LISTING_REMINDER_DAYS: z.coerce.number().int().min(1).default(3),
 
   /**
    * Paymento — приём криптовалюты (payments.md, этап 4, D-08). Пустой ключ

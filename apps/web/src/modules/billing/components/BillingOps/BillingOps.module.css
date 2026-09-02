@@ -1,0 +1,161 @@
+.wrap {
+  padding: var(--space6) 0 var(--space12);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  margin-bottom: var(--space2);
+}
+
+.lead {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space4);
+}
+
+.search {
+  width: 100%;
+  max-width: 480px;
+  font-family: var(--fontBody);
+  font-size: var(--textBase);
+  padding: 10px 12px;
+  margin-bottom: var(--space5);
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+}
+
+.search:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin: var(--space5) 0 var(--space3);
+}
+
+.text {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  padding: var(--space3) var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+/* Недоплата — единственная строка, по которой нужно действовать руками:
+   рамка предупреждения, чтобы она не терялась среди ожидающих. */
+.rowPartial {
+  border-color: var(--warning);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.primary {
+  font-weight: 600;
+  font-size: var(--textSm);
+}
+
+.meta {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  overflow-wrap: anywhere;
+}
+
+.hint {
+  font-size: var(--textXs);
+  color: var(--warning);
+}
+
+.badge {
+  flex: none;
+  font-size: var(--textXs);
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radiusPill);
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+  white-space: nowrap;
+}
+
+.status_paid { background: var(--successSubtle); color: var(--success); }
+.status_partial { background: var(--warningSubtle); color: var(--warning); }
+.status_failed,
+.status_canceled,
+.status_expired { background: var(--dangerSubtle); color: var(--danger); }
+
+.amount {
+  flex: none;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.plus {
+  color: var(--success);
+}
+
+.csv {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.date {
+  font-family: var(--fontBody);
+  font-size: var(--textBase);
+  padding: 9px 12px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--primaryText);
+}
+
+.err {
+  padding: var(--space3) var(--space4);
+  margin-top: var(--space3);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}

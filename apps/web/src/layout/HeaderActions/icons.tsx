@@ -19,6 +19,7 @@ export type MenuIconName =
   | 'locations'
   | 'serviceCatalog'
   | 'monetization'
+  | 'billingOps'
   | 'myProfiles'
   | 'subscription'
   | 'favorites'
@@ -65,6 +66,13 @@ const PATHS: Record<MenuIconName, string[]> = {
     'M4 16.5h4',
     'M12 16.5h8',
     'M10 14.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
+  ],
+  // Чек с зубчатым краем — операции: журнал денег, а не настройка.
+  billingOps: [
+    'M6 3.5h12v17l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5-2 1.5v-17Z',
+    'M9 8.5h6',
+    'M9 12h6',
+    'M9 15.5h3.5',
   ],
   myProfiles: ['M4 4h6.2v6.2H4zM13.8 4H20v6.2h-6.2zM4 13.8h6.2V20H4zM13.8 13.8H20V20h-6.2z'],
   // Календарь с галочкой — подписка: срок, который надо продлевать.

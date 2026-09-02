@@ -303,3 +303,13 @@
   gap: var(--space3);
   margin-bottom: var(--space5);
 }
+
+/* Хвост листаемого списка: счётчик слева, кнопка справа. */
+.loadMore {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  flex-wrap: wrap;
+  padding: var(--space4) 0;
+}

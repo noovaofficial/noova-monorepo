@@ -238,7 +238,8 @@
     "advertiserAgencyHint": "Mehrere Begleitanzeigen, ohne eigene Adresse",
     "myGlowcoin": "Meine GlowCoin",
     "monetization": "Monetarisierung",
-    "subscription": "Abonnement"
+    "subscription": "Abonnement",
+    "billingOps": "Vorgänge"
   },
   "account": {
     "title": "Meine Anzeigen",
@@ -449,7 +450,10 @@
     "adjustInsufficient": "Nicht genug GlowCoin auf dem Guthaben für diese Abbuchung.",
     "deleteUser": "Löschen",
     "deleteUserHint": "Das Löschen ist sofort und unumkehrbar: Profile, Fotos, Bewertungen und Favoriten verschwinden. Moderations- und GlowCoin-Protokolle bleiben ohne Inhaber erhalten.",
-    "deleteUserConfirm": "Endgültig löschen"
+    "deleteUserConfirm": "Endgültig löschen",
+    "showMore": "Mehr anzeigen",
+    "shownOf": "{shown, number} von {total, number} angezeigt",
+    "shownCount": "{shown, number} angezeigt"
   },
   "admin": {
     "title": "Mitarbeiter",
@@ -733,7 +737,32 @@
     "listingExpiredNotice": "Das Abonnement ist abgelaufen, das Profil ist nicht mehr veröffentlicht. Nach der Zahlung kehrt es automatisch in den Katalog zurück.",
     "listingNoneNotice": "Kein Abonnement: Das Profil kann erst nach Bezahlung der Platzierung veröffentlicht werden.",
     "listingNoticeExtend": "Abonnement verlängern →",
-    "listingNoticePay": "Abonnement bezahlen →"
+    "listingNoticePay": "Abonnement bezahlen →",
+    "checkoutPartial": "Es ist ein Teilbetrag eingegangen. Paymento meldet nicht, wie viel — der Support schreibt den tatsächlichen Betrag gut. Kontaktieren Sie uns mit der Bestellnummer {id}.",
+    "opsTitle": "Vorgänge",
+    "opsLead": "Aufladebestellungen und GlowCoin-Bewegungen. Suche nach E-Mail, Bestellnummer oder Paymento-Token.",
+    "opsSearch": "E-Mail, Bestellnummer oder Token",
+    "opsOrders": "Aufladebestellungen",
+    "opsTransactions": "GlowCoin-Bewegungen",
+    "opsEmpty": "Nichts gefunden.",
+    "opsPartialHint": "Teilbetrag: Prüfen Sie den Eingang im Paymento-Dashboard und schreiben Sie ihn per Korrektur in der Nutzerliste gut.",
+    "opsBy": "durch {email}",
+    "opsToken": "Token",
+    "opsOrder": "Bestellung",
+    "opsProviderStatus": "Paymento-Status {code}",
+    "orderStatus_created": "Erstellt",
+    "orderStatus_pending": "Wartet auf Zahlung",
+    "orderStatus_partial": "Teilbetrag",
+    "orderStatus_paid": "Bezahlt",
+    "orderStatus_expired": "Abgelaufen",
+    "orderStatus_canceled": "Abgebrochen",
+    "orderStatus_failed": "Fehler",
+    "opsCsvTitle": "Journal-Export",
+    "opsCsvHint": "CSV für einen Zeitraum, beide Daten inklusive. Öffnet sich in Excel und Numbers.",
+    "opsCsvFrom": "Von",
+    "opsCsvTo": "Bis",
+    "opsCsvButton": "CSV herunterladen",
+    "opsCsvFailed": "Export fehlgeschlagen."
   },
   "about": {
     "title": "Über das Projekt",

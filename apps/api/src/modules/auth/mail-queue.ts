@@ -1,7 +1,18 @@
 import type { FastifyInstance } from 'fastify';
 import type { Mail, Mailer } from './mailer.js';
 
-const QUEUE_KEY = 'mail:queue';
+export const MAIL_QUEUE_KEY = 'mail:queue';
+
+type RedisLike = { lpush(key: string, value: string): Promise<unknown> };
+
+/**
+ * Положить письмо в очередь напрямую — для процессов без Fastify (фоновые
+ * задачи). Формат тот же, что у `MailQueue.enqueue`: заберёт и отправит
+ * цикл внутри API.
+ */
+export function pushMail(redis: RedisLike, mail: Mail): Promise<unknown> {
+  return redis.lpush(MAIL_QUEUE_KEY, JSON.stringify({ ...mail, attempt: 0 }));
+}
 const MAX_ATTEMPTS = 5;
 
 type QueuedMail = Mail & { attempt: number };
@@ -26,16 +37,11 @@ export class MailQueue {
 
   /** Кладёт письмо в очередь. Не ждёт отправки и не бросает наружу. */
   enqueue(mail: Mail): void {
-    void this.fastify.redis
-      .lpush(QUEUE_KEY, JSON.stringify({ ...mail, attempt: 0 }))
-      .catch((error) => {
-        // Redis лежит — письмо потеряно, но регистрация всё равно проходит.
-        // Логируем без тела: в нём одноразовая ссылка.
-        this.fastify.log.error(
-          { err: error, to: mail.to },
-          'не удалось поставить письмо в очередь',
-        );
-      });
+    void pushMail(this.fastify.redis, mail).catch((error) => {
+      // Redis лежит — письмо потеряно, но регистрация всё равно проходит.
+      // Логируем без тела: в нём одноразовая ссылка.
+      this.fastify.log.error({ err: error, to: mail.to }, 'не удалось поставить письмо в очередь');
+    });
   }
 
   /**
@@ -48,7 +54,7 @@ export class MailQueue {
     const loop = async () => {
       while (!this.stopped) {
         try {
-          const item = await redis.brpop(QUEUE_KEY, 5);
+          const item = await redis.brpop(MAIL_QUEUE_KEY, 5);
           if (!item?.[1]) continue;
 
           const mail = JSON.parse(item[1]) as QueuedMail;
@@ -98,7 +104,7 @@ export class MailQueue {
     this.fastify.log.warn({ err: error, to: mail.to, attempt, delayMs }, 'повтор отправки письма');
 
     setTimeout(() => {
-      void redis.lpush(QUEUE_KEY, JSON.stringify({ ...mail, attempt })).catch(() => undefined);
+      void redis.lpush(MAIL_QUEUE_KEY, JSON.stringify({ ...mail, attempt })).catch(() => undefined);
     }, delayMs).unref();
   }
 }

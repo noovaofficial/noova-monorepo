@@ -4,7 +4,7 @@ import { pino } from 'pino';
 import { env } from '../env.js';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
-import { JOBS } from './tasks.js';
+import { JOBS, type JobDeps } from './tasks.js';
 
 const log = pino({ ...loggerOptions, name: 'jobs' });
 
@@ -27,13 +27,13 @@ export type JobResult = { name: string; removed: number } | { name: string; erro
  * фотографий зависит от хранилища, чистка журналов — только от БД, и
  * недоступность MinIO не должна означать, что журналы копятся дальше.
  */
-export async function runAllJobs(prisma: PrismaClient): Promise<JobResult[]> {
+export async function runAllJobs(prisma: PrismaClient, deps: JobDeps = {}): Promise<JobResult[]> {
   const results: JobResult[] = [];
 
   for (const job of JOBS) {
     const startedAt = Date.now();
     try {
-      const removed = await job.run(prisma);
+      const removed = await job.run(prisma, deps);
       results.push({ name: job.name, removed });
       // Логируем и ноль: молчаливая чистка неотличима от незапущенной, и
       // «почему база растёт» тогда некуда посмотреть.
@@ -56,7 +56,7 @@ async function runCycle(prisma: PrismaClient, redis: Redis): Promise<void> {
   }
 
   try {
-    await runAllJobs(prisma);
+    await runAllJobs(prisma, { redis });
   } finally {
     // Снимаем замок сами, не дожидаясь TTL: иначе следующий цикл через час
     // упрётся в собственный незакрытый замок.

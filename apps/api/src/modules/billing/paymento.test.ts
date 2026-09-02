@@ -54,6 +54,12 @@ describe('статусы поставщика', () => {
     for (const code of [0, 1, 2, 3, 4, 5, 9]) expect(mapOrderStatus(code)).not.toBe('paid');
   });
 
+  it('недоплату выделяет в своё состояние', () => {
+    // Paymento не сообщает полученную сумму, и по факту зачисляет админ:
+    // заказ должен быть виден в списке операций, а не тонуть среди «ожидает».
+    expect(mapOrderStatus(2)).toBe('partial');
+  });
+
   it('оставляет неизвестный код на разбор, а не угадывает', () => {
     expect(mapOrderStatus(0)).toBeNull();
     expect(mapOrderStatus(6)).toBeNull();
