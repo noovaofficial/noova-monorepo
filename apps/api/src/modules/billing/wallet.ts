@@ -77,7 +77,6 @@ type ListingRow = {
   status: Listing['status'];
   activatedAt: Date;
   expiresAt: Date;
-  autoRenew: boolean;
 };
 
 export function toListing(row: ListingRow): Listing {
@@ -88,7 +87,6 @@ export function toListing(row: ListingRow): Listing {
     status: row.status,
     activatedAt: row.activatedAt.toISOString(),
     expiresAt: row.expiresAt.toISOString(),
-    autoRenew: row.autoRenew,
   };
 }
 

@@ -415,6 +415,10 @@ model Profile {
   isVerified     Boolean   @default(false)
   lastSeenAt     DateTime?
   publishedAt    DateTime?
+  /// Снята с публикации за неоплату (payments.md, этап 5). Отличает такую
+  /// паузу от паузы владельца: при оплате эти анкеты возвращаются в каталог
+  /// сами, а снятые руками — нет.
+  unpaidAt       DateTime?
 
   age            Int?
   heightCm       Int?
@@ -937,6 +941,8 @@ model Listing {
 
   activatedAt DateTime @default(now())
   expiresAt   DateTime
+  /// Не используется: автопродления нет (D-09). Колонка остаётся до
+  /// следующего выпуска — образ прошлого выпуска ещё читает её.
   autoRenew   Boolean  @default(true)
 
   createdAt DateTime @default(now())

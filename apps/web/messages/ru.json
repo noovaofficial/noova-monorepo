@@ -444,7 +444,10 @@
     "adjustNoteHint": "Видна владельцу в истории операций. Не короче 3 символов.",
     "adjustSubmit": "Провести",
     "adjustDone": "Проведено. Баланс: {balance, number} GC.",
-    "adjustInsufficient": "На балансе недостаточно GlowCoin для такого списания."
+    "adjustInsufficient": "На балансе недостаточно GlowCoin для такого списания.",
+    "deleteUser": "Удалить",
+    "deleteUserHint": "Удаление мгновенное и необратимое: анкеты, фото, отзывы и избранное исчезнут. Журналы модерации и операций GlowCoin останутся без владельца.",
+    "deleteUserConfirm": "Удалить безвозвратно"
   },
   "admin": {
     "title": "Сотрудники",
@@ -643,15 +646,11 @@
     "subscriptionPlan": "Тип размещения",
     "subscriptionUntil": "Действует до",
     "subscriptionDaysLeft": "осталось {days, plural, one {# день} few {# дня} other {# дней}}",
-    "subscriptionRenew": "Автопродление",
-    "subscriptionRenewOn": "Включено",
-    "subscriptionRenewOff": "Выключено",
     "subscriptionNone": "Активной подписки нет. Анкета не публикуется, пока срок не оплачен.",
     "subscriptionWallet": "Мои GlowCoin →",
     "subscriptionStatus": "Состояние",
-    "subscriptionStatus_grace": "Срок вышел: льготные дни, анкета пока в выдаче",
-    "subscriptionStatus_pending_topup": "Ждёт пополнения для продления",
-    "subscriptionStatus_expired": "Истекла"
+    "subscriptionStatus_grace": "Срок вышел: льготные дни, анкеты пока в выдаче. Оплатите, чтобы не потерять размещение.",
+    "subscriptionStatus_expired": "Истекла, анкеты сняты с публикации. После оплаты они вернутся сами."
   },
   "billing": {
     "walletTitle": "Мои GlowCoin",

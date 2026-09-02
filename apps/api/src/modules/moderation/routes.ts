@@ -13,10 +13,17 @@ import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
+import { purgeUserById } from '../../jobs/retention.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
-import { getObject, isPublicKey, moderationPhotoUrl, publicUrl } from '../photos/storage.js';
+import {
+  deletePhotoFiles,
+  getObject,
+  isPublicKey,
+  moderationPhotoUrl,
+  publicUrl,
+} from '../photos/storage.js';
 
 const profileSelect = {
   id: true,
@@ -124,6 +131,13 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         `${photo.storageKey}/${request.query.variant}.webp`,
       );
       reply.header('cache-control', 'private, max-age=300');
+      // helmet по умолчанию ставит Cross-Origin-Resource-Policy: same-origin,
+      // а картинка встраивается через <img> со страницы фронта. В проде это
+      // один домен, но локально фронт и API живут на разных портах — для
+      // браузера это разные origin, и он молча блокирует ответ. same-site
+      // пускает соседний порт того же хоста, а чужим сайтам снимок всё так же
+      // недоступен: права и так проверяются сессией на каждый запрос.
+      reply.header('cross-origin-resource-policy', 'same-site');
       reply.type(contentType);
       if (contentLength !== undefined) reply.header('content-length', contentLength);
       return reply.send(body);
@@ -927,6 +941,57 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         glowcoinBalance: row.glowcoinBalance,
         createdAt: row.createdAt.toISOString(),
       }));
+    },
+  );
+
+  /**
+   * Мгновенное удаление учётной записи администратором — без отсрочки,
+   * которая есть у самоудаления: там она защищает владельца от угона, здесь
+   * решение принимает сотрудник. Уходит всё, что каскадится от учётки:
+   * анкеты, фото (и файлы в хранилище), контакты, отзывы, избранное.
+   * Остаются журналы: модерации и GlowCoin, заказы на пополнение — с
+   * обнулённым владельцем. Запись в журнал модерации — до удаления, чтобы
+   * было видно, кто и когда.
+   */
+  fastify.delete(
+    '/moderation/users/:id',
+    {
+      onRequest: fastify.requireRole('admin'),
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 204: z.null() },
+      },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+      if (request.params.id === userId) {
+        throw fastify.httpErrors.badRequest('Нельзя удалить собственную учётную запись');
+      }
+
+      const target = await fastify.prisma.user.findUnique({
+        where: { id: request.params.id },
+        select: { id: true, role: true, email: true },
+      });
+      if (!target) throw fastify.httpErrors.notFound('Пользователь не найден');
+      if (target.role === 'moderator' || target.role === 'admin') {
+        throw fastify.httpErrors.forbidden('Сотрудников убирают через раздел «Сотрудники»');
+      }
+
+      await writeAction(
+        fastify,
+        userId,
+        'user',
+        target.id,
+        'rejected',
+        `Удалена администратором: ${target.email}`,
+      );
+      await fastify.destroyAllSessions(target.id);
+      await purgeUserById(fastify.prisma, target.id, deletePhotoFiles);
+
+      // Опубликованные анкеты исчезли — витрина должна узнать об этом сразу.
+      fastify.revalidate([PROFILES_TAG]);
+      return reply.status(204).send(null);
     },
   );
 

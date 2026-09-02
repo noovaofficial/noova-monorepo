@@ -67,23 +67,55 @@ export async function purgeDeletedAccounts(
   });
 
   for (const user of users) {
-    const keys = user.profiles.flatMap((profile) =>
-      profile.photos.map((photo) => photo.storageKey),
-    );
-
-    // Удаление файлов вынесено в `deletePhotoFiles` и используется всюду,
-    // где исчезает фотография: два «своих» способа однажды разойдутся,
-    // и файл останется в бакете.
-    for (const key of keys) {
-      await deleteFile(key);
-    }
-
-    // Строки удаляет каскад: анкеты, фото, контакты, избранное, отзывы.
-    // Журнал модерации связан с пользователем строковым `subjectId` без
-    // внешнего ключа и переживает удаление — он о решениях сотрудников,
-    // и стирать его вместе с учёткой значило бы терять доказательства.
-    await prisma.user.delete({ where: { id: user.id } });
+    await purgeUser(prisma, user, deleteFile);
   }
 
   return users.length;
+}
+
+type PurgeTarget = { id: string; profiles: { photos: { storageKey: string }[] }[] };
+
+/**
+ * Физическое удаление учётной записи — общее для отсрочки и для кнопки
+ * администратора. Что остаётся: журнал модерации (связан строковым
+ * `subjectId` без внешнего ключа), журнал GlowCoin и заказы на пополнение
+ * (владелец обнуляется, запись живёт: за ней реальные деньги).
+ */
+export async function purgeUser(
+  prisma: PrismaClient,
+  user: PurgeTarget,
+  deleteFile: (storageKey: string) => Promise<void>,
+): Promise<void> {
+  const keys = user.profiles.flatMap((profile) => profile.photos.map((photo) => photo.storageKey));
+
+  // Удаление файлов вынесено в `deletePhotoFiles` и используется всюду,
+  // где исчезает фотография: два «своих» способа однажды разойдутся,
+  // и файл останется в бакете.
+  for (const key of keys) {
+    await deleteFile(key);
+  }
+
+  // Строки удаляет каскад: анкеты, фото, контакты, избранное, отзывы.
+  // Журнал модерации связан с пользователем строковым `subjectId` без
+  // внешнего ключа и переживает удаление — он о решениях сотрудников,
+  // и стирать его вместе с учёткой значило бы терять доказательства.
+  await prisma.user.delete({ where: { id: user.id } });
+}
+
+/** То же по идентификатору — для маршрута администратора. `false`, если учётки нет. */
+export async function purgeUserById(
+  prisma: PrismaClient,
+  userId: string,
+  deleteFile: (storageKey: string) => Promise<void>,
+): Promise<boolean> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      profiles: { select: { photos: { select: { storageKey: true } } } },
+    },
+  });
+  if (!user) return false;
+  await purgeUser(prisma, user, deleteFile);
+  return true;
 }

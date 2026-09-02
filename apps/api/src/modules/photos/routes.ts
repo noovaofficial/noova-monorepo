@@ -86,6 +86,13 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
       );
       // private: снимок конкретного человека, в общих кэшах ему не место.
       reply.header('cache-control', 'private, max-age=300');
+      // helmet по умолчанию ставит Cross-Origin-Resource-Policy: same-origin,
+      // а картинка встраивается через <img> со страницы фронта. В проде это
+      // один домен, но локально фронт и API живут на разных портах — для
+      // браузера это разные origin, и он молча блокирует ответ. same-site
+      // пускает соседний порт того же хоста, а чужим сайтам снимок всё так же
+      // недоступен: права и так проверяются сессией на каждый запрос.
+      reply.header('cross-origin-resource-policy', 'same-site');
       reply.type(contentType);
       if (contentLength !== undefined) reply.header('content-length', contentLength);
       return reply.send(body);

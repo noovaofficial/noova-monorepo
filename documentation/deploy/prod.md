@@ -45,7 +45,7 @@ make server-env SERVER=deploy@<IP> DOMAIN=noova.cc EMAIL=admin@example.com
 | `IP_HASH_SALT` | `openssl rand -hex 32` |
 | `REVALIDATE_SECRET` | `openssl rand -hex 32` |
 | `PAYMENTO_API_KEY` / `PAYMENTO_SECRET_KEY` | Из кабинета `app.paymento.io`. Пустые — касса выключена. В настройках Paymento адрес IPN: `https://noova.cc/api/v1/billing/webhook/paymento` |
-| `PAYWALL_ENABLED` | `true` только после `billing:grant-launch` (payments.md, этап 3) |
+| `PAYWALL_ENABLED` | По умолчанию `true`. На новом сервере ставить `false` до запуска `grant-launch-listings`, затем `true` (payments.md, этап 3) |
 | `INTERNAL_API_TOKEN` | `openssl rand -hex 32` |
 | `MAIL_DOMAIN` | `noova.cc` |
 | `MAIL_FROM` | `"Noova <noreply@noova.cc>"` |

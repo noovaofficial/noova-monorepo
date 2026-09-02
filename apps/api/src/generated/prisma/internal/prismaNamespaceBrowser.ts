@@ -257,6 +257,7 @@ export const ProfileScalarFieldEnum = {
   isVerified: 'isVerified',
   lastSeenAt: 'lastSeenAt',
   publishedAt: 'publishedAt',
+  unpaidAt: 'unpaidAt',
   age: 'age',
   heightCm: 'heightCm',
   weightKg: 'weightKg',

@@ -125,13 +125,6 @@ export function AccountSettings() {
                   </dd>
                 </div>
               ) : null}
-
-              <div className={styles.row}>
-                <dt className={styles.rowLabel}>{t('subscriptionRenew')}</dt>
-                <dd className={styles.rowValue}>
-                  {t(subscription.autoRenew ? 'subscriptionRenewOn' : 'subscriptionRenewOff')}
-                </dd>
-              </div>
             </dl>
           ) : (
             <p className={styles.text}>{t('subscriptionNone')}</p>

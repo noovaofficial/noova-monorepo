@@ -444,7 +444,10 @@
     "adjustNoteHint": "Für den Inhaber im Transaktionsverlauf sichtbar. Mindestens 3 Zeichen.",
     "adjustSubmit": "Ausführen",
     "adjustDone": "Ausgeführt. Guthaben: {balance, number} GC.",
-    "adjustInsufficient": "Nicht genug GlowCoin auf dem Guthaben für diese Abbuchung."
+    "adjustInsufficient": "Nicht genug GlowCoin auf dem Guthaben für diese Abbuchung.",
+    "deleteUser": "Löschen",
+    "deleteUserHint": "Das Löschen ist sofort und unumkehrbar: Profile, Fotos, Bewertungen und Favoriten verschwinden. Moderations- und GlowCoin-Protokolle bleiben ohne Inhaber erhalten.",
+    "deleteUserConfirm": "Endgültig löschen"
   },
   "admin": {
     "title": "Mitarbeiter",
@@ -643,15 +646,11 @@
     "subscriptionPlan": "Art der Platzierung",
     "subscriptionUntil": "Gültig bis",
     "subscriptionDaysLeft": "noch {days, plural, one {# Tag} other {# Tage}}",
-    "subscriptionRenew": "Automatische Verlängerung",
-    "subscriptionRenewOn": "Aktiv",
-    "subscriptionRenewOff": "Aus",
     "subscriptionNone": "Kein aktives Abonnement. Ein Profil bleibt offline, solange keine Laufzeit bezahlt ist.",
     "subscriptionWallet": "Meine GlowCoin →",
     "subscriptionStatus": "Status",
-    "subscriptionStatus_grace": "Abgelaufen: Kulanztage, die Anzeige ist noch sichtbar",
-    "subscriptionStatus_pending_topup": "Wartet auf eine Aufladung zur Verlängerung",
-    "subscriptionStatus_expired": "Abgelaufen"
+    "subscriptionStatus_grace": "Abgelaufen: Kulanztage, die Profile sind noch gelistet. Zahlen Sie, um die Platzierung zu behalten.",
+    "subscriptionStatus_expired": "Abgelaufen, Profile sind nicht mehr veröffentlicht. Nach der Zahlung kehren sie automatisch zurück."
   },
   "billing": {
     "walletTitle": "Meine GlowCoin",

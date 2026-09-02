@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { addMonths, nextExpiry } from './listing.js';
+import { addMonths, listingTransition, nextExpiry } from './listing.js';
 
 const utc = (iso: string) => new Date(`${iso}T12:00:00.000Z`);
 
@@ -28,5 +28,38 @@ describe('срок размещения', () => {
       nextExpiry({ status: 'active', expiresAt: utc('2026-08-01') }, 'm1', now).toISOString(),
     ).toBe(utc('2026-10-02').toISOString());
     expect(nextExpiry(null, 'm12', now).toISOString()).toBe(utc('2027-09-02').toISOString());
+  });
+});
+
+describe('истечение размещения (D-04, D-09)', () => {
+  const now = utc('2026-09-10');
+
+  it('активное с вышедшим сроком уходит в льготные дни', () => {
+    expect(listingTransition({ status: 'active', expiresAt: utc('2026-09-09') }, 3, now)).toBe(
+      'grace',
+    );
+    expect(
+      listingTransition({ status: 'active', expiresAt: utc('2026-09-11') }, 3, now),
+    ).toBeNull();
+  });
+
+  it('льготные дни держат анкеты ровно заданный срок', () => {
+    // Истекло 7-го, три дня льготы — снятие 10-го, не 9-го.
+    expect(listingTransition({ status: 'grace', expiresAt: utc('2026-09-08') }, 3, now)).toBeNull();
+    expect(listingTransition({ status: 'grace', expiresAt: utc('2026-09-07') }, 3, now)).toBe(
+      'expired',
+    );
+  });
+
+  it('без льготных дней истекает сразу', () => {
+    expect(listingTransition({ status: 'active', expiresAt: utc('2026-09-09') }, 0, now)).toBe(
+      'expired',
+    );
+  });
+
+  it('истёкшее и снятое не трогает', () => {
+    expect(
+      listingTransition({ status: 'expired', expiresAt: utc('2026-01-01') }, 3, now),
+    ).toBeNull();
   });
 });

@@ -153,6 +153,22 @@ export function fetchUsers(
   return call(`/moderation/users${qs ? `?${qs}` : ''}`, z.array(managedUserSchema));
 }
 
+/** Мгновенное удаление учётки — только админ. 204 без тела. */
+export async function deleteUser(id: string): Promise<void> {
+  const response = await fetch(`${BASE}/api/v1/moderation/users/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body) => String(body?.message ?? ''))
+      .catch(() => '');
+    throw new ModerationError(message || 'Не удалось удалить', response.status);
+  }
+}
+
 export function verifyUserEmail(id: string): Promise<ManagedUser> {
   return call(`/moderation/users/${id}/verify-email`, managedUserSchema, { method: 'POST' });
 }

@@ -69,6 +69,7 @@ export type ProfileMinAggregateOutputType = {
   isVerified: boolean | null
   lastSeenAt: Date | null
   publishedAt: Date | null
+  unpaidAt: Date | null
   age: number | null
   heightCm: number | null
   weightKg: number | null
@@ -111,6 +112,7 @@ export type ProfileMaxAggregateOutputType = {
   isVerified: boolean | null
   lastSeenAt: Date | null
   publishedAt: Date | null
+  unpaidAt: Date | null
   age: number | null
   heightCm: number | null
   weightKg: number | null
@@ -155,6 +157,7 @@ export type ProfileCountAggregateOutputType = {
   isVerified: number
   lastSeenAt: number
   publishedAt: number
+  unpaidAt: number
   age: number
   heightCm: number
   weightKg: number
@@ -220,6 +223,7 @@ export type ProfileMinAggregateInputType = {
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
+  unpaidAt?: true
   age?: true
   heightCm?: true
   weightKg?: true
@@ -262,6 +266,7 @@ export type ProfileMaxAggregateInputType = {
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
+  unpaidAt?: true
   age?: true
   heightCm?: true
   weightKg?: true
@@ -306,6 +311,7 @@ export type ProfileCountAggregateInputType = {
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
+  unpaidAt?: true
   age?: true
   heightCm?: true
   weightKg?: true
@@ -438,6 +444,7 @@ export type ProfileGroupByOutputType = {
   isVerified: boolean
   lastSeenAt: Date | null
   publishedAt: Date | null
+  unpaidAt: Date | null
   age: number | null
   heightCm: number | null
   weightKg: number | null
@@ -506,6 +513,7 @@ export type ProfileWhereInput = {
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
+  unpaidAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   age?: Prisma.IntNullableFilter<"Profile"> | number | null
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
@@ -566,6 +574,7 @@ export type ProfileOrderByWithRelationInput = {
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  unpaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -629,6 +638,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
+  unpaidAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   age?: Prisma.IntNullableFilter<"Profile"> | number | null
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
@@ -689,6 +699,7 @@ export type ProfileOrderByWithAggregationInput = {
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  unpaidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   age?: Prisma.SortOrderInput | Prisma.SortOrder
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -742,6 +753,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   isVerified?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
+  unpaidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
   age?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   heightCm?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
@@ -783,6 +795,7 @@ export type ProfileCreateInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -843,6 +856,7 @@ export type ProfileUncheckedCreateInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -895,6 +909,7 @@ export type ProfileUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -955,6 +970,7 @@ export type ProfileUncheckedUpdateInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1011,6 +1027,7 @@ export type ProfileCreateManyInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -1052,6 +1069,7 @@ export type ProfileUpdateManyMutationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1097,6 +1115,7 @@ export type ProfileUncheckedUpdateManyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1168,6 +1187,7 @@ export type ProfileCountOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  unpaidAt?: Prisma.SortOrder
   age?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -1221,6 +1241,7 @@ export type ProfileMaxOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  unpaidAt?: Prisma.SortOrder
   age?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -1263,6 +1284,7 @@ export type ProfileMinOrderByAggregateInput = {
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
+  unpaidAt?: Prisma.SortOrder
   age?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
@@ -1718,6 +1740,7 @@ export type ProfileCreateWithoutOwnerInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -1776,6 +1799,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -1861,6 +1885,7 @@ export type ProfileScalarWhereInput = {
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
+  unpaidAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   age?: Prisma.IntNullableFilter<"Profile"> | number | null
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
@@ -1902,6 +1927,7 @@ export type ProfileCreateWithoutCityInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -1960,6 +1986,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2038,6 +2065,7 @@ export type ProfileCreateWithoutDistrictInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2096,6 +2124,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2174,6 +2203,7 @@ export type ProfileCreateWithoutPhotosInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2233,6 +2263,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2300,6 +2331,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2359,6 +2391,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2410,6 +2443,7 @@ export type ProfileCreateWithoutReportsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2469,6 +2503,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2536,6 +2571,7 @@ export type ProfileUpdateWithoutReportsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2595,6 +2631,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2646,6 +2683,7 @@ export type ProfileCreateWithoutCommentsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2705,6 +2743,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2772,6 +2811,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2831,6 +2871,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2882,6 +2923,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -2941,6 +2983,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3008,6 +3051,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3067,6 +3111,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3118,6 +3163,7 @@ export type ProfileCreateWithoutCompanyInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3176,6 +3222,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3254,6 +3301,7 @@ export type ProfileCreateWithoutHoursInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3313,6 +3361,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3380,6 +3429,7 @@ export type ProfileUpdateWithoutHoursInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3439,6 +3489,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3490,6 +3541,7 @@ export type ProfileCreateWithoutContactsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3549,6 +3601,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3616,6 +3669,7 @@ export type ProfileUpdateWithoutContactsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3675,6 +3729,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3726,6 +3781,7 @@ export type ProfileCreateWithoutRevealsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3785,6 +3841,7 @@ export type ProfileUncheckedCreateWithoutRevealsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -3852,6 +3909,7 @@ export type ProfileUpdateWithoutRevealsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3911,6 +3969,7 @@ export type ProfileUncheckedUpdateWithoutRevealsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -3962,6 +4021,7 @@ export type ProfileCreateWithoutPricesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4021,6 +4081,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4088,6 +4149,7 @@ export type ProfileUpdateWithoutPricesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4147,6 +4209,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4198,6 +4261,7 @@ export type ProfileCreateWithoutServicesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4257,6 +4321,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4324,6 +4389,7 @@ export type ProfileUpdateWithoutServicesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4383,6 +4449,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4434,6 +4501,7 @@ export type ProfileCreateWithoutVerificationInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4493,6 +4561,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4560,6 +4629,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4619,6 +4689,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4670,6 +4741,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4729,6 +4801,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4796,6 +4869,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4855,6 +4929,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -4909,6 +4984,7 @@ export type ProfileCreateManyOwnerInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -4950,6 +5026,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5008,6 +5085,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5063,6 +5141,7 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5107,6 +5186,7 @@ export type ProfileCreateManyCityInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -5148,6 +5228,7 @@ export type ProfileUpdateWithoutCityInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5206,6 +5287,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5261,6 +5343,7 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5305,6 +5388,7 @@ export type ProfileCreateManyDistrictInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -5346,6 +5430,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5404,6 +5489,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5459,6 +5545,7 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5503,6 +5590,7 @@ export type ProfileCreateManyCompanyInput = {
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
   age?: number | null
   heightCm?: number | null
   weightKg?: number | null
@@ -5544,6 +5632,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5602,6 +5691,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5657,6 +5747,7 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -5814,6 +5905,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
+  unpaidAt?: boolean
   age?: boolean
   heightCm?: boolean
   weightKg?: boolean
@@ -5875,6 +5967,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
+  unpaidAt?: boolean
   age?: boolean
   heightCm?: boolean
   weightKg?: boolean
@@ -5924,6 +6017,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
+  unpaidAt?: boolean
   age?: boolean
   heightCm?: boolean
   weightKg?: boolean
@@ -5973,6 +6067,7 @@ export type ProfileSelectScalar = {
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
+  unpaidAt?: boolean
   age?: boolean
   heightCm?: boolean
   weightKg?: boolean
@@ -5993,7 +6088,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "age" | "heightCm" | "weightKg" | "languages" | "nationality" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "nationality" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
@@ -6101,6 +6196,12 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isVerified: boolean
     lastSeenAt: Date | null
     publishedAt: Date | null
+    /**
+     * Снята с публикации за неоплату (payments.md, этап 5). Отличает такую
+     * паузу от паузы владельца: при оплате эти анкеты возвращаются в каталог
+     * сами, а снятые руками — нет.
+     */
+    unpaidAt: Date | null
     age: number | null
     heightCm: number | null
     weightKg: number | null
@@ -6593,6 +6694,7 @@ export interface ProfileFieldRefs {
   readonly isVerified: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly lastSeenAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly publishedAt: Prisma.FieldRef<"Profile", 'DateTime'>
+  readonly unpaidAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly age: Prisma.FieldRef<"Profile", 'Int'>
   readonly heightCm: Prisma.FieldRef<"Profile", 'Int'>
   readonly weightKg: Prisma.FieldRef<"Profile", 'Int'>

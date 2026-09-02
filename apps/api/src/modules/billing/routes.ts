@@ -15,7 +15,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { env } from '../../env.js';
-import { BILLING_TAG } from '../../plugins/revalidate.js';
+import { BILLING_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { loadBillingConfig, saveBillingConfig } from './config.js';
 import { activateListing } from './listing.js';
@@ -175,12 +175,18 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const priceGc = config.prices[user.advertiserKind][request.body.term];
 
       try {
-        return await activateListing(fastify.prisma, {
+        const { result, restoredSlugs } = await activateListing(fastify.prisma, {
           userId,
           kind: user.advertiserKind,
           term: request.body.term,
           priceGc,
         });
+        // Анкеты, вернувшиеся после неоплаты, должны появиться в каталоге
+        // сразу, а не по истечении кэша.
+        if (restoredSlugs.length > 0) {
+          fastify.revalidate([PROFILES_TAG, ...restoredSlugs.map(profileTag)]);
+        }
+        return result;
       } catch (error) {
         if (error instanceof InsufficientBalanceError) {
           throw fastify.httpErrors.conflict(

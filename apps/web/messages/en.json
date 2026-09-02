@@ -444,7 +444,10 @@
     "adjustNoteHint": "Shown to the owner in their transaction history. At least 3 characters.",
     "adjustSubmit": "Apply",
     "adjustDone": "Applied. Balance: {balance, number} GC.",
-    "adjustInsufficient": "Not enough GlowCoin on the balance for this debit."
+    "adjustInsufficient": "Not enough GlowCoin on the balance for this debit.",
+    "deleteUser": "Delete",
+    "deleteUserHint": "Deletion is immediate and irreversible: profiles, photos, reviews and favorites disappear. Moderation and GlowCoin logs remain without an owner.",
+    "deleteUserConfirm": "Delete permanently"
   },
   "admin": {
     "title": "Staff",
@@ -643,15 +646,11 @@
     "subscriptionPlan": "Placement type",
     "subscriptionUntil": "Active until",
     "subscriptionDaysLeft": "{days, plural, one {# day} other {# days}} left",
-    "subscriptionRenew": "Auto-renewal",
-    "subscriptionRenewOn": "On",
-    "subscriptionRenewOff": "Off",
     "subscriptionNone": "No active subscription. A profile stays unpublished until a term is paid for.",
     "subscriptionWallet": "My GlowCoin →",
     "subscriptionStatus": "Status",
-    "subscriptionStatus_grace": "Expired: grace days, the listing is still visible",
-    "subscriptionStatus_pending_topup": "Waiting for a top-up to renew",
-    "subscriptionStatus_expired": "Expired"
+    "subscriptionStatus_grace": "Expired: grace days, profiles are still listed. Pay to keep the listing.",
+    "subscriptionStatus_expired": "Expired, profiles are unpublished. They come back automatically after payment."
   },
   "billing": {
     "walletTitle": "My GlowCoin",

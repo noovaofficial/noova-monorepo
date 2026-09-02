@@ -670,6 +670,10 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     term: $Enums.PlanTerm
     activatedAt: Date
     expiresAt: Date
+    /**
+     * Не используется: автопродления нет (D-09). Колонка остаётся до
+     * следующего выпуска — образ прошлого выпуска ещё читает её.
+     */
     autoRenew: boolean
     createdAt: Date
     updatedAt: Date

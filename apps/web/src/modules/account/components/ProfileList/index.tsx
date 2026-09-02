@@ -20,6 +20,8 @@ export function ProfileList() {
   const router = useRouter();
 
   const [showForm, setShowForm] = useState(false);
+  // Пустая строка — «город ещё не выбран»: до загрузки справочника берём первый.
+  const [citySlug, setCitySlug] = useState('');
 
   const enabled = sessionStatus === 'authenticated';
   const list = useQuery({ queryKey: queryKeys.ownProfiles(), queryFn: fetchOwnProfiles, enabled });
@@ -90,7 +92,10 @@ export function ProfileList() {
     });
   }
 
-  const selectedCity = cities[0];
+  // Районы зависят от выбранного города, а не от первого в списке: иначе при
+  // смене города в селекте оставались районы другого города.
+  const selectedCitySlug = citySlug || cities[0]?.slug || '';
+  const selectedCity = cities.find((city) => city.slug === selectedCitySlug);
 
   return (
     <div className={styles.wrap}>
@@ -129,7 +134,14 @@ export function ProfileList() {
               <label className={styles.label} htmlFor="citySlug">
                 {t('city')}
               </label>
-              <select className={styles.select} id="citySlug" name="citySlug" required>
+              <select
+                className={styles.select}
+                id="citySlug"
+                name="citySlug"
+                value={selectedCitySlug}
+                onChange={(e) => setCitySlug(e.target.value)}
+                required
+              >
                 {cities.map((city) => (
                   <option key={city.slug} value={city.slug}>
                     {city.name}
@@ -142,7 +154,14 @@ export function ProfileList() {
               <label className={styles.label} htmlFor="districtSlug">
                 {t('district')}
               </label>
-              <select className={styles.select} id="districtSlug" name="districtSlug">
+              {/* key сбрасывает выбранный район при смене города: район
+                  одного города к другому не относится. */}
+              <select
+                className={styles.select}
+                id="districtSlug"
+                name="districtSlug"
+                key={selectedCitySlug}
+              >
                 <option value="">—</option>
                 {selectedCity?.districts.map((district) => (
                   <option key={district.slug} value={district.slug}>

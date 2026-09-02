@@ -7,7 +7,13 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { adjustBalance, BillingError } from '@/modules/billing/api';
-import { blockUser, fetchUsers, unblockUser, verifyUserEmail } from '@/modules/moderation/api';
+import {
+  blockUser,
+  deleteUser,
+  fetchUsers,
+  unblockUser,
+  verifyUserEmail,
+} from '@/modules/moderation/api';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
 
@@ -49,6 +55,10 @@ export function UserList({
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [adjusted, setAdjusted] = useState<{ userId: string; balanceGc: number } | null>(null);
+
+  // Кого удаляем: подтверждение раскрывается у строки, а не в модальном окне —
+  // так же, как причина блокировки.
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   const list = useQuery({
     queryKey: queryKeys.users(debounced, blockedOnly, role || undefined),
@@ -101,12 +111,25 @@ export function UserList({
     },
   });
 
+  const remove = useMutation({
+    mutationFn: (user: ManagedUser) => deleteUser(user.id),
+    onSuccess: async () => {
+      setDeleting(null);
+      await invalidate();
+    },
+  });
+
   const users = list.data ?? null;
-  const busy = verify.isPending || block.isPending || unblock.isPending || adjust.isPending;
+  const busy =
+    verify.isPending ||
+    block.isPending ||
+    unblock.isPending ||
+    adjust.isPending ||
+    remove.isPending;
   const error =
     adjust.isError && adjust.error instanceof BillingError && adjust.error.status === 409
       ? 'adjustInsufficient'
-      : verify.isError || block.isError || unblock.isError || adjust.isError
+      : verify.isError || block.isError || unblock.isError || adjust.isError || remove.isError
         ? 'actionFailed'
         : list.isError
           ? 'loadFailed'
@@ -229,6 +252,24 @@ export function UserList({
                     </div>
                   ) : null}
 
+                  {deleting === user.id ? (
+                    <div className={styles.reasonBox}>
+                      <span className={styles.hint}>{t('deleteUserHint')}</span>
+                      <div className={styles.cardActions} style={{ padding: 0 }}>
+                        <Button disabled={busy} onClick={() => remove.mutate(user)}>
+                          {t('deleteUserConfirm')}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => setDeleting(null)}
+                        >
+                          {t('cancel')}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : null}
+
                   {blocking === user.id ? (
                     <div className={styles.reasonBox}>
                       <textarea
@@ -303,6 +344,20 @@ export function UserList({
                       }}
                     >
                       {t('adjustGc')}
+                    </Button>
+                  ) : null}
+
+                  {isAdmin && !isStaff && deleting !== user.id ? (
+                    <Button
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => {
+                        setDeleting(user.id);
+                        setBlocking(null);
+                        setAdjusting(null);
+                      }}
+                    >
+                      {t('deleteUser')}
                     </Button>
                   ) : null}
 

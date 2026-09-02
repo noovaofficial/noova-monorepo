@@ -150,7 +150,6 @@ export const listingSchema = z.object({
   status: listingStatusSchema,
   activatedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
-  autoRenew: z.boolean(),
 });
 export type Listing = z.infer<typeof listingSchema>;
 

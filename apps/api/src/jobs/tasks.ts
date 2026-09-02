@@ -1,5 +1,6 @@
 import { env } from '../env.js';
 import type { PrismaClient } from '../generated/prisma/client.js';
+import { expireListings } from '../modules/billing/listing.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
 import { purgeContactReveals } from '../modules/profiles/retention.js';
@@ -20,6 +21,12 @@ export type Job = {
  * документов пока нет, чистить нечего. Задачу вернуть вместе с N-07.
  */
 export const JOBS: Job[] = [
+  {
+    // Истечение размещений (payments.md, этап 5): активные → льготные дни →
+    // снятие с публикации. Число — сколько размещений сменили состояние.
+    name: 'listing-expiry',
+    run: (prisma) => expireListings(prisma, env.LISTING_GRACE_DAYS),
+  },
   {
     name: 'deleted-photos',
     run: (prisma) => purgeDeletedPhotos(prisma, env.RETENTION_DELETED_PHOTOS_DAYS),
