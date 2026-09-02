@@ -42,6 +42,7 @@ import {
   updateProfile,
 } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { ListingNotice } from '@/modules/billing/components/ListingNotice';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -959,6 +960,11 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
         <aside className={styles.sidebar}>
           <div className={styles.sidebarCard}>
             <span className={styles.sidebarTitle}>{t('title')}</span>
+
+            {/* Состояние подписки — первым: истёкший или льготный срок
+                объясняет, почему анкета не публикуется или скоро исчезнет,
+                и без этого остальные подсказки читаются как поломка. */}
+            <ListingNotice />
 
             {notice ? (
               <p

@@ -19,7 +19,8 @@
     "mapView": "Profile auf der Karte",
     "mapViewShort": "Karte zeigen",
     "quickCompany": "Firma",
-    "quickGlowcoin": "Meine GlowCoin"
+    "quickGlowcoin": "Meine GlowCoin",
+    "quickSubscription": "Abonnement"
   },
   "filters": {
     "title": "Filter",
@@ -236,7 +237,8 @@
     "advertiserAgency": "Agentur",
     "advertiserAgencyHint": "Mehrere Begleitanzeigen, ohne eigene Adresse",
     "myGlowcoin": "Meine GlowCoin",
-    "monetization": "Monetarisierung"
+    "monetization": "Monetarisierung",
+    "subscription": "Abonnement"
   },
   "account": {
     "title": "Meine Anzeigen",
@@ -641,16 +643,7 @@
     "deletePending": "Ihr Konto wird am {date} gelöscht. Ihre Profile sind bereits offline.",
     "deletePendingHint": "Bis zu diesem Datum können Sie abbrechen. Danach sind die Daten nicht wiederherstellbar.",
     "deleteCancel": "Löschung abbrechen",
-    "cancel": "Abbrechen",
-    "subscriptionTitle": "Abonnement",
-    "subscriptionPlan": "Art der Platzierung",
-    "subscriptionUntil": "Gültig bis",
-    "subscriptionDaysLeft": "noch {days, plural, one {# Tag} other {# Tage}}",
-    "subscriptionNone": "Kein aktives Abonnement. Ein Profil bleibt offline, solange keine Laufzeit bezahlt ist.",
-    "subscriptionWallet": "Meine GlowCoin →",
-    "subscriptionStatus": "Status",
-    "subscriptionStatus_grace": "Abgelaufen: Kulanztage, die Profile sind noch gelistet. Zahlen Sie, um die Platzierung zu behalten.",
-    "subscriptionStatus_expired": "Abgelaufen, Profile sind nicht mehr veröffentlicht. Nach der Zahlung kehren sie automatisch zurück."
+    "cancel": "Abbrechen"
   },
   "billing": {
     "walletTitle": "Meine GlowCoin",
@@ -709,7 +702,7 @@
     "activateCurrent": "Gültig bis {date}",
     "activateExtendHint": "Eine Verlängerung wird an die aktuelle Laufzeit angehängt, nicht neu gestartet.",
     "activateConfirm": "{gc, number} GC werden abgebucht, {rest, number} GC bleiben.",
-    "activateNotEnough": "Es fehlen {gc, number} GC — Guthaben unten aufladen.",
+    "activateNotEnough": "Es fehlen {gc, number} GC.",
     "activateSubmit": "Aktivieren",
     "activateExtendSubmit": "Verlängern",
     "activateDone": "Fertig. Die Platzierung gilt bis {date}.",
@@ -724,7 +717,23 @@
     "checkoutPaid": "Zahlung bestätigt, {gc, number} GC gutgeschrieben.",
     "checkoutExpired": "Das Zahlungsfenster ist abgelaufen. Die Bestellung ist geschlossen, nichts wurde abgebucht — bitte neu erstellen.",
     "checkoutCanceled": "Zahlung abgebrochen. Nichts wurde abgebucht.",
-    "checkoutFailed": "Die Zahlung ist fehlgeschlagen. Falls Geld abgegangen ist, wenden Sie sich mit der Bestellnummer an den Support."
+    "checkoutFailed": "Die Zahlung ist fehlgeschlagen. Falls Geld abgegangen ist, wenden Sie sich mit der Bestellnummer an den Support.",
+    "subscriptionTitle": "Abonnement",
+    "subscriptionPlan": "Art der Platzierung",
+    "subscriptionUntil": "Gültig bis",
+    "subscriptionDaysLeft": "noch {days, plural, one {# Tag} other {# Tage}}",
+    "subscriptionNone": "Kein aktives Abonnement. Ein Profil bleibt offline, solange keine Laufzeit bezahlt ist.",
+    "subscriptionStatus": "Status",
+    "subscriptionStatus_grace": "Abgelaufen: Kulanztage, die Profile sind noch gelistet. Zahlen Sie, um die Platzierung zu behalten.",
+    "subscriptionStatus_expired": "Abgelaufen, Profile sind nicht mehr veröffentlicht. Nach der Zahlung kehren sie automatisch zurück.",
+    "walletSubscriptionLink": "Abonnement und Verlängerung →",
+    "activateExtendTitle": "Verlängerung",
+    "subscriptionWallet": "Meine GlowCoin →",
+    "listingGraceNotice": "Ihr Abonnement ist am {date} abgelaufen. Bis {graceDate} bleiben die Profile im Katalog — das ist die Kulanzfrist. Verlängern Sie, sonst werden sie deaktiviert.",
+    "listingExpiredNotice": "Das Abonnement ist abgelaufen, das Profil ist nicht mehr veröffentlicht. Nach der Zahlung kehrt es automatisch in den Katalog zurück.",
+    "listingNoneNotice": "Kein Abonnement: Das Profil kann erst nach Bezahlung der Platzierung veröffentlicht werden.",
+    "listingNoticeExtend": "Abonnement verlängern →",
+    "listingNoticePay": "Abonnement bezahlen →"
   },
   "about": {
     "title": "Über das Projekt",

@@ -19,7 +19,8 @@
     "mapView": "Анкеты на карте",
     "mapViewShort": "Показать карту",
     "quickCompany": "Компания",
-    "quickGlowcoin": "Мои GlowCoin"
+    "quickGlowcoin": "Мои GlowCoin",
+    "quickSubscription": "Подписка"
   },
   "filters": {
     "title": "Фильтры",
@@ -236,7 +237,8 @@
     "advertiserAgency": "Агентство",
     "advertiserAgencyHint": "Несколько анкет сопровождения, своего адреса нет",
     "myGlowcoin": "Мои GlowCoin",
-    "monetization": "Монетизация"
+    "monetization": "Монетизация",
+    "subscription": "Подписка"
   },
   "account": {
     "title": "Мои анкеты",
@@ -641,16 +643,7 @@
     "deletePending": "Учётная запись будет удалена {date}. Анкеты уже сняты с публикации.",
     "deletePendingHint": "До этой даты удаление можно отменить. После — восстановить данные будет нельзя.",
     "deleteCancel": "Отменить удаление",
-    "cancel": "Отмена",
-    "subscriptionTitle": "Подписка",
-    "subscriptionPlan": "Тип размещения",
-    "subscriptionUntil": "Действует до",
-    "subscriptionDaysLeft": "осталось {days, plural, one {# день} few {# дня} other {# дней}}",
-    "subscriptionNone": "Активной подписки нет. Анкета не публикуется, пока срок не оплачен.",
-    "subscriptionWallet": "Мои GlowCoin →",
-    "subscriptionStatus": "Состояние",
-    "subscriptionStatus_grace": "Срок вышел: льготные дни, анкеты пока в выдаче. Оплатите, чтобы не потерять размещение.",
-    "subscriptionStatus_expired": "Истекла, анкеты сняты с публикации. После оплаты они вернутся сами."
+    "cancel": "Отмена"
   },
   "billing": {
     "walletTitle": "Мои GlowCoin",
@@ -709,7 +702,7 @@
     "activateCurrent": "Действует до {date}",
     "activateExtendHint": "Продление прибавляется к текущему сроку, а не начинается заново.",
     "activateConfirm": "Спишется {gc, number} GC, останется {rest, number} GC.",
-    "activateNotEnough": "Не хватает {gc, number} GC — пополните баланс ниже.",
+    "activateNotEnough": "Не хватает {gc, number} GC.",
     "activateSubmit": "Активировать",
     "activateExtendSubmit": "Продлить",
     "activateDone": "Готово. Размещение действует до {date}.",
@@ -724,7 +717,23 @@
     "checkoutPaid": "Оплата подтверждена, зачислено {gc, number} GC.",
     "checkoutExpired": "Время на оплату вышло. Заказ закрыт, деньги не списаны — создайте новый.",
     "checkoutCanceled": "Оплата отменена. Деньги не списаны.",
-    "checkoutFailed": "Платёж не прошёл. Если деньги ушли, напишите в поддержку с номером заказа."
+    "checkoutFailed": "Платёж не прошёл. Если деньги ушли, напишите в поддержку с номером заказа.",
+    "subscriptionTitle": "Подписка",
+    "subscriptionPlan": "Тип размещения",
+    "subscriptionUntil": "Действует до",
+    "subscriptionDaysLeft": "осталось {days, plural, one {# день} few {# дня} other {# дней}}",
+    "subscriptionNone": "Активной подписки нет. Анкета не публикуется, пока срок не оплачен.",
+    "subscriptionStatus": "Состояние",
+    "subscriptionStatus_grace": "Срок вышел: льготные дни, анкеты пока в выдаче. Оплатите, чтобы не потерять размещение.",
+    "subscriptionStatus_expired": "Истекла, анкеты сняты с публикации. После оплаты они вернутся сами.",
+    "walletSubscriptionLink": "Подписка и продление →",
+    "activateExtendTitle": "Продление",
+    "subscriptionWallet": "Мои GlowCoin →",
+    "listingGraceNotice": "Срок подписки вышел {date}, и до {graceDate} анкеты ещё остаются в каталоге — это льготный период. Продлите подписку, иначе они будут сняты с публикации.",
+    "listingExpiredNotice": "Подписка истекла, анкета снята с публикации. После оплаты она вернётся в каталог сама.",
+    "listingNoneNotice": "Подписки нет: опубликовать анкету можно только после оплаты размещения.",
+    "listingNoticeExtend": "Продлить подписку →",
+    "listingNoticePay": "Оплатить подписку →"
   },
   "about": {
     "title": "О проекте",

@@ -1,40 +1,22 @@
 'use client';
 
-import {
-  type CreateTopupInput,
-  gcToEur,
-  PLAN_TERMS,
-  type PlanTerm,
-  TERM_MONTHS,
-} from '@noova/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { type CreateTopupInput, gcToEur } from '@noova/shared';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import {
-  activateListing,
-  BillingError,
-  createTopup,
-  fetchListing,
-  fetchPriceBook,
-  fetchWallet,
-} from '@/modules/billing/api';
-import { useRouter } from '@/shared/i18n/navigation';
+import { BillingError, createTopup, fetchPriceBook, fetchWallet } from '@/modules/billing/api';
+import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { GlowCoinIcon } from '../GlowCoinIcon';
 import styles from './GlowCoinWallet.module.css';
 
-const TERM_LABEL: Record<PlanTerm, 'term1' | 'term6' | 'term12'> = {
-  m1: 'term1',
-  m6: 'term6',
-  m12: 'term12',
-};
-
 /**
- * Баланс, размещение, пополнение и история операций. Раздел только для тех,
+ * Кошелёк: баланс, пополнение и история операций. Раздел только для тех,
  * кто размещается: у клиента каталога тратить GlowCoin негде, и кошелёк в
  * его меню был бы обещанием покупки, которая ему ничего не даёт.
+ *
+ * Срок размещения и его продление живут на отдельной странице подписки:
+ * кошелёк — про деньги, подписка — про то, на что они тратятся.
  *
  * Пакеты и курс приходят с сервера — те же, что правит админ. Пополнение
  * создаёт заказ и уводит на шлюз Paymento; зачисление приходит колбэком,
@@ -45,7 +27,6 @@ export function GlowCoinWallet() {
   const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const locale = useLocale();
 
   const isAdvertiser = user?.role === 'advertiser';
@@ -60,14 +41,6 @@ export function GlowCoinWallet() {
     queryFn: fetchWallet,
     enabled: isAdvertiser,
   });
-  const listing = useQuery({
-    queryKey: queryKeys.listing(),
-    queryFn: fetchListing,
-    enabled: isAdvertiser,
-  });
-
-  const [term, setTerm] = useState<PlanTerm | null>(null);
-  const [activatedUntil, setActivatedUntil] = useState<string | null>(null);
 
   // Заказ создан — уходим на шлюз всей вкладкой: касса — чужой сайт, и
   // возвращает он на страницу заказа, а не сюда.
@@ -80,21 +53,6 @@ export function GlowCoinWallet() {
   const topupUnavailable =
     topup.isError && topup.error instanceof BillingError && topup.error.status === 503;
 
-  const activate = useMutation({
-    mutationFn: activateListing,
-    onSuccess: async (result) => {
-      setTerm(null);
-      setActivatedUntil(result.listing.expiresAt);
-      // Списание меняет баланс и историю, активация — размещение: обновляем
-      // оба запроса, а не подставляем ответ руками, чтобы экран не разошёлся
-      // с сервером при повторном заходе.
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.wallet() }),
-        queryClient.invalidateQueries({ queryKey: queryKeys.listing() }),
-      ]);
-    },
-  });
-
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
   if (status === 'anonymous') {
@@ -102,16 +60,10 @@ export function GlowCoinWallet() {
     return null;
   }
 
-  if (!isAdvertiser || !user.advertiserKind) {
-    return <p className={styles.empty}>{t('onlyAdvertisers')}</p>;
-  }
+  if (!isAdvertiser) return <p className={styles.empty}>{t('onlyAdvertisers')}</p>;
 
   const gcPerEur = book.data?.gcPerEur;
   const balance = wallet.data?.balanceGc;
-  const prices = book.data?.prices[user.advertiserKind];
-  const price = term && prices ? prices[term] : null;
-  const current = listing.data ?? null;
-  const isExtension = current?.status === 'active';
 
   return (
     <div className={styles.wrap}>
@@ -134,68 +86,11 @@ export function GlowCoinWallet() {
 
       {wallet.isError || book.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
 
-      <h2 className={styles.sectionTitle}>{t('activateTitle')}</h2>
-      <p className={styles.text}>{t('activateText')}</p>
-
-      {current ? (
-        <p className={styles.current}>
-          {t('activateCurrent', {
-            date: format.dateTime(new Date(current.expiresAt), { dateStyle: 'long' }),
-          })}
-          {isExtension ? <> · {t('activateExtendHint')}</> : null}
-        </p>
-      ) : null}
-
-      {activatedUntil ? (
-        <p className={styles.ok}>
-          {t('activateDone', {
-            date: format.dateTime(new Date(activatedUntil), { dateStyle: 'long' }),
-          })}
-        </p>
-      ) : null}
-      {activate.isError ? <p className={styles.err}>{t('activateFailed')}</p> : null}
-
-      {prices && gcPerEur ? (
-        <div className={styles.terms}>
-          {PLAN_TERMS.map((option) => (
-            <button
-              type="button"
-              key={option}
-              className={`${styles.term} ${term === option ? styles.termSelected : ''}`}
-              aria-pressed={term === option}
-              onClick={() => {
-                setTerm(option);
-                setActivatedUntil(null);
-              }}
-            >
-              <span className={styles.termName}>{t(TERM_LABEL[option])}</span>
-              <span className={styles.packGc}>{t('termPrice', { gc: prices[option] })}</span>
-              <span className={styles.packRate}>
-                {t('termMonthly', {
-                  amount: gcToEur(prices[option], gcPerEur) / TERM_MONTHS[option],
-                })}
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {/* Списываемая сумма и остаток после — до нажатия, а не после (§6):
-          человек должен видеть, что останется, пока ещё может передумать. */}
-      {term && price !== null && balance !== undefined ? (
-        <div className={styles.confirm}>
-          {balance >= price ? (
-            <>
-              <span>{t('activateConfirm', { gc: price, rest: balance - price })}</span>
-              <Button disabled={activate.isPending} onClick={() => activate.mutate(term)}>
-                {t(isExtension ? 'activateExtendSubmit' : 'activateSubmit')}
-              </Button>
-            </>
-          ) : (
-            <span>{t('activateNotEnough', { gc: price - balance })}</span>
-          )}
-        </div>
-      ) : null}
+      <p className={styles.current}>
+        <Link className={styles.back} href="/account/subscription">
+          {t('walletSubscriptionLink')}
+        </Link>
+      </p>
 
       <h2 className={styles.sectionTitle}>{t('topupTitle')}</h2>
       <p className={styles.text}>{t('topupText')}</p>

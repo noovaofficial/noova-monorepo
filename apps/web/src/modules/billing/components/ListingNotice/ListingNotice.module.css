@@ -1,0 +1,32 @@
+.notice {
+  margin: 0;
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+}
+
+.warn {
+  background: var(--warningSubtle);
+  color: var(--warning);
+}
+
+.error {
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.info {
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+}
+
+/* Ссылка наследует цвет плашки: синяя строка внутри жёлтого блока читалась
+   бы как чужой элемент. Подчёркивание отличает её от текста. */
+.link {
+  display: inline-block;
+  margin-top: var(--space1);
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}

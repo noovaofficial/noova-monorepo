@@ -1,37 +1,21 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AuthError, cancelAccountDeletion, requestAccountDeletion } from '@/modules/auth/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { fetchListing } from '@/modules/billing/api';
-import { Link, useRouter } from '@/shared/i18n/navigation';
-import { queryKeys } from '@/shared/query-keys';
+import { useRouter } from '@/shared/i18n/navigation';
 import styles from './AccountSettings.module.css';
 
-const ADVERTISER_LABEL = {
-  individual: 'advertiserIndividual',
-  salon: 'advertiserSalon',
-  agency: 'advertiserAgency',
-} as const;
-
-/** Сколько полных суток осталось до даты. Ноль — если срок уже вышел. */
-function daysLeft(iso: string): number {
-  return Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / 86_400_000));
-}
-
 /**
- * Настройки учётной записи: срок подписки и удаление. Страница заведена
+ * Настройки учётной записи: адрес и удаление. Страница заведена
  * отдельно, потому что удаление не должно жить среди анкет и избранного,
  * где на него нажимают мимоходом.
  */
 export function AccountSettings() {
   const t = useTranslations('settings');
-  // Тип размещения подписан так же, как при регистрации: человек выбирал
-  // его этими словами, и другой синоним здесь читался бы как другой тариф.
-  const ta = useTranslations('auth');
   // Даты — через форматтер next-intl: `toLocaleDateString()` без локали берёт
   // язык системы, и на русской странице показывал «1/15/2027».
   const format = useFormatter();
@@ -55,13 +39,6 @@ export function AccountSettings() {
     onSuccess: () => refresh(),
   });
 
-  // Текущее размещение — с сервера. `null`, пока ни одно не оплачено.
-  const listing = useQuery({
-    queryKey: queryKeys.listing(),
-    queryFn: fetchListing,
-    enabled: user?.role === 'advertiser',
-  });
-
   if (status === 'loading') return null;
 
   if (status === 'anonymous') {
@@ -72,8 +49,6 @@ export function AccountSettings() {
   // Сотрудников заводит и убирает администратор: самоудаление оставило бы
   // раздел без модератора, и сервер такой запрос всё равно отклоняет.
   const isStaff = user?.role === 'moderator' || user?.role === 'admin';
-
-  const subscription = listing.data ?? null;
 
   const pending = user?.deletionRequestedAt !== null && user?.deletionRequestedAt !== undefined;
   const effective = user?.deletionEffectiveAt
@@ -90,51 +65,6 @@ export function AccountSettings() {
         <h2 className={styles.sectionTitle}>{t('accountTitle')}</h2>
         <p className={styles.meta}>{user?.email}</p>
       </div>
-
-      {user?.role === 'advertiser' ? (
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>{t('subscriptionTitle')}</h2>
-
-          {subscription ? (
-            <dl className={styles.rows}>
-              {user.advertiserKind ? (
-                <div className={styles.row}>
-                  <dt className={styles.rowLabel}>{t('subscriptionPlan')}</dt>
-                  <dd className={styles.rowValue}>{ta(ADVERTISER_LABEL[user.advertiserKind])}</dd>
-                </div>
-              ) : null}
-
-              {/* Дата и остаток вместе: «до 15 января» без «осталось 12 дней»
-                  требует считать в уме, а одни «12 дней» нечем проверить. */}
-              <div className={styles.row}>
-                <dt className={styles.rowLabel}>{t('subscriptionUntil')}</dt>
-                <dd className={styles.rowValue}>
-                  {format.dateTime(new Date(subscription.expiresAt), { dateStyle: 'long' })}
-                  <span className={styles.rowHint}>
-                    {' '}
-                    · {t('subscriptionDaysLeft', { days: daysLeft(subscription.expiresAt) })}
-                  </span>
-                </dd>
-              </div>
-
-              {subscription.status !== 'active' ? (
-                <div className={styles.row}>
-                  <dt className={styles.rowLabel}>{t('subscriptionStatus')}</dt>
-                  <dd className={styles.rowValue}>
-                    {t(`subscriptionStatus_${subscription.status}`)}
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-          ) : (
-            <p className={styles.text}>{t('subscriptionNone')}</p>
-          )}
-
-          <Link className={styles.rowLink} href="/account/glowcoin">
-            {t('subscriptionWallet')}
-          </Link>
-        </div>
-      ) : null}
 
       {isStaff ? null : (
         <div className={`${styles.section} ${styles.danger}`}>

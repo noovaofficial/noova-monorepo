@@ -40,6 +40,7 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
             : []),
           // Кошелёк — всем трём типам размещения: платят одинаково, разница
           // только в цене срока.
+          { href: '/account/subscription', label: t('quickSubscription') },
           { href: '/account/glowcoin', label: t('quickGlowcoin') },
           { href: '/account/profiles', label: t('quickAnalytics'), disabled: true },
         ]

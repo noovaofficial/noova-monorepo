@@ -203,24 +203,25 @@ TopupTier                      # конфиг бонусной лестницы
 | Витрина и кошелёк читают прайс с сервера | `advertising/page.tsx`, `GlowCoinWallet` |
 | Движение GlowCoin: журнал + баланс в одной транзакции под `FOR UPDATE` | `apps/api/src/modules/billing/wallet.ts` |
 | `GET /billing/wallet`, `GET /billing/listing`, `POST /admin/billing/adjust` | `apps/api/src/modules/billing/routes.ts` |
-| Баланс и история операций в кабинете; подписка в настройках с сервера | `GlowCoinWallet`, `AccountSettings` |
+| Баланс и история операций в кошельке; подписка на своей странице `/account/subscription` | `GlowCoinWallet`, `SubscriptionPanel` |
 | Корректировка баланса админом | `/moderation/users` → кнопка «GlowCoin» у рекламодателя |
 | Активация и продление: списание + листинг в одной транзакции | `apps/api/src/modules/billing/listing.ts`, `POST /billing/listings` |
 | Пейвол на публикации (402) и предел анкет агентства из конфигурации | `apps/api/src/modules/account/routes.ts`, флаг `PAYWALL_ENABLED` |
 | Стартовый год текущим (D-05) | `apps/api/src/scripts/grant-launch-listings.ts` |
-| Экран активации: срок, сумма, остаток | `GlowCoinWallet`, раздел «Размещение» |
+| Экран активации и продления: срок, сумма, остаток | `SubscriptionPanel` |
 | Клиент Paymento: платёж, verify, подпись колбэка | `apps/api/src/modules/billing/paymento.ts` |
 | Заказ на пополнение и зачисление по колбэку | `apps/api/src/modules/billing/topups.ts`, миграция `topup_orders` |
 | `POST /billing/topups`, `GET /billing/topups/:id`, `POST /billing/webhook/paymento` | `apps/api/src/modules/billing/routes.ts` |
 | Уход на шлюз и страница возврата с опросом заказа | `GlowCoinWallet`, `TopupStatus` |
 | Истечение: льготные дни, снятие с публикации, возврат после оплаты | `listing.ts` (`expireListings`), задача `listing-expiry` |
+| Плашка о льготном периоде и истечении в редакторе анкеты | `ListingNotice` в карточке состояния `ProfileEditor` |
 | Мгновенное удаление учётки админом (журналы остаются) | `DELETE /moderation/users/:id`, `purgeUser` в `jobs/retention.ts` |
 | Админка сохраняет конфигурацию | `/admin/monetization` |
 | Значок валюты | `apps/web/src/modules/billing/components/GlowCoinIcon` |
 | Публичные тарифы (минимум за месяц) | `apps/web/src/app/[locale]/advertising/page.tsx` |
 | Кошелёк: баланс, пакеты, бонусы | `/account/glowcoin` |
 | Заглушка кассы | `/account/glowcoin/checkout?pack=N` |
-| Срок подписки в настройках | `AccountSettings` |
+| Срок подписки | `/account/subscription` |
 | Настройки монетизации (админ) | `/admin/monetization` |
 | Пункты меню и шапки | `HeaderActions`, `QuickLinks`, `staff-sections.ts` |
 
@@ -327,7 +328,7 @@ API:
   маршруте создания анкеты. Плоский тариф означает, что пересчитывать при
   добавлении и удалении анкет нечего.
 
-Экран активации в кошельке показывает списываемую сумму в GC и остаток после
+Страница подписки показывает списываемую сумму в GC и остаток после
 списания до нажатия (§6): человек должен видеть, что останется, пока ещё
 может передумать.
 

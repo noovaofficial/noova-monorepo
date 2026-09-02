@@ -118,6 +118,12 @@ export function HeaderActions() {
                   <MenuIcon name="myProfiles" className={styles.itemIcon} />
                   {ta('myProfiles')}
                 </Link>
+                {/* Подписка отдельно от кошелька: срок размещения — то, ради
+                    чего заходят, а кошелёк — только способ его оплатить. */}
+                <Link href="/account/subscription" className={styles.item} role="menuitem">
+                  <MenuIcon name="subscription" className={styles.itemIcon} />
+                  {ta('subscription')}
+                </Link>
                 {/* Кошелёк — рядом с анкетами, а не под настройками: анкета без
                     оплаченного срока не публикуется, и путь к пополнению должен
                     быть в одном движении с путём к анкетам. */}

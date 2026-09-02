@@ -19,7 +19,8 @@
     "mapView": "Profiles on the map",
     "mapViewShort": "Show map",
     "quickCompany": "Company",
-    "quickGlowcoin": "My GlowCoin"
+    "quickGlowcoin": "My GlowCoin",
+    "quickSubscription": "Subscription"
   },
   "filters": {
     "title": "Filters",
@@ -236,7 +237,8 @@
     "advertiserAgency": "Agency",
     "advertiserAgencyHint": "Several escort listings, no address of its own",
     "myGlowcoin": "My GlowCoin",
-    "monetization": "Monetization"
+    "monetization": "Monetization",
+    "subscription": "Subscription"
   },
   "account": {
     "title": "My profiles",
@@ -641,16 +643,7 @@
     "deletePending": "Your account will be deleted on {date}. Your profiles are already unpublished.",
     "deletePendingHint": "You can cancel until that date. After it, the data cannot be restored.",
     "deleteCancel": "Cancel deletion",
-    "cancel": "Cancel",
-    "subscriptionTitle": "Subscription",
-    "subscriptionPlan": "Placement type",
-    "subscriptionUntil": "Active until",
-    "subscriptionDaysLeft": "{days, plural, one {# day} other {# days}} left",
-    "subscriptionNone": "No active subscription. A profile stays unpublished until a term is paid for.",
-    "subscriptionWallet": "My GlowCoin →",
-    "subscriptionStatus": "Status",
-    "subscriptionStatus_grace": "Expired: grace days, profiles are still listed. Pay to keep the listing.",
-    "subscriptionStatus_expired": "Expired, profiles are unpublished. They come back automatically after payment."
+    "cancel": "Cancel"
   },
   "billing": {
     "walletTitle": "My GlowCoin",
@@ -709,7 +702,7 @@
     "activateCurrent": "Valid until {date}",
     "activateExtendHint": "Extending adds to the current term rather than restarting it.",
     "activateConfirm": "{gc, number} GC will be charged, {rest, number} GC will remain.",
-    "activateNotEnough": "{gc, number} GC short — top up your balance below.",
+    "activateNotEnough": "{gc, number} GC short.",
     "activateSubmit": "Activate",
     "activateExtendSubmit": "Extend",
     "activateDone": "Done. The listing is valid until {date}.",
@@ -724,7 +717,23 @@
     "checkoutPaid": "Payment confirmed, {gc, number} GC credited.",
     "checkoutExpired": "The payment window has closed. The order is closed and nothing was charged — create a new one.",
     "checkoutCanceled": "Payment canceled. Nothing was charged.",
-    "checkoutFailed": "The payment did not go through. If funds left your wallet, contact support with the order number."
+    "checkoutFailed": "The payment did not go through. If funds left your wallet, contact support with the order number.",
+    "subscriptionTitle": "Subscription",
+    "subscriptionPlan": "Placement type",
+    "subscriptionUntil": "Active until",
+    "subscriptionDaysLeft": "{days, plural, one {# day} other {# days}} left",
+    "subscriptionNone": "No active subscription. A profile stays unpublished until a term is paid for.",
+    "subscriptionStatus": "Status",
+    "subscriptionStatus_grace": "Expired: grace days, profiles are still listed. Pay to keep the listing.",
+    "subscriptionStatus_expired": "Expired, profiles are unpublished. They come back automatically after payment.",
+    "walletSubscriptionLink": "Subscription and renewal →",
+    "activateExtendTitle": "Renewal",
+    "subscriptionWallet": "My GlowCoin →",
+    "listingGraceNotice": "Your subscription ended on {date}. Profiles stay in the catalog until {graceDate} — this is the grace period. Renew, or they will be unpublished.",
+    "listingExpiredNotice": "The subscription has expired and the profile is unpublished. It returns to the catalog automatically after payment.",
+    "listingNoneNotice": "No subscription: the profile can be published only after the listing is paid.",
+    "listingNoticeExtend": "Renew subscription →",
+    "listingNoticePay": "Pay for subscription →"
   },
   "about": {
     "title": "About the project",

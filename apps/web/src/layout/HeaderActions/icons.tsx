@@ -20,6 +20,7 @@ export type MenuIconName =
   | 'serviceCatalog'
   | 'monetization'
   | 'myProfiles'
+  | 'subscription'
   | 'favorites'
   | 'settings'
   | 'logout';
@@ -66,6 +67,13 @@ const PATHS: Record<MenuIconName, string[]> = {
     'M10 14.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z',
   ],
   myProfiles: ['M4 4h6.2v6.2H4zM13.8 4H20v6.2h-6.2zM4 13.8h6.2V20H4zM13.8 13.8H20V20h-6.2z'],
+  // Календарь с галочкой — подписка: срок, который надо продлевать.
+  subscription: [
+    'M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5Z',
+    'M3.5 10h17',
+    'M8 3.5v4M16 3.5v4',
+    'm9.5 15 1.8 1.8 3.4-3.6',
+  ],
   favorites: [
     'M12 20.3s-7.5-4.6-7.5-9.8A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.9c0 5.2-7.5 9.8-7.5 9.8Z',
   ],

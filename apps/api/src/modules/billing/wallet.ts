@@ -1,4 +1,5 @@
 import type { BillingTransaction, BillingTransactionKind, Listing } from '@noova/shared';
+import { env } from '../../env.js';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 
 /**
@@ -87,6 +88,11 @@ export function toListing(row: ListingRow): Listing {
     status: row.status,
     activatedAt: row.activatedAt.toISOString(),
     expiresAt: row.expiresAt.toISOString(),
+    // Считается здесь, а не на фронте: длина льготного периода — настройка
+    // сервера, и кабинет не должен её угадывать.
+    graceEndsAt: new Date(
+      row.expiresAt.getTime() + env.LISTING_GRACE_DAYS * 24 * 60 * 60 * 1000,
+    ).toISOString(),
   };
 }
 

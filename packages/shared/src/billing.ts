@@ -150,6 +150,8 @@ export const listingSchema = z.object({
   status: listingStatusSchema,
   activatedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
+  /** Конец льготных дней (D-04): до этого момента анкеты ещё в выдаче. */
+  graceEndsAt: z.string().datetime(),
 });
 export type Listing = z.infer<typeof listingSchema>;
 

@@ -1,0 +1,165 @@
+.wrap {
+  max-width: 720px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  margin-bottom: var(--space5);
+}
+
+.card {
+  padding: var(--space5);
+  margin-bottom: var(--space6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+/* Строки «подпись — значение», как в настройках: один и тот же вид у
+   срока подписки и у учётной записи, чтобы кабинет читался одним языком. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.row:first-child {
+  padding-top: 0;
+}
+
+.rowLabel {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.rowValue {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.rowHint {
+  font-weight: 400;
+  color: var(--tertiaryText);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space2);
+}
+
+.text {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin-bottom: var(--space4);
+}
+
+.link {
+  color: var(--link);
+}
+
+/* Сроки — плитки-кнопки: списание требует подтверждения суммы, и его
+   показывает отдельный блок ниже. */
+.terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space3);
+  margin-bottom: var(--space4);
+}
+
+.term {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.term:hover {
+  border-color: var(--primary);
+}
+
+.termSelected {
+  border-color: var(--primary);
+  background: var(--primarySubtle);
+}
+
+.termName {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.termPrice {
+  font-family: var(--fontDisplay);
+  font-size: var(--textXl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.termMonthly {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  flex-wrap: wrap;
+  padding: var(--space4);
+  margin-bottom: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  font-size: var(--textSm);
+}
+
+.ok {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--successSubtle);
+  color: var(--success);
+  margin-bottom: var(--space4);
+}
+
+.err {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--dangerSubtle);
+  color: var(--danger);
+  margin-bottom: var(--space4);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
