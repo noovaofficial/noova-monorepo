@@ -20,8 +20,18 @@ export type UserModel = runtime.Types.Result.DefaultSelection<Prisma.$UserPayloa
 
 export type AggregateUser = {
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
+}
+
+export type UserAvgAggregateOutputType = {
+  glowcoinBalance: number | null
+}
+
+export type UserSumAggregateOutputType = {
+  glowcoinBalance: number | null
 }
 
 export type UserMinAggregateOutputType = {
@@ -37,6 +47,7 @@ export type UserMinAggregateOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  glowcoinBalance: number | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -55,6 +66,7 @@ export type UserMaxAggregateOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  glowcoinBalance: number | null
   createdAt: Date | null
   updatedAt: Date | null
   createdById: string | null
@@ -73,12 +85,21 @@ export type UserCountAggregateOutputType = {
   bannedAt: number
   deletionRequestedAt: number
   banReason: number
+  glowcoinBalance: number
   createdAt: number
   updatedAt: number
   createdById: number
   _all: number
 }
 
+
+export type UserAvgAggregateInputType = {
+  glowcoinBalance?: true
+}
+
+export type UserSumAggregateInputType = {
+  glowcoinBalance?: true
+}
 
 export type UserMinAggregateInputType = {
   id?: true
@@ -93,6 +114,7 @@ export type UserMinAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -111,6 +133,7 @@ export type UserMaxAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -129,6 +152,7 @@ export type UserCountAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
   createdById?: true
@@ -173,6 +197,18 @@ export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: UserAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: UserSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: UserMinAggregateInputType
@@ -203,6 +239,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: UserCountAggregateInputType | true
+  _avg?: UserAvgAggregateInputType
+  _sum?: UserSumAggregateInputType
   _min?: UserMinAggregateInputType
   _max?: UserMaxAggregateInputType
 }
@@ -220,10 +258,13 @@ export type UserGroupByOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  glowcoinBalance: number
   createdAt: Date
   updatedAt: Date
   createdById: string | null
   _count: UserCountAggregateOutputType | null
+  _avg: UserAvgAggregateOutputType | null
+  _sum: UserSumAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
 }
@@ -259,11 +300,16 @@ export type UserWhereInput = {
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
+  billingTransactions?: Prisma.BillingTransactionListRelationFilter
+  billingAdjustments?: Prisma.BillingTransactionListRelationFilter
+  listings?: Prisma.ListingListRelationFilter
+  topupOrders?: Prisma.TopupOrderListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
@@ -288,11 +334,16 @@ export type UserOrderByWithRelationInput = {
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
+  billingTransactions?: Prisma.BillingTransactionOrderByRelationAggregateInput
+  billingAdjustments?: Prisma.BillingTransactionOrderByRelationAggregateInput
+  listings?: Prisma.ListingOrderByRelationAggregateInput
+  topupOrders?: Prisma.TopupOrderOrderByRelationAggregateInput
   clientProfile?: Prisma.ClientProfileOrderByWithRelationInput
   authTokens?: Prisma.AuthTokenOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
@@ -320,11 +371,16 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
+  billingTransactions?: Prisma.BillingTransactionListRelationFilter
+  billingAdjustments?: Prisma.BillingTransactionListRelationFilter
+  listings?: Prisma.ListingListRelationFilter
+  topupOrders?: Prisma.TopupOrderListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
@@ -349,12 +405,15 @@ export type UserOrderByWithAggregationInput = {
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
+  _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
+  _sum?: Prisma.UserSumOrderByAggregateInput
 }
 
 export type UserScalarWhereWithAggregatesInput = {
@@ -373,6 +432,7 @@ export type UserScalarWhereWithAggregatesInput = {
   bannedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  glowcoinBalance?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -391,10 +451,15 @@ export type UserCreateInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -419,11 +484,16 @@ export type UserUncheckedCreateInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -447,10 +517,15 @@ export type UserUpdateInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -475,11 +550,16 @@ export type UserUncheckedUpdateInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -503,6 +583,7 @@ export type UserCreateManyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
@@ -521,6 +602,7 @@ export type UserUpdateManyMutationInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -538,6 +620,7 @@ export type UserUncheckedUpdateManyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -571,9 +654,14 @@ export type UserCountOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+}
+
+export type UserAvgOrderByAggregateInput = {
+  glowcoinBalance?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -589,6 +677,7 @@ export type UserMaxOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
@@ -607,9 +696,14 @@ export type UserMinOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+}
+
+export type UserSumOrderByAggregateInput = {
+  glowcoinBalance?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -659,6 +753,14 @@ export type NullableEnumAdvertiserKindFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -831,6 +933,68 @@ export type UserUpdateOneRequiredWithoutCompanyNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCompanyInput, Prisma.UserUpdateWithoutCompanyInput>, Prisma.UserUncheckedUpdateWithoutCompanyInput>
 }
 
+export type UserCreateNestedOneWithoutBillingTransactionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillingTransactionsInput, Prisma.UserUncheckedCreateWithoutBillingTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillingTransactionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutBillingAdjustmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedCreateWithoutBillingAdjustmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillingAdjustmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutBillingTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillingTransactionsInput, Prisma.UserUncheckedCreateWithoutBillingTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillingTransactionsInput
+  upsert?: Prisma.UserUpsertWithoutBillingTransactionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBillingTransactionsInput, Prisma.UserUpdateWithoutBillingTransactionsInput>, Prisma.UserUncheckedUpdateWithoutBillingTransactionsInput>
+}
+
+export type UserUpdateOneWithoutBillingAdjustmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedCreateWithoutBillingAdjustmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBillingAdjustmentsInput
+  upsert?: Prisma.UserUpsertWithoutBillingAdjustmentsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBillingAdjustmentsInput, Prisma.UserUpdateWithoutBillingAdjustmentsInput>, Prisma.UserUncheckedUpdateWithoutBillingAdjustmentsInput>
+}
+
+export type UserCreateNestedOneWithoutListingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutListingsInput, Prisma.UserUncheckedCreateWithoutListingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutListingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutListingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutListingsInput, Prisma.UserUncheckedCreateWithoutListingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutListingsInput
+  upsert?: Prisma.UserUpsertWithoutListingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutListingsInput, Prisma.UserUpdateWithoutListingsInput>, Prisma.UserUncheckedUpdateWithoutListingsInput>
+}
+
+export type UserCreateNestedOneWithoutTopupOrdersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTopupOrdersInput, Prisma.UserUncheckedCreateWithoutTopupOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTopupOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutTopupOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTopupOrdersInput, Prisma.UserUncheckedCreateWithoutTopupOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTopupOrdersInput
+  upsert?: Prisma.UserUpsertWithoutTopupOrdersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTopupOrdersInput, Prisma.UserUpdateWithoutTopupOrdersInput>, Prisma.UserUncheckedUpdateWithoutTopupOrdersInput>
+}
+
 export type UserCreateWithoutCreatedByInput = {
   id?: string
   email: string
@@ -844,10 +1008,15 @@ export type UserCreateWithoutCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -871,10 +1040,15 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -908,10 +1082,15 @@ export type UserCreateWithoutCreatedStaffInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -935,11 +1114,16 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -986,6 +1170,7 @@ export type UserScalarWhereInput = {
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
@@ -1015,10 +1200,15 @@ export type UserUpdateWithoutCreatedStaffInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1042,11 +1232,16 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1069,10 +1264,15 @@ export type UserCreateWithoutClientProfileInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -1096,11 +1296,16 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -1139,10 +1344,15 @@ export type UserUpdateWithoutClientProfileInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -1166,11 +1376,16 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1193,10 +1408,15 @@ export type UserCreateWithoutModerationActionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1220,11 +1440,16 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1263,10 +1488,15 @@ export type UserUpdateWithoutModerationActionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1290,11 +1520,16 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1317,10 +1552,15 @@ export type UserCreateWithoutAuthTokensInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -1344,11 +1584,16 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -1387,10 +1632,15 @@ export type UserUpdateWithoutAuthTokensInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -1414,11 +1664,16 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1441,9 +1696,14 @@ export type UserCreateWithoutProfilesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1468,10 +1728,15 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1511,9 +1776,14 @@ export type UserUpdateWithoutProfilesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1538,10 +1808,15 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1565,10 +1840,15 @@ export type UserCreateWithoutProfileReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1592,11 +1872,16 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1635,10 +1920,15 @@ export type UserUpdateWithoutProfileReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1662,11 +1952,16 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1689,10 +1984,15 @@ export type UserCreateWithoutCommentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1716,11 +2016,16 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1759,10 +2064,15 @@ export type UserUpdateWithoutCommentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1786,11 +2096,16 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1813,10 +2128,15 @@ export type UserCreateWithoutCommentReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1840,11 +2160,16 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1883,10 +2208,15 @@ export type UserUpdateWithoutCommentReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1910,11 +2240,16 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1937,10 +2272,15 @@ export type UserCreateWithoutFavoritesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -1964,11 +2304,16 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -2007,10 +2352,15 @@ export type UserUpdateWithoutFavoritesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -2034,11 +2384,16 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -2061,9 +2416,14 @@ export type UserCreateWithoutCompanyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2088,10 +2448,15 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   createdById?: string | null
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2131,9 +2496,14 @@ export type UserUpdateWithoutCompanyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2158,10 +2528,591 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutBillingTransactionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutBillingTransactionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutBillingTransactionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillingTransactionsInput, Prisma.UserUncheckedCreateWithoutBillingTransactionsInput>
+}
+
+export type UserCreateWithoutBillingAdjustmentsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutBillingAdjustmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedCreateWithoutBillingAdjustmentsInput>
+}
+
+export type UserUpsertWithoutBillingTransactionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBillingTransactionsInput, Prisma.UserUncheckedUpdateWithoutBillingTransactionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillingTransactionsInput, Prisma.UserUncheckedCreateWithoutBillingTransactionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBillingTransactionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBillingTransactionsInput, Prisma.UserUncheckedUpdateWithoutBillingTransactionsInput>
+}
+
+export type UserUpdateWithoutBillingTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUpsertWithoutBillingAdjustmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedUpdateWithoutBillingAdjustmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedCreateWithoutBillingAdjustmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBillingAdjustmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBillingAdjustmentsInput, Prisma.UserUncheckedUpdateWithoutBillingAdjustmentsInput>
+}
+
+export type UserUpdateWithoutBillingAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutListingsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutListingsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutListingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutListingsInput, Prisma.UserUncheckedCreateWithoutListingsInput>
+}
+
+export type UserUpsertWithoutListingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutListingsInput, Prisma.UserUncheckedUpdateWithoutListingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutListingsInput, Prisma.UserUncheckedCreateWithoutListingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutListingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutListingsInput, Prisma.UserUncheckedUpdateWithoutListingsInput>
+}
+
+export type UserUpdateWithoutListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutListingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutTopupOrdersInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutTopupOrdersInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutTopupOrdersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutTopupOrdersInput, Prisma.UserUncheckedCreateWithoutTopupOrdersInput>
+}
+
+export type UserUpsertWithoutTopupOrdersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTopupOrdersInput, Prisma.UserUncheckedUpdateWithoutTopupOrdersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTopupOrdersInput, Prisma.UserUncheckedCreateWithoutTopupOrdersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutTopupOrdersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTopupOrdersInput, Prisma.UserUncheckedUpdateWithoutTopupOrdersInput>
+}
+
+export type UserUpdateWithoutTopupOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutTopupOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2185,6 +3136,7 @@ export type UserCreateManyCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2202,10 +3154,15 @@ export type UserUpdateWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2229,10 +3186,15 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2256,6 +3218,7 @@ export type UserUncheckedUpdateManyWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2267,6 +3230,10 @@ export type UserUncheckedUpdateManyWithoutCreatedByInput = {
 
 export type UserCountOutputType = {
   profiles: number
+  billingTransactions: number
+  billingAdjustments: number
+  listings: number
+  topupOrders: number
   authTokens: number
   favorites: number
   comments: number
@@ -2278,6 +3245,10 @@ export type UserCountOutputType = {
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profiles?: boolean | UserCountOutputTypeCountProfilesArgs
+  billingTransactions?: boolean | UserCountOutputTypeCountBillingTransactionsArgs
+  billingAdjustments?: boolean | UserCountOutputTypeCountBillingAdjustmentsArgs
+  listings?: boolean | UserCountOutputTypeCountListingsArgs
+  topupOrders?: boolean | UserCountOutputTypeCountTopupOrdersArgs
   authTokens?: boolean | UserCountOutputTypeCountAuthTokensArgs
   favorites?: boolean | UserCountOutputTypeCountFavoritesArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
@@ -2302,6 +3273,34 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type UserCountOutputTypeCountProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ProfileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBillingTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillingTransactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBillingAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BillingTransactionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountListingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ListingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountTopupOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TopupOrderWhereInput
 }
 
 /**
@@ -2367,11 +3366,16 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
   company?: boolean | Prisma.User$companyArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
+  billingTransactions?: boolean | Prisma.User$billingTransactionsArgs<ExtArgs>
+  billingAdjustments?: boolean | Prisma.User$billingAdjustmentsArgs<ExtArgs>
+  listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
+  topupOrders?: boolean | Prisma.User$topupOrdersArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
@@ -2397,6 +3401,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -2416,6 +3421,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
@@ -2435,15 +3441,20 @@ export type UserSelectScalar = {
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "glowcoinBalance" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.User$companyArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
+  billingTransactions?: boolean | Prisma.User$billingTransactionsArgs<ExtArgs>
+  billingAdjustments?: boolean | Prisma.User$billingAdjustmentsArgs<ExtArgs>
+  listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
+  topupOrders?: boolean | Prisma.User$topupOrdersArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
@@ -2470,6 +3481,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
      */
     company: Prisma.$CompanyPayload<ExtArgs> | null
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
+    billingTransactions: Prisma.$BillingTransactionPayload<ExtArgs>[]
+    billingAdjustments: Prisma.$BillingTransactionPayload<ExtArgs>[]
+    listings: Prisma.$ListingPayload<ExtArgs>[]
+    topupOrders: Prisma.$TopupOrderPayload<ExtArgs>[]
     clientProfile: Prisma.$ClientProfilePayload<ExtArgs> | null
     authTokens: Prisma.$AuthTokenPayload<ExtArgs>[]
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
@@ -2512,6 +3527,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
      * модерацию в произвол. Показывается ему же при попытке входа.
      */
     banReason: string | null
+    /**
+     * Баланс GlowCoin. Меняется только вместе с записью в BillingTransaction,
+     * в одной транзакции БД: баланс без журнала — состояние, которое нечем
+     * восстановить (payments.md §8, этап 1).
+     */
+    glowcoinBalance: number
     createdAt: Date
     updatedAt: Date
     /**
@@ -2914,6 +3935,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.User$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$companyArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.User$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billingTransactions<T extends Prisma.User$billingTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billingTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  billingAdjustments<T extends Prisma.User$billingAdjustmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billingAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  listings<T extends Prisma.User$listingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  topupOrders<T extends Prisma.User$topupOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$topupOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TopupOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clientProfile<T extends Prisma.User$clientProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientProfileArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   authTokens<T extends Prisma.User$authTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorites<T extends Prisma.User$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2964,6 +3989,7 @@ export interface UserFieldRefs {
   readonly bannedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly deletionRequestedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly banReason: Prisma.FieldRef<"User", 'String'>
+  readonly glowcoinBalance: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"User", 'String'>
@@ -3408,6 +4434,102 @@ export type User$profilesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.ProfileScalarFieldEnum | Prisma.ProfileScalarFieldEnum[]
+}
+
+/**
+ * User.billingTransactions
+ */
+export type User$billingTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BillingTransaction
+   */
+  select?: Prisma.BillingTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BillingTransaction
+   */
+  omit?: Prisma.BillingTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillingTransactionInclude<ExtArgs> | null
+  where?: Prisma.BillingTransactionWhereInput
+  orderBy?: Prisma.BillingTransactionOrderByWithRelationInput | Prisma.BillingTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.BillingTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillingTransactionScalarFieldEnum | Prisma.BillingTransactionScalarFieldEnum[]
+}
+
+/**
+ * User.billingAdjustments
+ */
+export type User$billingAdjustmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BillingTransaction
+   */
+  select?: Prisma.BillingTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BillingTransaction
+   */
+  omit?: Prisma.BillingTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BillingTransactionInclude<ExtArgs> | null
+  where?: Prisma.BillingTransactionWhereInput
+  orderBy?: Prisma.BillingTransactionOrderByWithRelationInput | Prisma.BillingTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.BillingTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BillingTransactionScalarFieldEnum | Prisma.BillingTransactionScalarFieldEnum[]
+}
+
+/**
+ * User.listings
+ */
+export type User$listingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Listing
+   */
+  select?: Prisma.ListingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Listing
+   */
+  omit?: Prisma.ListingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ListingInclude<ExtArgs> | null
+  where?: Prisma.ListingWhereInput
+  orderBy?: Prisma.ListingOrderByWithRelationInput | Prisma.ListingOrderByWithRelationInput[]
+  cursor?: Prisma.ListingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ListingScalarFieldEnum | Prisma.ListingScalarFieldEnum[]
+}
+
+/**
+ * User.topupOrders
+ */
+export type User$topupOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TopupOrder
+   */
+  select?: Prisma.TopupOrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TopupOrder
+   */
+  omit?: Prisma.TopupOrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TopupOrderInclude<ExtArgs> | null
+  where?: Prisma.TopupOrderWhereInput
+  orderBy?: Prisma.TopupOrderOrderByWithRelationInput | Prisma.TopupOrderOrderByWithRelationInput[]
+  cursor?: Prisma.TopupOrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TopupOrderScalarFieldEnum | Prisma.TopupOrderScalarFieldEnum[]
 }
 
 /**

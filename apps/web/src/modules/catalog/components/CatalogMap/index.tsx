@@ -10,7 +10,7 @@ import { formatMoney } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './CatalogMap.module.css';
 
-type Props = { kind: ListingKind; locale: Locale };
+type Props = { kind: ListingKind; city: string; locale: Locale };
 
 /** Куда смотреть, пока точек нет: центр Берлина — единственный город каталога. */
 const FALLBACK = { lat: 52.52, lng: 13.405 };
@@ -24,7 +24,7 @@ const FALLBACK = { lat: 52.52, lng: 13.405 };
  * Фильтры общие с каталогом: карта читает те же параметры из адреса, поэтому
  * переход «список ↔ карта» ничего не сбрасывает.
  */
-export function CatalogMap({ kind, locale }: Props) {
+export function CatalogMap({ kind, city, locale }: Props) {
   const t = useTranslations('map');
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,6 +33,9 @@ export function CatalogMap({ kind, locale }: Props) {
 
   const query = new URLSearchParams(searchParams.toString());
   query.set('kind', kind);
+  // Город берём из адреса, как и каталог: в строке запроса его нет, а без
+  // него карта показывала бы точки всех городов сразу.
+  query.set('city', city);
   const queryString = query.toString();
 
   const {
@@ -126,7 +129,12 @@ export function CatalogMap({ kind, locale }: Props) {
           <span className={styles.count}>
             {isPending ? t('loading') : t('found', { count: total })}
           </span>
-          <Link className={styles.link} href={`/catalog/${kind}?${searchParams.toString()}`}>
+          {/* Город в пути обязателен: адрес без него уводит редиректом
+              в первый активный город, а не обратно в этот. */}
+          <Link
+            className={styles.link}
+            href={`/${city}/catalog/${kind}?${searchParams.toString()}`}
+          >
             {t('backToList')}
           </Link>
         </div>

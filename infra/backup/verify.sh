@@ -46,15 +46,18 @@ TABLES="$(psql_run -d "$DB" -tAc "
   select count(*) from information_schema.tables where table_schema = 'public';
 " | tr -d '[:space:]')"
 PROFILES="$(psql_run -d "$DB" -tAc 'select count(*) from "Profile";' 2>/dev/null | tr -d '[:space:]' || echo '?')"
-PHOTOS="$(psql_run -d "$DB" -tAc 'select count(*) from "Photo";' 2>/dev/null | tr -d '[:space:]' || echo '?')"
+# Только живые: при удалении фотографии строка остаётся с пометкой deletedAt,
+# а файлы из хранилища стираются сразу — сверять их с архивом бессмысленно.
+PHOTOS="$(psql_run -d "$DB" -tAc 'select count(*) from "Photo" where "deletedAt" is null;' 2>/dev/null | tr -d '[:space:]' || echo '?')"
+DELETED="$(psql_run -d "$DB" -tAc 'select count(*) from "Photo" where "deletedAt" is not null;' 2>/dev/null | tr -d '[:space:]' || echo '?')"
 
-printf '\n  таблиц: %s\n  анкет:  %s\n  фото:   %s\n\n' "$TABLES" "$PROFILES" "$PHOTOS"
+printf '\n  таблиц: %s\n  анкет:  %s\n  фото:   %s (удалённых %s)\n\n' "$TABLES" "$PROFILES" "$PHOTOS" "$DELETED"
 
 # Машиночитаемый отчёт для check.sh — ему нужно число фотографий, чтобы
 # сверить его с архивом. Парсить вывод выше было бы хрупко.
 if [ -n "${REPORT_FILE:-}" ]; then
-  printf 'tables=%s\nprofiles=%s\nphotos=%s\nrows=%s\n' \
-    "$TABLES" "$PROFILES" "$PHOTOS" "$ROWS" > "$REPORT_FILE"
+  printf 'tables=%s\nprofiles=%s\nphotos=%s\ndeleted_photos=%s\nrows=%s\n' \
+    "$TABLES" "$PROFILES" "$PHOTOS" "$DELETED" "$ROWS" > "$REPORT_FILE"
 fi
 
 [ "$TABLES" -gt 0 ] 2>/dev/null || fail "В восстановленной базе нет таблиц — копия непригодна"

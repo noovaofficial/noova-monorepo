@@ -14,6 +14,7 @@ import { loggerOptions } from './logger.js';
 import { accountRoutes } from './modules/account/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
 import { authRoutes } from './modules/auth/routes.js';
+import { billingRoutes } from './modules/billing/routes.js';
 import { commentRoutes } from './modules/comments/routes.js';
 import { companyRoutes } from './modules/company/routes.js';
 import { favoriteRoutes } from './modules/favorites/routes.js';
@@ -134,6 +135,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(commentRoutes);
       await api.register(reportRoutes);
       await api.register(promoRoutes);
+      await api.register(billingRoutes);
     },
     { prefix: '/api/v1' },
   );

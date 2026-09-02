@@ -15,10 +15,13 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { env } from '../../env.js';
 import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { verifyPassword } from '../auth/passwords.js';
+import { loadBillingConfig } from '../billing/config.js';
+import { hasVisibleListing } from '../billing/listing.js';
 import { toOwnPhoto } from '../photos/routes.js';
 import { deletePhotoFiles } from '../photos/storage.js';
 import { ownProfileSelect, toOwnProfile } from './mappers.js';
@@ -247,7 +250,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const { advertiserKind } = await advertiserOr403(fastify, userId);
 
-      const limit = PROFILE_LIMIT_BY_ADVERTISER[advertiserKind];
+      // Предел агентства — из конфигурации монетизации (D-07): тариф плоский,
+      // и число анкет в нём меняет админ, а не выкладка.
+      const limit =
+        advertiserKind === 'agency'
+          ? (await loadBillingConfig(fastify.prisma)).agencyProfileLimit
+          : PROFILE_LIMIT_BY_ADVERTISER[advertiserKind];
       const existing = await fastify.prisma.profile.count({ where: { ownerId: userId } });
       if (existing >= limit) {
         throw fastify.httpErrors.conflict(
@@ -649,6 +657,13 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Проверка стоит на сервере, а не только в интерфейсе — обойти нельзя.
       if (verification?.status !== 'verified') {
         throw fastify.httpErrors.forbidden('Публикация возможна только после верификации');
+      }
+
+      // Пейвол (payments.md, этап 3): в выдачу попадает только оплаченное.
+      // Оплата не отменяет верификацию — проверка выше остаётся первой:
+      // иначе деньги стали бы способом обойти модерацию.
+      if (env.PAYWALL_ENABLED && !(await hasVisibleListing(fastify.prisma, userId))) {
+        throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
       }
 
       const updated = await fastify.prisma.profile.update({

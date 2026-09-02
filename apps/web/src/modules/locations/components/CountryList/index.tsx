@@ -7,9 +7,10 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { createCountry, fetchCountries, updateCountry } from '@/modules/locations/api';
+import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { EntityRow, emptyNames, label, NameFields, useRunner } from '../shared';
+import { EntityRow, emptyNames, NameFields, useRunner } from '../shared';
 
 /**
  * Первый уровень географии: только страны (N-32).
@@ -20,6 +21,7 @@ import { EntityRow, emptyNames, label, NameFields, useRunner } from '../shared';
  * записей и один набор действий.
  */
 export function CountryList() {
+  const label = useLabel();
   const t = useTranslations('locations');
   const { user, status } = useSession();
   const queryClient = useQueryClient();
@@ -72,6 +74,7 @@ function CountryRow({
   run: ReturnType<typeof useRunner>['run'];
   t: ReturnType<typeof useTranslations<'locations'>>;
 }) {
+  const label = useLabel();
   const toggle = useMutation({
     mutationFn: () =>
       run(() => updateCountry(country.id, { name: country.name, isActive: !country.isActive })),

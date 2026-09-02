@@ -14,12 +14,14 @@ import {
   updateCountry,
 } from '@/modules/locations/api';
 import { Link } from '@/shared/i18n/navigation';
+import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { EntityRow, emptyNames, label, NameFields, useRunner } from '../shared';
+import { EntityRow, emptyNames, NameFields, useRunner } from '../shared';
 
 /** Второй уровень: одна страна — её данные и её города (N-32). */
 export function CountryDetail({ code }: { code: string }) {
+  const label = useLabel();
   const t = useTranslations('locations');
   const { user, status } = useSession();
   const queryClient = useQueryClient();
@@ -145,6 +147,7 @@ function CityRow({
   run: Runner;
   t: Translate;
 }) {
+  const label = useLabel();
   const toggle = useMutation({
     mutationFn: () =>
       run(() =>

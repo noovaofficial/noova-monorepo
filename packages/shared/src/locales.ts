@@ -43,3 +43,11 @@ export function toTranslated(rows: { locale: string; name: string }[]): Translat
   }
   return result;
 }
+
+/**
+ * Название на языке интерфейса. Локаль приходит строкой из роутера, поэтому
+ * проверяется; незнакомая — дефолт, а не пустая строка.
+ */
+export function pickTranslation(name: Translated, locale: string): string {
+  return name[isLocale(locale) ? locale : DEFAULT_LOCALE];
+}

@@ -224,3 +224,44 @@ export const PaymentMethod = {
 } as const
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const PlanTerm = {
+  m1: 'm1',
+  m6: 'm6',
+  m12: 'm12'
+} as const
+
+export type PlanTerm = (typeof PlanTerm)[keyof typeof PlanTerm]
+
+
+export const ListingStatus = {
+  active: 'active',
+  grace: 'grace',
+  expired: 'expired',
+  pending_topup: 'pending_topup'
+} as const
+
+export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus]
+
+
+export const BillingTransactionKind = {
+  TOPUP: 'TOPUP',
+  SPEND: 'SPEND',
+  RENEWAL: 'RENEWAL',
+  ADJUSTMENT: 'ADJUSTMENT'
+} as const
+
+export type BillingTransactionKind = (typeof BillingTransactionKind)[keyof typeof BillingTransactionKind]
+
+
+export const TopupOrderStatus = {
+  created: 'created',
+  pending: 'pending',
+  paid: 'paid',
+  expired: 'expired',
+  canceled: 'canceled',
+  failed: 'failed'
+} as const
+
+export type TopupOrderStatus = (typeof TopupOrderStatus)[keyof typeof TopupOrderStatus]

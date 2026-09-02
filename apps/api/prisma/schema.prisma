@@ -178,10 +178,19 @@ model User {
   /// модерацию в произвол. Показывается ему же при попытке входа.
   banReason           String?
 
+  /// Баланс GlowCoin. Меняется только вместе с записью в BillingTransaction,
+  /// в одной транзакции БД: баланс без журнала — состояние, которое нечем
+  /// восстановить (payments.md §8, этап 1).
+  glowcoinBalance Int @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profiles          Profile[]
+  profiles            Profile[]
+  billingTransactions BillingTransaction[]
+  billingAdjustments  BillingTransaction[] @relation("billingAdjustments")
+  listings            Listing[]
+  topupOrders         TopupOrder[]
   clientProfile     ClientProfile?
   authTokens        AuthToken[]
   favorites         Favorite[]
@@ -823,4 +832,161 @@ model PromoSlot {
   createdAt DateTime @default(now())
 
   @@index([isActive, position])
+}
+
+/// --- Монетизация (payments.md §5) ---------------------------------------
+
+/// Срок размещения.
+enum PlanTerm {
+  m1
+  m6
+  m12
+}
+
+/// `grace` — льготные дни после истечения: анкета ещё в выдаче (D-04).
+/// `pending_topup` — автопродление ждёт пополнения.
+enum ListingStatus {
+  active
+  grace
+  expired
+  pending_topup
+}
+
+enum BillingTransactionKind {
+  TOPUP
+  SPEND
+  RENEWAL
+  ADJUSTMENT
+}
+
+/// Настройки монетизации — одна строка. Конфигурация, а не константы: курс
+/// и предел анкет меняются из админки без выката.
+model BillingSettings {
+  id                 String   @id @default("default")
+  /// Витринный курс: сколько GC за 1 €. Реальная цена ниже за счёт бонуса.
+  gcPerEur           Float
+  /// Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07).
+  agencyProfileLimit Int
+  updatedAt          DateTime @updatedAt
+}
+
+/// Цена размещения по типу и сроку — PriceBook из payments.md §5.
+model PriceBookEntry {
+  kind      AdvertiserKind
+  term      PlanTerm
+  gc        Int
+  updatedAt DateTime @updatedAt
+
+  @@id([kind, term])
+}
+
+/// Бонусная лестница пополнений (payments.md §2.1). Начисление не хранится —
+/// считается из курса и бонуса, иначе три числа разойдутся.
+model TopupTier {
+  eur          Int      @id
+  bonusPercent Int
+  updatedAt    DateTime @updatedAt
+}
+
+/// Журнал движения GlowCoin. Единственный источник правды о балансе:
+/// `User.glowcoinBalance` — производная и меняется только вместе с записью
+/// здесь.
+///
+/// Владелец удаляется — запись остаётся без него (SetNull), как и журнал
+/// модерации: за пополнением стоят реальные деньги, и разбор спора или
+/// налоговая проверка не должны упираться в удалённую учётку.
+model BillingTransaction {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  kind   BillingTransactionKind
+  /// Знак — направление: + пополнение, − списание.
+  gcAmount Int
+  /// Только для TOPUP. В центах, как и остальные суммы в схеме.
+  eurPaidCents Int?
+  bonusPercent Int?
+  /// Поставщик и его идентификатор события (для крипты — хеш транзакции).
+  /// Уникальны вместе: повторная доставка вебхука не начислит дважды (этап 4).
+  provider    String?
+  providerRef String?
+  /// Причина ручной корректировки — видимая запись, а не «бесплатно» (D-05).
+  note        String?
+  createdById String?
+  createdBy   User?   @relation("billingAdjustments", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  /// Заказ, которым это пополнение оплачено (только для TOPUP).
+  topupOrder TopupOrder?
+
+  @@unique([provider, providerRef])
+  @@index([userId, createdAt])
+}
+
+/// Оплаченное размещение учётной записи. Отдельная сущность, а не поле в
+/// Profile: «оплачено до» без журнала не даёт разобрать спор (N-30).
+/// У агентства один листинг покрывает все анкеты — тариф плоский (D-07).
+model Listing {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  kind   AdvertiserKind
+  status ListingStatus @default(active)
+  term   PlanTerm
+
+  activatedAt DateTime @default(now())
+  expiresAt   DateTime
+  autoRenew   Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([status, expiresAt])
+}
+
+/// Состояние заказа на пополнение. Зеркалит статусы Paymento, но своими
+/// словами: коды поставщика — деталь интеграции, а не контракт кабинета.
+enum TopupOrderStatus {
+  created
+  pending
+  paid
+  expired
+  canceled
+  failed
+}
+
+/// Заказ на пополнение (payments.md, этап 4). Курс, бонус и начисление
+/// фиксируются при создании: между «нажал купить» и «сеть подтвердила»
+/// проходят минуты, и админ мог за это время поменять лестницу — человек
+/// получает то, что ему показали.
+///
+/// Владелец удаляется — заказ остаётся (SetNull): за ним стоят реальные
+/// деньги, как и за журналом.
+model TopupOrder {
+  id     String  @id @default(cuid())
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  eurCents     Int
+  bonusPercent Int
+  gcPerEur     Float
+  grantedGc    Int
+
+  provider       String           @default("paymento")
+  /// Токен платежа у поставщика; ключ идемпотентности зачисления.
+  providerToken  String?          @unique
+  /// Последний сырой статус поставщика — для разбора спорных случаев.
+  providerStatus Int?
+  status         TopupOrderStatus @default(created)
+
+  transactionId String?             @unique
+  transaction   BillingTransaction? @relation(fields: [transactionId], references: [id])
+  paidAt        DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
 }

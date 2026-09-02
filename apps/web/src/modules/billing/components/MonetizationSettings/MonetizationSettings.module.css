@@ -118,9 +118,9 @@
   grid-template-columns: minmax(120px, 1.2fr) repeat(3, minmax(0, 1fr));
 }
 
-/* Доп. анкета одна, и колонка с её названием повторяла бы заголовок раздела. */
-.seats {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Число, а не сумма: поле во всю ширину карточки выглядело бы как ошибка. */
+.narrow {
+  max-width: 120px;
 }
 
 /* Шапка сетки видна, пока колонки стоят в ряд. На телефоне колонок нет,
@@ -178,8 +178,7 @@
   /* Одна колонка: четыре поля в ряд на телефоне ужимаются до нечитаемых
      двух символов, а горизонтальная прокрутка внутри формы теряет строки. */
   .tiers,
-  .prices,
-  .seats {
+  .prices {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 
@@ -190,4 +189,14 @@
   .cellLabel {
     display: block;
   }
+}
+
+.noticeOk {
+  background: var(--successSubtle);
+  color: var(--success);
+}
+
+.noticeError {
+  background: var(--dangerSubtle);
+  color: var(--danger);
 }

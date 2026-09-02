@@ -1,5 +1,6 @@
 export * from './account';
 export * from './auth';
+export * from './billing';
 export * from './comment';
 export * from './common';
 export * from './company';

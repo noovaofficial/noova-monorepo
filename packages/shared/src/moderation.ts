@@ -148,6 +148,8 @@ export const managedUserSchema = z.object({
   bannedAt: z.string().datetime().nullable(),
   nickname: z.string().nullable(),
   profileCount: z.number().int().nonnegative(),
+  /** Баланс GlowCoin — админ видит его перед корректировкой. У клиента и персонала ноль. */
+  glowcoinBalance: z.number().int().nonnegative(),
   createdAt: z.string().datetime(),
 });
 export type ManagedUser = z.infer<typeof managedUserSchema>;

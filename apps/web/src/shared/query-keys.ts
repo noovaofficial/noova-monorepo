@@ -30,6 +30,13 @@ export const queryKeys = {
   adminCountries: () => ['admin-countries'] as const,
   adminCities: (countryId?: string) => ['admin-cities', countryId ?? 'all'] as const,
   adminServices: () => ['admin-services'] as const,
+  billingConfig: () => ['billing-config'] as const,
+
+  /** Монетизация в кабинете. */
+  priceBook: () => ['price-book'] as const,
+  wallet: () => ['wallet'] as const,
+  listing: () => ['listing'] as const,
+  topupOrder: (id: string) => ['topup-order', id] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>
     [

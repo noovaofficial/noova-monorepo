@@ -11,6 +11,8 @@ declare module 'fastify' {
 
 /** Общий тег всех листингов — должен совпадать с `PROFILES_TAG` во фронте. */
 export const PROFILES_TAG = 'profiles';
+/** Прайс монетизации: витрина `/advertising` кэшируется по этому тегу. */
+export const BILLING_TAG = 'billing';
 export const profileTag = (slug: string) => `profile:${slug}`;
 
 /**

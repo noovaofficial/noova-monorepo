@@ -132,6 +132,10 @@ services:
       SMTP_SECURE: ${SMTP_SECURE:-false}
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      # Касса (Paymento). Пустые ключи — касса выключена, пополнение отвечает 503.
+      PAYMENTO_API_KEY: ${PAYMENTO_API_KEY:-}
+      PAYMENTO_SECRET_KEY: ${PAYMENTO_SECRET_KEY:-}
+      PAYWALL_ENABLED: ${PAYWALL_ENABLED:-false}
       MAIL_FROM: ${MAIL_FROM}
       PUBLIC_SITE_URL: ${SITE_URL}
       # Из него собираются ссылки на неодобренные фотографии — их отдаёт сам

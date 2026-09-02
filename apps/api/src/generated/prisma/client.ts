@@ -224,3 +224,49 @@ export type VerificationCase = Prisma.VerificationCaseModel
  * 
  */
 export type PromoSlot = Prisma.PromoSlotModel
+/**
+ * Model BillingSettings
+ * Настройки монетизации — одна строка. Конфигурация, а не константы: курс
+ * и предел анкет меняются из админки без выката.
+ */
+export type BillingSettings = Prisma.BillingSettingsModel
+/**
+ * Model PriceBookEntry
+ * Цена размещения по типу и сроку — PriceBook из payments.md §5.
+ */
+export type PriceBookEntry = Prisma.PriceBookEntryModel
+/**
+ * Model TopupTier
+ * Бонусная лестница пополнений (payments.md §2.1). Начисление не хранится —
+ * считается из курса и бонуса, иначе три числа разойдутся.
+ */
+export type TopupTier = Prisma.TopupTierModel
+/**
+ * Model BillingTransaction
+ * Журнал движения GlowCoin. Единственный источник правды о балансе:
+ * `User.glowcoinBalance` — производная и меняется только вместе с записью
+ * здесь.
+ * 
+ * Владелец удаляется — запись остаётся без него (SetNull), как и журнал
+ * модерации: за пополнением стоят реальные деньги, и разбор спора или
+ * налоговая проверка не должны упираться в удалённую учётку.
+ */
+export type BillingTransaction = Prisma.BillingTransactionModel
+/**
+ * Model Listing
+ * Оплаченное размещение учётной записи. Отдельная сущность, а не поле в
+ * Profile: «оплачено до» без журнала не даёт разобрать спор (N-30).
+ * У агентства один листинг покрывает все анкеты — тариф плоский (D-07).
+ */
+export type Listing = Prisma.ListingModel
+/**
+ * Model TopupOrder
+ * Заказ на пополнение (payments.md, этап 4). Курс, бонус и начисление
+ * фиксируются при создании: между «нажал купить» и «сеть подтвердила»
+ * проходят минуты, и админ мог за это время поменять лестницу — человек
+ * получает то, что ему показали.
+ * 
+ * Владелец удаляется — заказ остаётся (SetNull): за ним стоят реальные
+ * деньги, как и за журналом.
+ */
+export type TopupOrder = Prisma.TopupOrderModel

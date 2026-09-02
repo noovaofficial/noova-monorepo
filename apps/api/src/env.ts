@@ -79,6 +79,30 @@ const envSchema = z.object({
   RETENTION_AUTH_TOKENS_DAYS: z.coerce.number().int().min(1).default(7),
   RETENTION_CONTACT_REVEALS_DAYS: z.coerce.number().int().min(1).default(365),
   RETENTION_MODERATION_ACTIONS_DAYS: z.coerce.number().int().min(1).default(365),
+
+  /**
+   * Пейвол (payments.md, этап 3): публикация анкеты требует оплаченного
+   * размещения. Выключен по умолчанию, чтобы выкладка кода и включение оплаты
+   * были двумя разными шагами: между ними запускается grant-launch-listings,
+   * выдающий текущим рекламодателям стартовый год (D-05).
+   */
+  PAYWALL_ENABLED: booleanFromString(false),
+
+  /**
+   * Paymento — приём криптовалюты (payments.md, этап 4, D-08). Пустой ключ
+   * означает «касса не настроена»: создание пополнения отвечает 503, а
+   * колбэки отклоняются — подпись без секрета проверить нечем.
+   */
+  PAYMENTO_API_KEY: z.string().default(''),
+  PAYMENTO_SECRET_KEY: z.string().default(''),
+  PAYMENTO_API_URL: z.string().default('https://api.paymento.io/v1'),
+  PAYMENTO_GATEWAY_URL: z.string().default('https://app.paymento.io/gateway'),
+  /**
+   * Откуда строить адрес возврата с кассы. Paymento принимает только HTTPS,
+   * а локальный сайт живёт на http://localhost — сюда подставляется адрес
+   * туннеля (cloudflared, ngrok). Пусто — берётся PUBLIC_SITE_URL.
+   */
+  PAYMENTO_RETURN_BASE_URL: z.string().default(''),
   /**
    * Отсрочка перед физическим удалением учётной записи. Анкеты уходят из
    * каталога сразу, а данные стираются по истечении срока: удаление

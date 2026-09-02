@@ -87,6 +87,18 @@
   border-color: var(--primary);
 }
 
+/* Плитка стала кнопкой: нажатие создаёт заказ у кассы, а не открывает ссылку. */
+.packButton {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.packButton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .packGc {
   font-family: var(--fontDisplay);
   font-size: var(--textXl);
@@ -155,4 +167,137 @@
   margin-top: var(--space4);
   color: var(--link);
   font-size: var(--textSm);
+}
+
+/* История операций: строка на запись, сумма справа со знаком. Таблица была
+   бы честнее, но на телефоне четыре колонки не помещаются. */
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+  margin-bottom: var(--space5);
+}
+
+.tx {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  padding: var(--space3) var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.txMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.txKind {
+  font-weight: 600;
+  font-size: var(--textSm);
+}
+
+.txNote {
+  font-size: var(--textXs);
+  color: var(--secondaryText);
+}
+
+.txDate {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.txAmount {
+  flex: none;
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.txPlus {
+  color: var(--success);
+}
+
+.txMinus {
+  color: var(--primaryText);
+}
+
+/* Сроки размещения — те же плитки, что и пакеты, но это кнопки выбора,
+   а не ссылки: списание требует подтверждения суммы, и его показывает
+   отдельный блок ниже. */
+.terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space3);
+  margin-bottom: var(--space4);
+}
+
+.term {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.term:hover {
+  border-color: var(--primary);
+}
+
+.termSelected {
+  border-color: var(--primary);
+  background: var(--primarySubtle);
+}
+
+.termName {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  flex-wrap: wrap;
+  padding: var(--space4);
+  margin-bottom: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  font-size: var(--textSm);
+}
+
+.current {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space3);
+}
+
+.ok {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--successSubtle);
+  color: var(--success);
+  margin-bottom: var(--space4);
+}
+
+.err {
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--dangerSubtle);
+  color: var(--danger);
+  margin-bottom: var(--space4);
 }

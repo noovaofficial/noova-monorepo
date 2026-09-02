@@ -222,9 +222,11 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
       setNotice({
         kind: 'error',
         key:
-          error instanceof AccountError && error.status === 403
-            ? 'verificationRequired'
-            : 'saveFailed',
+          error instanceof AccountError && error.status === 402
+            ? 'listingRequired'
+            : error instanceof AccountError && error.status === 403
+              ? 'verificationRequired'
+              : 'saveFailed',
       });
     },
   });

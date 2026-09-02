@@ -1,10 +1,12 @@
 'use client';
 
-import type { ManagedUser, UserRole } from '@noova/shared';
+import { adjustBalanceInputSchema, type ManagedUser, type UserRole } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { useSession } from '@/modules/auth/components/SessionProvider';
+import { adjustBalance, BillingError } from '@/modules/billing/api';
 import { blockUser, fetchUsers, unblockUser, verifyUserEmail } from '@/modules/moderation/api';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
@@ -19,6 +21,9 @@ export function UserList({
   withRoleFilter?: boolean;
 } = {}) {
   const t = useTranslations('moderation');
+  const { user: me } = useSession();
+  // Корректировка баланса — только админу: это движение денег, а не модерация.
+  const isAdmin = me?.role === 'admin';
   const [query, setQuery] = useState('');
   // Пусто — все типы. В разделе «Все пользователи» это и есть исходное
   // состояние: сначала показать всех, потом дать сузить.
@@ -37,6 +42,13 @@ export function UserList({
   // Кого именно блокируем: id открывает поле причины у этой строки.
   const [blocking, setBlocking] = useState<string | null>(null);
   const [reason, setReason] = useState('');
+
+  // Кому правим баланс: id открывает форму у этой строки. Итог показываем
+  // там же — админ должен увидеть новый баланс, не перезагружая список.
+  const [adjusting, setAdjusting] = useState<string | null>(null);
+  const [amount, setAmount] = useState('');
+  const [note, setNote] = useState('');
+  const [adjusted, setAdjusted] = useState<{ userId: string; balanceGc: number } | null>(null);
 
   const list = useQuery({
     queryKey: queryKeys.users(debounced, blockedOnly, role || undefined),
@@ -67,14 +79,38 @@ export function UserList({
     onSuccess: invalidate,
   });
 
+  const adjustInput = (user: ManagedUser) =>
+    adjustBalanceInputSchema.safeParse({
+      userId: user.id,
+      gcAmount: Number(amount),
+      note: note.trim(),
+    });
+
+  const adjust = useMutation({
+    mutationFn: (user: ManagedUser) => {
+      const parsed = adjustInput(user);
+      if (!parsed.success) throw new Error('invalid');
+      return adjustBalance(parsed.data);
+    },
+    onSuccess: async (result, user) => {
+      setAdjusting(null);
+      setAmount('');
+      setNote('');
+      setAdjusted({ userId: user.id, balanceGc: result.balanceGc });
+      await invalidate();
+    },
+  });
+
   const users = list.data ?? null;
-  const busy = verify.isPending || block.isPending || unblock.isPending;
+  const busy = verify.isPending || block.isPending || unblock.isPending || adjust.isPending;
   const error =
-    verify.isError || block.isError || unblock.isError
-      ? 'actionFailed'
-      : list.isError
-        ? 'loadFailed'
-        : null;
+    adjust.isError && adjust.error instanceof BillingError && adjust.error.status === 409
+      ? 'adjustInsufficient'
+      : verify.isError || block.isError || unblock.isError || adjust.isError
+        ? 'actionFailed'
+        : list.isError
+          ? 'loadFailed'
+          : null;
 
   return (
     <>
@@ -133,12 +169,64 @@ export function UserList({
                   <span className={styles.staffMeta}>
                     {user.nickname ? `${user.nickname} · ` : ''}
                     {user.role} · {t('userProfiles', { count: user.profileCount })}
+                    {user.role === 'advertiser'
+                      ? ` · ${t('balanceGc', { balance: user.glowcoinBalance })}`
+                      : ''}
                     {user.bannedAt ? ` · ${new Date(user.bannedAt).toLocaleDateString()}` : ''}
                   </span>
                   {/* Причина видна в таблице: иначе непонятно, за что человек
                       заблокирован, и разблокировать приходится вслепую. */}
                   {user.banReason ? (
                     <span className={styles.reportBody}>{user.banReason}</span>
+                  ) : null}
+
+                  {adjusted?.userId === user.id ? (
+                    <span className={styles.hint}>
+                      {t('adjustDone', { balance: adjusted.balanceGc })}
+                    </span>
+                  ) : null}
+
+                  {adjusting === user.id ? (
+                    <div className={styles.reasonBox}>
+                      <label className={styles.label} htmlFor={`adjust-amount-${user.id}`}>
+                        {t('adjustAmount')}
+                      </label>
+                      <input
+                        className={styles.input}
+                        id={`adjust-amount-${user.id}`}
+                        inputMode="numeric"
+                        value={amount}
+                        onChange={(event) => setAmount(event.target.value)}
+                        placeholder="+100"
+                      />
+                      <span className={styles.hint}>{t('adjustAmountHint')}</span>
+                      <label className={styles.label} htmlFor={`adjust-note-${user.id}`}>
+                        {t('adjustNote')}
+                      </label>
+                      <textarea
+                        className={styles.textarea}
+                        id={`adjust-note-${user.id}`}
+                        value={note}
+                        onChange={(event) => setNote(event.target.value)}
+                        minLength={3}
+                      />
+                      <span className={styles.hint}>{t('adjustNoteHint')}</span>
+                      <div className={styles.cardActions} style={{ padding: 0 }}>
+                        <Button
+                          disabled={busy || !adjustInput(user).success}
+                          onClick={() => adjust.mutate(user)}
+                        >
+                          {t('adjustSubmit')}
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => setAdjusting(null)}
+                        >
+                          {t('cancel')}
+                        </Button>
+                      </div>
+                    </div>
                   ) : null}
 
                   {blocking === user.id ? (
@@ -202,6 +290,21 @@ export function UserList({
                   ) : (
                     <span className={styles.badge}>{t('emailVerified')}</span>
                   )}
+
+                  {isAdmin && user.role === 'advertiser' && adjusting !== user.id ? (
+                    <Button
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => {
+                        setAdjusting(user.id);
+                        setAdjusted(null);
+                        setAmount('');
+                        setNote('');
+                      }}
+                    >
+                      {t('adjustGc')}
+                    </Button>
+                  ) : null}
 
                   {/* Сотрудниками распоряжается админ через /admin/staff:
                       коллеги — не предмет модерации. */}

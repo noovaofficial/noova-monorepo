@@ -12,6 +12,7 @@ export default defineConfig({
     'src/scripts/create-admin.ts',
     'src/scripts/seed-reference.ts',
     'src/scripts/export-reference.ts',
+    'src/scripts/grant-launch-listings.ts',
   ],
   outDir: 'dist',
   format: ['esm'],

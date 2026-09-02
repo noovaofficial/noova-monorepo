@@ -3,7 +3,6 @@
 import {
   type AdminService,
   type AdminServiceGroup,
-  DEFAULT_LOCALE,
   type ListingKind,
   LOCALES,
   type Translated,
@@ -21,6 +20,7 @@ import {
   updateGroup,
   updateService,
 } from '@/modules/service-catalog/api';
+import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../ServiceCatalog.module.css';
 
@@ -163,6 +163,7 @@ function GroupBlock({
   run: Runner;
   t: Translate;
 }) {
+  const label = useLabel();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState<Translated>(group.name);
 
@@ -178,7 +179,7 @@ function GroupBlock({
     <section className={styles.group}>
       <div className={styles.groupHead}>
         <h2 className={styles.groupTitle}>
-          {group.name[DEFAULT_LOCALE]} <span className={styles.groupKey}>· {group.key}</span>
+          {label(group.name)} <span className={styles.groupKey}>· {group.key}</span>
         </h2>
         <Button variant="secondary" onClick={() => setEditing((value) => !value)}>
           {editing ? t('cancel') : t('renameGroup')}
@@ -226,6 +227,7 @@ function ServiceRow({
   run: Runner;
   t: Translate;
 }) {
+  const label = useLabel();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState<Translated>(service.name);
   const [group, setGroup] = useState(service.group);
@@ -252,7 +254,7 @@ function ServiceRow({
     return (
       <div className={`${styles.row} ${service.isActive ? '' : styles.rowOff}`}>
         <div className={styles.rowMain}>
-          <span className={styles.rowName}>{service.name[DEFAULT_LOCALE]}</span>
+          <span className={styles.rowName}>{label(service.name)}</span>
           <span className={styles.rowMeta}>
             {service.key} · {t('positionShort')} {service.position} ·{' '}
             {service.appliesTo.length === 0
@@ -298,7 +300,7 @@ function ServiceRow({
           >
             {groups.map((item) => (
               <option key={item.key} value={item.key}>
-                {item.name[DEFAULT_LOCALE]}
+                {label(item.name)}
               </option>
             ))}
           </select>
@@ -407,6 +409,7 @@ function NewServiceForm({
   run: Runner;
   t: Translate;
 }) {
+  const label = useLabel();
   const [key, setKey] = useState('');
   const [group, setGroup] = useState(groups[0]?.key ?? '');
   const [name, setName] = useState<Translated>(emptyNames);
@@ -469,7 +472,7 @@ function NewServiceForm({
           >
             {groups.map((item) => (
               <option key={item.key} value={item.key}>
-                {item.name[DEFAULT_LOCALE]}
+                {label(item.name)}
               </option>
             ))}
           </select>

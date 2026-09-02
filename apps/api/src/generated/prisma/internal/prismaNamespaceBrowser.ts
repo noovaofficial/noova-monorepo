@@ -78,7 +78,13 @@ export const ModelName = {
   ServiceGroupTranslation: 'ServiceGroupTranslation',
   ProfileService: 'ProfileService',
   VerificationCase: 'VerificationCase',
-  PromoSlot: 'PromoSlot'
+  PromoSlot: 'PromoSlot',
+  BillingSettings: 'BillingSettings',
+  PriceBookEntry: 'PriceBookEntry',
+  TopupTier: 'TopupTier',
+  BillingTransaction: 'BillingTransaction',
+  Listing: 'Listing',
+  TopupOrder: 'TopupOrder'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -110,6 +116,7 @@ export const UserScalarFieldEnum = {
   bannedAt: 'bannedAt',
   deletionRequestedAt: 'deletionRequestedAt',
   banReason: 'banReason',
+  glowcoinBalance: 'glowcoinBalance',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   createdById: 'createdById'
@@ -491,6 +498,88 @@ export const PromoSlotScalarFieldEnum = {
 } as const
 
 export type PromoSlotScalarFieldEnum = (typeof PromoSlotScalarFieldEnum)[keyof typeof PromoSlotScalarFieldEnum]
+
+
+export const BillingSettingsScalarFieldEnum = {
+  id: 'id',
+  gcPerEur: 'gcPerEur',
+  agencyProfileLimit: 'agencyProfileLimit',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BillingSettingsScalarFieldEnum = (typeof BillingSettingsScalarFieldEnum)[keyof typeof BillingSettingsScalarFieldEnum]
+
+
+export const PriceBookEntryScalarFieldEnum = {
+  kind: 'kind',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PriceBookEntryScalarFieldEnum = (typeof PriceBookEntryScalarFieldEnum)[keyof typeof PriceBookEntryScalarFieldEnum]
+
+
+export const TopupTierScalarFieldEnum = {
+  eur: 'eur',
+  bonusPercent: 'bonusPercent',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopupTierScalarFieldEnum = (typeof TopupTierScalarFieldEnum)[keyof typeof TopupTierScalarFieldEnum]
+
+
+export const BillingTransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  kind: 'kind',
+  gcAmount: 'gcAmount',
+  eurPaidCents: 'eurPaidCents',
+  bonusPercent: 'bonusPercent',
+  provider: 'provider',
+  providerRef: 'providerRef',
+  note: 'note',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type BillingTransactionScalarFieldEnum = (typeof BillingTransactionScalarFieldEnum)[keyof typeof BillingTransactionScalarFieldEnum]
+
+
+export const ListingScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  kind: 'kind',
+  status: 'status',
+  term: 'term',
+  activatedAt: 'activatedAt',
+  expiresAt: 'expiresAt',
+  autoRenew: 'autoRenew',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ListingScalarFieldEnum = (typeof ListingScalarFieldEnum)[keyof typeof ListingScalarFieldEnum]
+
+
+export const TopupOrderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  eurCents: 'eurCents',
+  bonusPercent: 'bonusPercent',
+  gcPerEur: 'gcPerEur',
+  grantedGc: 'grantedGc',
+  provider: 'provider',
+  providerToken: 'providerToken',
+  providerStatus: 'providerStatus',
+  status: 'status',
+  transactionId: 'transactionId',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopupOrderScalarFieldEnum = (typeof TopupOrderScalarFieldEnum)[keyof typeof TopupOrderScalarFieldEnum]
 
 
 export const SortOrder = {

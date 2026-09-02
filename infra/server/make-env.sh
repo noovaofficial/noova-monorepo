@@ -61,6 +61,15 @@ REVALIDATE_SECRET=$(hex)
 MAIL_DOMAIN=$DOMAIN
 MAIL_FROM="Noova <noreply@$DOMAIN>"
 
+# Касса (payments.md, этап 4). Ключи — из кабинета app.paymento.io; пустые
+# значения выключают пополнение (503), колбэки без секрета отклоняются.
+# В настройках Paymento адрес IPN: https://$DOMAIN/api/v1/billing/webhook/paymento
+PAYMENTO_API_KEY=
+PAYMENTO_SECRET_KEY=
+# Пейвол (payments.md, этап 3): true только после
+# `docker compose exec api node dist/scripts/grant-launch-listings.js`.
+PAYWALL_ENABLED=false
+
 # Карта. Публичный сервер OpenStreetMap проксирование не запрещает, но
 # требует кэшировать плитки не меньше 7 дней (у нас 30) и слать понятный
 # User-Agent с контактом — по нему при проблемах напишут, а безымянный

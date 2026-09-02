@@ -21,7 +21,6 @@ type Props = {
 export default async function LegacyCatalogRedirect({ params, searchParams }: Props) {
   const { locale, kind } = await params;
   const cities = await activeCities(locale);
-  const city = cities[0];
 
   // Фильтры переносим вместе с адресом: старая ссылка с выбранными услугами
   // иначе привела бы в пустой каталог, и потеря выглядела бы как сброс.
@@ -30,6 +29,14 @@ export default async function LegacyCatalogRedirect({ params, searchParams }: Pr
     if (Array.isArray(value)) for (const item of value) search.append(key, item);
     else if (value !== undefined) search.set(key, value);
   }
+
+  // До переезда город задавался параметром `?city=`. Он и решает, куда вести:
+  // иначе ссылка на Берлин молча открывала бы первый активный город. Из
+  // строки запроса параметр убираем — теперь город живёт в адресе, а каталог
+  // его оттуда и берёт.
+  const asked = search.get('city');
+  const city = cities.find((item) => item.slug === asked) ?? cities[0];
+  if (asked) search.delete('city');
   const query = search.toString();
   const suffix = query ? `?${query}` : '';
 

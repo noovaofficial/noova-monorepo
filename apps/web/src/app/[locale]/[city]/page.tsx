@@ -75,16 +75,19 @@ export default async function HomePage({ params }: Props) {
       </section>
 
       <section className={styles.section}>
+        {/* Город — в пути, а не в `?city=`: параметр каталог не читает (срез
+            задаёт адрес), а путь без города уводит редиректом в первый
+            активный город — с берлинской главной попадали в Амстердам. */}
         <SectionHead
           title={th('escortSection', { city: cityName })}
           count={th('total', { count: nf.format(escortCount.total) })}
-          moreHref={`/catalog/escort?city=${city}`}
+          moreHref={`/${city}/catalog/escort`}
           moreLabel={th('showAll')}
         />
         <ProfileGrid profiles={escorts.items} locale={locale as Locale} />
         {escortCount.total > escorts.items.length ? (
           <div className={styles.showAll}>
-            <Link href={`/catalog/escort?city=${city}`}>
+            <Link href={`/${city}/catalog/escort`}>
               <Button variant="secondary">
                 {th('showAllProfiles', { count: nf.format(escortCount.total) })}
               </Button>
@@ -97,13 +100,13 @@ export default async function HomePage({ params }: Props) {
         <SectionHead
           title={th('massageSection', { city: cityName })}
           count={th('total', { count: nf.format(massageCount.total) })}
-          moreHref={`/catalog/massage?city=${city}`}
+          moreHref={`/${city}/catalog/massage`}
           moreLabel={th('showAll')}
         />
         <ProfileGrid profiles={massage.items} locale={locale as Locale} />
         {massageCount.total > massage.items.length ? (
           <div className={styles.showAll}>
-            <Link href={`/catalog/massage?city=${city}`}>
+            <Link href={`/${city}/catalog/massage`}>
               <Button variant="secondary">{th('showAllStudios')}</Button>
             </Link>
           </div>

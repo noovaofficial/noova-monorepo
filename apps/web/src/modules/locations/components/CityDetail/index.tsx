@@ -8,12 +8,14 @@ import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { addDistrict, fetchCities, updateCity, updateDistrict } from '@/modules/locations/api';
 import { Link } from '@/shared/i18n/navigation';
+import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { emptyNames, label, NameFields, useRunner } from '../shared';
+import { emptyNames, NameFields, useRunner } from '../shared';
 
 /** Третий уровень: один город — его данные и его районы (N-32). */
 export function CityDetail({ countryCode, citySlug }: { countryCode: string; citySlug: string }) {
+  const label = useLabel();
   const t = useTranslations('locations');
   const { user, status } = useSession();
   const queryClient = useQueryClient();
@@ -162,6 +164,7 @@ function CityForm({ city, run, t }: { city: CityAdmin; run: Runner; t: Translate
 }
 
 function DistrictRow({ district, run, t }: { district: District; run: Runner; t: Translate }) {
+  const label = useLabel();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState<Translated>(district.name);
   const [lat, setLat] = useState(String(district.lat));

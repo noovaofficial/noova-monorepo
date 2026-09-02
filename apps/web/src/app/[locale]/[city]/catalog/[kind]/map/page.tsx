@@ -37,7 +37,7 @@ export default async function CatalogMapPage({ params }: Props) {
   // целиком уходит в клиентский рендер.
   return (
     <Suspense>
-      <CatalogMap kind={kind as ListingKind} locale={locale} />
+      <CatalogMap kind={kind as ListingKind} city={city} locale={locale} />
     </Suspense>
   );
 }

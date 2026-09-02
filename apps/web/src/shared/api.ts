@@ -4,12 +4,14 @@ import {
   companySchema,
   type Locale,
   type Page,
+  type PriceBook,
   type ProfileCard,
   type ProfileComment,
   type ProfileDetail,
   type ProfileQuery,
   type PromoSlot,
   pageSchema,
+  priceBookSchema,
   profileCardSchema,
   profileCommentSchema,
   profileDetailSchema,
@@ -121,6 +123,19 @@ function toSearchParams(query: Partial<ProfileQuery>): string {
 
 /** Общий тег всех листингов: публикация или снятие анкеты меняет любой из них. */
 export const PROFILES_TAG = 'profiles';
+
+/** Прайс монетизации. Сбрасывается бэкендом при сохранении в админке —
+ *  должен совпадать с `BILLING_TAG` в plugins/revalidate.ts. */
+export const BILLING_TAG = 'billing';
+
+/** Прайс размещения и лестница пополнений — для витрины и кассы. */
+export function fetchPriceBook(options?: FetchOptions): Promise<PriceBook> {
+  return request('/billing/price-book', priceBookSchema, {
+    tags: [BILLING_TAG],
+    revalidate: 300,
+    ...options,
+  });
+}
 
 export function fetchProfiles(
   query: Partial<ProfileQuery> = {},

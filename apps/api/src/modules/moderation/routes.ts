@@ -60,6 +60,7 @@ const managedUserSelect = {
   bannedAt: true,
   banReason: true,
   createdAt: true,
+  glowcoinBalance: true,
   clientProfile: { select: { nickname: true } },
   _count: { select: { profiles: true } },
 } as const;
@@ -74,6 +75,7 @@ type ManagedUserRow = {
   createdAt: Date;
   clientProfile: { nickname: string } | null;
   _count: { profiles: number };
+  glowcoinBalance: number;
 };
 
 function toManagedUser(row: ManagedUserRow) {
@@ -87,6 +89,7 @@ function toManagedUser(row: ManagedUserRow) {
     bannedAt: row.bannedAt?.toISOString() ?? null,
     nickname: row.clientProfile?.nickname ?? null,
     profileCount: row._count.profiles,
+    glowcoinBalance: row.glowcoinBalance,
     createdAt: row.createdAt.toISOString(),
   };
 }
@@ -905,6 +908,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           bannedAt: true,
           banReason: true,
           createdAt: true,
+          glowcoinBalance: true,
           clientProfile: { select: { nickname: true } },
           _count: { select: { profiles: true } },
         },
@@ -920,6 +924,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         bannedAt: row.bannedAt?.toISOString() ?? null,
         nickname: row.clientProfile?.nickname ?? null,
         profileCount: row._count.profiles,
+        glowcoinBalance: row.glowcoinBalance,
         createdAt: row.createdAt.toISOString(),
       }));
     },
@@ -958,6 +963,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           bannedAt: true,
           banReason: true,
           createdAt: true,
+          glowcoinBalance: true,
           clientProfile: { select: { nickname: true } },
           _count: { select: { profiles: true } },
         },
@@ -985,6 +991,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         bannedAt: updated.bannedAt?.toISOString() ?? null,
         nickname: updated.clientProfile?.nickname ?? null,
         profileCount: updated._count.profiles,
+        glowcoinBalance: updated.glowcoinBalance,
         createdAt: updated.createdAt.toISOString(),
       };
     },

@@ -1,6 +1,6 @@
 'use client';
 
-import { DEFAULT_LOCALE, LOCALES, type Translated } from '@noova/shared';
+import { LOCALES, type Translated } from '@noova/shared';
 import type { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -14,8 +14,6 @@ export type Runner = <T>(action: () => Promise<T>, after?: () => void) => Promis
 
 export const emptyNames = (): Translated =>
   Object.fromEntries(LOCALES.map((locale) => [locale, ''])) as Translated;
-
-export const label = (name: Translated) => name[DEFAULT_LOCALE];
 
 /**
  * Сообщение сервера показываем как есть: в нём объяснено, что именно не так —

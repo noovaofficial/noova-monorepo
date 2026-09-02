@@ -1,13 +1,14 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AuthError, cancelAccountDeletion, requestAccountDeletion } from '@/modules/auth/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { MOCK_SUBSCRIPTION } from '@/modules/billing/mock';
+import { fetchListing } from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
+import { queryKeys } from '@/shared/query-keys';
 import styles from './AccountSettings.module.css';
 
 const ADVERTISER_LABEL = {
@@ -54,6 +55,13 @@ export function AccountSettings() {
     onSuccess: () => refresh(),
   });
 
+  // Текущее размещение — с сервера. `null`, пока ни одно не оплачено.
+  const listing = useQuery({
+    queryKey: queryKeys.listing(),
+    queryFn: fetchListing,
+    enabled: user?.role === 'advertiser',
+  });
+
   if (status === 'loading') return null;
 
   if (status === 'anonymous') {
@@ -65,9 +73,7 @@ export function AccountSettings() {
   // раздел без модератора, и сервер такой запрос всё равно отклоняет.
   const isStaff = user?.role === 'moderator' || user?.role === 'admin';
 
-  // TODO(billing): подписка приходит с сервера. До подключения API — заглушка,
-  // чтобы раздел можно было верстать и проверять целиком.
-  const subscription = user?.role === 'advertiser' ? MOCK_SUBSCRIPTION : null;
+  const subscription = listing.data ?? null;
 
   const pending = user?.deletionRequestedAt !== null && user?.deletionRequestedAt !== undefined;
   const effective = user?.deletionEffectiveAt
@@ -110,6 +116,15 @@ export function AccountSettings() {
                   </span>
                 </dd>
               </div>
+
+              {subscription.status !== 'active' ? (
+                <div className={styles.row}>
+                  <dt className={styles.rowLabel}>{t('subscriptionStatus')}</dt>
+                  <dd className={styles.rowValue}>
+                    {t(`subscriptionStatus_${subscription.status}`)}
+                  </dd>
+                </div>
+              ) : null}
 
               <div className={styles.row}>
                 <dt className={styles.rowLabel}>{t('subscriptionRenew')}</dt>

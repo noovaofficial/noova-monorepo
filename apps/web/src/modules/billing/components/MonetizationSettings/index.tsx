@@ -1,26 +1,25 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { Button } from '@/design-system/components/Button';
-import { useSession } from '@/modules/auth/components/SessionProvider';
 import {
-  AGENCY_INCLUDED_SEATS,
-  GC_PER_EUR,
+  type BillingConfigInput,
+  billingConfigInputSchema,
   grantedGc,
   PLAN_KINDS,
   PLAN_TERMS,
   type PlanKind,
   type PlanTerm,
-  PRICE_BOOK,
-  SEAT_PRICE,
-  TOPUP_PACKS,
-} from '@/modules/billing/pricing';
+  type PriceBook,
+  TERM_MONTHS,
+} from '@noova/shared';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { Button } from '@/design-system/components/Button';
+import { useSession } from '@/modules/auth/components/SessionProvider';
+import { BillingError, fetchBillingConfig, saveBillingConfig } from '@/modules/billing/api';
 import { useRouter } from '@/shared/i18n/navigation';
+import { queryKeys } from '@/shared/query-keys';
 import styles from './MonetizationSettings.module.css';
-
-/** Сколько месяцев в сроке — нужно, чтобы показать цену месяца. */
-const MONTHS: Record<PlanTerm, number> = { m1: 1, m6: 6, m12: 12 };
 
 const TERM_LABEL: Record<PlanTerm, 'term1' | 'term6' | 'term12'> = {
   m1: 'term1',
@@ -41,7 +40,43 @@ const KIND_LABEL: Record<
  *  и подставлять в него ноль на каждом стирании символа невозможно. */
 const num = (value: string): number => Number(value.replace(',', '.')) || 0;
 
-type PriceState = Record<PlanKind, Record<PlanTerm, string>>;
+type FormState = {
+  rate: string;
+  tiers: { eur: string; bonus: string }[];
+  prices: Record<PlanKind, Record<PlanTerm, string>>;
+  agencyLimit: string;
+};
+
+function fromBook(book: PriceBook): FormState {
+  return {
+    rate: String(book.gcPerEur),
+    tiers: book.topupTiers.map((tier) => ({
+      eur: String(tier.eur),
+      bonus: String(tier.bonusPercent),
+    })),
+    prices: Object.fromEntries(
+      PLAN_KINDS.map((kind) => [
+        kind,
+        Object.fromEntries(PLAN_TERMS.map((term) => [term, String(book.prices[kind][term])])),
+      ]),
+    ) as FormState['prices'],
+    agencyLimit: String(book.agencyProfileLimit),
+  };
+}
+
+function toInput(form: FormState): BillingConfigInput {
+  return {
+    gcPerEur: num(form.rate),
+    topupTiers: form.tiers.map((tier) => ({ eur: num(tier.eur), bonusPercent: num(tier.bonus) })),
+    prices: Object.fromEntries(
+      PLAN_KINDS.map((kind) => [
+        kind,
+        Object.fromEntries(PLAN_TERMS.map((term) => [term, num(form.prices[kind][term])])),
+      ]),
+    ) as BillingConfigInput['prices'],
+    agencyProfileLimit: num(form.agencyLimit),
+  };
+}
 
 /**
  * Настройки монетизации: курс, бонусная лестница и прайс размещения.
@@ -57,35 +92,15 @@ type PriceState = Record<PlanKind, Record<PlanTerm, string>>;
  */
 export function MonetizationSettings() {
   const t = useTranslations('billing');
-  // Типы размещения подписаны так же, как при регистрации и в настройках:
-  // это один и тот же выбор, и синонимы читались бы как разные тарифы.
-  const ta = useTranslations('auth');
   const { user, status } = useSession();
   const router = useRouter();
 
-  const [rate, setRate] = useState(String(GC_PER_EUR));
-  const [tiers, setTiers] = useState(
-    TOPUP_PACKS.map((pack) => ({
-      eur: String(pack.eur),
-      bonus: String(Math.round(pack.bonus * 100)),
-    })),
-  );
-  const [prices, setPrices] = useState<PriceState>(
-    () =>
-      Object.fromEntries(
-        PLAN_KINDS.map((kind) => [
-          kind,
-          Object.fromEntries(PLAN_TERMS.map((term) => [term, String(PRICE_BOOK[kind][term])])),
-        ]),
-      ) as PriceState,
-  );
-  const [seats, setSeats] = useState<Record<PlanTerm, string>>(
-    () =>
-      Object.fromEntries(PLAN_TERMS.map((term) => [term, String(SEAT_PRICE[term])])) as Record<
-        PlanTerm,
-        string
-      >,
-  );
+  const isAdmin = user?.role === 'admin';
+  const config = useQuery({
+    queryKey: queryKeys.billingConfig(),
+    queryFn: fetchBillingConfig,
+    enabled: status === 'authenticated' && isAdmin,
+  });
 
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
@@ -94,32 +109,95 @@ export function MonetizationSettings() {
     return null;
   }
 
-  if (user?.role !== 'admin') return <p className={styles.empty}>{t('onlyAdmins')}</p>;
+  if (!isAdmin) return <p className={styles.empty}>{t('onlyAdmins')}</p>;
 
-  const gcPerEur = num(rate);
+  if (config.isError) return <p className={styles.empty}>{t('loadFailed')}</p>;
+  if (!config.data) return <p className={styles.empty}>{t('loading')}</p>;
+
+  // Форма получает начальное состояние через ключ, а не через эффект:
+  // повторная загрузка с сервера пересоздаёт её с новыми значениями, и
+  // синхронизировать состояние с ответом руками не нужно.
+  return <MonetizationForm key={config.dataUpdatedAt} initial={config.data} />;
+}
+
+function MonetizationForm({ initial }: { initial: PriceBook }) {
+  const t = useTranslations('billing');
+  // Типы размещения подписаны так же, как при регистрации и в настройках:
+  // это один и тот же выбор, и синонимы читались бы как разные тарифы.
+  const ta = useTranslations('auth');
+  const queryClient = useQueryClient();
+
+  const [form, setForm] = useState<FormState>(() => fromBook(initial));
+  const [invalid, setInvalid] = useState(false);
+
+  const save = useMutation({
+    mutationFn: saveBillingConfig,
+    onSuccess: async (book) => {
+      queryClient.setQueryData(queryKeys.billingConfig(), book);
+      // Кошелёк рекламодателя читает тот же прайс другим ключом.
+      await queryClient.invalidateQueries({ queryKey: queryKeys.priceBook() });
+    },
+  });
+
+  const gcPerEur = num(form.rate);
 
   /** €-цена месяца для срока: цена в GC → евро по курсу → делим на месяцы. */
   const monthlyEur = (gc: string, term: PlanTerm): string => {
     if (gcPerEur <= 0) return '—';
-    return t('perMonthShort', { amount: num(gc) / gcPerEur / MONTHS[term] });
+    return t('perMonthShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] });
+  };
+
+  /** Во что обходится агентству одна анкета — единственный способ увидеть,
+   *  осталась ли объёмная скидка при плоском тарифе. */
+  const perProfileEur = (gc: string, term: PlanTerm): string => {
+    const limit = num(form.agencyLimit);
+    if (gcPerEur <= 0 || limit <= 0) return '—';
+    return t('perProfileShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] / limit });
   };
 
   const setPrice = (kind: PlanKind, term: PlanTerm, value: string) =>
-    setPrices((prev) => ({ ...prev, [kind]: { ...prev[kind], [term]: value } }));
+    setForm((prev) => ({
+      ...prev,
+      prices: { ...prev.prices, [kind]: { ...prev.prices[kind], [term]: value } },
+    }));
 
   const setTier = (index: number, field: 'eur' | 'bonus', value: string) =>
-    setTiers((prev) => prev.map((tier, i) => (i === index ? { ...tier, [field]: value } : tier)));
+    setForm((prev) => ({
+      ...prev,
+      tiers: prev.tiers.map((tier, i) => (i === index ? { ...tier, [field]: value } : tier)),
+    }));
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    // Проверяем той же схемой, что и сервер: ошибка называется до запроса,
+    // а не приходит обратно безликим 400.
+    const parsed = billingConfigInputSchema.safeParse(toInput(form));
+    setInvalid(!parsed.success);
+    if (parsed.success) save.mutate(parsed.data);
+  }
+
+  const failed = save.isError && !(save.error instanceof BillingError && save.error.status === 400);
+  const rejected = save.isError && !failed;
 
   return (
-    <div className={styles.wrap}>
+    <form className={styles.wrap} onSubmit={onSubmit}>
       <div className={styles.head}>
         <h1 className={styles.title}>{t('monetizationTitle')}</h1>
-        {/* Кнопка на месте и выключена, а не спрятана: экран проверяют целиком,
-            и «где сохранение?» — первый вопрос, если её нет. */}
-        <Button disabled>{t('save')}</Button>
+        <Button type="submit" disabled={save.isPending}>
+          {t('save')}
+        </Button>
       </div>
       <p className={styles.lead}>{t('monetizationLead')}</p>
-      <p className={styles.notice}>{t('monetizationStub')}</p>
+
+      {save.isSuccess && !save.isPending ? (
+        <p className={`${styles.notice} ${styles.noticeOk}`}>{t('saved')}</p>
+      ) : null}
+      {invalid || rejected ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>{t('invalidConfig')}</p>
+      ) : null}
+      {failed ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>{t('saveFailed')}</p>
+      ) : null}
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('currencySection')}</h2>
@@ -142,8 +220,8 @@ export function MonetizationSettings() {
               className={styles.input}
               id="gc-rate"
               inputMode="decimal"
-              value={rate}
-              onChange={(event) => setRate(event.target.value)}
+              value={form.rate}
+              onChange={(event) => setForm((prev) => ({ ...prev, rate: event.target.value }))}
             />
           </div>
         </div>
@@ -159,9 +237,9 @@ export function MonetizationSettings() {
           <div className={styles.gridHead}>{t('colGranted')}</div>
           <div className={styles.gridHead}>{t('colRate')}</div>
 
-          {tiers.map((tier, index) => {
+          {form.tiers.map((tier, index) => {
             const eur = num(tier.eur);
-            const granted = grantedGc(eur, num(tier.bonus) / 100, gcPerEur);
+            const granted = grantedGc(eur, num(tier.bonus), gcPerEur);
             return (
               // Ключ по позиции: сумма порога — редактируемое поле, и на
               // полустёртом значении два порога совпадут.
@@ -223,10 +301,15 @@ export function MonetizationSettings() {
                     className={styles.input}
                     inputMode="numeric"
                     aria-label={`${ta(KIND_LABEL[kind])} — ${t(TERM_LABEL[term])}`}
-                    value={prices[kind][term]}
+                    value={form.prices[kind][term]}
                     onChange={(event) => setPrice(kind, term, event.target.value)}
                   />
-                  <span className={styles.sub}>{monthlyEur(prices[kind][term], term)}</span>
+                  <span className={styles.sub}>
+                    {monthlyEur(form.prices[kind][term], term)}
+                    {kind === 'agency' ? (
+                      <> · {perProfileEur(form.prices[kind][term], term)}</>
+                    ) : null}
+                  </span>
                 </div>
               ))}
             </div>
@@ -235,31 +318,22 @@ export function MonetizationSettings() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('seatsSection')}</h2>
-        <p className={styles.hint}>{t('seatsHint', { count: AGENCY_INCLUDED_SEATS })}</p>
+        <h2 className={styles.sectionTitle}>{t('agencySection')}</h2>
+        <p className={styles.hint}>{t('agencyHint')}</p>
 
-        <div className={`${styles.grid} ${styles.seats}`}>
-          {PLAN_TERMS.map((term) => (
-            <div className={styles.gridHead} key={term}>
-              {t(TERM_LABEL[term])}
-            </div>
-          ))}
-
-          {PLAN_TERMS.map((term) => (
-            <div className={styles.field} key={term}>
-              <span className={styles.cellLabel}>{t(TERM_LABEL[term])}</span>
-              <input
-                className={styles.input}
-                inputMode="numeric"
-                aria-label={`${t('colSeat')} — ${t(TERM_LABEL[term])}`}
-                value={seats[term]}
-                onChange={(event) => setSeats((prev) => ({ ...prev, [term]: event.target.value }))}
-              />
-              <span className={styles.sub}>{monthlyEur(seats[term], term)}</span>
-            </div>
-          ))}
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="agency-limit">
+            {t('agencyLimit')}
+          </label>
+          <input
+            className={`${styles.input} ${styles.narrow}`}
+            id="agency-limit"
+            inputMode="numeric"
+            value={form.agencyLimit}
+            onChange={(event) => setForm((prev) => ({ ...prev, agencyLimit: event.target.value }))}
+          />
         </div>
       </section>
-    </div>
+    </form>
   );
 }
