@@ -277,3 +277,12 @@ export type TopupOrder = Prisma.TopupOrderModel
  * ожидания и автопродления нет — решения владельца (D-10).
  */
 export type TopPlacement = Prisma.TopPlacementModel
+/**
+ * Model VerificationRequest
+ * Снимки документов — данные особой категории (planning.md §5). Поэтому:
+ * в базе только ключи, файлы лежат в приватном префиксе `verification/`,
+ * наружу их не отдаёт ни бакет, ни ссылка — байты стримит API модератору
+ * с проверкой роли на каждый запрос. После решения снимки удаляются по
+ * сроку хранения (`RETENTION_VERIFICATION_DOCS_DAYS`).
+ */
+export type VerificationRequest = Prisma.VerificationRequestModel

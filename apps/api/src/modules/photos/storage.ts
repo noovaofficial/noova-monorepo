@@ -16,6 +16,13 @@ import { VARIANT_WIDTHS } from './images.js';
  */
 export const PENDING_PREFIX = 'pending';
 export const PUBLIC_PREFIX = 'public';
+/**
+ * Снимки для верификации личности. Третий префикс, а не `pending`, потому
+ * что у него другая судьба: `pending` существует, чтобы однажды переехать
+ * в `public`, а эти файлы публичными не станут никогда и удаляются по
+ * сроку хранения.
+ */
+export const VERIFICATION_PREFIX = 'verification';
 
 const client = new S3Client({
   endpoint: env.S3_ENDPOINT,
@@ -85,6 +92,11 @@ export function ownPhotoUrl(photoId: string, variant = 'card'): string {
 /** То же для модератора: он смотрит чужие анкеты, права другие. */
 export function moderationPhotoUrl(photoId: string, variant = 'card'): string {
   return `${apiBase()}/api/v1/moderation/photos/${photoId}/file?variant=${variant}`;
+}
+
+/** Снимок из заявки на верификацию. Отдаётся только персоналу, по сессии. */
+export function verificationPhotoUrl(requestId: string, kind: string): string {
+  return `${apiBase()}/api/v1/moderation/identity/${requestId}/photo/${kind}`;
 }
 
 function apiBase(): string {

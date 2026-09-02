@@ -52,6 +52,7 @@ import { LocationPicker } from '../LocationPicker';
 import { PhotoManager } from '../PhotoManager';
 import { ProfileStatusBadge } from '../ProfileStatusBadge';
 import { ServicePicker } from '../ServicePicker';
+import { VerificationCard } from '../VerificationCard';
 
 type Notice = { kind: 'ok' | 'error' | 'warn'; key: string } | null;
 
@@ -1071,6 +1072,10 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
           {/* Удаление отделено от остальных действий: это единственное
               необратимое из них, и оно не должно стоять в одном ряду
               с «Сохранить». */}
+          {/* Верификация личности — сразу за состоянием анкеты: она про
+              бейдж, а не про публикацию, и с ней ничего не блокируется. */}
+          <VerificationCard profileId={profile.id} published={profile.status === 'published'} />
+
           {/* ТОП — между состоянием и удалением: это платное действие над
               анкетой, и место ему рядом с публикацией, а не под удалением. */}
           <TopCard profileId={profile.id} published={profile.status === 'published'} />

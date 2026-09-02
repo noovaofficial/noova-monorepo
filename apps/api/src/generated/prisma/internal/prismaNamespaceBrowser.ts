@@ -85,7 +85,8 @@ export const ModelName = {
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
-  TopPlacement: 'TopPlacement'
+  TopPlacement: 'TopPlacement',
+  VerificationRequest: 'VerificationRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -599,6 +600,23 @@ export const TopPlacementScalarFieldEnum = {
 } as const
 
 export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
+
+
+export const VerificationRequestScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  faceKey: 'faceKey',
+  documentKey: 'documentKey',
+  togetherKey: 'togetherKey',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  reviewedByUserId: 'reviewedByUserId',
+  reviewedAt: 'reviewedAt',
+  submittedAt: 'submittedAt',
+  purgedAt: 'purgedAt'
+} as const
+
+export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
 
 
 export const SortOrder = {

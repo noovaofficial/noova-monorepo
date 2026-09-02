@@ -431,7 +431,8 @@ export const ModelName = {
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
-  TopPlacement: 'TopPlacement'
+  TopPlacement: 'TopPlacement',
+  VerificationRequest: 'VerificationRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -447,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3041,6 +3042,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VerificationRequest: {
+      payload: Prisma.$VerificationRequestPayload<ExtArgs>
+      fields: Prisma.VerificationRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        update: {
+          args: Prisma.VerificationRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationRequest>
+        }
+        groupBy: {
+          args: Prisma.VerificationRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3577,6 +3652,23 @@ export const TopPlacementScalarFieldEnum = {
 export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
 
 
+export const VerificationRequestScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  faceKey: 'faceKey',
+  documentKey: 'documentKey',
+  togetherKey: 'togetherKey',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  reviewedByUserId: 'reviewedByUserId',
+  reviewedAt: 'reviewedAt',
+  submittedAt: 'submittedAt',
+  purgedAt: 'purgedAt'
+} as const
+
+export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4078,6 +4170,20 @@ export type EnumTopPlacementStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 export type ListEnumTopPlacementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopPlacementStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'VerificationRequestStatus'
+ */
+export type EnumVerificationRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationRequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'VerificationRequestStatus[]'
+ */
+export type ListEnumVerificationRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationRequestStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4264,6 +4370,7 @@ export type GlobalOmitConfig = {
   listing?: Prisma.ListingOmit
   topupOrder?: Prisma.TopupOrderOmit
   topPlacement?: Prisma.TopPlacementOmit
+  verificationRequest?: Prisma.VerificationRequestOmit
 }
 
 /* Types for Logging */

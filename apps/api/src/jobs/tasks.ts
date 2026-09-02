@@ -9,6 +9,7 @@ import { expireTopPlacements } from '../modules/billing/top.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
 import { purgeContactReveals } from '../modules/profiles/retention.js';
+import { purgeVerificationDocuments } from '../modules/verification/service.js';
 import { postRevalidate } from '../plugins/revalidate.js';
 import { purgeAuthTokens, purgeDeletedAccounts, purgeModerationActions } from './retention.js';
 
@@ -67,6 +68,12 @@ export const JOBS: Job[] = [
     name: 'deleted-accounts',
     run: (prisma) =>
       purgeDeletedAccounts(prisma, env.ACCOUNT_DELETION_GRACE_DAYS, deletePhotoFiles),
+  },
+  {
+    // Снимки документов после решения по заявке (D-12): особая категория,
+    // хранится ровно столько, сколько нужно на разбор спора.
+    name: 'verification-docs',
+    run: (prisma) => purgeVerificationDocuments(prisma, env.RETENTION_VERIFICATION_DOCS_DAYS),
   },
   {
     name: 'moderation-actions',

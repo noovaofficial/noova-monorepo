@@ -14,6 +14,7 @@ import styles from './ModerationLog.module.css';
 const SUBJECT_LABEL: Record<string, string> = {
   photo: 'subjectPhoto',
   verification: 'subjectVerification',
+  identity: 'subjectIdentity',
   profile: 'subjectProfile',
   comment: 'subjectComment',
   user: 'subjectUser',

@@ -153,6 +153,7 @@ export const ModerationSubject = {
   photo: 'photo',
   profile: 'profile',
   verification: 'verification',
+  identity: 'identity',
   comment: 'comment',
   user: 'user'
 } as const
@@ -273,3 +274,12 @@ export const TopPlacementStatus = {
 } as const
 
 export type TopPlacementStatus = (typeof TopPlacementStatus)[keyof typeof TopPlacementStatus]
+
+
+export const VerificationRequestStatus = {
+  pending: 'pending',
+  approved: 'approved',
+  rejected: 'rejected'
+} as const
+
+export type VerificationRequestStatus = (typeof VerificationRequestStatus)[keyof typeof VerificationRequestStatus]

@@ -27,6 +27,7 @@ import { profileRoutes } from './modules/profiles/routes.js';
 import { promoRoutes } from './modules/promo/routes.js';
 import { reportRoutes } from './modules/reports/routes.js';
 import { serviceCatalogRoutes } from './modules/service-catalog/routes.js';
+import { verificationRoutes } from './modules/verification/routes.js';
 import presencePlugin from './plugins/presence.js';
 import prismaPlugin from './plugins/prisma.js';
 import redisPlugin from './plugins/redis.js';
@@ -136,6 +137,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(reportRoutes);
       await api.register(promoRoutes);
       await api.register(billingRoutes);
+      await api.register(verificationRoutes);
     },
     { prefix: '/api/v1' },
   );

@@ -1,4 +1,5 @@
 import type { PrismaClient } from '../generated/prisma/client.js';
+import { deleteVerificationPhotos } from '../modules/verification/service.js';
 
 /**
  * Одноразовые токены подтверждения почты и сброса пароля. Использованный или
@@ -87,6 +88,14 @@ export async function purgeUser(
   deleteFile: (storageKey: string) => Promise<void>,
 ): Promise<void> {
   const keys = user.profiles.flatMap((profile) => profile.photos.map((photo) => photo.storageKey));
+
+  // Снимки документов каскад не удаляет — он про строки. Оставить их значит
+  // хранить документы удалённого человека вечно (planning.md §5).
+  const requests = await prisma.verificationRequest.findMany({
+    where: { profile: { ownerId: user.id } },
+    select: { id: true },
+  });
+  for (const item of requests) await deleteVerificationPhotos(item.id);
 
   // Удаление файлов вынесено в `deletePhotoFiles` и используется всюду,
   // где исчезает фотография: два «своих» способа однажды разойдутся,

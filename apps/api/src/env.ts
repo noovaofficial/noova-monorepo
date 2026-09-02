@@ -79,6 +79,9 @@ const envSchema = z.object({
   RETENTION_AUTH_TOKENS_DAYS: z.coerce.number().int().min(1).default(7),
   RETENTION_CONTACT_REVEALS_DAYS: z.coerce.number().int().min(1).default(365),
   RETENTION_MODERATION_ACTIONS_DAYS: z.coerce.number().int().min(1).default(365),
+  /** Снимки документов после решения по заявке. Данные особой категории:
+   *  срок короткий, спор о решении за это время успевают поднять. */
+  RETENTION_VERIFICATION_DOCS_DAYS: z.coerce.number().int().min(1).default(30),
 
   /**
    * Пейвол (payments.md, этап 3): публикация анкеты требует оплаченного

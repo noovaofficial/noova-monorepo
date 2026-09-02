@@ -52,7 +52,7 @@ function refuseSelfModeration(fastify: FastifyInstance, ownerId: string, moderat
 async function writeAction(
   fastify: FastifyInstance,
   moderatorId: string,
-  subjectType: 'photo' | 'verification' | 'user' | 'comment' | 'profile',
+  subjectType: 'photo' | 'verification' | 'identity' | 'user' | 'comment' | 'profile',
   subjectId: string,
   decision: 'approved' | 'rejected',
   reason?: string,
@@ -155,32 +155,42 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: { tags: ['moderation'], response: { 200: queueCountSchema } },
     },
     async () => {
-      const [photos, verifications, pendingComments, openReports, profileReports, urgentReports] =
-        await Promise.all([
-          fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
-          fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
-          fastify.prisma.profileComment.count({ where: { status: 'pending' } }),
-          // Жалоба на уже опубликованный комментарий — тоже работа модератора,
-          // и в счётчике она должна быть видна: иначе жалобы копятся молча,
-          // а владелице анкеты это единственный способ возразить.
-          fastify.prisma.commentReport.count({
-            where: { resolvedAt: null, comment: { status: 'published' } },
-          }),
-          fastify.prisma.profileReport.count({ where: { resolvedAt: null } }),
-          // Срочные считаем отдельно: они должны быть видны в шапке как
-          // отдельное число, а не растворяться в общем счётчике.
-          fastify.prisma.profileReport.count({
-            where: { resolvedAt: null, reason: { in: ['underage', 'coercion'] } },
-          }),
-        ]);
+      const [
+        photos,
+        verifications,
+        identity,
+        pendingComments,
+        openReports,
+        profileReports,
+        urgentReports,
+      ] = await Promise.all([
+        fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
+        fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
+        // Заявки на верификацию личности — тоже незакрытая работа (D-12).
+        fastify.prisma.verificationRequest.count({ where: { status: 'pending' } }),
+        fastify.prisma.profileComment.count({ where: { status: 'pending' } }),
+        // Жалоба на уже опубликованный комментарий — тоже работа модератора,
+        // и в счётчике она должна быть видна: иначе жалобы копятся молча,
+        // а владелице анкеты это единственный способ возразить.
+        fastify.prisma.commentReport.count({
+          where: { resolvedAt: null, comment: { status: 'published' } },
+        }),
+        fastify.prisma.profileReport.count({ where: { resolvedAt: null } }),
+        // Срочные считаем отдельно: они должны быть видны в шапке как
+        // отдельное число, а не растворяться в общем счётчике.
+        fastify.prisma.profileReport.count({
+          where: { resolvedAt: null, reason: { in: ['underage', 'coercion'] } },
+        }),
+      ]);
       const comments = pendingComments + openReports;
       return {
         photos,
         verifications,
+        identity,
         comments,
         reports: profileReports,
         urgentReports,
-        total: photos + verifications + comments + profileReports,
+        total: photos + verifications + identity + comments + profileReports,
       };
     },
   );
@@ -692,7 +702,8 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         fastify.prisma.profile.update({
           where: { id: item.profileId },
           data: {
-            isVerified: true,
+            // Бейдж «Проверено» даёт только верификация личности (D-12):
+            // проверка анкеты решает, попадёт ли она в каталог, и не более.
             moderationNote: null,
             ...(profileStatus === 'pending_verification' ? { status: 'draft' as const } : {}),
           },
@@ -739,7 +750,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         // Анкета возвращается владельцу на доработку с видимой причиной.
         fastify.prisma.profile.update({
           where: { id: item.profileId },
-          data: { status: 'rejected', isVerified: false, moderationNote: request.body.reason },
+          data: { status: 'rejected', moderationNote: request.body.reason },
         }),
       ]);
 

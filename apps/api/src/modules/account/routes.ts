@@ -24,6 +24,7 @@ import { loadBillingConfig } from '../billing/config.js';
 import { hasVisibleListing } from '../billing/listing.js';
 import { toOwnPhoto } from '../photos/routes.js';
 import { deletePhotoFiles } from '../photos/storage.js';
+import { deleteVerificationPhotos } from '../verification/service.js';
 import { ownProfileSelect, toOwnProfile } from './mappers.js';
 
 /**
@@ -653,10 +654,11 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: { status: true },
       });
 
-      // Ключевое правило: без пройденной верификации анкета не публикуется.
-      // Проверка стоит на сервере, а не только в интерфейсе — обойти нельзя.
+      // Анкету публикует только тот, чью анкету проверил модератор. Это
+      // премодерация содержимого, а не верификация личности: бейдж
+      // «Проверено» на публикацию не влияет вовсе (D-12).
       if (verification?.status !== 'verified') {
-        throw fastify.httpErrors.forbidden('Публикация возможна только после верификации');
+        throw fastify.httpErrors.forbidden('Публикация возможна только после проверки анкеты');
       }
 
       // Пейвол (payments.md, этап 3): в выдачу попадает только оплаченное.
@@ -722,6 +724,14 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       for (const photo of photos) {
         await deletePhotoFiles(photo.storageKey);
       }
+
+      // Снимки верификации — там же и по той же причине: каскад удалит
+      // строки заявок, а файлы останутся в хранилище.
+      const requests = await fastify.prisma.verificationRequest.findMany({
+        where: { profileId: owned.id },
+        select: { id: true },
+      });
+      for (const item of requests) await deleteVerificationPhotos(item.id);
 
       await fastify.prisma.profile.delete({ where: { id: owned.id } });
 

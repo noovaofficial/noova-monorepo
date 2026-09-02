@@ -23,6 +23,10 @@ export const queryKeys = {
   queue: (kind?: string) => ['moderation-queue', kind ?? 'all'] as const,
   queueCount: () => ['moderation-queue-count'] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,
+  managedUser: (id: string) => ['managed-user', id] as const,
+  verifications: (status: string) => ['verifications', status] as const,
+  verification: (id: string) => ['verification', id] as const,
+  ownVerification: (profileId: string) => ['own-verification', profileId] as const,
   blockedProfiles: () => ['blocked-profiles'] as const,
   users: (query: string, blockedOnly = false, role?: string) =>
     ['moderation-users', query, blockedOnly ? 'blocked' : 'all', role ?? 'any'] as const,

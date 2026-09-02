@@ -22,6 +22,7 @@ import { BlockedProfiles } from '../BlockedProfiles';
 import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
 import { UserList } from '../UserList';
+import { VerificationRequests } from '../VerificationRequests';
 
 // Вкладки «пользователи» здесь больше нет: поиск человека переехал в свой
 // раздел «Все пользователи». Заблокированные остались — это результат работы
@@ -31,6 +32,7 @@ const TABS = [
   'report',
   'photo',
   'verification',
+  'identity',
   'comment',
   'blockedProfiles',
   'blocked',
@@ -41,6 +43,7 @@ const TAB_LABELS: Record<Tab, string> = {
   all: 'tabAll',
   photo: 'tabPhotos',
   verification: 'tabVerifications',
+  identity: 'tabIdentity',
   comment: 'tabComments',
   report: 'tabReports',
   blockedProfiles: 'tabBlockedProfiles',
@@ -141,7 +144,9 @@ export function ModerationQueue() {
 
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
 
-      {tab === 'blockedProfiles' ? (
+      {tab === 'identity' ? (
+        <VerificationRequests />
+      ) : tab === 'blockedProfiles' ? (
         <BlockedProfiles />
       ) : tab === 'blocked' ? (
         <UserList blockedOnly />

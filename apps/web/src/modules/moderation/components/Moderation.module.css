@@ -313,3 +313,78 @@
   flex-wrap: wrap;
   padding: var(--space4) 0;
 }
+
+/* Снимки заявки на верификацию: три в ряд, на телефоне — в столбик.
+   Крупно: модератор должен разобрать надпись в документе, а не гадать. */
+.identityPhotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space4);
+  margin-bottom: var(--space5);
+}
+
+.identityPhoto {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+}
+
+.identityPhoto img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.identityCaption {
+  padding: var(--space3) var(--space4);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+/* Карточка пользователя: подпись слева, значение справа. */
+.userRows {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 var(--space6);
+  padding: var(--space4) var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.userRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space4);
+  padding: var(--space3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.userRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.userRow:first-child {
+  padding-top: 0;
+}
+
+.userLabel {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.userValue {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.userSection {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space3);
+}

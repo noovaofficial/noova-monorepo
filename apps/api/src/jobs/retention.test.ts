@@ -66,7 +66,11 @@ describe('purgeDeletedAccounts', () => {
       order.push('row');
     });
     // biome-ignore lint/suspicious/noExplicitAny: подменяем используемый кусок клиента
-    const prisma = { user: { findMany, delete: del } } as any;
+    const prisma = {
+      user: { findMany, delete: del },
+      // Снимки верификации ищутся тем же проходом — заявок у этой учётки нет.
+      verificationRequest: { findMany: vi.fn().mockResolvedValue([]) },
+    } as any;
 
     const removed = await purgeDeletedAccounts(
       prisma,
@@ -94,7 +98,10 @@ describe('purgeDeletedAccounts', () => {
       .mockResolvedValue([{ id: 'u1', profiles: [{ photos: [{ storageKey: 'public/p1' }] }] }]);
     const del = vi.fn().mockResolvedValue({});
     // biome-ignore lint/suspicious/noExplicitAny: см. выше
-    const prisma = { user: { findMany, delete: del } } as any;
+    const prisma = {
+      user: { findMany, delete: del },
+      verificationRequest: { findMany: vi.fn().mockResolvedValue([]) },
+    } as any;
 
     await expect(
       purgeDeletedAccounts(prisma, 14, async () => {

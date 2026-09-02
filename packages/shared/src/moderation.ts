@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { userRoleSchema } from './auth';
 import { commentQueueItemSchema } from './comment';
+import { slugSchema } from './common';
 import { listingKindSchema, verificationStatusSchema } from './profile';
 import { profileReportItemSchema } from './report';
 
@@ -8,6 +9,7 @@ export const moderationSubjectSchema = z.enum([
   'photo',
   'profile',
   'verification',
+  'identity',
   'comment',
   'user',
 ]);
@@ -73,6 +75,8 @@ export type QueueQuery = z.infer<typeof queueQuerySchema>;
 export const queueCountSchema = z.object({
   photos: z.number().int().nonnegative(),
   verifications: z.number().int().nonnegative(),
+  /** Заявки на верификацию личности, ждущие решения (D-12). */
+  identity: z.number().int().nonnegative(),
   /** Ожидающие проверки комментарии плюс жалобы на уже опубликованные. */
   comments: z.number().int().nonnegative(),
   /** Незакрытые жалобы на анкеты. */
@@ -256,3 +260,81 @@ export const blockedProfilesQuerySchema = z.object({
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50),
 });
+
+// --- Верификация личности (D-12) --------------------------------------------
+
+/** Три снимка: лицо, документ, лицо вместе с документом. Порядок — как в форме. */
+export const VERIFICATION_PHOTO_KINDS = ['face', 'document', 'together'] as const;
+export type VerificationPhotoKind = (typeof VERIFICATION_PHOTO_KINDS)[number];
+export const verificationPhotoKindSchema = z.enum(VERIFICATION_PHOTO_KINDS);
+
+export const verificationRequestStatusSchema = z.enum(['pending', 'approved', 'rejected']);
+export type VerificationRequestStatus = z.infer<typeof verificationRequestStatusSchema>;
+
+/** Что видит владелица анкеты о своей заявке. Снимков здесь нет: свои
+ *  документы она уже видела, а лишний путь к ним — лишний риск. */
+export const ownVerificationSchema = z.object({
+  status: verificationRequestStatusSchema.nullable(),
+  submittedAt: z.string().datetime().nullable(),
+  reviewedAt: z.string().datetime().nullable(),
+  rejectionReason: z.string().nullable(),
+});
+export type OwnVerification = z.infer<typeof ownVerificationSchema>;
+
+/** Строка в списке заявок у модератора. */
+export const verificationRequestSchema = z.object({
+  id: z.string(),
+  status: verificationRequestStatusSchema,
+  submittedAt: z.string().datetime(),
+  reviewedAt: z.string().datetime().nullable(),
+  rejectionReason: z.string().nullable(),
+  profile: z.object({
+    id: z.string(),
+    slug: slugSchema,
+    displayName: z.string(),
+    cityName: z.string(),
+    kind: listingKindSchema,
+    isVerified: z.boolean(),
+  }),
+  ownerEmail: z.string(),
+});
+export type VerificationRequestItem = z.infer<typeof verificationRequestSchema>;
+
+/** Заявка целиком: то же плюс адреса снимков через API. */
+export const verificationRequestDetailSchema = verificationRequestSchema.extend({
+  photos: z.record(verificationPhotoKindSchema, z.string()),
+  /** Снимки удалены по сроку хранения — решение осталось, файлов нет. */
+  isPurged: z.boolean(),
+});
+export type VerificationRequestDetail = z.infer<typeof verificationRequestDetailSchema>;
+
+/**
+ * Пользователь целиком — для страницы в модерации. К списочным полям
+ * добавлены тип размещения, подписка и анкеты: за этим на страницу и идут.
+ */
+export const managedUserDetailSchema = managedUserSchema.extend({
+  advertiserKind: z.enum(['individual', 'agency', 'salon']).nullable(),
+  locale: z.string(),
+  lastLoginAt: z.string().datetime().nullable(),
+  deletionRequestedAt: z.string().datetime().nullable(),
+  subscription: z
+    .object({
+      status: z.enum(['active', 'grace', 'expired']),
+      kind: z.enum(['individual', 'agency', 'salon']),
+      term: z.enum(['m1', 'm6', 'm12']),
+      expiresAt: z.string().datetime(),
+    })
+    .nullable(),
+  profiles: z.array(
+    z.object({
+      id: z.string(),
+      slug: slugSchema,
+      displayName: z.string(),
+      status: z.string(),
+      cityName: z.string(),
+      isVerified: z.boolean(),
+      isFeatured: z.boolean(),
+    }),
+  ),
+});
+export type ManagedUserDetail = z.infer<typeof managedUserDetailSchema>;

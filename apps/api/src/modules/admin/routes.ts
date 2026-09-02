@@ -108,6 +108,34 @@ async function resolveSubjects(
     }
   }
 
+  // Решение по личности: показываем анкету, к которой относится заявка, —
+  // сам идентификатор заявки в журнале ничего не говорит.
+  const identityIds = byType.get('identity') ?? [];
+  if (identityIds.length > 0) {
+    const requests = await fastify.prisma.verificationRequest.findMany({
+      where: { id: { in: identityIds } },
+      select: {
+        id: true,
+        profile: {
+          select: {
+            id: true,
+            displayName: true,
+            city: { select: { name: true } },
+            owner: { select: { email: true } },
+          },
+        },
+      },
+    });
+    for (const item of requests) {
+      found.set(key('identity', item.id), {
+        title: item.profile.displayName,
+        accountEmail: item.profile.owner.email,
+        profileId: item.profile.id,
+        cityName: item.profile.city.name,
+      });
+    }
+  }
+
   const userIds = byType.get('user') ?? [];
   if (userIds.length > 0) {
     const users = await fastify.prisma.user.findMany({

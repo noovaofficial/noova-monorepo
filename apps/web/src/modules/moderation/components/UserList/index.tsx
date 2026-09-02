@@ -14,6 +14,7 @@ import {
   unblockUser,
   verifyUserEmail,
 } from '@/modules/moderation/api';
+import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
@@ -193,7 +194,11 @@ export function UserList({
             return (
               <div className={styles.staffRow} key={user.id}>
                 <div className={styles.staffMain}>
-                  <span className={styles.staffEmail}>{user.email}</span>
+                  {/* Почта — ссылка: страница отвечает на «что у него»,
+                      список отвечает на «кто это». */}
+                  <Link className={styles.staffEmail} href={`/moderation/users/${user.id}`}>
+                    {user.email}
+                  </Link>
                   <span className={styles.staffMeta}>
                     {user.nickname ? `${user.nickname} · ` : ''}
                     {user.role} · {t('userProfiles', { count: user.profileCount })}

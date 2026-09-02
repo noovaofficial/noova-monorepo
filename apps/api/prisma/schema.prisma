@@ -132,7 +132,10 @@ enum PubicHair {
 enum ModerationSubject {
   photo
   profile
+  /// Проверка анкеты перед публикацией.
   verification
+  /// Заявка на верификацию личности (D-12) — другое решение, другой журнал.
+  identity
   comment
   user
 }
@@ -417,6 +420,7 @@ model Profile {
   /// фильтра «ТОП» без джойна.
   isFeatured     Boolean   @default(false)
   topPlacement   TopPlacement?
+  verificationRequests VerificationRequest[]
   isVerified     Boolean   @default(false)
   lastSeenAt     DateTime?
   publishedAt    DateTime?
@@ -1031,4 +1035,42 @@ model TopPlacement {
   updatedAt DateTime @updatedAt
 
   @@index([status, expiresAt])
+}
+
+/// Заявка на верификацию личности. Отдельно от `VerificationCase`: та —
+/// проверка самой анкеты перед публикацией, эта — подтверждение личности
+/// ради бейджа «Проверено». Верификация публикацию не открывает и не
+/// закрывает (решение владельца, D-12).
+enum VerificationRequestStatus {
+  pending
+  approved
+  rejected
+}
+
+/// Снимки документов — данные особой категории (planning.md §5). Поэтому:
+/// в базе только ключи, файлы лежат в приватном префиксе `verification/`,
+/// наружу их не отдаёт ни бакет, ни ссылка — байты стримит API модератору
+/// с проверкой роли на каждый запрос. После решения снимки удаляются по
+/// сроку хранения (`RETENTION_VERIFICATION_DOCS_DAYS`).
+model VerificationRequest {
+  id        String  @id @default(cuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  /// Лицо, документ, лицо вместе с документом.
+  faceKey     String
+  documentKey String
+  togetherKey String
+
+  status           VerificationRequestStatus @default(pending)
+  rejectionReason  String?
+  reviewedByUserId String?
+  reviewedAt       DateTime?
+  submittedAt      DateTime                  @default(now())
+  /// Когда снимки удалены из хранилища. Заявка остаётся как след решения,
+  /// файлы — нет.
+  purgedAt         DateTime?
+
+  @@index([status, submittedAt])
+  @@index([profileId, submittedAt])
 }

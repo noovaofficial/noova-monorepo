@@ -8,11 +8,14 @@ import {
   type Locale,
   type OwnPhoto,
   type OwnProfile,
+  type OwnVerification,
   ownPhotoSchema,
   ownProfileSchema,
+  ownVerificationSchema,
   type ServiceGroup,
   serviceGroupSchema,
   type UpdateProfileInput,
+  type VerificationPhotoKind,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -43,7 +46,11 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
       // Заголовок ставим только когда есть тело: на POST без тела Fastify
       // отвечает «Body cannot be empty when content-type is set to
       // application/json». Под это попадают publish, pause и submit.
-      ...(init.body === undefined ? {} : { 'content-type': 'application/json' }),
+      // FormData исключён: границу multipart знает только браузер, и
+      // подставленный нами content-type сломал бы разбор на сервере.
+      ...(init.body === undefined || init.body instanceof FormData
+        ? {}
+        : { 'content-type': 'application/json' }),
       ...init.headers,
     },
     // Кабинет всегда работает от имени пользователя — куку сессии слать обязательно.
@@ -173,6 +180,27 @@ export function reorderPhotos(profileId: string, ids: string[]): Promise<OwnPhot
 
 export function submitProfile(id: string): Promise<OwnProfile> {
   return call(`/me/profiles/${id}/submit`, ownProfileSchema, { method: 'POST' });
+}
+
+/** Состояние заявки на верификацию личности (D-12). */
+export function fetchOwnVerification(profileId: string): Promise<OwnVerification> {
+  return call(`/me/profiles/${profileId}/verification`, ownVerificationSchema);
+}
+
+/**
+ * Подача заявки: три снимка одним запросом. content-type ставит браузер —
+ * он один знает границу multipart.
+ */
+export async function submitVerification(
+  profileId: string,
+  files: Record<VerificationPhotoKind, File>,
+): Promise<OwnVerification> {
+  const form = new FormData();
+  for (const [kind, file] of Object.entries(files)) form.append(kind, file);
+  return call(`/me/profiles/${profileId}/verification`, ownVerificationSchema, {
+    method: 'POST',
+    body: form,
+  });
 }
 
 export function publishProfile(id: string): Promise<OwnProfile> {

@@ -3,8 +3,10 @@ import {
   blockedProfileSchema,
   type CreateStaffInput,
   type ManagedUser,
+  type ManagedUserDetail,
   type ModeratedProfile,
   type ModerationLogEntry,
+  managedUserDetailSchema,
   managedUserSchema,
   moderatedProfileSchema,
   moderationLogEntrySchema,
@@ -17,6 +19,10 @@ import {
   type StaffMember,
   staffMemberSchema,
   type UserRole,
+  type VerificationRequestDetail,
+  type VerificationRequestItem,
+  verificationRequestDetailSchema,
+  verificationRequestSchema,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -221,3 +227,33 @@ export function setStaffBlocked(id: string, blocked: boolean): Promise<StaffMemb
     body: JSON.stringify({ blocked }),
   });
 }
+
+/** Пользователь целиком: тип, подписка, баланс, анкеты. */
+export const fetchUserDetail = (id: string): Promise<ManagedUserDetail> =>
+  call(`/moderation/users/${id}`, managedUserDetailSchema);
+
+/** Заявки на верификацию личности. Без статуса — ждущие решения. */
+export function fetchVerifications(
+  status: 'pending' | 'approved' | 'rejected' = 'pending',
+  cursor: string | null = null,
+): Promise<Page<VerificationRequestItem>> {
+  const params = new URLSearchParams({ status });
+  if (cursor) params.set('cursor', cursor);
+  return call(`/moderation/identity?${params}`, pageSchema(verificationRequestSchema));
+}
+
+export const fetchVerification = (id: string): Promise<VerificationRequestDetail> =>
+  call(`/moderation/identity/${id}`, verificationRequestDetailSchema);
+
+/** Решения по личности. Имена отличаются от `approveVerification` намеренно:
+ *  то — проверка анкеты перед публикацией, это — бейдж (D-12). */
+export const approveIdentity = (id: string): Promise<VerificationRequestDetail> =>
+  call(`/moderation/identity/${id}/approve`, verificationRequestDetailSchema, {
+    method: 'POST',
+  });
+
+export const rejectIdentity = (id: string, reason: string): Promise<VerificationRequestDetail> =>
+  call(`/moderation/identity/${id}/reject`, verificationRequestDetailSchema, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
