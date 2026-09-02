@@ -29,7 +29,13 @@ import {
   PaymentoError,
   parseCallback,
 } from './paymento.js';
-import { buyTop, TopFullError, TopNotPublishedError, topState } from './top.js';
+import {
+  buyTop,
+  TopAlreadyActiveError,
+  TopFullError,
+  TopNotPublishedError,
+  topState,
+} from './top.js';
 import {
   createTopupOrder,
   settleCallback,
@@ -220,8 +226,9 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
   );
 
   /**
-   * Покупка недели в ТОПе или продление. Цена и число мест — из прайса.
-   * Листа ожидания нет: мест нет — 409, и человек пробует позже (D-10).
+   * Покупка недели в ТОПе. Цена и число мест — из прайса. Листа ожидания
+   * нет: мест нет — 409, и человек пробует позже (D-10). Пока место
+   * активно, вторая покупка тоже 409 (D-11).
    */
   fastify.post(
     '/billing/top',
@@ -253,6 +260,11 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
         fastify.revalidate([PROFILES_TAG, ...(profile ? [profileTag(profile.slug)] : [])]);
         return result;
       } catch (error) {
+        if (error instanceof TopAlreadyActiveError) {
+          throw fastify.httpErrors.conflict(
+            `Анкета уже в ТОПе до ${error.expiresAt.toISOString()}`,
+          );
+        }
         if (error instanceof TopFullError) {
           throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
         }

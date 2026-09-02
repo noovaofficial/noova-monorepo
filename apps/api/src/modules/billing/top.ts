@@ -5,8 +5,11 @@ import { applyMovement } from './wallet.js';
 
 /**
  * ТОП (payments.md §3.4, D-10): ограниченное число мест, неделя за раз,
- * без листа ожидания и автопродления. Место — одна строка на анкету:
- * продление сдвигает срок, повторная покупка после истечения оживляет её.
+ * без листа ожидания и автопродления.
+ *
+ * Пока место активно, купить его снова нельзя (D-11): недели не
+ * складываются, и место занимает ровно одну неделю. Купить заново можно
+ * после истечения — тогда та же строка оживает с новым сроком.
  *
  * `Profile.isFeatured` — производная: ставится здесь, снимается задачей.
  * По ней работают сортировка каталога и фильтр «ТОП», без джойна.
@@ -18,6 +21,13 @@ export class TopFullError extends Error {
   constructor(readonly slots: number) {
     super('Все места в ТОПе заняты');
     this.name = 'TopFullError';
+  }
+}
+
+export class TopAlreadyActiveError extends Error {
+  constructor(readonly expiresAt: Date) {
+    super('Анкета уже в ТОПе');
+    this.name = 'TopAlreadyActiveError';
   }
 }
 
@@ -77,9 +87,9 @@ export type TopPurchase = {
 };
 
 /**
- * Покупка или продление. Всё в одной транзакции под замком на строке
- * настроек: два человека, берущие последнее место одновременно, встанут в
- * очередь, и второму честно откажут, а не выдадут семнадцатое.
+ * Покупка недели. Всё в одной транзакции под замком на строке настроек:
+ * два человека, берущие последнее место одновременно, встанут в очередь,
+ * и второму честно откажут, а не выдадут семнадцатое.
  */
 export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<BuyTopResult> {
   const now = purchase.now ?? new Date();
@@ -97,13 +107,15 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
     if (profile.status !== 'published') throw new TopNotPublishedError();
 
     const current = profile.topPlacement;
-    const isActive = current !== null && current.status === 'active' && current.expiresAt > now;
-
-    // Продление места не занимает: считаем только чужие активные.
-    if (!isActive) {
-      const taken = await tx.topPlacement.count({ where: activeWhere(now) });
-      if (taken >= purchase.slots) throw new TopFullError(purchase.slots);
+    // Недели не складываются (D-11): пока место активно, вторая покупка
+    // отклоняется. Проверка на сервере, а не только в интерфейсе: кнопка
+    // защищает от случайного нажатия, а не от повторного запроса.
+    if (current !== null && current.status === 'active' && current.expiresAt > now) {
+      throw new TopAlreadyActiveError(current.expiresAt);
     }
+
+    const taken = await tx.topPlacement.count({ where: activeWhere(now) });
+    if (taken >= purchase.slots) throw new TopFullError(purchase.slots);
 
     const spend = await applyMovement(tx, {
       userId: purchase.userId,
@@ -111,16 +123,12 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
       gcAmount: -purchase.priceGc,
     });
 
-    const expiresAt = new Date((isActive ? current.expiresAt.getTime() : now.getTime()) + WEEK_MS);
+    // Срок всегда от сегодня: активного места здесь уже не бывает.
+    const expiresAt = new Date(now.getTime() + WEEK_MS);
     const placement = current
       ? await tx.topPlacement.update({
           where: { profileId: profile.id },
-          data: {
-            userId: purchase.userId,
-            status: 'active',
-            expiresAt,
-            ...(isActive ? {} : { startsAt: now }),
-          },
+          data: { userId: purchase.userId, status: 'active', startsAt: now, expiresAt },
         })
       : await tx.topPlacement.create({
           data: {

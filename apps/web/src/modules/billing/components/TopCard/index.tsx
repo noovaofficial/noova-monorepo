@@ -11,7 +11,8 @@ import styles from './TopCard.module.css';
 
 /**
  * Карточка ТОПа в редакторе анкеты (payments.md §3.4): в ТОПе ли анкета и
- * до какого числа, свободные места, покупка или продление недели.
+ * до какого числа, свободные места, покупка недели. Пока место активно,
+ * покупка не предлагается (D-11) — недели не складываются.
  * Сумма списания и остаток показываются до нажатия, как везде в биллинге.
  */
 export function TopCard({ profileId, published }: { profileId: string; published: boolean }) {
@@ -26,6 +27,10 @@ export function TopCard({ profileId, published }: { profileId: string; published
 
   const buy = useMutation({
     mutationFn: () => buyTop(profileId),
+    // Отказ означает, что состояние на экране устарело: место могли занять
+    // или неделя уже куплена в другой вкладке. Перечитываем — карточка
+    // перерисуется сама.
+    onError: () => queryClient.invalidateQueries({ queryKey: queryKeys.top() }),
     onSuccess: async (result) => {
       setConfirming(false);
       setDoneUntil(result.placement.expiresAt);
@@ -43,7 +48,9 @@ export function TopCard({ profileId, published }: { profileId: string; published
   const price = top.data.priceGc;
   const balance = wallet.data?.balanceGc;
   const date = (iso: string) => format.dateTime(new Date(iso), { dateStyle: 'long' });
-  const canBuy = published && (placement !== null || top.data.freeSlots > 0);
+  // Активное место — покупка недоступна (D-11). Купить снова можно, когда
+  // неделя выйдет: тогда `placements` его уже не вернёт.
+  const canBuy = published && placement === null && top.data.freeSlots > 0;
 
   const errorKey =
     buy.error instanceof BillingError
@@ -66,7 +73,9 @@ export function TopCard({ profileId, published }: { profileId: string; published
 
       <p className={styles.text}>
         {t('topText', { shown: top.data.slots, price })}{' '}
-        {t('topFree', { free: top.data.freeSlots, slots: top.data.slots })}
+        {placement
+          ? t('topActiveHint')
+          : t('topFree', { free: top.data.freeSlots, slots: top.data.slots })}
       </p>
 
       {doneUntil ? <p className={styles.ok}>{t('topDone', { date: date(doneUntil) })}</p> : null}
@@ -85,7 +94,7 @@ export function TopCard({ profileId, published }: { profileId: string; published
             setDoneUntil(null);
           }}
         >
-          {t(placement ? 'topExtend' : 'topBuy', { price })}
+          {t('topBuy', { price })}
         </Button>
       ) : null}
 
@@ -96,7 +105,7 @@ export function TopCard({ profileId, published }: { profileId: string; published
               <span>{t('activateConfirm', { gc: price, rest: balance - price })}</span>
               <div className={styles.actions}>
                 <Button disabled={buy.isPending} onClick={() => buy.mutate()}>
-                  {t(placement ? 'topExtendSubmit' : 'topBuySubmit')}
+                  {t('topBuySubmit')}
                 </Button>
                 <Button
                   variant="secondary"

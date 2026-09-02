@@ -767,12 +767,10 @@
     "kind_TOP": "TOP für eine Woche",
     "topTitle": "TOP",
     "topActiveUntil": "Im TOP bis {date}",
-    "topText": "Auf der Startseite erscheinen zufällige Profile aus dem TOP; insgesamt gibt es {shown} Plätze. Eine Woche kostet {price, number} GC; eine Verlängerung wird an die aktuelle Laufzeit angehängt.",
+    "topText": "Auf der Startseite erscheinen zufällige Profile aus dem TOP; insgesamt gibt es {shown} Plätze. Eine Woche kostet {price, number} GC.",
     "topFree": "Frei: {free, number} von {slots, number}.",
     "topBuy": "Für eine Woche ins TOP",
-    "topExtend": "TOP um eine Woche verlängern",
     "topBuySubmit": "Ins TOP",
-    "topExtendSubmit": "Verlängern",
     "topNotPublished": "TOP ist nur für ein veröffentlichtes Profil verfügbar.",
     "topFull": "Alle TOP-Plätze sind belegt. Es gibt keine Warteliste — Plätze werden nach Ablauf frei, versuchen Sie es später.",
     "topNotEnoughShort": "Nicht genug GlowCoin. Laden Sie Ihr Guthaben auf und versuchen Sie es erneut.",
@@ -784,7 +782,8 @@
     "topWeekLabel": "Woche, GC",
     "topSlotsLabel": "TOP-Plätze",
     "topShownLabel": "Auf der Startseite",
-    "eurShort": "≈ {amount, number, ::.##} €"
+    "eurShort": "≈ {amount, number, ::.##} €",
+    "topActiveHint": "Eine weitere Woche lässt sich kaufen, sobald die aktuelle endet."
   },
   "about": {
     "title": "Über das Projekt",
