@@ -270,3 +270,10 @@ export type Listing = Prisma.ListingModel
  * деньги, как и за журналом.
  */
 export type TopupOrder = Prisma.TopupOrderModel
+/**
+ * Model TopPlacement
+ * Место в ТОПе (payments.md §3.4). Одно на анкету: продление сдвигает
+ * `expiresAt`, а не заводит вторую строку. Мест ограниченное число, листа
+ * ожидания и автопродления нет — решения владельца (D-10).
+ */
+export type TopPlacement = Prisma.TopPlacementModel

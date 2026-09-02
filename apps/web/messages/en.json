@@ -76,7 +76,9 @@
     "showAllProfiles": "Show all {count} profiles",
     "showAllStudios": "Show all studios",
     "empty": "No profiles match these filters",
-    "emptyHint": "Try removing some filters."
+    "emptyHint": "Try removing some filters.",
+    "topSection": "TOP — {city}",
+    "topCount": "(random {shown} of {total})"
   },
   "card": {
     "verified": "Verified",
@@ -699,7 +701,6 @@
     "historyEmpty": "No transactions yet.",
     "kind_TOPUP": "Top-up",
     "kind_SPEND": "Listing activation",
-    "kind_RENEWAL": "Auto-renewal",
     "kind_ADJUSTMENT": "Adjustment",
     "activateTitle": "Listing",
     "activateText": "Choose a term. It is charged from your GlowCoin balance; profiles appear in the catalog once a moderator approves them.",
@@ -762,7 +763,28 @@
     "opsCsvFrom": "From",
     "opsCsvTo": "To",
     "opsCsvButton": "Download CSV",
-    "opsCsvFailed": "Could not export."
+    "opsCsvFailed": "Could not export.",
+    "kind_TOP": "TOP for a week",
+    "topTitle": "TOP",
+    "topActiveUntil": "In TOP until {date}",
+    "topText": "The home page shows random profiles from TOP; there are {shown} slots in total. A week costs {price, number} GC; extending adds to the current term.",
+    "topFree": "Free: {free, number} of {slots, number}.",
+    "topBuy": "Boost to TOP for a week",
+    "topExtend": "Extend TOP by a week",
+    "topBuySubmit": "Boost to TOP",
+    "topExtendSubmit": "Extend",
+    "topNotPublished": "TOP is available only for a published profile.",
+    "topFull": "All TOP slots are taken. There is no waitlist — slots free up as they expire, try again later.",
+    "topNotEnoughShort": "Not enough GlowCoin. Top up your balance and try again.",
+    "topDone": "Done. The profile is in TOP until {date}.",
+    "topFailed": "Failed. Please try again.",
+    "cancel": "Cancel",
+    "topSection": "TOP",
+    "topHint": "TOP slots are sold per week with no waitlist and no auto-renewal. The home page shows a random subset of the taken slots.",
+    "topWeekLabel": "Week, GC",
+    "topSlotsLabel": "TOP slots",
+    "topShownLabel": "Shown on home",
+    "eurShort": "≈ €{amount, number, ::.##}"
   },
   "about": {
     "title": "About the project",

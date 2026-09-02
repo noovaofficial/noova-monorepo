@@ -84,7 +84,8 @@ export const ModelName = {
   TopupTier: 'TopupTier',
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
-  TopupOrder: 'TopupOrder'
+  TopupOrder: 'TopupOrder',
+  TopPlacement: 'TopPlacement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -505,6 +506,9 @@ export const BillingSettingsScalarFieldEnum = {
   id: 'id',
   gcPerEur: 'gcPerEur',
   agencyProfileLimit: 'agencyProfileLimit',
+  topWeekGc: 'topWeekGc',
+  topSlots: 'topSlots',
+  topShown: 'topShown',
   updatedAt: 'updatedAt'
 } as const
 
@@ -556,7 +560,6 @@ export const ListingScalarFieldEnum = {
   activatedAt: 'activatedAt',
   expiresAt: 'expiresAt',
   reminderSentAt: 'reminderSentAt',
-  autoRenew: 'autoRenew',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -582,6 +585,20 @@ export const TopupOrderScalarFieldEnum = {
 } as const
 
 export type TopupOrderScalarFieldEnum = (typeof TopupOrderScalarFieldEnum)[keyof typeof TopupOrderScalarFieldEnum]
+
+
+export const TopPlacementScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  userId: 'userId',
+  status: 'status',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
 
 
 export const SortOrder = {

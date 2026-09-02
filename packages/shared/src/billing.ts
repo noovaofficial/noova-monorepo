@@ -55,6 +55,16 @@ export const billingConfigInputSchema = z.object({
     .refine(isAscending, { message: 'Пороги пополнения должны идти по возрастанию' }),
   /** Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07). */
   agencyProfileLimit: z.number().int().min(1).max(100),
+  /** ТОП (§3.4): неделя в GC, всего мест, сколько показывать на главной. */
+  top: z
+    .object({
+      weekGc: gcPriceSchema,
+      slots: z.number().int().min(1).max(200),
+      shown: z.number().int().min(1).max(50),
+    })
+    .refine((top) => top.shown <= top.slots, {
+      message: 'Показывать нельзя больше, чем мест',
+    }),
 });
 export type BillingConfigInput = z.infer<typeof billingConfigInputSchema>;
 
@@ -113,11 +123,13 @@ export const DEFAULT_BILLING_CONFIG: BillingConfigInput = {
     { eur: 300, bonusPercent: 50 },
   ],
   agencyProfileLimit: 8,
+  // Цена недели в ТОПе — заглушка до решения владельца; правится в админке.
+  top: { weekGc: 300, slots: 16, shown: 8 },
 };
 
 // --- Кошелёк и журнал (payments.md §5, этап 2) -----------------------------
 
-export const billingTransactionKindSchema = z.enum(['TOPUP', 'SPEND', 'RENEWAL', 'ADJUSTMENT']);
+export const billingTransactionKindSchema = z.enum(['TOPUP', 'SPEND', 'ADJUSTMENT', 'TOP']);
 export type BillingTransactionKind = z.infer<typeof billingTransactionKindSchema>;
 
 /** Запись журнала, как её видит владелец кошелька. Поставщика и оператора нет:
@@ -140,7 +152,7 @@ export const walletSchema = z.object({
 });
 export type Wallet = z.infer<typeof walletSchema>;
 
-export const listingStatusSchema = z.enum(['active', 'grace', 'expired', 'pending_topup']);
+export const listingStatusSchema = z.enum(['active', 'grace', 'expired']);
 export type ListingStatus = z.infer<typeof listingStatusSchema>;
 
 export const listingSchema = z.object({
@@ -260,3 +272,33 @@ export const billingOperationsSchema = z.object({
   transactions: z.array(adminTransactionSchema),
 });
 export type BillingOperations = z.infer<typeof billingOperationsSchema>;
+
+// --- ТОП (payments.md §3.4, D-10) ---------------------------------------------
+
+export const TOP_WEEK_DAYS = 7;
+
+export const topPlacementSchema = z.object({
+  profileId: z.string(),
+  status: z.enum(['active', 'expired']),
+  startsAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+});
+export type TopPlacement = z.infer<typeof topPlacementSchema>;
+
+/** Что нужно кабинету, чтобы предложить покупку: цена, места, свои анкеты в ТОПе. */
+export const topStateSchema = z.object({
+  priceGc: z.number().int().positive(),
+  slots: z.number().int().positive(),
+  freeSlots: z.number().int().nonnegative(),
+  placements: z.array(topPlacementSchema),
+});
+export type TopState = z.infer<typeof topStateSchema>;
+
+export const buyTopInputSchema = z.object({ profileId: z.string().min(1) });
+
+export const buyTopResultSchema = z.object({
+  placement: topPlacementSchema,
+  balanceGc: z.number().int().nonnegative(),
+  transaction: billingTransactionSchema,
+});
+export type BuyTopResult = z.infer<typeof buyTopResultSchema>;

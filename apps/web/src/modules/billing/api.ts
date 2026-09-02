@@ -6,7 +6,9 @@ import {
   adjustBalanceResultSchema,
   type BillingConfigInput,
   type BillingOperations,
+  type BuyTopResult,
   billingOperationsSchema,
+  buyTopResultSchema,
   type CreateTopupInput,
   type CreateTopupResult,
   createTopupResultSchema,
@@ -15,7 +17,9 @@ import {
   type PlanTerm,
   type PriceBook,
   priceBookSchema,
+  type TopState,
   type TopupOrder,
+  topStateSchema,
   topupOrderSchema,
   type Wallet,
   walletSchema,
@@ -117,3 +121,13 @@ export async function downloadTransactionsCsv(from: string, to: string): Promise
   if (!response.ok) throw new BillingError('Не удалось выгрузить', response.status);
   return response.blob();
 }
+
+/** ТОП: цена, места и свои анкеты в нём. */
+export const fetchTopState = (): Promise<TopState> => call('/billing/top', topStateSchema);
+
+/** Неделя в ТОПе для анкеты — покупка или продление. */
+export const buyTop = (profileId: string): Promise<BuyTopResult> =>
+  call('/billing/top', buyTopResultSchema, {
+    method: 'POST',
+    body: JSON.stringify({ profileId }),
+  });

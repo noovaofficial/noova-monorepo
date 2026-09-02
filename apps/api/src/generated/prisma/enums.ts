@@ -238,8 +238,7 @@ export type PlanTerm = (typeof PlanTerm)[keyof typeof PlanTerm]
 export const ListingStatus = {
   active: 'active',
   grace: 'grace',
-  expired: 'expired',
-  pending_topup: 'pending_topup'
+  expired: 'expired'
 } as const
 
 export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus]
@@ -248,8 +247,8 @@ export type ListingStatus = (typeof ListingStatus)[keyof typeof ListingStatus]
 export const BillingTransactionKind = {
   TOPUP: 'TOPUP',
   SPEND: 'SPEND',
-  RENEWAL: 'RENEWAL',
-  ADJUSTMENT: 'ADJUSTMENT'
+  ADJUSTMENT: 'ADJUSTMENT',
+  TOP: 'TOP'
 } as const
 
 export type BillingTransactionKind = (typeof BillingTransactionKind)[keyof typeof BillingTransactionKind]
@@ -266,3 +265,11 @@ export const TopupOrderStatus = {
 } as const
 
 export type TopupOrderStatus = (typeof TopupOrderStatus)[keyof typeof TopupOrderStatus]
+
+
+export const TopPlacementStatus = {
+  active: 'active',
+  expired: 'expired'
+} as const
+
+export type TopPlacementStatus = (typeof TopPlacementStatus)[keyof typeof TopPlacementStatus]

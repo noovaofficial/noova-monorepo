@@ -5,11 +5,14 @@ import {
   adjustBalanceResultSchema,
   billingConfigInputSchema,
   billingOperationsSchema,
+  buyTopInputSchema,
+  buyTopResultSchema,
   createTopupInputSchema,
   createTopupResultSchema,
   currentListingSchema,
   priceBookSchema,
   toPriceBook,
+  topStateSchema,
   topupOrderSchema,
   walletSchema,
 } from '@noova/shared';
@@ -26,6 +29,7 @@ import {
   PaymentoError,
   parseCallback,
 } from './paymento.js';
+import { buyTop, TopFullError, TopNotPublishedError, topState } from './top.js';
 import {
   createTopupOrder,
   settleCallback,
@@ -191,6 +195,72 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       } catch (error) {
         if (error instanceof InsufficientBalanceError) {
           throw fastify.httpErrors.conflict(
+            `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
+          );
+        }
+        throw error;
+      }
+    },
+  );
+
+  // --- ТОП (payments.md §3.4) ----------------------------------------------
+
+  fastify.get(
+    '/billing/top',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['billing'], response: { 200: topStateSchema } },
+    },
+    async (request) => {
+      const { userId, role } = requireSession(request);
+      if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
+      const config = await loadBillingConfig(fastify.prisma);
+      return topState(fastify.prisma, userId, config.top);
+    },
+  );
+
+  /**
+   * Покупка недели в ТОПе или продление. Цена и число мест — из прайса.
+   * Листа ожидания нет: мест нет — 409, и человек пробует позже (D-10).
+   */
+  fastify.post(
+    '/billing/top',
+    {
+      onRequest: fastify.requireAuth,
+      schema: {
+        tags: ['billing'],
+        body: buyTopInputSchema,
+        response: { 200: buyTopResultSchema },
+      },
+    },
+    async (request) => {
+      const { userId, role } = requireSession(request);
+      if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
+      const config = await loadBillingConfig(fastify.prisma);
+
+      try {
+        const result = await buyTop(fastify.prisma, {
+          userId,
+          profileId: request.body.profileId,
+          priceGc: config.top.weekGc,
+          slots: config.top.slots,
+        });
+        const profile = await fastify.prisma.profile.findUnique({
+          where: { id: request.body.profileId },
+          select: { slug: true },
+        });
+        // Место в ТОПе видно на главной и в сортировке каталога сразу.
+        fastify.revalidate([PROFILES_TAG, ...(profile ? [profileTag(profile.slug)] : [])]);
+        return result;
+      } catch (error) {
+        if (error instanceof TopFullError) {
+          throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
+        }
+        if (error instanceof TopNotPublishedError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        if (error instanceof InsufficientBalanceError) {
+          throw fastify.httpErrors.paymentRequired(
             `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
           );
         }

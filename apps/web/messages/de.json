@@ -76,7 +76,9 @@
     "showAllProfiles": "Alle {count} Anzeigen anzeigen",
     "showAllStudios": "Alle Studios anzeigen",
     "empty": "Keine Anzeigen für diese Filter",
-    "emptyHint": "Entfernen Sie einige Filter."
+    "emptyHint": "Entfernen Sie einige Filter.",
+    "topSection": "TOP — {city}",
+    "topCount": "(zufällig {shown} von {total})"
   },
   "card": {
     "verified": "Verifiziert",
@@ -699,7 +701,6 @@
     "historyEmpty": "Noch keine Transaktionen.",
     "kind_TOPUP": "Aufladung",
     "kind_SPEND": "Aktivierung der Anzeige",
-    "kind_RENEWAL": "Automatische Verlängerung",
     "kind_ADJUSTMENT": "Korrektur",
     "activateTitle": "Platzierung",
     "activateText": "Laufzeit wählen. Abgebucht wird vom GlowCoin-Guthaben; Profile erscheinen im Katalog, sobald ein Moderator sie freigibt.",
@@ -762,7 +763,28 @@
     "opsCsvFrom": "Von",
     "opsCsvTo": "Bis",
     "opsCsvButton": "CSV herunterladen",
-    "opsCsvFailed": "Export fehlgeschlagen."
+    "opsCsvFailed": "Export fehlgeschlagen.",
+    "kind_TOP": "TOP für eine Woche",
+    "topTitle": "TOP",
+    "topActiveUntil": "Im TOP bis {date}",
+    "topText": "Auf der Startseite erscheinen zufällige Profile aus dem TOP; insgesamt gibt es {shown} Plätze. Eine Woche kostet {price, number} GC; eine Verlängerung wird an die aktuelle Laufzeit angehängt.",
+    "topFree": "Frei: {free, number} von {slots, number}.",
+    "topBuy": "Für eine Woche ins TOP",
+    "topExtend": "TOP um eine Woche verlängern",
+    "topBuySubmit": "Ins TOP",
+    "topExtendSubmit": "Verlängern",
+    "topNotPublished": "TOP ist nur für ein veröffentlichtes Profil verfügbar.",
+    "topFull": "Alle TOP-Plätze sind belegt. Es gibt keine Warteliste — Plätze werden nach Ablauf frei, versuchen Sie es später.",
+    "topNotEnoughShort": "Nicht genug GlowCoin. Laden Sie Ihr Guthaben auf und versuchen Sie es erneut.",
+    "topDone": "Fertig. Das Profil ist bis {date} im TOP.",
+    "topFailed": "Fehlgeschlagen. Bitte erneut versuchen.",
+    "cancel": "Abbrechen",
+    "topSection": "TOP",
+    "topHint": "TOP-Plätze werden pro Woche verkauft, ohne Warteliste und ohne automatische Verlängerung. Die Startseite zeigt eine zufällige Auswahl der belegten Plätze.",
+    "topWeekLabel": "Woche, GC",
+    "topSlotsLabel": "TOP-Plätze",
+    "topShownLabel": "Auf der Startseite",
+    "eurShort": "≈ {amount, number, ::.##} €"
   },
   "about": {
     "title": "Über das Projekt",

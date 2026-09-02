@@ -30,17 +30,26 @@ export type AggregateBillingSettings = {
 export type BillingSettingsAvgAggregateOutputType = {
   gcPerEur: number | null
   agencyProfileLimit: number | null
+  topWeekGc: number | null
+  topSlots: number | null
+  topShown: number | null
 }
 
 export type BillingSettingsSumAggregateOutputType = {
   gcPerEur: number | null
   agencyProfileLimit: number | null
+  topWeekGc: number | null
+  topSlots: number | null
+  topShown: number | null
 }
 
 export type BillingSettingsMinAggregateOutputType = {
   id: string | null
   gcPerEur: number | null
   agencyProfileLimit: number | null
+  topWeekGc: number | null
+  topSlots: number | null
+  topShown: number | null
   updatedAt: Date | null
 }
 
@@ -48,6 +57,9 @@ export type BillingSettingsMaxAggregateOutputType = {
   id: string | null
   gcPerEur: number | null
   agencyProfileLimit: number | null
+  topWeekGc: number | null
+  topSlots: number | null
+  topShown: number | null
   updatedAt: Date | null
 }
 
@@ -55,6 +67,9 @@ export type BillingSettingsCountAggregateOutputType = {
   id: number
   gcPerEur: number
   agencyProfileLimit: number
+  topWeekGc: number
+  topSlots: number
+  topShown: number
   updatedAt: number
   _all: number
 }
@@ -63,17 +78,26 @@ export type BillingSettingsCountAggregateOutputType = {
 export type BillingSettingsAvgAggregateInputType = {
   gcPerEur?: true
   agencyProfileLimit?: true
+  topWeekGc?: true
+  topSlots?: true
+  topShown?: true
 }
 
 export type BillingSettingsSumAggregateInputType = {
   gcPerEur?: true
   agencyProfileLimit?: true
+  topWeekGc?: true
+  topSlots?: true
+  topShown?: true
 }
 
 export type BillingSettingsMinAggregateInputType = {
   id?: true
   gcPerEur?: true
   agencyProfileLimit?: true
+  topWeekGc?: true
+  topSlots?: true
+  topShown?: true
   updatedAt?: true
 }
 
@@ -81,6 +105,9 @@ export type BillingSettingsMaxAggregateInputType = {
   id?: true
   gcPerEur?: true
   agencyProfileLimit?: true
+  topWeekGc?: true
+  topSlots?: true
+  topShown?: true
   updatedAt?: true
 }
 
@@ -88,6 +115,9 @@ export type BillingSettingsCountAggregateInputType = {
   id?: true
   gcPerEur?: true
   agencyProfileLimit?: true
+  topWeekGc?: true
+  topSlots?: true
+  topShown?: true
   updatedAt?: true
   _all?: true
 }
@@ -182,6 +212,9 @@ export type BillingSettingsGroupByOutputType = {
   id: string
   gcPerEur: number
   agencyProfileLimit: number
+  topWeekGc: number
+  topSlots: number
+  topShown: number
   updatedAt: Date
   _count: BillingSettingsCountAggregateOutputType | null
   _avg: BillingSettingsAvgAggregateOutputType | null
@@ -212,6 +245,9 @@ export type BillingSettingsWhereInput = {
   id?: Prisma.StringFilter<"BillingSettings"> | string
   gcPerEur?: Prisma.FloatFilter<"BillingSettings"> | number
   agencyProfileLimit?: Prisma.IntFilter<"BillingSettings"> | number
+  topWeekGc?: Prisma.IntFilter<"BillingSettings"> | number
+  topSlots?: Prisma.IntFilter<"BillingSettings"> | number
+  topShown?: Prisma.IntFilter<"BillingSettings"> | number
   updatedAt?: Prisma.DateTimeFilter<"BillingSettings"> | Date | string
 }
 
@@ -219,6 +255,9 @@ export type BillingSettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -229,6 +268,9 @@ export type BillingSettingsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.BillingSettingsWhereInput | Prisma.BillingSettingsWhereInput[]
   gcPerEur?: Prisma.FloatFilter<"BillingSettings"> | number
   agencyProfileLimit?: Prisma.IntFilter<"BillingSettings"> | number
+  topWeekGc?: Prisma.IntFilter<"BillingSettings"> | number
+  topSlots?: Prisma.IntFilter<"BillingSettings"> | number
+  topShown?: Prisma.IntFilter<"BillingSettings"> | number
   updatedAt?: Prisma.DateTimeFilter<"BillingSettings"> | Date | string
 }, "id">
 
@@ -236,6 +278,9 @@ export type BillingSettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BillingSettingsCountOrderByAggregateInput
   _avg?: Prisma.BillingSettingsAvgOrderByAggregateInput
@@ -251,6 +296,9 @@ export type BillingSettingsScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"BillingSettings"> | string
   gcPerEur?: Prisma.FloatWithAggregatesFilter<"BillingSettings"> | number
   agencyProfileLimit?: Prisma.IntWithAggregatesFilter<"BillingSettings"> | number
+  topWeekGc?: Prisma.IntWithAggregatesFilter<"BillingSettings"> | number
+  topSlots?: Prisma.IntWithAggregatesFilter<"BillingSettings"> | number
+  topShown?: Prisma.IntWithAggregatesFilter<"BillingSettings"> | number
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BillingSettings"> | Date | string
 }
 
@@ -258,6 +306,9 @@ export type BillingSettingsCreateInput = {
   id?: string
   gcPerEur: number
   agencyProfileLimit: number
+  topWeekGc?: number
+  topSlots?: number
+  topShown?: number
   updatedAt?: Date | string
 }
 
@@ -265,6 +316,9 @@ export type BillingSettingsUncheckedCreateInput = {
   id?: string
   gcPerEur: number
   agencyProfileLimit: number
+  topWeekGc?: number
+  topSlots?: number
+  topShown?: number
   updatedAt?: Date | string
 }
 
@@ -272,6 +326,9 @@ export type BillingSettingsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gcPerEur?: Prisma.FloatFieldUpdateOperationsInput | number
   agencyProfileLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  topWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
+  topSlots?: Prisma.IntFieldUpdateOperationsInput | number
+  topShown?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -279,6 +336,9 @@ export type BillingSettingsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gcPerEur?: Prisma.FloatFieldUpdateOperationsInput | number
   agencyProfileLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  topWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
+  topSlots?: Prisma.IntFieldUpdateOperationsInput | number
+  topShown?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -286,6 +346,9 @@ export type BillingSettingsCreateManyInput = {
   id?: string
   gcPerEur: number
   agencyProfileLimit: number
+  topWeekGc?: number
+  topSlots?: number
+  topShown?: number
   updatedAt?: Date | string
 }
 
@@ -293,6 +356,9 @@ export type BillingSettingsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gcPerEur?: Prisma.FloatFieldUpdateOperationsInput | number
   agencyProfileLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  topWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
+  topSlots?: Prisma.IntFieldUpdateOperationsInput | number
+  topShown?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -300,6 +366,9 @@ export type BillingSettingsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gcPerEur?: Prisma.FloatFieldUpdateOperationsInput | number
   agencyProfileLimit?: Prisma.IntFieldUpdateOperationsInput | number
+  topWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
+  topSlots?: Prisma.IntFieldUpdateOperationsInput | number
+  topShown?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -307,18 +376,27 @@ export type BillingSettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type BillingSettingsAvgOrderByAggregateInput = {
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
 }
 
 export type BillingSettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -326,12 +404,18 @@ export type BillingSettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type BillingSettingsSumOrderByAggregateInput = {
   gcPerEur?: Prisma.SortOrder
   agencyProfileLimit?: Prisma.SortOrder
+  topWeekGc?: Prisma.SortOrder
+  topSlots?: Prisma.SortOrder
+  topShown?: Prisma.SortOrder
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -348,6 +432,9 @@ export type BillingSettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   gcPerEur?: boolean
   agencyProfileLimit?: boolean
+  topWeekGc?: boolean
+  topSlots?: boolean
+  topShown?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["billingSettings"]>
 
@@ -355,6 +442,9 @@ export type BillingSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   gcPerEur?: boolean
   agencyProfileLimit?: boolean
+  topWeekGc?: boolean
+  topSlots?: boolean
+  topShown?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["billingSettings"]>
 
@@ -362,6 +452,9 @@ export type BillingSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   id?: boolean
   gcPerEur?: boolean
   agencyProfileLimit?: boolean
+  topWeekGc?: boolean
+  topSlots?: boolean
+  topShown?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["billingSettings"]>
 
@@ -369,10 +462,13 @@ export type BillingSettingsSelectScalar = {
   id?: boolean
   gcPerEur?: boolean
   agencyProfileLimit?: boolean
+  topWeekGc?: boolean
+  topSlots?: boolean
+  topShown?: boolean
   updatedAt?: boolean
 }
 
-export type BillingSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gcPerEur" | "agencyProfileLimit" | "updatedAt", ExtArgs["result"]["billingSettings"]>
+export type BillingSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gcPerEur" | "agencyProfileLimit" | "topWeekGc" | "topSlots" | "topShown" | "updatedAt", ExtArgs["result"]["billingSettings"]>
 
 export type $BillingSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BillingSettings"
@@ -387,6 +483,12 @@ export type $BillingSettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
      * Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07).
      */
     agencyProfileLimit: number
+    /**
+     * ТОП (payments.md §3.4): цена недели, всего мест и сколько показывать на главной.
+     */
+    topWeekGc: number
+    topSlots: number
+    topShown: number
     updatedAt: Date
   }, ExtArgs["result"]["billingSettings"]>
   composites: {}
@@ -814,6 +916,9 @@ export interface BillingSettingsFieldRefs {
   readonly id: Prisma.FieldRef<"BillingSettings", 'String'>
   readonly gcPerEur: Prisma.FieldRef<"BillingSettings", 'Float'>
   readonly agencyProfileLimit: Prisma.FieldRef<"BillingSettings", 'Int'>
+  readonly topWeekGc: Prisma.FieldRef<"BillingSettings", 'Int'>
+  readonly topSlots: Prisma.FieldRef<"BillingSettings", 'Int'>
+  readonly topShown: Prisma.FieldRef<"BillingSettings", 'Int'>
   readonly updatedAt: Prisma.FieldRef<"BillingSettings", 'DateTime'>
 }
     

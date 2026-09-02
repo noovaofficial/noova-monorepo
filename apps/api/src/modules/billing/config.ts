@@ -26,6 +26,9 @@ export async function seedBillingDefaults(prisma: PrismaClient): Promise<void> {
         id: SETTINGS_ID,
         gcPerEur: defaults.gcPerEur,
         agencyProfileLimit: defaults.agencyProfileLimit,
+        topWeekGc: defaults.top.weekGc,
+        topSlots: defaults.top.slots,
+        topShown: defaults.top.shown,
       },
       update: {},
     }),
@@ -60,6 +63,7 @@ export async function loadBillingConfig(prisma: PrismaClient): Promise<BillingCo
   return {
     gcPerEur: settings.gcPerEur,
     agencyProfileLimit: settings.agencyProfileLimit,
+    top: { weekGc: settings.topWeekGc, slots: settings.topSlots, shown: settings.topShown },
     prices,
     topupTiers:
       tiers.length > 0
@@ -84,8 +88,17 @@ export async function saveBillingConfig(
         id: SETTINGS_ID,
         gcPerEur: input.gcPerEur,
         agencyProfileLimit: input.agencyProfileLimit,
+        topWeekGc: input.top.weekGc,
+        topSlots: input.top.slots,
+        topShown: input.top.shown,
       },
-      update: { gcPerEur: input.gcPerEur, agencyProfileLimit: input.agencyProfileLimit },
+      update: {
+        gcPerEur: input.gcPerEur,
+        agencyProfileLimit: input.agencyProfileLimit,
+        topWeekGc: input.top.weekGc,
+        topSlots: input.top.slots,
+        topShown: input.top.shown,
+      },
     }),
     ...PLAN_KINDS.flatMap((kind) =>
       PLAN_TERMS.map((term) =>

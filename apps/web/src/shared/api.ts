@@ -128,6 +128,14 @@ export const PROFILES_TAG = 'profiles';
  *  должен совпадать с `BILLING_TAG` в plugins/revalidate.ts. */
 export const BILLING_TAG = 'billing';
 
+/** ТОП на главной: случайная выборка анкет с оплаченным местом (§3.4). */
+export function fetchTopProfiles(city: string, options?: FetchOptions): Promise<Page<ProfileCard>> {
+  return request(`/profiles/top?city=${encodeURIComponent(city)}`, pageSchema(profileCardSchema), {
+    tags: [PROFILES_TAG],
+    ...options,
+  });
+}
+
 /** Прайс размещения и лестница пополнений — для витрины и кассы. */
 export function fetchPriceBook(options?: FetchOptions): Promise<PriceBook> {
   return request('/billing/price-book', priceBookSchema, {

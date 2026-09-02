@@ -5,6 +5,7 @@ import type { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
 import { pushMail } from '../modules/auth/mail-queue.js';
 import { expireListings } from '../modules/billing/listing.js';
+import { expireTopPlacements } from '../modules/billing/top.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
 import { purgeContactReveals } from '../modules/profiles/retention.js';
@@ -31,6 +32,12 @@ export type Job = {
  * документов пока нет, чистить нечего. Задачу вернуть вместе с N-07.
  */
 export const JOBS: Job[] = [
+  {
+    // Истёкшие места в ТОПе освобождаются, флаг с анкет снимается (§3.4).
+    name: 'top-expiry',
+    run: (prisma) =>
+      expireTopPlacements(prisma, { revalidate: (tags) => postRevalidate(tags, log) }),
+  },
   {
     // Истечение размещений (payments.md, этап 5): активные → льготные дни →
     // снятие с публикации. Число — сколько размещений сменили состояние.

@@ -43,6 +43,7 @@ import {
 } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { ListingNotice } from '@/modules/billing/components/ListingNotice';
+import { TopCard } from '@/modules/billing/components/TopCard';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -1070,6 +1071,10 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
           {/* Удаление отделено от остальных действий: это единственное
               необратимое из них, и оно не должно стоять в одном ряду
               с «Сохранить». */}
+          {/* ТОП — между состоянием и удалением: это платное действие над
+              анкетой, и место ему рядом с публикацией, а не под удалением. */}
+          <TopCard profileId={profile.id} published={profile.status === 'published'} />
+
           <div className={`${styles.sidebarCard} ${styles.dangerCard}`}>
             <span className={styles.sidebarTitle}>{t('deleteProfileTitle')}</span>
 

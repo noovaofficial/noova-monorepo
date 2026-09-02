@@ -35,7 +35,6 @@ export type ListingMinAggregateOutputType = {
   activatedAt: Date | null
   expiresAt: Date | null
   reminderSentAt: Date | null
-  autoRenew: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -49,7 +48,6 @@ export type ListingMaxAggregateOutputType = {
   activatedAt: Date | null
   expiresAt: Date | null
   reminderSentAt: Date | null
-  autoRenew: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -63,7 +61,6 @@ export type ListingCountAggregateOutputType = {
   activatedAt: number
   expiresAt: number
   reminderSentAt: number
-  autoRenew: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -79,7 +76,6 @@ export type ListingMinAggregateInputType = {
   activatedAt?: true
   expiresAt?: true
   reminderSentAt?: true
-  autoRenew?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -93,7 +89,6 @@ export type ListingMaxAggregateInputType = {
   activatedAt?: true
   expiresAt?: true
   reminderSentAt?: true
-  autoRenew?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,7 +102,6 @@ export type ListingCountAggregateInputType = {
   activatedAt?: true
   expiresAt?: true
   reminderSentAt?: true
-  autoRenew?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -194,7 +188,6 @@ export type ListingGroupByOutputType = {
   activatedAt: Date
   expiresAt: Date
   reminderSentAt: Date | null
-  autoRenew: boolean
   createdAt: Date
   updatedAt: Date
   _count: ListingCountAggregateOutputType | null
@@ -229,7 +222,6 @@ export type ListingWhereInput = {
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
-  autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -244,7 +236,6 @@ export type ListingOrderByWithRelationInput = {
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -262,7 +253,6 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
-  autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -277,7 +267,6 @@ export type ListingOrderByWithAggregationInput = {
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ListingCountOrderByAggregateInput
@@ -297,7 +286,6 @@ export type ListingScalarWhereWithAggregatesInput = {
   activatedAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
-  autoRenew?: Prisma.BoolWithAggregatesFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
 }
@@ -310,7 +298,6 @@ export type ListingCreateInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutListingsInput
@@ -325,7 +312,6 @@ export type ListingUncheckedCreateInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -338,7 +324,6 @@ export type ListingUpdateInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutListingsNestedInput
@@ -353,7 +338,6 @@ export type ListingUncheckedUpdateInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -367,7 +351,6 @@ export type ListingCreateManyInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -380,7 +363,6 @@ export type ListingUpdateManyMutationInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -394,7 +376,6 @@ export type ListingUncheckedUpdateManyInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -418,7 +399,6 @@ export type ListingCountOrderByAggregateInput = {
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
-  autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -432,7 +412,6 @@ export type ListingMaxOrderByAggregateInput = {
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
-  autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -446,7 +425,6 @@ export type ListingMinOrderByAggregateInput = {
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrder
-  autoRenew?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -505,7 +483,6 @@ export type ListingCreateWithoutUserInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -518,7 +495,6 @@ export type ListingUncheckedCreateWithoutUserInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -561,7 +537,6 @@ export type ListingScalarWhereInput = {
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
-  autoRenew?: Prisma.BoolFilter<"Listing"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
 }
@@ -574,7 +549,6 @@ export type ListingCreateManyUserInput = {
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
-  autoRenew?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -587,7 +561,6 @@ export type ListingUpdateWithoutUserInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -600,7 +573,6 @@ export type ListingUncheckedUpdateWithoutUserInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -613,7 +585,6 @@ export type ListingUncheckedUpdateManyWithoutUserInput = {
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  autoRenew?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -629,7 +600,6 @@ export type ListingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   activatedAt?: boolean
   expiresAt?: boolean
   reminderSentAt?: boolean
-  autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -644,7 +614,6 @@ export type ListingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activatedAt?: boolean
   expiresAt?: boolean
   reminderSentAt?: boolean
-  autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -659,7 +628,6 @@ export type ListingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   activatedAt?: boolean
   expiresAt?: boolean
   reminderSentAt?: boolean
-  autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -674,12 +642,11 @@ export type ListingSelectScalar = {
   activatedAt?: boolean
   expiresAt?: boolean
   reminderSentAt?: boolean
-  autoRenew?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "kind" | "status" | "term" | "activatedAt" | "expiresAt" | "reminderSentAt" | "autoRenew" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+export type ListingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "kind" | "status" | "term" | "activatedAt" | "expiresAt" | "reminderSentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
 export type ListingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -708,11 +675,6 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      * новый срок напоминаем заново.
      */
     reminderSentAt: Date | null
-    /**
-     * Не используется: автопродления нет (D-09). Колонка остаётся до
-     * следующего выпуска — образ прошлого выпуска ещё читает её.
-     */
-    autoRenew: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["listing"]>
@@ -1147,7 +1109,6 @@ export interface ListingFieldRefs {
   readonly activatedAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly reminderSentAt: Prisma.FieldRef<"Listing", 'DateTime'>
-  readonly autoRenew: Prisma.FieldRef<"Listing", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Listing", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Listing", 'DateTime'>
 }

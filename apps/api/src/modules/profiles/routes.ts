@@ -13,6 +13,8 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { localeQuerySchema, translationSelect } from '../../i18n.js';
 import { toMoney, toProfileCard, toProfileDetail } from '../../mappers.js';
+import { loadBillingConfig } from '../billing/config.js';
+import { shuffle } from '../billing/top.js';
 import { publicUrl } from '../photos/storage.js';
 import { buildProfileWhere, decodeCursor, encodeCursor, orderByFor } from './query.js';
 
@@ -360,6 +362,39 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       return [...byCell.values()];
+    },
+  );
+
+  /**
+   * ТОП на главной: случайная выборка из анкет с оплаченным местом (§3.4).
+   * Сколько показывать — из настроек монетизации. Случайность на сервере:
+   * страница кэшируется, и порядок меняется с каждой пересборкой, так что
+   * за день каждую из анкет ТОПа увидят одинаково часто.
+   */
+  fastify.get(
+    '/profiles/top',
+    {
+      schema: {
+        tags: ['profiles'],
+        querystring: z.object({ city: z.string().optional() }).and(localeQuerySchema),
+        response: { 200: pageSchema(profileCardSchema) },
+      },
+    },
+    async (request) => {
+      const config = await loadBillingConfig(fastify.prisma);
+      const rows = await fastify.prisma.profile.findMany({
+        where: {
+          status: 'published',
+          isFeatured: true,
+          ...(request.query.city ? { city: { slug: request.query.city } } : {}),
+        },
+        // Мест немного (§3.4): берём все и тасуем — так выборка честная,
+        // а не «первые N по дате».
+        take: Math.max(config.top.slots, config.top.shown),
+        select: cardSelect(request.query.locale),
+      });
+      const picked = shuffle(rows).slice(0, config.top.shown);
+      return { items: picked.map(toProfileCard), nextCursor: null, total: rows.length };
     },
   );
 

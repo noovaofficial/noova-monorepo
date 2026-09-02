@@ -5,7 +5,13 @@ import { Button } from '@/design-system/components/Button';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
 import { PromoSlider } from '@/modules/catalog/components/PromoSlider';
 import { SectionHead } from '@/modules/catalog/components/SectionHead';
-import { fetchProfileCount, fetchProfiles, fetchPromo, safely } from '@/shared/api';
+import {
+  fetchProfileCount,
+  fetchProfiles,
+  fetchPromo,
+  fetchTopProfiles,
+  safely,
+} from '@/shared/api';
 import { requireCity } from '@/shared/city';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './page.module.css';
@@ -57,8 +63,9 @@ export default async function HomePage({ params }: Props) {
   const emptyPage = { items: [], nextCursor: null, total: null };
 
   const cityName = current.name;
-  const [promo, escorts, escortCount, massage, massageCount] = await Promise.all([
+  const [promo, top, escorts, escortCount, massage, massageCount] = await Promise.all([
     safely(fetchPromo(city, cache), [], 'promo'),
+    safely(fetchTopProfiles(city, cache), emptyPage, 'top'),
     safely(fetchProfiles({ kind: 'escort', city, limit: 20 }, cache), emptyPage, 'escorts'),
     safely(fetchProfileCount({ kind: 'escort', city: city }, cache), { total: 0 }, 'escortCount'),
     safely(fetchProfiles({ kind: 'massage', city, limit: 10 }, cache), emptyPage, 'massage'),
@@ -73,6 +80,23 @@ export default async function HomePage({ params }: Props) {
         <h1 className="visually-hidden">{th('escortSection', { city: cityName })}</h1>
         <PromoSlider slots={promo} />
       </section>
+
+      {/* ТОП: случайные анкеты из оплаченных мест (§3.4). Пустой блок не
+          рисуем — витрина без ТОПа не должна показывать пустой заголовок. */}
+      {top.items.length > 0 ? (
+        <section className={styles.section}>
+          <SectionHead
+            title={th('topSection', { city: cityName })}
+            count={th('topCount', {
+              shown: top.items.length,
+              total: top.total ?? top.items.length,
+            })}
+            moreHref={`/${city}/catalog/escort?featuredOnly=true`}
+            moreLabel={th('showAll')}
+          />
+          <ProfileGrid profiles={top.items} locale={locale as Locale} />
+        </section>
+      ) : null}
 
       <section className={styles.section}>
         {/* Город — в пути, а не в `?city=`: параметр каталог не читает (срез

@@ -762,6 +762,23 @@ export type EnumTopupOrderStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTopupOrderStatusFilter<$PrismaModel>
 }
 
+export type EnumTopPlacementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TopPlacementStatus | Prisma.EnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel> | $Enums.TopPlacementStatus
+}
+
+export type EnumTopPlacementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TopPlacementStatus | Prisma.EnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTopPlacementStatusWithAggregatesFilter<$PrismaModel> | $Enums.TopPlacementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1472,6 +1489,23 @@ export type NestedEnumTopupOrderStatusWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTopupOrderStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTopupOrderStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTopPlacementStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TopPlacementStatus | Prisma.EnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel> | $Enums.TopPlacementStatus
+}
+
+export type NestedEnumTopPlacementStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TopPlacementStatus | Prisma.EnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TopPlacementStatus[] | Prisma.ListEnumTopPlacementStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTopPlacementStatusWithAggregatesFilter<$PrismaModel> | $Enums.TopPlacementStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTopPlacementStatusFilter<$PrismaModel>
 }
 
 

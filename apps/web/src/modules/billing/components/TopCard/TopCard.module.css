@@ -1,0 +1,83 @@
+/* Повторяет карточку боковой панели редактора: ТОП — ещё одно состояние
+   анкеты, и выглядеть должен как её соседи. */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+}
+
+.title {
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.active {
+  margin: 0;
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  font-weight: 600;
+  background: var(--successSubtle);
+  color: var(--success);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+  color: var(--secondaryText);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.ok {
+  margin: 0;
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--successSubtle);
+  color: var(--success);
+}
+
+.err {
+  margin: 0;
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  font-size: var(--textSm);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.actions > * {
+  width: 100%;
+}
+
+.link {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}

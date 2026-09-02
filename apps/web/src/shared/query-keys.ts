@@ -37,6 +37,7 @@ export const queryKeys = {
   wallet: () => ['wallet'] as const,
   listing: () => ['listing'] as const,
   topupOrder: (id: string) => ['topup-order', id] as const,
+  top: () => ['top'] as const,
   billingOperations: (query: string) => ['billing-operations', query] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>

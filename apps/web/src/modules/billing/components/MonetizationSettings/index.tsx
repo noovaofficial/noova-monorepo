@@ -45,6 +45,9 @@ type FormState = {
   tiers: { eur: string; bonus: string }[];
   prices: Record<PlanKind, Record<PlanTerm, string>>;
   agencyLimit: string;
+  topWeek: string;
+  topSlots: string;
+  topShown: string;
 };
 
 function fromBook(book: PriceBook): FormState {
@@ -61,6 +64,9 @@ function fromBook(book: PriceBook): FormState {
       ]),
     ) as FormState['prices'],
     agencyLimit: String(book.agencyProfileLimit),
+    topWeek: String(book.top.weekGc),
+    topSlots: String(book.top.slots),
+    topShown: String(book.top.shown),
   };
 }
 
@@ -75,6 +81,7 @@ function toInput(form: FormState): BillingConfigInput {
       ]),
     ) as BillingConfigInput['prices'],
     agencyProfileLimit: num(form.agencyLimit),
+    top: { weekGc: num(form.topWeek), slots: num(form.topSlots), shown: num(form.topShown) },
   };
 }
 
@@ -154,6 +161,10 @@ function MonetizationForm({ initial }: { initial: PriceBook }) {
     if (gcPerEur <= 0 || limit <= 0) return '—';
     return t('perProfileShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] / limit });
   };
+
+  /** €-эквивалент недели по курсу — чтобы цена ТОПа читалась рядом с тарифами. */
+  const monthlyEurFlat = (gc: string): string =>
+    gcPerEur <= 0 ? '—' : t('eurShort', { amount: num(gc) / gcPerEur });
 
   const setPrice = (kind: PlanKind, term: PlanTerm, value: string) =>
     setForm((prev) => ({
@@ -332,6 +343,50 @@ function MonetizationForm({ initial }: { initial: PriceBook }) {
             value={form.agencyLimit}
             onChange={(event) => setForm((prev) => ({ ...prev, agencyLimit: event.target.value }))}
           />
+        </div>
+      </section>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{t('topSection')}</h2>
+        <p className={styles.hint}>{t('topHint')}</p>
+
+        <div className={styles.currencyRow}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="top-week">
+              {t('topWeekLabel')}
+            </label>
+            <input
+              className={styles.input}
+              id="top-week"
+              inputMode="numeric"
+              value={form.topWeek}
+              onChange={(event) => setForm((prev) => ({ ...prev, topWeek: event.target.value }))}
+            />
+            <span className={styles.sub}>{monthlyEurFlat(form.topWeek)}</span>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="top-slots">
+              {t('topSlotsLabel')}
+            </label>
+            <input
+              className={styles.input}
+              id="top-slots"
+              inputMode="numeric"
+              value={form.topSlots}
+              onChange={(event) => setForm((prev) => ({ ...prev, topSlots: event.target.value }))}
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="top-shown">
+              {t('topShownLabel')}
+            </label>
+            <input
+              className={styles.input}
+              id="top-shown"
+              inputMode="numeric"
+              value={form.topShown}
+              onChange={(event) => setForm((prev) => ({ ...prev, topShown: event.target.value }))}
+            />
+          </div>
         </div>
       </section>
     </form>

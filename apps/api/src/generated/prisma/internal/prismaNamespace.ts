@@ -430,7 +430,8 @@ export const ModelName = {
   TopupTier: 'TopupTier',
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
-  TopupOrder: 'TopupOrder'
+  TopupOrder: 'TopupOrder',
+  TopPlacement: 'TopPlacement'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -446,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "contactReveal" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2966,6 +2967,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TopPlacement: {
+      payload: Prisma.$TopPlacementPayload<ExtArgs>
+      fields: Prisma.TopPlacementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TopPlacementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TopPlacementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        findFirst: {
+          args: Prisma.TopPlacementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TopPlacementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        findMany: {
+          args: Prisma.TopPlacementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>[]
+        }
+        create: {
+          args: Prisma.TopPlacementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        createMany: {
+          args: Prisma.TopPlacementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TopPlacementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>[]
+        }
+        delete: {
+          args: Prisma.TopPlacementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        update: {
+          args: Prisma.TopPlacementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        deleteMany: {
+          args: Prisma.TopPlacementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TopPlacementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TopPlacementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>[]
+        }
+        upsert: {
+          args: Prisma.TopPlacementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopPlacementPayload>
+        }
+        aggregate: {
+          args: Prisma.TopPlacementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTopPlacement>
+        }
+        groupBy: {
+          args: Prisma.TopPlacementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TopPlacementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TopPlacementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TopPlacementCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3407,6 +3482,9 @@ export const BillingSettingsScalarFieldEnum = {
   id: 'id',
   gcPerEur: 'gcPerEur',
   agencyProfileLimit: 'agencyProfileLimit',
+  topWeekGc: 'topWeekGc',
+  topSlots: 'topSlots',
+  topShown: 'topShown',
   updatedAt: 'updatedAt'
 } as const
 
@@ -3458,7 +3536,6 @@ export const ListingScalarFieldEnum = {
   activatedAt: 'activatedAt',
   expiresAt: 'expiresAt',
   reminderSentAt: 'reminderSentAt',
-  autoRenew: 'autoRenew',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3484,6 +3561,20 @@ export const TopupOrderScalarFieldEnum = {
 } as const
 
 export type TopupOrderScalarFieldEnum = (typeof TopupOrderScalarFieldEnum)[keyof typeof TopupOrderScalarFieldEnum]
+
+
+export const TopPlacementScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  userId: 'userId',
+  status: 'status',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3973,6 +4064,20 @@ export type EnumTopupOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumTopupOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopupOrderStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'TopPlacementStatus'
+ */
+export type EnumTopPlacementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopPlacementStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TopPlacementStatus[]'
+ */
+export type ListEnumTopPlacementStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TopPlacementStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4158,6 +4263,7 @@ export type GlobalOmitConfig = {
   billingTransaction?: Prisma.BillingTransactionOmit
   listing?: Prisma.ListingOmit
   topupOrder?: Prisma.TopupOrderOmit
+  topPlacement?: Prisma.TopPlacementOmit
 }
 
 /* Types for Logging */
