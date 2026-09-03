@@ -68,6 +68,33 @@ export const billingConfigInputSchema = z.object({
 });
 export type BillingConfigInput = z.infer<typeof billingConfigInputSchema>;
 
+/** Верхняя граница разовой корректировки — защита от лишнего нуля в поле. */
+export const GC_ADJUST_LIMIT = 1_000_000;
+
+/**
+ * Потолок разовой корректировки баланса для модератора — по модулю, то есть
+ * и на начисление, и на списание. У админа потолка нет.
+ *
+ * Модератор правит баланс по обращениям в поддержку, а не распоряжается
+ * деньгами проекта: годовой тариф агентства (5990 GC) он выдать не должен ни
+ * по ошибке, ни намеренно. Значение по умолчанию — около трёх месяцев
+ * индивидуального размещения: на извинение за сорванную публикацию хватает,
+ * на подарок конкуренту — нет.
+ */
+export const DEFAULT_MODERATOR_ADJUST_LIMIT_GC = 500;
+
+/**
+ * Настройки, которые видит и правит только админка.
+ *
+ * Отдельно от `billingConfigInputSchema` намеренно: тот отдаётся публично в
+ * составе прайса (`GET /billing/price-book`), а внутренний предел прав
+ * сотрудника посетителю каталога показывать незачем.
+ */
+export const adminBillingConfigSchema = billingConfigInputSchema.extend({
+  moderatorAdjustLimitGc: z.number().int().min(0).max(GC_ADJUST_LIMIT),
+});
+export type AdminBillingConfig = z.infer<typeof adminBillingConfigSchema>;
+
 /**
  * Начисление за пополнение (payments.md §2.1): `eur × курс × (1 + бонус)`.
  * Считается, а не хранится: иначе в таблице можно было бы сохранить
@@ -87,6 +114,12 @@ export const priceBookSchema = billingConfigInputSchema.extend({
   topupTiers: z.array(topupTierSchema),
 });
 export type PriceBook = z.infer<typeof priceBookSchema>;
+
+/** Прайс для админки: публичный плюс внутренние настройки прав сотрудников. */
+export const adminPriceBookSchema = priceBookSchema.extend({
+  moderatorAdjustLimitGc: z.number().int().min(0).max(GC_ADJUST_LIMIT),
+});
+export type AdminPriceBook = z.infer<typeof adminPriceBookSchema>;
 
 export function toPriceBook(config: BillingConfigInput): PriceBook {
   return {
@@ -127,6 +160,13 @@ export const DEFAULT_BILLING_CONFIG: BillingConfigInput = {
   top: { weekGc: 300, slots: 16, shown: 8 },
 };
 
+/** Полный набор умолчаний, включая внутренние. Публичный `DEFAULT_BILLING_CONFIG`
+ *  оставлен как есть: им заполняется прайс, и лишнего поля в нём быть не должно. */
+export const DEFAULT_ADMIN_BILLING_CONFIG: AdminBillingConfig = {
+  ...DEFAULT_BILLING_CONFIG,
+  moderatorAdjustLimitGc: DEFAULT_MODERATOR_ADJUST_LIMIT_GC,
+};
+
 // --- Кошелёк и журнал (payments.md §5, этап 2) -----------------------------
 
 export const billingTransactionKindSchema = z.enum(['TOPUP', 'SPEND', 'ADJUSTMENT', 'TOP']);
@@ -158,7 +198,8 @@ export type ListingStatus = z.infer<typeof listingStatusSchema>;
 export const listingSchema = z.object({
   id: z.string(),
   kind: planKindSchema,
-  term: planTermSchema,
+  /** Купленный срок. `null` — размещение выдано акцией, а не куплено. */
+  term: planTermSchema.nullable(),
   status: listingStatusSchema,
   activatedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
@@ -169,9 +210,6 @@ export type Listing = z.infer<typeof listingSchema>;
 
 /** Обёртка, а не `nullable()` на верхнем уровне: пустой ответ — это `{ listing: null }`. */
 export const currentListingSchema = z.object({ listing: listingSchema.nullable() });
-
-/** Верхняя граница разовой корректировки — защита от лишнего нуля в поле. */
-export const GC_ADJUST_LIMIT = 1_000_000;
 
 /**
  * Ручная корректировка баланса администратором (`ADJUSTMENT`). Причина
@@ -188,6 +226,30 @@ export const adjustBalanceInputSchema = z.object({
   note: z.string().trim().min(3).max(500),
 });
 export type AdjustBalanceInput = z.infer<typeof adjustBalanceInputSchema>;
+
+/**
+ * Предел разовой корректировки для текущего сотрудника. `null` — предела нет
+ * (админ). Число — потолок по модулю, одинаковый на начисление и списание.
+ */
+export const adjustLimitSchema = z.object({
+  limitGc: z.number().int().min(0).nullable(),
+});
+export type AdjustLimit = z.infer<typeof adjustLimitSchema>;
+
+/**
+ * Укладывается ли сумма в предел сотрудника. `null` — предела нет (админ).
+ *
+ * По модулю: списание ограничено так же, как начисление. Разрешить забирать
+ * без предела, ограничив выдачу, значит оставить открытой ровно ту дверь,
+ * ради которой предел и вводился, — обнулить чужой баланс можно и по частям.
+ *
+ * Живёт в общем пакете, потому что нужна дважды: сервер ею отказывает, форма
+ * ею гасит кнопку. Разъедься эти две проверки — человек нажимал бы на
+ * доступную кнопку и получал отказ.
+ */
+export function isAdjustWithinLimit(gcAmount: number, limitGc: number | null): boolean {
+  return limitGc === null || Math.abs(gcAmount) <= limitGc;
+}
 
 export const adjustBalanceResultSchema = z.object({
   balanceGc: z.number().int().nonnegative(),

@@ -1,14 +1,15 @@
 'use client';
 
 import {
-  type BillingConfigInput,
-  billingConfigInputSchema,
+  type AdminBillingConfig,
+  type AdminPriceBook,
+  adminBillingConfigSchema,
+  gcToEur,
   grantedGc,
   PLAN_KINDS,
   PLAN_TERMS,
   type PlanKind,
   type PlanTerm,
-  type PriceBook,
   TERM_MONTHS,
 } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -48,9 +49,10 @@ type FormState = {
   topWeek: string;
   topSlots: string;
   topShown: string;
+  moderatorAdjustLimit: string;
 };
 
-function fromBook(book: PriceBook): FormState {
+function fromBook(book: AdminPriceBook): FormState {
   return {
     rate: String(book.gcPerEur),
     tiers: book.topupTiers.map((tier) => ({
@@ -67,10 +69,11 @@ function fromBook(book: PriceBook): FormState {
     topWeek: String(book.top.weekGc),
     topSlots: String(book.top.slots),
     topShown: String(book.top.shown),
+    moderatorAdjustLimit: String(book.moderatorAdjustLimitGc),
   };
 }
 
-function toInput(form: FormState): BillingConfigInput {
+function toInput(form: FormState): AdminBillingConfig {
   return {
     gcPerEur: num(form.rate),
     topupTiers: form.tiers.map((tier) => ({ eur: num(tier.eur), bonusPercent: num(tier.bonus) })),
@@ -79,9 +82,10 @@ function toInput(form: FormState): BillingConfigInput {
         kind,
         Object.fromEntries(PLAN_TERMS.map((term) => [term, num(form.prices[kind][term])])),
       ]),
-    ) as BillingConfigInput['prices'],
+    ) as AdminBillingConfig['prices'],
     agencyProfileLimit: num(form.agencyLimit),
     top: { weekGc: num(form.topWeek), slots: num(form.topSlots), shown: num(form.topShown) },
+    moderatorAdjustLimitGc: num(form.moderatorAdjustLimit),
   };
 }
 
@@ -127,7 +131,7 @@ export function MonetizationSettings() {
   return <MonetizationForm key={config.dataUpdatedAt} initial={config.data} />;
 }
 
-function MonetizationForm({ initial }: { initial: PriceBook }) {
+function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
   const t = useTranslations('billing');
   // Типы размещения подписаны так же, как при регистрации и в настройках:
   // это один и тот же выбор, и синонимы читались бы как разные тарифы.
@@ -182,7 +186,7 @@ function MonetizationForm({ initial }: { initial: PriceBook }) {
     event.preventDefault();
     // Проверяем той же схемой, что и сервер: ошибка называется до запроса,
     // а не приходит обратно безликим 400.
-    const parsed = billingConfigInputSchema.safeParse(toInput(form));
+    const parsed = adminBillingConfigSchema.safeParse(toInput(form));
     setInvalid(!parsed.success);
     if (parsed.success) save.mutate(parsed.data);
   }
@@ -343,6 +347,33 @@ function MonetizationForm({ initial }: { initial: PriceBook }) {
             value={form.agencyLimit}
             onChange={(event) => setForm((prev) => ({ ...prev, agencyLimit: event.target.value }))}
           />
+        </div>
+      </section>
+
+      {/* Права сотрудников — не тариф, поэтому отдельным разделом, а не
+          строкой среди цен: правят его по другому поводу и заметно реже. */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{t('staffSection')}</h2>
+        <p className={styles.hint}>{t('moderatorAdjustHint')}</p>
+
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="moderator-adjust-limit">
+            {t('moderatorAdjustLimit')}
+          </label>
+          <input
+            className={`${styles.input} ${styles.narrow}`}
+            id="moderator-adjust-limit"
+            inputMode="numeric"
+            value={form.moderatorAdjustLimit}
+            onChange={(event) =>
+              setForm((prev) => ({ ...prev, moderatorAdjustLimit: event.target.value }))
+            }
+          />
+          <span className={styles.hint}>
+            {t('moderatorAdjustLimitEur', {
+              amount: gcToEur(num(form.moderatorAdjustLimit), gcPerEur),
+            })}
+          </span>
         </div>
       </section>
       <section className={styles.section}>

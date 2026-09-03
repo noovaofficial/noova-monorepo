@@ -86,7 +86,9 @@ export const ModelName = {
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
   TopPlacement: 'TopPlacement',
-  VerificationRequest: 'VerificationRequest'
+  VerificationRequest: 'VerificationRequest',
+  Campaign: 'Campaign',
+  CampaignGrant: 'CampaignGrant'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -511,6 +513,7 @@ export const BillingSettingsScalarFieldEnum = {
   topWeekGc: 'topWeekGc',
   topSlots: 'topSlots',
   topShown: 'topShown',
+  moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
 
@@ -618,6 +621,39 @@ export const VerificationRequestScalarFieldEnum = {
 } as const
 
 export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  trigger: 'trigger',
+  code: 'code',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  cityId: 'cityId',
+  advertiserKind: 'advertiserKind',
+  quota: 'quota',
+  rewardGc: 'rewardGc',
+  rewardListingDays: 'rewardListingDays',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignGrantScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  userId: 'userId',
+  grantedGc: 'grantedGc',
+  grantedDays: 'grantedDays',
+  createdAt: 'createdAt'
+} as const
+
+export type CampaignGrantScalarFieldEnum = (typeof CampaignGrantScalarFieldEnum)[keyof typeof CampaignGrantScalarFieldEnum]
 
 
 export const SortOrder = {

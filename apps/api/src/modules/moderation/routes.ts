@@ -19,6 +19,7 @@ import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { purgeUserById } from '../../jobs/retention.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { applyFirstProfileCampaign } from '../campaigns/service.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
 import {
   deletePhotoFiles,
@@ -103,6 +104,42 @@ function toManagedUser(row: ManagedUserRow) {
     glowcoinBalance: row.glowcoinBalance,
     createdAt: row.createdAt.toISOString(),
   };
+}
+
+/**
+ * Выдаёт акцию за первую проверенную анкету, если такая акция есть.
+ *
+ * «Первую» считаем по числу анкет владельца: у второй и последующих подарка
+ * нет — иначе салон с восемью анкетами собрал бы восемь наград, а «первые 50
+ * в Берлине» кончились бы на семи рекламодателях.
+ */
+async function grantFirstProfileCampaign(
+  fastify: FastifyInstance,
+  profileId: string,
+): Promise<void> {
+  try {
+    const profile = await fastify.prisma.profile.findUnique({
+      where: { id: profileId },
+      select: {
+        cityId: true,
+        ownerId: true,
+        owner: { select: { advertiserKind: true, _count: { select: { profiles: true } } } },
+      },
+    });
+
+    const kind = profile?.owner.advertiserKind;
+    if (!profile || !kind) return;
+    if (profile.owner._count.profiles !== 1) return;
+
+    await applyFirstProfileCampaign(fastify.prisma, {
+      userId: profile.ownerId,
+      advertiserKind: kind,
+      cityId: profile.cityId,
+    });
+  } catch (error) {
+    // Подарок не стоит того, чтобы отменить одобрение анкеты.
+    fastify.log.error({ err: error, profileId }, 'не удалось применить акцию за первую анкету');
+  }
 }
 
 export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
@@ -717,6 +754,21 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       ]);
 
       await writeAction(fastify, userId, 'verification', item.id, 'approved');
+
+      /**
+       * Акция «первым N в городе» (`first_profile`) срабатывает здесь.
+       *
+       * Раньше нельзя: у учётной записи города нет вовсе, он появляется
+       * только на анкете. Позже нельзя: публикация упирается в оплаченное
+       * размещение, а его-то акция и должна дать. Проверка модератора при
+       * этом заслон от накрутки — завести пустую анкету дёшево, провести её
+       * через живого человека нет.
+       *
+       * Сбой акции не отменяет одобрения: модератор сделал свою работу, и
+       * возвращать анкету в очередь из-за подарка неправильно.
+       */
+      await grantFirstProfileCampaign(fastify, item.profileId);
+
       fastify.revalidate([profileTag(item.profile.slug), PROFILES_TAG]);
 
       return { ok: true as const };

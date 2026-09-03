@@ -61,10 +61,14 @@ export function UserDetail({ userId }: { userId: string }) {
       : []),
     {
       label: t('userSubscription'),
+      // Срока может не быть: размещение, выданное акцией, не покупалось.
+      // Без этой ветки ключ собирался бы как `term_null` и ронял страницу.
       value: data.subscription
-        ? `${t(`subscriptionStatus_${data.subscription.status}`)} · ${t(
-            `term_${data.subscription.term}`,
-          )} · ${t('userUntil')} ${when(data.subscription.expiresAt)}`
+        ? [
+            t(`subscriptionStatus_${data.subscription.status}`),
+            data.subscription.term ? t(`term_${data.subscription.term}`) : t('termFromCampaign'),
+            `${t('userUntil')} ${when(data.subscription.expiresAt)}`,
+          ].join(' · ')
         : t('userNoSubscription'),
     },
     ...(data.role === 'advertiser'

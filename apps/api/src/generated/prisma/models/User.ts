@@ -319,6 +319,8 @@ export type UserWhereInput = {
   profileReports?: Prisma.ProfileReportListRelationFilter
   moderationActions?: Prisma.ModerationActionListRelationFilter
   createdStaff?: Prisma.UserListRelationFilter
+  campaignGrants?: Prisma.CampaignGrantListRelationFilter
+  createdCampaigns?: Prisma.CampaignListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
@@ -354,6 +356,8 @@ export type UserOrderByWithRelationInput = {
   profileReports?: Prisma.ProfileReportOrderByRelationAggregateInput
   moderationActions?: Prisma.ModerationActionOrderByRelationAggregateInput
   createdStaff?: Prisma.UserOrderByRelationAggregateInput
+  campaignGrants?: Prisma.CampaignGrantOrderByRelationAggregateInput
+  createdCampaigns?: Prisma.CampaignOrderByRelationAggregateInput
   createdBy?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -392,6 +396,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profileReports?: Prisma.ProfileReportListRelationFilter
   moderationActions?: Prisma.ModerationActionListRelationFilter
   createdStaff?: Prisma.UserListRelationFilter
+  campaignGrants?: Prisma.CampaignGrantListRelationFilter
+  createdCampaigns?: Prisma.CampaignListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "email">
 
@@ -472,6 +478,8 @@ export type UserCreateInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -507,6 +515,8 @@ export type UserUncheckedCreateInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -540,6 +550,8 @@ export type UserUpdateInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -575,6 +587,8 @@ export type UserUncheckedUpdateInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1018,6 +1032,36 @@ export type UserUpdateOneWithoutTopPlacementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTopPlacementsInput, Prisma.UserUpdateWithoutTopPlacementsInput>, Prisma.UserUncheckedUpdateWithoutTopPlacementsInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedCampaignsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedCampaignsInput, Prisma.UserUncheckedCreateWithoutCreatedCampaignsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedCampaignsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCreatedCampaignsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedCampaignsInput, Prisma.UserUncheckedCreateWithoutCreatedCampaignsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedCampaignsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedCampaignsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedCampaignsInput, Prisma.UserUpdateWithoutCreatedCampaignsInput>, Prisma.UserUncheckedUpdateWithoutCreatedCampaignsInput>
+}
+
+export type UserCreateNestedOneWithoutCampaignGrantsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCampaignGrantsInput, Prisma.UserUncheckedCreateWithoutCampaignGrantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCampaignGrantsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCampaignGrantsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCampaignGrantsInput, Prisma.UserUncheckedCreateWithoutCampaignGrantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCampaignGrantsInput
+  upsert?: Prisma.UserUpsertWithoutCampaignGrantsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCampaignGrantsInput, Prisma.UserUpdateWithoutCampaignGrantsInput>, Prisma.UserUncheckedUpdateWithoutCampaignGrantsInput>
+}
+
 export type UserCreateWithoutCreatedByInput = {
   id?: string
   email: string
@@ -1049,6 +1093,8 @@ export type UserCreateWithoutCreatedByInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -1082,6 +1128,8 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -1124,6 +1172,8 @@ export type UserCreateWithoutCreatedStaffInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1158,6 +1208,8 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedStaffInput = {
@@ -1244,6 +1296,8 @@ export type UserUpdateWithoutCreatedStaffInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -1278,6 +1332,8 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutClientProfileInput = {
@@ -1310,6 +1366,8 @@ export type UserCreateWithoutClientProfileInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1344,6 +1402,8 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutClientProfileInput = {
@@ -1392,6 +1452,8 @@ export type UserUpdateWithoutClientProfileInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -1426,6 +1488,8 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutModerationActionsInput = {
@@ -1458,6 +1522,8 @@ export type UserCreateWithoutModerationActionsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1492,6 +1558,8 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutModerationActionsInput = {
@@ -1540,6 +1608,8 @@ export type UserUpdateWithoutModerationActionsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -1574,6 +1644,8 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAuthTokensInput = {
@@ -1606,6 +1678,8 @@ export type UserCreateWithoutAuthTokensInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1640,6 +1714,8 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAuthTokensInput = {
@@ -1688,6 +1764,8 @@ export type UserUpdateWithoutAuthTokensInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -1722,6 +1800,8 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutProfilesInput = {
@@ -1754,6 +1834,8 @@ export type UserCreateWithoutProfilesInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1788,6 +1870,8 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutProfilesInput = {
@@ -1836,6 +1920,8 @@ export type UserUpdateWithoutProfilesInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -1870,6 +1956,8 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutProfileReportsInput = {
@@ -1902,6 +1990,8 @@ export type UserCreateWithoutProfileReportsInput = {
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -1936,6 +2026,8 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutProfileReportsInput = {
@@ -1984,6 +2076,8 @@ export type UserUpdateWithoutProfileReportsInput = {
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2018,6 +2112,8 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2050,6 +2146,8 @@ export type UserCreateWithoutCommentsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2084,6 +2182,8 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2132,6 +2232,8 @@ export type UserUpdateWithoutCommentsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2166,6 +2268,8 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCommentReportsInput = {
@@ -2198,6 +2302,8 @@ export type UserCreateWithoutCommentReportsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2232,6 +2338,8 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCommentReportsInput = {
@@ -2280,6 +2388,8 @@ export type UserUpdateWithoutCommentReportsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2314,6 +2424,8 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFavoritesInput = {
@@ -2346,6 +2458,8 @@ export type UserCreateWithoutFavoritesInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2380,6 +2494,8 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutFavoritesInput = {
@@ -2428,6 +2544,8 @@ export type UserUpdateWithoutFavoritesInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2462,6 +2580,8 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutCompanyInput = {
@@ -2494,6 +2614,8 @@ export type UserCreateWithoutCompanyInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2528,6 +2650,8 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutCompanyInput = {
@@ -2576,6 +2700,8 @@ export type UserUpdateWithoutCompanyInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2610,6 +2736,8 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutBillingTransactionsInput = {
@@ -2642,6 +2770,8 @@ export type UserCreateWithoutBillingTransactionsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2676,6 +2806,8 @@ export type UserUncheckedCreateWithoutBillingTransactionsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutBillingTransactionsInput = {
@@ -2713,6 +2845,8 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2747,6 +2881,8 @@ export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutBillingAdjustmentsInput = {
@@ -2795,6 +2931,8 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2829,6 +2967,8 @@ export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutBillingAdjustmentsInput = {
@@ -2872,6 +3012,8 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -2906,6 +3048,8 @@ export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutListingsInput = {
@@ -2938,6 +3082,8 @@ export type UserCreateWithoutListingsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -2972,6 +3118,8 @@ export type UserUncheckedCreateWithoutListingsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutListingsInput = {
@@ -3020,6 +3168,8 @@ export type UserUpdateWithoutListingsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -3054,6 +3204,8 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTopupOrdersInput = {
@@ -3086,6 +3238,8 @@ export type UserCreateWithoutTopupOrdersInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -3120,6 +3274,8 @@ export type UserUncheckedCreateWithoutTopupOrdersInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTopupOrdersInput = {
@@ -3168,6 +3324,8 @@ export type UserUpdateWithoutTopupOrdersInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -3202,6 +3360,8 @@ export type UserUncheckedUpdateWithoutTopupOrdersInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTopPlacementsInput = {
@@ -3234,6 +3394,8 @@ export type UserCreateWithoutTopPlacementsInput = {
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
 }
 
@@ -3268,6 +3430,8 @@ export type UserUncheckedCreateWithoutTopPlacementsInput = {
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTopPlacementsInput = {
@@ -3316,6 +3480,8 @@ export type UserUpdateWithoutTopPlacementsInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
 }
 
@@ -3350,6 +3516,320 @@ export type UserUncheckedUpdateWithoutTopPlacementsInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCreatedCampaignsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCreatedCampaignsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedCampaignsInput, Prisma.UserUncheckedCreateWithoutCreatedCampaignsInput>
+}
+
+export type UserUpsertWithoutCreatedCampaignsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedCampaignsInput, Prisma.UserUncheckedUpdateWithoutCreatedCampaignsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedCampaignsInput, Prisma.UserUncheckedCreateWithoutCreatedCampaignsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedCampaignsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedCampaignsInput, Prisma.UserUncheckedUpdateWithoutCreatedCampaignsInput>
+}
+
+export type UserUpdateWithoutCreatedCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCampaignGrantsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutCampaignGrantsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCampaignGrantsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCampaignGrantsInput, Prisma.UserUncheckedCreateWithoutCampaignGrantsInput>
+}
+
+export type UserUpsertWithoutCampaignGrantsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCampaignGrantsInput, Prisma.UserUncheckedUpdateWithoutCampaignGrantsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCampaignGrantsInput, Prisma.UserUncheckedCreateWithoutCampaignGrantsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCampaignGrantsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCampaignGrantsInput, Prisma.UserUncheckedUpdateWithoutCampaignGrantsInput>
+}
+
+export type UserUpdateWithoutCampaignGrantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCampaignGrantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyCreatedByInput = {
@@ -3401,6 +3881,8 @@ export type UserUpdateWithoutCreatedByInput = {
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -3434,6 +3916,8 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -3473,6 +3957,8 @@ export type UserCountOutputType = {
   profileReports: number
   moderationActions: number
   createdStaff: number
+  campaignGrants: number
+  createdCampaigns: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3489,6 +3975,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   profileReports?: boolean | UserCountOutputTypeCountProfileReportsArgs
   moderationActions?: boolean | UserCountOutputTypeCountModerationActionsArgs
   createdStaff?: boolean | UserCountOutputTypeCountCreatedStaffArgs
+  campaignGrants?: boolean | UserCountOutputTypeCountCampaignGrantsArgs
+  createdCampaigns?: boolean | UserCountOutputTypeCountCreatedCampaignsArgs
 }
 
 /**
@@ -3592,6 +4080,20 @@ export type UserCountOutputTypeCountCreatedStaffArgs<ExtArgs extends runtime.Typ
   where?: Prisma.UserWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCampaignGrantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignGrantWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3625,6 +4127,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profileReports?: boolean | Prisma.User$profileReportsArgs<ExtArgs>
   moderationActions?: boolean | Prisma.User$moderationActionsArgs<ExtArgs>
   createdStaff?: boolean | Prisma.User$createdStaffArgs<ExtArgs>
+  campaignGrants?: boolean | Prisma.User$campaignGrantsArgs<ExtArgs>
+  createdCampaigns?: boolean | Prisma.User$createdCampaignsArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -3705,6 +4209,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   profileReports?: boolean | Prisma.User$profileReportsArgs<ExtArgs>
   moderationActions?: boolean | Prisma.User$moderationActionsArgs<ExtArgs>
   createdStaff?: boolean | Prisma.User$createdStaffArgs<ExtArgs>
+  campaignGrants?: boolean | Prisma.User$campaignGrantsArgs<ExtArgs>
+  createdCampaigns?: boolean | Prisma.User$createdCampaignsArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -3736,6 +4242,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     profileReports: Prisma.$ProfileReportPayload<ExtArgs>[]
     moderationActions: Prisma.$ModerationActionPayload<ExtArgs>[]
     createdStaff: Prisma.$UserPayload<ExtArgs>[]
+    campaignGrants: Prisma.$CampaignGrantPayload<ExtArgs>[]
+    createdCampaigns: Prisma.$CampaignPayload<ExtArgs>[]
     createdBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -4191,6 +4699,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   profileReports<T extends Prisma.User$profileReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   moderationActions<T extends Prisma.User$moderationActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$moderationActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModerationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdStaff<T extends Prisma.User$createdStaffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdStaffArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  campaignGrants<T extends Prisma.User$campaignGrantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$campaignGrantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignGrantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdCampaigns<T extends Prisma.User$createdCampaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdCampaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdBy<T extends Prisma.User$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4985,6 +5495,54 @@ export type User$createdStaffArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
+}
+
+/**
+ * User.campaignGrants
+ */
+export type User$campaignGrantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignGrant
+   */
+  select?: Prisma.CampaignGrantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignGrant
+   */
+  omit?: Prisma.CampaignGrantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignGrantInclude<ExtArgs> | null
+  where?: Prisma.CampaignGrantWhereInput
+  orderBy?: Prisma.CampaignGrantOrderByWithRelationInput | Prisma.CampaignGrantOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignGrantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignGrantScalarFieldEnum | Prisma.CampaignGrantScalarFieldEnum[]
+}
+
+/**
+ * User.createdCampaigns
+ */
+export type User$createdCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Campaign
+   */
+  select?: Prisma.CampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Campaign
+   */
+  omit?: Prisma.CampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignInclude<ExtArgs> | null
+  where?: Prisma.CampaignWhereInput
+  orderBy?: Prisma.CampaignOrderByWithRelationInput | Prisma.CampaignOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
 }
 
 /**

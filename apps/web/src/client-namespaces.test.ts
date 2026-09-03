@@ -68,6 +68,7 @@ describe('разделы словаря для браузера', () => {
       analytics: /^modules\/analytics\//,
       settings: /^modules\/account\//,
       billing: /^modules\/billing\//,
+      campaigns: /^modules\/(campaigns|billing)\//,
       admin: /^modules\/moderation\//,
       moderation: /^modules\/moderation\//,
       locations: /^modules\/locations\//,

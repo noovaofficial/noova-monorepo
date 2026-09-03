@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { activateListing, fetchListing, fetchPriceBook, fetchWallet } from '@/modules/billing/api';
+import { PromoCodeForm } from '@/modules/campaigns/components/PromoCodeForm';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './SubscriptionPanel.module.css';
@@ -209,6 +210,10 @@ export function SubscriptionPanel() {
           {t('subscriptionWallet')}
         </Link>
       </p>
+
+      {/* Промокод — здесь, а не в кошельке: акция даёт срок размещения, а
+          не только монеты, и искать её человек будет там же, где продлевает. */}
+      <PromoCodeForm />
     </div>
   );
 }

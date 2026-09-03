@@ -20,6 +20,7 @@ export type MenuIconName =
   | 'serviceCatalog'
   | 'monetization'
   | 'billingOps'
+  | 'campaigns'
   | 'myProfiles'
   | 'subscription'
   | 'analytics'
@@ -74,6 +75,12 @@ const PATHS: Record<MenuIconName, string[]> = {
     'M9 8.5h6',
     'M9 12h6',
     'M9 15.5h3.5',
+  ],
+  // Ярлык со звёздочкой — акция: то же, что справочник услуг, но про подарок.
+  campaigns: [
+    'M3.5 3.5h6.6l10.4 10.4-6.6 6.6L3.5 10.1V3.5Z',
+    'M7.4 7.4h.01',
+    'm13.2 11.4 1 2.1 2.3.3-1.7 1.6.4 2.3-2-1.1-2 1.1.4-2.3-1.7-1.6 2.3-.3 1-2.1Z',
   ],
   myProfiles: ['M4 4h6.2v6.2H4zM13.8 4H20v6.2h-6.2zM4 13.8h6.2V20H4zM13.8 13.8H20V20h-6.2z'],
   // Календарь с галочкой — подписка: срок, который надо продлевать.

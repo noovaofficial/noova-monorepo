@@ -1,12 +1,17 @@
 'use client';
 
-import { adjustBalanceInputSchema, type ManagedUser, type UserRole } from '@noova/shared';
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  adjustBalanceInputSchema,
+  isAdjustWithinLimit,
+  type ManagedUser,
+  type UserRole,
+} from '@noova/shared';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { adjustBalance, BillingError } from '@/modules/billing/api';
+import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
 import {
   blockUser,
   deleteUser,
@@ -30,7 +35,13 @@ export function UserList({
 } = {}) {
   const t = useTranslations('moderation');
   const { user: me } = useSession();
-  // Корректировка баланса — только админу: это движение денег, а не модерация.
+  /**
+   * Баланс правят и админ, и модератор — но с разными правами: у модератора
+   * сумма ограничена потолком из настроек монетизации. Потолок приходит с
+   * сервера отдельным запросом, а не выводится из роли: он настраивается, и
+   * зашитое в кабинете число разошлось бы с проверкой на сервере молча.
+   */
+  const isStaffActor = me?.role === 'admin' || me?.role === 'moderator';
   const isAdmin = me?.role === 'admin';
   const [query, setQuery] = useState('');
   // Пусто — все типы. В разделе «Все пользователи» это и есть исходное
@@ -57,6 +68,15 @@ export function UserList({
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [adjusted, setAdjusted] = useState<{ userId: string; balanceGc: number } | null>(null);
+
+  const adjustLimit = useQuery({
+    queryKey: queryKeys.adjustLimit(),
+    queryFn: fetchAdjustLimit,
+    enabled: isStaffActor,
+    // Потолок меняется правкой настроек, то есть почти никогда.
+    staleTime: 5 * 60 * 1000,
+  });
+  const limitGc = adjustLimit.data?.limitGc ?? null;
 
   // Кого удаляем: подтверждение раскрывается у строки, а не в модальном окне —
   // так же, как причина блокировки.
@@ -101,6 +121,11 @@ export function UserList({
       note: note.trim(),
     });
 
+  /** Готова ли форма к отправке. Потолок здесь тот же, что проверяет сервер:
+   *  доступная кнопка, отвечающая отказом, — худший вид подсказки. */
+  const canSubmitAdjust = (user: ManagedUser) =>
+    adjustInput(user).success && isAdjustWithinLimit(Number(amount), limitGc);
+
   const adjust = useMutation({
     mutationFn: (user: ManagedUser) => {
       const parsed = adjustInput(user);
@@ -132,14 +157,19 @@ export function UserList({
     unblock.isPending ||
     adjust.isPending ||
     remove.isPending;
+  const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
   const error =
-    adjust.isError && adjust.error instanceof BillingError && adjust.error.status === 409
+    adjustStatus === 409
       ? 'adjustInsufficient'
-      : verify.isError || block.isError || unblock.isError || adjust.isError || remove.isError
-        ? 'actionFailed'
-        : list.isError
-          ? 'loadFailed'
-          : null;
+      : // 403 на этом маршруте означает не «нет прав вовсе», а «сумма выше
+        // потолка»: сам маршрут модератору открыт.
+        adjustStatus === 403
+        ? 'adjustOverLimit'
+        : verify.isError || block.isError || unblock.isError || adjust.isError || remove.isError
+          ? 'actionFailed'
+          : list.isError
+            ? 'loadFailed'
+            : null;
 
   return (
     <>
@@ -232,7 +262,10 @@ export function UserList({
                         onChange={(event) => setAmount(event.target.value)}
                         placeholder="+100"
                       />
-                      <span className={styles.hint}>{t('adjustAmountHint')}</span>
+                      <span className={styles.hint}>
+                        {t('adjustAmountHint')}
+                        {limitGc === null ? null : ` ${t('adjustLimitHint', { limit: limitGc })}`}
+                      </span>
                       <label className={styles.label} htmlFor={`adjust-note-${user.id}`}>
                         {t('adjustNote')}
                       </label>
@@ -246,7 +279,7 @@ export function UserList({
                       <span className={styles.hint}>{t('adjustNoteHint')}</span>
                       <div className={styles.cardActions} style={{ padding: 0 }}>
                         <Button
-                          disabled={busy || !adjustInput(user).success}
+                          disabled={busy || !canSubmitAdjust(user)}
                           onClick={() => adjust.mutate(user)}
                         >
                           {t('adjustSubmit')}
@@ -342,7 +375,7 @@ export function UserList({
                     <span className={styles.badge}>{t('emailVerified')}</span>
                   )}
 
-                  {isAdmin && user.role === 'advertiser' && adjusting !== user.id ? (
+                  {isStaffActor && user.role === 'advertiser' && adjusting !== user.id ? (
                     <Button
                       variant="secondary"
                       disabled={busy}

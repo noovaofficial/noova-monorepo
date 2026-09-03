@@ -1,0 +1,171 @@
+.wrap {
+  max-width: 900px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  margin-bottom: var(--space2);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+  margin: 0;
+}
+
+.hint {
+  margin: 0 0 var(--space5);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  line-height: var(--leadingRelaxed);
+}
+
+.notice {
+  padding: var(--space3) var(--space4);
+  margin-bottom: var(--space4);
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+}
+
+.noticeError {
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  margin-bottom: var(--space6);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space3);
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+/* Выключенная акция приглушена, но читается: её заводят снова, а не заводят
+   заново, и найти её в списке должно быть можно. */
+.rowOff {
+  opacity: 0.6;
+}
+
+.rowMain {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.rowName {
+  font-weight: 600;
+}
+
+.rowMeta {
+  margin-top: var(--space1);
+  font-size: var(--textXs);
+  color: var(--secondaryText);
+  line-height: var(--leadingRelaxed);
+}
+
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  padding: 1px var(--space2);
+  border-radius: var(--radiusSm);
+  background: var(--surfaceSunken);
+}
+
+/* Выдано из квоты — главное число строки: по нему решают, жива ли акция. */
+.progress {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.progressDone {
+  color: var(--danger);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+}
+
+.form {
+  padding: var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.formTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin: 0 0 var(--space4);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space4);
+  margin-bottom: var(--space4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space1);
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.input,
+.select {
+  padding: var(--space2) var(--space3);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--surface);
+  color: var(--primaryText);
+  font: inherit;
+  font-size: var(--textSm);
+  min-width: 0;
+}
+
+.input:focus,
+.select:focus {
+  outline: 2px solid var(--borderFocus);
+  outline-offset: -1px;
+}
+
+.fieldHint {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-size: var(--textSm);
+}
+
+.empty {
+  padding: var(--space6) 0;
+  color: var(--secondaryText);
+}

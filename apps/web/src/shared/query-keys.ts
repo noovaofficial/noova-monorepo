@@ -34,7 +34,11 @@ export const queryKeys = {
   adminCountries: () => ['admin-countries'] as const,
   adminCities: (countryId?: string) => ['admin-cities', countryId ?? 'all'] as const,
   adminServices: () => ['admin-services'] as const,
+  // Локаль в ключе: названия городов приходят с сервера переведёнными.
+  campaigns: (locale: string) => ['campaigns', locale] as const,
   billingConfig: () => ['billing-config'] as const,
+  /** Свой предел корректировки баланса. Зависит от роли, но роль на сессии одна. */
+  adjustLimit: () => ['adjust-limit'] as const,
 
   /** Монетизация в кабинете. */
   priceBook: () => ['price-book'] as const,

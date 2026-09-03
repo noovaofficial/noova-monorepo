@@ -2,9 +2,13 @@ import {
   type ActivateListingResult,
   type AdjustBalanceInput,
   type AdjustBalanceResult,
+  type AdjustLimit,
+  type AdminBillingConfig,
+  type AdminPriceBook,
   activateListingResultSchema,
   adjustBalanceResultSchema,
-  type BillingConfigInput,
+  adjustLimitSchema,
+  adminPriceBookSchema,
   type BillingOperations,
   type BuyTopResult,
   billingOperationsSchema,
@@ -64,15 +68,22 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
 export const fetchPriceBook = (): Promise<PriceBook> =>
   call('/billing/price-book', priceBookSchema);
 
-/** Конфигурация для админки. Та же форма, что и прайс, — разница в праве записи. */
-export const fetchBillingConfig = (): Promise<PriceBook> =>
-  call('/admin/billing/config', priceBookSchema);
+/**
+ * Конфигурация для админки. Шире публичного прайса: сюда входит потолок
+ * корректировки для модератора, которому на витрине делать нечего.
+ */
+export const fetchBillingConfig = (): Promise<AdminPriceBook> =>
+  call('/admin/billing/config', adminPriceBookSchema);
 
-export const saveBillingConfig = (input: BillingConfigInput): Promise<PriceBook> =>
-  call('/admin/billing/config', priceBookSchema, {
+export const saveBillingConfig = (input: AdminBillingConfig): Promise<AdminPriceBook> =>
+  call('/admin/billing/config', adminPriceBookSchema, {
     method: 'PUT',
     body: JSON.stringify(input),
   });
+
+/** Свой предел корректировки. `null` — предела нет (админ). */
+export const fetchAdjustLimit = (): Promise<AdjustLimit> =>
+  call('/billing/adjust-limit', adjustLimitSchema);
 
 /** Баланс и последние операции владельца. */
 export const fetchWallet = (): Promise<Wallet> => call('/billing/wallet', walletSchema);
@@ -81,7 +92,7 @@ export const fetchWallet = (): Promise<Wallet> => call('/billing/wallet', wallet
 export const fetchListing = (): Promise<Listing | null> =>
   call('/billing/listing', currentListingSchema).then((result) => result.listing);
 
-/** Ручная корректировка баланса — только админ. */
+/** Ручная корректировка баланса. Модератору сервер режет сумму по потолку. */
 export const adjustBalance = (input: AdjustBalanceInput): Promise<AdjustBalanceResult> =>
   call('/admin/billing/adjust', adjustBalanceResultSchema, {
     method: 'POST',

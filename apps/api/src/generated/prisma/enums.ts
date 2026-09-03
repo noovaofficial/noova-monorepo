@@ -293,3 +293,11 @@ export const VerificationRequestStatus = {
 } as const
 
 export type VerificationRequestStatus = (typeof VerificationRequestStatus)[keyof typeof VerificationRequestStatus]
+
+
+export const CampaignTrigger = {
+  first_profile: 'first_profile',
+  promo_code: 'promo_code'
+} as const
+
+export type CampaignTrigger = (typeof CampaignTrigger)[keyof typeof CampaignTrigger]

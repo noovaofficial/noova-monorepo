@@ -432,7 +432,9 @@ export const ModelName = {
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
   TopPlacement: 'TopPlacement',
-  VerificationRequest: 'VerificationRequest'
+  VerificationRequest: 'VerificationRequest',
+  Campaign: 'Campaign',
+  CampaignGrant: 'CampaignGrant'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -448,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3116,6 +3118,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Campaign: {
+      payload: Prisma.$CampaignPayload<ExtArgs>
+      fields: Prisma.CampaignFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampaignFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampaignFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findFirst: {
+          args: Prisma.CampaignFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampaignFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findMany: {
+          args: Prisma.CampaignFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        create: {
+          args: Prisma.CampaignCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        createMany: {
+          args: Prisma.CampaignCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CampaignCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        delete: {
+          args: Prisma.CampaignDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        update: {
+          args: Prisma.CampaignUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampaignDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampaignUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CampaignUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        upsert: {
+          args: Prisma.CampaignUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        aggregate: {
+          args: Prisma.CampaignAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampaign>
+        }
+        groupBy: {
+          args: Prisma.CampaignGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampaignCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignCountAggregateOutputType> | number
+        }
+      }
+    }
+    CampaignGrant: {
+      payload: Prisma.$CampaignGrantPayload<ExtArgs>
+      fields: Prisma.CampaignGrantFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampaignGrantFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampaignGrantFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        findFirst: {
+          args: Prisma.CampaignGrantFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampaignGrantFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        findMany: {
+          args: Prisma.CampaignGrantFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>[]
+        }
+        create: {
+          args: Prisma.CampaignGrantCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        createMany: {
+          args: Prisma.CampaignGrantCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CampaignGrantCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>[]
+        }
+        delete: {
+          args: Prisma.CampaignGrantDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        update: {
+          args: Prisma.CampaignGrantUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampaignGrantDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampaignGrantUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CampaignGrantUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>[]
+        }
+        upsert: {
+          args: Prisma.CampaignGrantUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignGrantPayload>
+        }
+        aggregate: {
+          args: Prisma.CampaignGrantAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampaignGrant>
+        }
+        groupBy: {
+          args: Prisma.CampaignGrantGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignGrantGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampaignGrantCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignGrantCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3561,6 +3711,7 @@ export const BillingSettingsScalarFieldEnum = {
   topWeekGc: 'topWeekGc',
   topSlots: 'topSlots',
   topShown: 'topShown',
+  moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
 
@@ -3668,6 +3819,39 @@ export const VerificationRequestScalarFieldEnum = {
 } as const
 
 export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  trigger: 'trigger',
+  code: 'code',
+  isActive: 'isActive',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  cityId: 'cityId',
+  advertiserKind: 'advertiserKind',
+  quota: 'quota',
+  rewardGc: 'rewardGc',
+  rewardListingDays: 'rewardListingDays',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignGrantScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  userId: 'userId',
+  grantedGc: 'grantedGc',
+  grantedDays: 'grantedDays',
+  createdAt: 'createdAt'
+} as const
+
+export type CampaignGrantScalarFieldEnum = (typeof CampaignGrantScalarFieldEnum)[keyof typeof CampaignGrantScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4199,6 +4383,20 @@ export type EnumVerificationRequestStatusFieldRefInput<$PrismaModel> = FieldRefI
 export type ListEnumVerificationRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationRequestStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'CampaignTrigger'
+ */
+export type EnumCampaignTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignTrigger'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignTrigger[]'
+ */
+export type ListEnumCampaignTriggerFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignTrigger[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4386,6 +4584,8 @@ export type GlobalOmitConfig = {
   topupOrder?: Prisma.TopupOrderOmit
   topPlacement?: Prisma.TopPlacementOmit
   verificationRequest?: Prisma.VerificationRequestOmit
+  campaign?: Prisma.CampaignOmit
+  campaignGrant?: Prisma.CampaignGrantOmit
 }
 
 /* Types for Logging */

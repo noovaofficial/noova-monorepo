@@ -195,17 +195,19 @@ model User {
   listings            Listing[]
   topupOrders         TopupOrder[]
   topPlacements       TopPlacement[]
-  clientProfile     ClientProfile?
-  authTokens        AuthToken[]
-  favorites         Favorite[]
-  comments          ProfileComment[]
-  commentReports    CommentReport[]
-  profileReports    ProfileReport[]
-  moderationActions ModerationAction[] @relation("moderatorActions")
-  createdStaff      User[]             @relation("staffCreator")
+  clientProfile       ClientProfile?
+  authTokens          AuthToken[]
+  favorites           Favorite[]
+  comments            ProfileComment[]
+  commentReports      CommentReport[]
+  profileReports      ProfileReport[]
+  moderationActions   ModerationAction[]   @relation("moderatorActions")
+  createdStaff        User[]               @relation("staffCreator")
+  campaignGrants      CampaignGrant[]
+  createdCampaigns    Campaign[]           @relation("campaignAuthor")
   /// Кто завёл эту учётку. Заполняется только для модераторов и админов.
-  createdById       String?
-  createdBy         User?              @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById         String?
+  createdBy           User?                @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
 }
@@ -306,6 +308,7 @@ model City {
   districts    District[]
   profiles     Profile[]
   translations CityTranslation[]
+  campaigns    Campaign[]
 
   @@index([countryId])
 }
@@ -414,20 +417,20 @@ model Profile {
   hasManualLocation Boolean @default(false)
 
   // Денормализовано ради сортировки и фильтрации листинга без джойнов.
-  fromPriceCents Int?
+  fromPriceCents       Int?
   /// В ТОПе прямо сейчас. Производная от TopPlacement: ставится покупкой,
   /// снимается задачей по истечении. Денормализована ради сортировки и
   /// фильтра «ТОП» без джойна.
-  isFeatured     Boolean   @default(false)
-  topPlacement   TopPlacement?
+  isFeatured           Boolean               @default(false)
+  topPlacement         TopPlacement?
   verificationRequests VerificationRequest[]
-  isVerified     Boolean   @default(false)
-  lastSeenAt     DateTime?
-  publishedAt    DateTime?
+  isVerified           Boolean               @default(false)
+  lastSeenAt           DateTime?
+  publishedAt          DateTime?
   /// Снята с публикации за неоплату (payments.md, этап 5). Отличает такую
   /// паузу от паузы владельца: при оплате эти анкеты возвращаются в каталог
   /// сами, а снятые руками — нет.
-  unpaidAt       DateTime?
+  unpaidAt             DateTime?
 
   age            Int?
   heightCm       Int?
@@ -747,20 +750,20 @@ enum ProfileEventKind {
 /// Журнал событий анкеты: антифрод по раскрытиям и статистика для владелицы.
 /// Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
 model ProfileEvent {
-  id        String           @id @default(cuid())
-  profileId String
-  profile   Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  kind      ProfileEventKind
+  id          String           @id @default(cuid())
+  profileId   String
+  profile     Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  kind        ProfileEventKind
   /// Только у `contact_click`: по какому именно каналу ушли. У раскрытия
   /// его нет — кнопка одна на всю карточку, дробить нечего.
   contactType ContactType?
   /// Заполнен, только если действовал вошедший пользователь: ни просмотр,
   /// ни раскрытие входа не требуют. Он же делит статистику на
   /// зарегистрированных и гостей — отдельного флага для этого не нужно.
-  userId    String?
+  userId      String?
   /// Соль плюс хэш, не сырой адрес — журнал не должен сам стать базой ПД.
-  ipHash    String
-  createdAt DateTime         @default(now())
+  ipHash      String
+  createdAt   DateTime         @default(now())
 
   // Основной индекс статистики: анкета × событие, отсортированные по времени.
   @@index([profileId, kind, createdAt])
@@ -897,16 +900,23 @@ enum BillingTransactionKind {
 /// Настройки монетизации — одна строка. Конфигурация, а не константы: курс
 /// и предел анкет меняются из админки без выката.
 model BillingSettings {
-  id                 String   @id @default("default")
+  id                     String   @id @default("default")
   /// Витринный курс: сколько GC за 1 €. Реальная цена ниже за счёт бонуса.
-  gcPerEur           Float
+  gcPerEur               Float
   /// Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07).
-  agencyProfileLimit Int
+  agencyProfileLimit     Int
   /// ТОП (payments.md §3.4): цена недели, всего мест и сколько показывать на главной.
-  topWeekGc          Int      @default(300)
-  topSlots           Int      @default(16)
-  topShown           Int      @default(8)
-  updatedAt          DateTime @updatedAt
+  topWeekGc              Int      @default(300)
+  topSlots               Int      @default(16)
+  topShown               Int      @default(8)
+  /// Потолок разовой корректировки баланса для модератора — по модулю, то есть
+  /// и на начисление, и на списание. Нужен, потому что модератор правит баланс
+  /// по обращениям в поддержку, а не распоряжается деньгами проекта: годовой
+  /// тариф агентства он выдать не должен ни по ошибке, ни намеренно. У админа
+  /// потолка нет. Настройка, а не константа: подходящая сумма выясняется по
+  /// живым обращениям, и менять её выкатом неправильно.
+  moderatorAdjustLimitGc Int      @default(500)
+  updatedAt              DateTime @updatedAt
 }
 
 /// Цена размещения по типу и сроку — PriceBook из payments.md §5.
@@ -914,7 +924,7 @@ model PriceBookEntry {
   kind      AdvertiserKind
   term      PlanTerm
   gc        Int
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime       @updatedAt
 
   @@id([kind, term])
 }
@@ -935,23 +945,23 @@ model TopupTier {
 /// модерации: за пополнением стоят реальные деньги, и разбор спора или
 /// налоговая проверка не должны упираться в удалённую учётку.
 model BillingTransaction {
-  id     String  @id @default(cuid())
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  kind   BillingTransactionKind
+  id           String                 @id @default(cuid())
+  userId       String?
+  user         User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  kind         BillingTransactionKind
   /// Знак — направление: + пополнение, − списание.
-  gcAmount Int
+  gcAmount     Int
   /// Только для TOPUP. В центах, как и остальные суммы в схеме.
   eurPaidCents Int?
   bonusPercent Int?
   /// Поставщик и его идентификатор события (для крипты — хеш транзакции).
   /// Уникальны вместе: повторная доставка вебхука не начислит дважды (этап 4).
-  provider    String?
-  providerRef String?
+  provider     String?
+  providerRef  String?
   /// Причина ручной корректировки — видимая запись, а не «бесплатно» (D-05).
-  note        String?
-  createdById String?
-  createdBy   User?   @relation("billingAdjustments", fields: [createdById], references: [id], onDelete: SetNull)
+  note         String?
+  createdById  String?
+  createdBy    User?                  @relation("billingAdjustments", fields: [createdById], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
 
@@ -971,11 +981,14 @@ model Listing {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   kind   AdvertiserKind
-  status ListingStatus @default(active)
-  term   PlanTerm
+  status ListingStatus  @default(active)
+  /// Купленный срок. Пусто у размещения, выданного акцией: там не тариф,
+  /// а подаренные дни, и подставлять сюда «месяц» значило бы записать в
+  /// историю покупку, которой не было.
+  term   PlanTerm?
 
-  activatedAt DateTime @default(now())
-  expiresAt   DateTime
+  activatedAt    DateTime  @default(now())
+  expiresAt      DateTime
   /// Когда ушло письмо «срок скоро выйдет». Сбрасывается продлением: за
   /// новый срок напоминаем заново.
   reminderSentAt DateTime?
@@ -1096,4 +1109,83 @@ model VerificationRequest {
 
   @@index([status, submittedAt])
   @@index([profileId, submittedAt])
+}
+
+/// Когда акция срабатывает.
+enum CampaignTrigger {
+  /**
+   * Первая анкета рекламодателя, прошедшая проверку модератора.
+   * Не регистрация: города у учётной записи нет вовсе, он появляется только
+   * на анкете, — а «первые 50 в Берлине» без города не вычислить. И не
+   * публикация: опубликовать нельзя без оплаченного размещения, а его-то
+   * акция и должна дать; ждать публикации значило бы ждать вечно.
+   * Проверка модератора здесь ещё и заслон от накрутки: завести пустую
+   * анкету дёшево, провести её через живого человека — нет.
+   */
+  first_profile
+  /// Ввод кода в кабинете. Условия проверяются в момент ввода.
+  promo_code
+}
+
+/// Акция: кому, при каком условии и что выдаём (решение админа).
+///
+/// Одна запись — одно предложение. Условия пустые означают «любой»: акция без
+/// города действует везде, без типа — на всех рекламодателей.
+model Campaign {
+  id      String          @id @default(cuid())
+  /// Внутреннее название для админки, наружу не показывается.
+  name    String
+  trigger CampaignTrigger
+
+  /// Код для `promo_code`. Хранится в верхнем регистре — иначе «berlin50» и
+  /// «BERLIN50» окажутся разными акциями, а человек набирает как придётся.
+  code String? @unique
+
+  isActive Boolean   @default(true)
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  /// Условия. Пусто — ограничения нет.
+  cityId         String?
+  city           City?           @relation(fields: [cityId], references: [id], onDelete: SetNull)
+  advertiserKind AdvertiserKind?
+
+  /// Сколько всего выдач. Пусто — без ограничения. Те самые «первые 50».
+  quota Int?
+
+  /// Награда. Обе могут быть заданы разом: монеты плюс подаренные дни.
+  rewardGc          Int @default(0)
+  rewardListingDays Int @default(0)
+
+  createdById String?
+  createdBy   User?   @relation("campaignAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  grants CampaignGrant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Подбор акции идёт по виду срабатывания среди действующих.
+  @@index([trigger, isActive])
+}
+
+/// Выдача по акции. Он же счётчик квоты и он же защита от повторной выдачи:
+/// уникальная пара «акция + человек» делает вторую выдачу невозможной на
+/// уровне БД, а не на уровне внимательности кода.
+model CampaignGrant {
+  id         String   @id @default(cuid())
+  campaignId String
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Что выдали фактически, на момент выдачи. Условия акции потом правятся,
+  /// и «сколько получил этот человек» иначе стало бы неответимым вопросом.
+  grantedGc   Int
+  grantedDays Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([campaignId, userId])
+  @@index([campaignId, createdAt])
 }

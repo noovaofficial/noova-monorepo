@@ -1,0 +1,60 @@
+.wrap {
+  padding: var(--space5);
+  margin-top: var(--space6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin: 0 0 var(--space2);
+}
+
+.hint {
+  margin: 0 0 var(--space4);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space3);
+  align-items: flex-start;
+}
+
+.input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: var(--space2) var(--space3);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--surface);
+  color: var(--primaryText);
+  font: inherit;
+  /* Код диктуют и набирают руками: разрядка и верхний регистр помогают
+     не спутать «O» с «0» уже при вводе. */
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.input:focus {
+  outline: 2px solid var(--borderFocus);
+  outline-offset: -1px;
+}
+
+.ok {
+  margin: var(--space3) 0 0;
+  font-size: var(--textSm);
+  color: var(--success);
+}
+
+.err {
+  margin: var(--space3) 0 0;
+  font-size: var(--textSm);
+  color: var(--danger);
+}

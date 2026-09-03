@@ -324,7 +324,8 @@ export const managedUserDetailSchema = managedUserSchema.extend({
     .object({
       status: z.enum(['active', 'grace', 'expired']),
       kind: z.enum(['individual', 'agency', 'salon']),
-      term: z.enum(['m1', 'm6', 'm12']),
+      /** `null` — размещение выдано акцией, а не куплено. */
+      term: z.enum(['m1', 'm6', 'm12']).nullable(),
       expiresAt: z.string().datetime(),
     })
     .nullable(),

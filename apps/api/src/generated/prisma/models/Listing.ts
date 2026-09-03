@@ -184,7 +184,7 @@ export type ListingGroupByOutputType = {
   userId: string
   kind: $Enums.AdvertiserKind
   status: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term: $Enums.PlanTerm | null
   activatedAt: Date
   expiresAt: Date
   reminderSentAt: Date | null
@@ -218,7 +218,7 @@ export type ListingWhereInput = {
   userId?: Prisma.StringFilter<"Listing"> | string
   kind?: Prisma.EnumAdvertiserKindFilter<"Listing"> | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
+  term?: Prisma.EnumPlanTermNullableFilter<"Listing"> | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -232,7 +232,7 @@ export type ListingOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  term?: Prisma.SortOrder
+  term?: Prisma.SortOrderInput | Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -249,7 +249,7 @@ export type ListingWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Listing"> | string
   kind?: Prisma.EnumAdvertiserKindFilter<"Listing"> | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
+  term?: Prisma.EnumPlanTermNullableFilter<"Listing"> | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -263,7 +263,7 @@ export type ListingOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  term?: Prisma.SortOrder
+  term?: Prisma.SortOrderInput | Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   reminderSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -282,7 +282,7 @@ export type ListingScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Listing"> | string
   kind?: Prisma.EnumAdvertiserKindWithAggregatesFilter<"Listing"> | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusWithAggregatesFilter<"Listing"> | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermWithAggregatesFilter<"Listing"> | $Enums.PlanTerm
+  term?: Prisma.EnumPlanTermNullableWithAggregatesFilter<"Listing"> | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Listing"> | Date | string | null
@@ -294,7 +294,7 @@ export type ListingCreateInput = {
   id?: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -308,7 +308,7 @@ export type ListingUncheckedCreateInput = {
   userId: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -320,7 +320,7 @@ export type ListingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -334,7 +334,7 @@ export type ListingUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -347,7 +347,7 @@ export type ListingCreateManyInput = {
   userId: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -359,7 +359,7 @@ export type ListingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -372,7 +372,7 @@ export type ListingUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -475,11 +475,15 @@ export type EnumListingStatusFieldUpdateOperationsInput = {
   set?: $Enums.ListingStatus
 }
 
+export type NullableEnumPlanTermFieldUpdateOperationsInput = {
+  set?: $Enums.PlanTerm | null
+}
+
 export type ListingCreateWithoutUserInput = {
   id?: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -491,7 +495,7 @@ export type ListingUncheckedCreateWithoutUserInput = {
   id?: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -533,7 +537,7 @@ export type ListingScalarWhereInput = {
   userId?: Prisma.StringFilter<"Listing"> | string
   kind?: Prisma.EnumAdvertiserKindFilter<"Listing"> | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFilter<"Listing"> | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFilter<"Listing"> | $Enums.PlanTerm
+  term?: Prisma.EnumPlanTermNullableFilter<"Listing"> | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   expiresAt?: Prisma.DateTimeFilter<"Listing"> | Date | string
   reminderSentAt?: Prisma.DateTimeNullableFilter<"Listing"> | Date | string | null
@@ -545,7 +549,7 @@ export type ListingCreateManyUserInput = {
   id?: string
   kind: $Enums.AdvertiserKind
   status?: $Enums.ListingStatus
-  term: $Enums.PlanTerm
+  term?: $Enums.PlanTerm | null
   activatedAt?: Date | string
   expiresAt: Date | string
   reminderSentAt?: Date | string | null
@@ -557,7 +561,7 @@ export type ListingUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -569,7 +573,7 @@ export type ListingUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -581,7 +585,7 @@ export type ListingUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.EnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind
   status?: Prisma.EnumListingStatusFieldUpdateOperationsInput | $Enums.ListingStatus
-  term?: Prisma.EnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm
+  term?: Prisma.NullableEnumPlanTermFieldUpdateOperationsInput | $Enums.PlanTerm | null
   activatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -667,7 +671,12 @@ export type $ListingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     userId: string
     kind: $Enums.AdvertiserKind
     status: $Enums.ListingStatus
-    term: $Enums.PlanTerm
+    /**
+     * Купленный срок. Пусто у размещения, выданного акцией: там не тариф,
+     * а подаренные дни, и подставлять сюда «месяц» значило бы записать в
+     * историю покупку, которой не было.
+     */
+    term: $Enums.PlanTerm | null
     activatedAt: Date
     expiresAt: Date
     /**

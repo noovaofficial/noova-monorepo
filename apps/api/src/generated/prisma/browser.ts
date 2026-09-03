@@ -262,3 +262,18 @@ export type TopPlacement = Prisma.TopPlacementModel
  * сроку хранения (`RETENTION_VERIFICATION_DOCS_DAYS`).
  */
 export type VerificationRequest = Prisma.VerificationRequestModel
+/**
+ * Model Campaign
+ * Акция: кому, при каком условии и что выдаём (решение админа).
+ * 
+ * Одна запись — одно предложение. Условия пустые означают «любой»: акция без
+ * города действует везде, без типа — на всех рекламодателей.
+ */
+export type Campaign = Prisma.CampaignModel
+/**
+ * Model CampaignGrant
+ * Выдача по акции. Он же счётчик квоты и он же защита от повторной выдачи:
+ * уникальная пара «акция + человек» делает вторую выдачу невозможной на
+ * уровне БД, а не на уровне внимательности кода.
+ */
+export type CampaignGrant = Prisma.CampaignGrantModel

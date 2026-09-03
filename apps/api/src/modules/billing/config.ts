@@ -1,5 +1,6 @@
 import {
-  type BillingConfigInput,
+  type AdminBillingConfig,
+  DEFAULT_ADMIN_BILLING_CONFIG,
   DEFAULT_BILLING_CONFIG,
   PLAN_KINDS,
   PLAN_TERMS,
@@ -29,6 +30,7 @@ export async function seedBillingDefaults(prisma: PrismaClient): Promise<void> {
         topWeekGc: defaults.top.weekGc,
         topSlots: defaults.top.slots,
         topShown: defaults.top.shown,
+        moderatorAdjustLimitGc: DEFAULT_ADMIN_BILLING_CONFIG.moderatorAdjustLimitGc,
       },
       update: {},
     }),
@@ -42,11 +44,11 @@ export async function seedBillingDefaults(prisma: PrismaClient): Promise<void> {
   ]);
 }
 
-export async function loadBillingConfig(prisma: PrismaClient): Promise<BillingConfigInput> {
+export async function loadBillingConfig(prisma: PrismaClient): Promise<AdminBillingConfig> {
   const settings = await prisma.billingSettings.findUnique({ where: { id: SETTINGS_ID } });
   if (!settings) {
     await seedBillingDefaults(prisma);
-    return DEFAULT_BILLING_CONFIG;
+    return DEFAULT_ADMIN_BILLING_CONFIG;
   }
 
   const [entries, tiers] = await Promise.all([
@@ -63,6 +65,7 @@ export async function loadBillingConfig(prisma: PrismaClient): Promise<BillingCo
   return {
     gcPerEur: settings.gcPerEur,
     agencyProfileLimit: settings.agencyProfileLimit,
+    moderatorAdjustLimitGc: settings.moderatorAdjustLimitGc,
     top: { weekGc: settings.topWeekGc, slots: settings.topSlots, shown: settings.topShown },
     prices,
     topupTiers:
@@ -79,8 +82,8 @@ export async function loadBillingConfig(prisma: PrismaClient): Promise<BillingCo
  */
 export async function saveBillingConfig(
   prisma: PrismaClient,
-  input: BillingConfigInput,
-): Promise<BillingConfigInput> {
+  input: AdminBillingConfig,
+): Promise<AdminBillingConfig> {
   await prisma.$transaction([
     prisma.billingSettings.upsert({
       where: { id: SETTINGS_ID },
@@ -91,6 +94,7 @@ export async function saveBillingConfig(
         topWeekGc: input.top.weekGc,
         topSlots: input.top.slots,
         topShown: input.top.shown,
+        moderatorAdjustLimitGc: input.moderatorAdjustLimitGc,
       },
       update: {
         gcPerEur: input.gcPerEur,
@@ -98,6 +102,7 @@ export async function saveBillingConfig(
         topWeekGc: input.top.weekGc,
         topSlots: input.top.slots,
         topShown: input.top.shown,
+        moderatorAdjustLimitGc: input.moderatorAdjustLimitGc,
       },
     }),
     ...PLAN_KINDS.flatMap((kind) =>

@@ -19,7 +19,8 @@ export type StaffSection = {
     | 'locations'
     | 'serviceCatalog'
     | 'monetization'
-    | 'billingOps';
+    | 'billingOps'
+    | 'campaigns';
   href: string;
   /** Состав персонала и состав стран — решения владельца, не оператора очереди. */
   adminOnly?: boolean;
@@ -36,6 +37,9 @@ export const STAFF_SECTIONS: StaffSection[] = [
   // модератор их не видит и не меняет.
   { key: 'monetization', href: '/admin/monetization', adminOnly: true },
   { key: 'billingOps', href: '/admin/billing', adminOnly: true },
+  // Акции раздают размещения и монеты — то же решение владельца продукта,
+  // что и цены, и той же ролью.
+  { key: 'campaigns', href: '/admin/campaigns', adminOnly: true },
 ];
 
 export const isStaffRole = (role?: UserRole): boolean => role === 'moderator' || role === 'admin';

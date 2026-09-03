@@ -3,13 +3,16 @@ import {
   activateListingResultSchema,
   adjustBalanceInputSchema,
   adjustBalanceResultSchema,
-  billingConfigInputSchema,
+  adjustLimitSchema,
+  adminBillingConfigSchema,
+  adminPriceBookSchema,
   billingOperationsSchema,
   buyTopInputSchema,
   buyTopResultSchema,
   createTopupInputSchema,
   createTopupResultSchema,
   currentListingSchema,
+  isAdjustWithinLimit,
   priceBookSchema,
   toPriceBook,
   topStateSchema,
@@ -71,16 +74,23 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async () => toPriceBook(await loadBillingConfig(fastify.prisma)),
   );
 
+  /**
+   * Конфигурация для админки. Схема шире публичной: сюда входит потолок
+   * корректировки для модератора, которому на витрине делать нечего.
+   */
   fastify.get(
     '/admin/billing/config',
     {
       onRequest: guard,
       schema: {
         tags: ['admin'],
-        response: { 200: priceBookSchema },
+        response: { 200: adminPriceBookSchema },
       },
     },
-    async () => toPriceBook(await loadBillingConfig(fastify.prisma)),
+    async () => {
+      const config = await loadBillingConfig(fastify.prisma);
+      return { ...toPriceBook(config), moderatorAdjustLimitGc: config.moderatorAdjustLimitGc };
+    },
   );
 
   fastify.put(
@@ -89,8 +99,8 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       onRequest: guard,
       schema: {
         tags: ['admin'],
-        body: billingConfigInputSchema,
-        response: { 200: priceBookSchema },
+        body: adminBillingConfigSchema,
+        response: { 200: adminPriceBookSchema },
       },
     },
     async (request) => {
@@ -98,7 +108,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Витрина кэшируется: без сброса новая цена доехала бы до посетителя
       // с опозданием, и админ решил бы, что сохранение не сработало.
       fastify.revalidate([BILLING_TAG]);
-      return toPriceBook(saved);
+      return { ...toPriceBook(saved), moderatorAdjustLimitGc: saved.moderatorAdjustLimitGc };
     },
   );
 
@@ -536,14 +546,44 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
   );
 
   /**
+   * Потолок корректировки для того, кто спрашивает. У админа — `null`:
+   * предела нет, и подставлять сюда «миллион» значило бы показать в форме
+   * ограничение, которого не существует.
+   *
+   * Отдельный узкий маршрут, а не поле в конфигурации: всю конфигурацию
+   * монетизации модератору читать незачем, а свой предел он видеть должен —
+   * иначе узнаёт о нём только отказом после нажатия.
+   */
+  fastify.get(
+    '/billing/adjust-limit',
+    {
+      onRequest: fastify.requireRole('admin', 'moderator'),
+      schema: {
+        tags: ['admin'],
+        response: { 200: adjustLimitSchema },
+      },
+    },
+    async (request) => {
+      if (requireSession(request).role === 'admin') return { limitGc: null };
+      const { moderatorAdjustLimitGc } = await loadBillingConfig(fastify.prisma);
+      return { limitGc: moderatorAdjustLimitGc };
+    },
+  );
+
+  /**
    * Ручная корректировка (`ADJUSTMENT`). Стоит раньше кассы намеренно: она
    * закрывает поддержку — компенсации, спорные случаи — и позволяет проверить
    * списания и продления, ещё не подключив провайдера.
+   *
+   * Доступна и модератору, но с потолком на сумму: он правит баланс по
+   * обращениям в поддержку, а не распоряжается деньгами проекта. Знак при
+   * этом не ограничен — списание такая же часть разбора обращения, как и
+   * начисление: ошибочно выданное надо уметь забрать.
    */
   fastify.post(
     '/admin/billing/adjust',
     {
-      onRequest: guard,
+      onRequest: fastify.requireRole('admin', 'moderator'),
       schema: {
         tags: ['admin'],
         body: adjustBalanceInputSchema,
@@ -551,8 +591,20 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     async (request) => {
-      const { userId: adminId } = requireSession(request);
+      const { userId: actorId, role: actorRole } = requireSession(request);
       const { userId, gcAmount, note } = request.body;
+
+      if (actorRole === 'moderator') {
+        // Потолок проверяется по модулю: и выдать, и забрать модератор может
+        // не больше настроенной суммы. Считается на сервере, а не в форме:
+        // форма подсказывает, ограничивает — сервер.
+        const { moderatorAdjustLimitGc } = await loadBillingConfig(fastify.prisma);
+        if (!isAdjustWithinLimit(gcAmount, moderatorAdjustLimitGc)) {
+          throw fastify.httpErrors.forbidden(
+            `Модератор проводит не больше ${moderatorAdjustLimitGc} GC за раз. Крупные движения — у администратора.`,
+          );
+        }
+      }
 
       const target = await fastify.prisma.user.findUnique({
         where: { id: userId },
@@ -569,7 +621,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
           kind: 'ADJUSTMENT',
           gcAmount,
           note,
-          createdById: adminId,
+          createdById: actorId,
         });
       } catch (error) {
         if (error instanceof InsufficientBalanceError) {

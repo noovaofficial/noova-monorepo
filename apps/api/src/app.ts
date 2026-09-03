@@ -16,6 +16,7 @@ import { adminRoutes } from './modules/admin/routes.js';
 import { analyticsRoutes } from './modules/analytics/routes.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { billingRoutes } from './modules/billing/routes.js';
+import { campaignRoutes } from './modules/campaigns/routes.js';
 import { commentRoutes } from './modules/comments/routes.js';
 import { companyRoutes } from './modules/company/routes.js';
 import { favoriteRoutes } from './modules/favorites/routes.js';
@@ -140,6 +141,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(billingRoutes);
       await api.register(verificationRoutes);
       await api.register(analyticsRoutes);
+      await api.register(campaignRoutes);
     },
     { prefix: '/api/v1' },
   );

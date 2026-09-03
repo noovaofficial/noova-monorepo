@@ -769,6 +769,13 @@ export type EnumListingStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumListingStatusFilter<$PrismaModel> | $Enums.ListingStatus
 }
 
+export type EnumPlanTermNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel> | $Enums.PlanTerm | null
+}
+
 export type EnumListingStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingStatus | Prisma.EnumListingStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ListingStatus[] | Prisma.ListEnumListingStatusFieldRefInput<$PrismaModel>
@@ -777,6 +784,16 @@ export type EnumListingStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
+}
+
+export type EnumPlanTermNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPlanTermNullableWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel>
 }
 
 export type EnumTopupOrderStatusFilter<$PrismaModel = never> = {
@@ -828,6 +845,23 @@ export type EnumVerificationRequestStatusWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVerificationRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVerificationRequestStatusFilter<$PrismaModel>
+}
+
+export type EnumCampaignTriggerFilter<$PrismaModel = never> = {
+  equals?: $Enums.CampaignTrigger | Prisma.EnumCampaignTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel> | $Enums.CampaignTrigger
+}
+
+export type EnumCampaignTriggerWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CampaignTrigger | Prisma.EnumCampaignTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCampaignTriggerWithAggregatesFilter<$PrismaModel> | $Enums.CampaignTrigger
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -1549,6 +1583,13 @@ export type NestedEnumListingStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumListingStatusFilter<$PrismaModel> | $Enums.ListingStatus
 }
 
+export type NestedEnumPlanTermNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel> | $Enums.PlanTerm | null
+}
+
 export type NestedEnumListingStatusWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingStatus | Prisma.EnumListingStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ListingStatus[] | Prisma.ListEnumListingStatusFieldRefInput<$PrismaModel>
@@ -1557,6 +1598,16 @@ export type NestedEnumListingStatusWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumListingStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumPlanTermNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel> | null
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumPlanTermNullableWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanTermNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumTopupOrderStatusFilter<$PrismaModel = never> = {
@@ -1608,6 +1659,23 @@ export type NestedEnumVerificationRequestStatusWithAggregatesFilter<$PrismaModel
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVerificationRequestStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVerificationRequestStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumCampaignTriggerFilter<$PrismaModel = never> = {
+  equals?: $Enums.CampaignTrigger | Prisma.EnumCampaignTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel> | $Enums.CampaignTrigger
+}
+
+export type NestedEnumCampaignTriggerWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CampaignTrigger | Prisma.EnumCampaignTriggerFieldRefInput<$PrismaModel>
+  in?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CampaignTrigger[] | Prisma.ListEnumCampaignTriggerFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCampaignTriggerWithAggregatesFilter<$PrismaModel> | $Enums.CampaignTrigger
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCampaignTriggerFilter<$PrismaModel>
 }
 
 
