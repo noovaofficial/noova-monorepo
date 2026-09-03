@@ -115,7 +115,7 @@ export function VerificationReview({ requestId }: { requestId: string }) {
               >
                 {/* Ссылка подписана сессией и живёт минуты: оптимизатор Next
                     закэшировал бы документ на диске — здесь это недопустимо. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {/* biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую */}
                 <img src={data.photos[kind]} alt="" />
               </button>
               <figcaption className={styles.identityCaption}>{t(`identity_${kind}`)}</figcaption>

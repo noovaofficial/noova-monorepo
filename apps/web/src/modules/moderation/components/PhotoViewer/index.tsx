@@ -74,7 +74,7 @@ export function PhotoViewer({
 
         {/* Обычный img: ссылка живёт по сессии, и оптимизатор Next её
             всё равно не откроет. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую */}
         <img className={styles.image} src={photo.url} alt="" />
 
         {hasMany ? (

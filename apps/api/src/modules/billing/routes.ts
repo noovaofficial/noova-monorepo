@@ -178,7 +178,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: userId },
         select: { role: true, advertiserKind: true },
       });
-      if (!user || user.role !== 'advertiser' || !user.advertiserKind) {
+      if (user?.role !== 'advertiser' || !user.advertiserKind) {
         throw fastify.httpErrors.forbidden('Размещение доступно только рекламодателю');
       }
 

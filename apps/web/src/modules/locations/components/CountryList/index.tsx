@@ -21,7 +21,6 @@ import { EntityRow, emptyNames, NameFields, useRunner } from '../shared';
  * записей и один набор действий.
  */
 export function CountryList() {
-  const label = useLabel();
   const t = useTranslations('locations');
   const { user, status } = useSession();
   const queryClient = useQueryClient();

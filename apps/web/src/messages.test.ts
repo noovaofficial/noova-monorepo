@@ -18,6 +18,27 @@ function walk(dir: string, files: string[] = []): string[] {
 }
 
 /**
+ * Неймспейсы, ключи которых приходят из данных, а не пишутся в коде: значения
+ * перечислений БД, коды языков, типы контактов. Найти их упоминание в
+ * исходниках нельзя в принципе — `t(profile.hairColor)` не содержит ни
+ * `blonde`, ни `brunette`, — поэтому проверка «ключ есть, а кода нет» их
+ * пропускает. Плата за это известна: мёртвый статический ключ в таком
+ * неймспейсе (скажем, `contacts.note`) она не поймает.
+ */
+const DATA_DRIVEN = new Set([
+  'appearanceType',
+  'bodyType',
+  'breastSize',
+  'breastType',
+  'contacts',
+  'eyeColor',
+  'hairColor',
+  'languageNames',
+  'pubicHair',
+  'services',
+]);
+
+/**
  * Ключи, которых нет в словаре, роняют страницу в рантайме — а сборка их
  * не ловит, если компонент клиентский и при пререндере не открывается.
  * Так панель фильтров уехала в работу с двенадцатью недостающими строками.
@@ -84,5 +105,48 @@ describe('словари локалей', () => {
     }
 
     expect([...new Set(missing)]).toEqual([]);
+  });
+
+  /**
+   * Обратная проверка: ключ есть в словаре, а в коде его нет.
+   *
+   * Так копится мусор — `account.tags` пережил снос `Profile.tags`, а
+   * `footer.impressum` ждёт страниц, которых нет. Сам по себе лишний ключ
+   * безвреден, но он попадает в бандл, уезжает переводчику и создаёт
+   * впечатление, что функция есть.
+   *
+   * Проверка нарочно **грубее** предыдущей и сопоставлять переменную с её
+   * неймспейсом не пытается: в странице анкеты `t` приходит из
+   * деструктуризации `Promise.all`, и точное сопоставление там врёт, объявляя
+   * мёртвыми сорок живых ключей. Здесь достаточно, чтобы имя ключа
+   * встречалось в исходниках хоть где-нибудь. Цена — пропущенный ключ, чьё
+   * имя совпало с чем-то посторонним; это лучше, чем предложить удалить
+   * работающую подпись.
+   */
+  it('не содержат ключей, которых нет в коде', () => {
+    const sources = walk(join(import.meta.dirname))
+      .map((file) => readFileSync(file, 'utf8'))
+      .join('\n');
+
+    // Ключи, собранные шаблоном: t(`period_${x}`) и t(`${key}Title`).
+    const prefixes = [...sources.matchAll(/\(\s*`([a-zA-Z][\w]*?)\$\{/g)].map(
+      (m) => m[1] as string,
+    );
+    const suffixes = [...sources.matchAll(/\(\s*`\$\{[^}]*\}([a-zA-Z][\w]*)`/g)].map(
+      (m) => m[1] as string,
+    );
+
+    const dead: string[] = [];
+    for (const [ns, values] of Object.entries(LOCALES.ru as Dict)) {
+      if (DATA_DRIVEN.has(ns)) continue;
+      for (const key of Object.keys(values)) {
+        if (new RegExp(`['"\`]${key}['"\`]`).test(sources)) continue;
+        if (prefixes.some((p) => key.startsWith(p))) continue;
+        if (suffixes.some((suffix) => key.endsWith(suffix))) continue;
+        dead.push(`${ns}.${key}`);
+      }
+    }
+
+    expect(dead, 'есть в словаре, но не используются в коде').toEqual([]);
   });
 });

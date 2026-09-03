@@ -433,11 +433,6 @@ model Profile {
   heightCm       Int?
   weightKg       Int?
   languages      String[]        @default([])
-  /// НЕ ИСПОЛЬЗУЕТСЯ. Свободная строка о происхождении — то самое, от чего
-  /// ушли в пользу самодекларируемого `appearanceType`: происхождение
-  /// относится к особой категории по ст. 9 GDPR. Из API и интерфейса убрано;
-  /// колонку снести отдельной миграцией, убедившись, что данных в ней нет.
-  nationality    String?
   hairColor      HairColor?
   eyeColor       EyeColor?
   breastSize     BreastSize?

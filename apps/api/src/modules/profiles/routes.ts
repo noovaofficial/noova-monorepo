@@ -105,10 +105,14 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const hasMore = rows.length > query.limit;
       const page = hasMore ? rows.slice(0, query.limit) : rows;
+      const last = page.at(-1);
 
       return {
         items: page.map(toProfileCard),
-        nextCursor: hasMore ? encodeCursor(page[page.length - 1]!.id) : null,
+        // Проверка `last` не лишняя формальность: `hasMore` гарантирует
+        // непустую страницу только вместе с `limit >= 1`, а это условие
+        // живёт в схеме запроса, а не здесь.
+        nextCursor: hasMore && last ? encodeCursor(last.id) : null,
         total: null,
       };
     },

@@ -204,7 +204,7 @@ export default async function ProfilePage({ params }: Props) {
             про саму анкету, а не про условия сделки, и рядом с фотографиями
             читаются заодно с ними — правая колонка остаётся про контакты,
             цены и услуги. */}
-        <div className={styles.gallerySticky}>
+        <div className={styles.galleryColumn}>
           <Gallery
             photos={profile.photos}
             alt={`${profile.displayName}, ${profile.city.name}`}

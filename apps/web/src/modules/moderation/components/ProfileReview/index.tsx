@@ -158,7 +158,7 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                 >
                   {/* Ссылка на неодобренное фото подписанная и живёт минуты —
                       оптимизатор Next закэшировал бы её и отдавал битую. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {/* biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую */}
                   <img src={photo.url} alt="" loading="lazy" />
                 </button>
                 {!photo.isApproved ? (

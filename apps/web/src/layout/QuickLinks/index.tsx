@@ -6,7 +6,7 @@ import { isStaffRole, sectionsFor } from '@/modules/moderation/staff-sections';
 import { Link, usePathname } from '@/shared/i18n/navigation';
 import styles from '../Header.module.css';
 
-type QuickLink = { href: string; label: string; disabled?: boolean };
+type QuickLink = { href: string; label: string };
 
 /**
  * Вторая строка шапки. У гостя и клиента там фильтры каталога, у сотрудников
@@ -55,14 +55,10 @@ export function QuickLinks({ children }: { children: React.ReactNode }) {
       {links.map((link) => (
         <Link
           key={link.label}
-          href={link.disabled ? pathname : link.href}
-          className={`${styles.chip} ${
-            !link.disabled && pathname === link.href ? styles.chipSelected : ''
-          } ${link.disabled ? styles.chipDisabled : ''}`}
-          aria-disabled={link.disabled}
+          href={link.href}
+          className={`${styles.chip} ${pathname === link.href ? styles.chipSelected : ''}`}
         >
           {link.label}
-          {link.disabled ? <span className={styles.chipHint}> · {t('soon')}</span> : null}
         </Link>
       ))}
       <span className="visually-hidden">{tf('top')}</span>

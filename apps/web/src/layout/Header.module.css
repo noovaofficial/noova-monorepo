@@ -156,16 +156,6 @@
   }
 }
 
-.chipDisabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.chipHint {
-  font-weight: 400;
-  opacity: 0.7;
-}
-
 .filterCount {
   display: inline-flex;
   align-items: center;

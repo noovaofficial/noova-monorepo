@@ -3314,7 +3314,6 @@ export const ProfileScalarFieldEnum = {
   heightCm: 'heightCm',
   weightKg: 'weightKg',
   languages: 'languages',
-  nationality: 'nationality',
   hairColor: 'hairColor',
   eyeColor: 'eyeColor',
   breastSize: 'breastSize',

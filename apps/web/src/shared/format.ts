@@ -37,6 +37,7 @@ export function placeholderGradient(seed: string): string {
   for (let i = 0; i < seed.length; i += 1) {
     hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   }
+  // biome-ignore lint/style/noNonNullAssertion: остаток по модулю от длины непустого литерального массива всегда в границах
   return PLACEHOLDER_GRADIENTS[hash % PLACEHOLDER_GRADIENTS.length]!;
 }
 

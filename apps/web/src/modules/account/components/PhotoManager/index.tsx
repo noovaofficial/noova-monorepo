@@ -98,7 +98,7 @@ export function PhotoManager({ profileId, photos, onChange }: Props) {
             <div className={styles.photoCard} key={photo.id}>
               {/* Ссылка на неодобренное фото подписанная и живёт минуты,
                   поэтому next/image с его оптимизацией здесь не подходит. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {/* biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую */}
               <img src={photo.url} alt="" loading="lazy" />
 
               <span

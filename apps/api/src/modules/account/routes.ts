@@ -66,7 +66,7 @@ async function advertiserOr403(fastify: FastifyInstance, userId: string) {
     where: { id: userId },
     select: { role: true, advertiserKind: true, emailVerifiedAt: true },
   });
-  if (!user || user.role !== 'advertiser' || !user.advertiserKind) {
+  if (user?.role !== 'advertiser' || !user.advertiserKind) {
     throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
   }
   return { advertiserKind: user.advertiserKind, isEmailVerified: user.emailVerifiedAt !== null };

@@ -178,7 +178,7 @@ async function call<T>(path: string, body: unknown): Promise<T> {
   });
 
   const envelope = (await response.json().catch(() => null)) as Envelope<T> | null;
-  if (!response.ok || !envelope || !envelope.success) {
+  if (!response.ok || !envelope?.success) {
     throw new PaymentoError(
       envelope?.message || `Paymento ответил ${response.status} на ${path}`,
       response.status,

@@ -177,7 +177,7 @@ export function ModerationQueue() {
                   >
                     {/* Ссылка подписанная и живёт минуты — оптимизатор Next
                         закэшировал бы её и отдавал битую после истечения. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    {/* biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую */}
                     <img src={item.url} alt="" loading="lazy" />
                   </button>
                 </div>

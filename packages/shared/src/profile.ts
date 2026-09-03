@@ -5,6 +5,7 @@ import {
   cursorPaginationSchema,
   moneySchema,
   queryArraySchema,
+  queryEnumArraySchema,
   slugSchema,
 } from './common';
 import { paymentMethodSchema, profileCompanySchema } from './company';
@@ -295,15 +296,17 @@ export const profileQuerySchema = cursorPaginationSchema.extend({
   maxPriceCents: z.coerce.number().int().nonnegative().optional(),
   ageMin: z.coerce.number().int().min(18).optional(),
   ageMax: z.coerce.number().int().max(99).optional(),
-  hairColor: queryArraySchema().optional(),
-  eyeColor: queryArraySchema().optional(),
-  breastSize: queryArraySchema().optional(),
-  breastType: queryArraySchema().optional(),
-  bodyType: queryArraySchema().optional(),
-  pubicHair: queryArraySchema().optional(),
+  // Внешность — колонки-перечисления в БД: значение вне набора Postgres
+  // не принимает, поэтому неизвестное отбрасывается на разборе.
+  hairColor: queryEnumArraySchema(hairColorSchema).optional(),
+  eyeColor: queryEnumArraySchema(eyeColorSchema).optional(),
+  breastSize: queryEnumArraySchema(breastSizeSchema).optional(),
+  breastType: queryEnumArraySchema(breastTypeSchema).optional(),
+  bodyType: queryEnumArraySchema(bodyTypeSchema).optional(),
+  pubicHair: queryEnumArraySchema(pubicHairSchema).optional(),
   hasPiercing: booleanFromString().optional(),
   hasTattoos: booleanFromString().optional(),
-  appearanceType: queryArraySchema().optional(),
+  appearanceType: queryEnumArraySchema(appearanceTypeSchema).optional(),
   heightMin: z.coerce.number().int().optional(),
   heightMax: z.coerce.number().int().optional(),
   weightMin: z.coerce.number().int().optional(),

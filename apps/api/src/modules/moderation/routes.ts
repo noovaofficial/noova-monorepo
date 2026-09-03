@@ -387,32 +387,37 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     }));
   }
 
+  /**
+   * Счётчик очереди по каждому виду. Таблица, а не `switch`, — как и
+   * `queueLoaders` выше: у `switch` забытый вид молча возвращает `undefined`,
+   * и счётчик в шапке превращается в `NaN` — то есть в пустой бейдж, по
+   * которому не догадаться, что виноват новый вид предмета. В таблице тот
+   * же пропуск не собирается.
+   */
+  const queueCounters: Record<QueueSource, () => Promise<number>> = {
+    verification: () => fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
+    photo: () => fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
+    comment: () =>
+      fastify.prisma.profileComment.count({
+        where: {
+          OR: [
+            { status: 'pending' },
+            { status: 'published', reports: { some: { resolvedAt: null } } },
+          ],
+        },
+      }),
+    reportUrgent: () =>
+      fastify.prisma.profileReport.count({
+        where: { resolvedAt: null, reason: { in: [...URGENT_REASONS] } },
+      }),
+    report: () =>
+      fastify.prisma.profileReport.count({
+        where: { resolvedAt: null, reason: { notIn: [...URGENT_REASONS] } },
+      }),
+  };
+
   function queueTotal(sources: QueueSource[]): Promise<number> {
-    const counts = sources.map((source) => {
-      switch (source) {
-        case 'verification':
-          return fastify.prisma.verificationCase.count({ where: { status: 'pending' } });
-        case 'photo':
-          return fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } });
-        case 'comment':
-          return fastify.prisma.profileComment.count({
-            where: {
-              OR: [
-                { status: 'pending' },
-                { status: 'published', reports: { some: { resolvedAt: null } } },
-              ],
-            },
-          });
-        case 'reportUrgent':
-          return fastify.prisma.profileReport.count({
-            where: { resolvedAt: null, reason: { in: [...URGENT_REASONS] } },
-          });
-        case 'report':
-          return fastify.prisma.profileReport.count({
-            where: { resolvedAt: null, reason: { notIn: [...URGENT_REASONS] } },
-          });
-      }
-    });
+    const counts = sources.map((source) => queueCounters[source]());
     return Promise.all(counts).then((values) => values.reduce((sum, n) => sum + n, 0));
   }
 

@@ -73,7 +73,6 @@ export type ProfileMinAggregateOutputType = {
   age: number | null
   heightCm: number | null
   weightKg: number | null
-  nationality: string | null
   hairColor: $Enums.HairColor | null
   eyeColor: $Enums.EyeColor | null
   breastSize: $Enums.BreastSize | null
@@ -116,7 +115,6 @@ export type ProfileMaxAggregateOutputType = {
   age: number | null
   heightCm: number | null
   weightKg: number | null
-  nationality: string | null
   hairColor: $Enums.HairColor | null
   eyeColor: $Enums.EyeColor | null
   breastSize: $Enums.BreastSize | null
@@ -162,7 +160,6 @@ export type ProfileCountAggregateOutputType = {
   heightCm: number
   weightKg: number
   languages: number
-  nationality: number
   hairColor: number
   eyeColor: number
   breastSize: number
@@ -227,7 +224,6 @@ export type ProfileMinAggregateInputType = {
   age?: true
   heightCm?: true
   weightKg?: true
-  nationality?: true
   hairColor?: true
   eyeColor?: true
   breastSize?: true
@@ -270,7 +266,6 @@ export type ProfileMaxAggregateInputType = {
   age?: true
   heightCm?: true
   weightKg?: true
-  nationality?: true
   hairColor?: true
   eyeColor?: true
   breastSize?: true
@@ -316,7 +311,6 @@ export type ProfileCountAggregateInputType = {
   heightCm?: true
   weightKg?: true
   languages?: true
-  nationality?: true
   hairColor?: true
   eyeColor?: true
   breastSize?: true
@@ -449,7 +443,6 @@ export type ProfileGroupByOutputType = {
   heightCm: number | null
   weightKg: number | null
   languages: string[]
-  nationality: string | null
   hairColor: $Enums.HairColor | null
   eyeColor: $Enums.EyeColor | null
   breastSize: $Enums.BreastSize | null
@@ -518,7 +511,6 @@ export type ProfileWhereInput = {
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
   languages?: Prisma.StringNullableListFilter<"Profile">
-  nationality?: Prisma.StringNullableFilter<"Profile"> | string | null
   hairColor?: Prisma.EnumHairColorNullableFilter<"Profile"> | $Enums.HairColor | null
   eyeColor?: Prisma.EnumEyeColorNullableFilter<"Profile"> | $Enums.EyeColor | null
   breastSize?: Prisma.EnumBreastSizeNullableFilter<"Profile"> | $Enums.BreastSize | null
@@ -581,7 +573,6 @@ export type ProfileOrderByWithRelationInput = {
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
-  nationality?: Prisma.SortOrderInput | Prisma.SortOrder
   hairColor?: Prisma.SortOrderInput | Prisma.SortOrder
   eyeColor?: Prisma.SortOrderInput | Prisma.SortOrder
   breastSize?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -647,7 +638,6 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
   languages?: Prisma.StringNullableListFilter<"Profile">
-  nationality?: Prisma.StringNullableFilter<"Profile"> | string | null
   hairColor?: Prisma.EnumHairColorNullableFilter<"Profile"> | $Enums.HairColor | null
   eyeColor?: Prisma.EnumEyeColorNullableFilter<"Profile"> | $Enums.EyeColor | null
   breastSize?: Prisma.EnumBreastSizeNullableFilter<"Profile"> | $Enums.BreastSize | null
@@ -710,7 +700,6 @@ export type ProfileOrderByWithAggregationInput = {
   heightCm?: Prisma.SortOrderInput | Prisma.SortOrder
   weightKg?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
-  nationality?: Prisma.SortOrderInput | Prisma.SortOrder
   hairColor?: Prisma.SortOrderInput | Prisma.SortOrder
   eyeColor?: Prisma.SortOrderInput | Prisma.SortOrder
   breastSize?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -764,7 +753,6 @@ export type ProfileScalarWhereWithAggregatesInput = {
   heightCm?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   languages?: Prisma.StringNullableListFilter<"Profile">
-  nationality?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   hairColor?: Prisma.EnumHairColorNullableWithAggregatesFilter<"Profile"> | $Enums.HairColor | null
   eyeColor?: Prisma.EnumEyeColorNullableWithAggregatesFilter<"Profile"> | $Enums.EyeColor | null
   breastSize?: Prisma.EnumBreastSizeNullableWithAggregatesFilter<"Profile"> | $Enums.BreastSize | null
@@ -806,7 +794,6 @@ export type ProfileCreateInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -869,7 +856,6 @@ export type ProfileUncheckedCreateInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -924,7 +910,6 @@ export type ProfileUpdateInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -987,7 +972,6 @@ export type ProfileUncheckedUpdateInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -1046,7 +1030,6 @@ export type ProfileCreateManyInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -1088,7 +1071,6 @@ export type ProfileUpdateManyMutationInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -1134,7 +1116,6 @@ export type ProfileUncheckedUpdateManyInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -1206,7 +1187,6 @@ export type ProfileCountOrderByAggregateInput = {
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
   languages?: Prisma.SortOrder
-  nationality?: Prisma.SortOrder
   hairColor?: Prisma.SortOrder
   eyeColor?: Prisma.SortOrder
   breastSize?: Prisma.SortOrder
@@ -1259,7 +1239,6 @@ export type ProfileMaxOrderByAggregateInput = {
   age?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
-  nationality?: Prisma.SortOrder
   hairColor?: Prisma.SortOrder
   eyeColor?: Prisma.SortOrder
   breastSize?: Prisma.SortOrder
@@ -1302,7 +1281,6 @@ export type ProfileMinOrderByAggregateInput = {
   age?: Prisma.SortOrder
   heightCm?: Prisma.SortOrder
   weightKg?: Prisma.SortOrder
-  nationality?: Prisma.SortOrder
   hairColor?: Prisma.SortOrder
   eyeColor?: Prisma.SortOrder
   breastSize?: Prisma.SortOrder
@@ -1787,7 +1765,6 @@ export type ProfileCreateWithoutOwnerInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -1848,7 +1825,6 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -1936,7 +1912,6 @@ export type ProfileScalarWhereInput = {
   heightCm?: Prisma.IntNullableFilter<"Profile"> | number | null
   weightKg?: Prisma.IntNullableFilter<"Profile"> | number | null
   languages?: Prisma.StringNullableListFilter<"Profile">
-  nationality?: Prisma.StringNullableFilter<"Profile"> | string | null
   hairColor?: Prisma.EnumHairColorNullableFilter<"Profile"> | $Enums.HairColor | null
   eyeColor?: Prisma.EnumEyeColorNullableFilter<"Profile"> | $Enums.EyeColor | null
   breastSize?: Prisma.EnumBreastSizeNullableFilter<"Profile"> | $Enums.BreastSize | null
@@ -1978,7 +1953,6 @@ export type ProfileCreateWithoutCityInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2039,7 +2013,6 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2120,7 +2093,6 @@ export type ProfileCreateWithoutDistrictInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2181,7 +2153,6 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2262,7 +2233,6 @@ export type ProfileCreateWithoutPhotosInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2324,7 +2294,6 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2394,7 +2363,6 @@ export type ProfileUpdateWithoutPhotosInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -2456,7 +2424,6 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -2510,7 +2477,6 @@ export type ProfileCreateWithoutReportsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2572,7 +2538,6 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2642,7 +2607,6 @@ export type ProfileUpdateWithoutReportsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -2704,7 +2668,6 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -2758,7 +2721,6 @@ export type ProfileCreateWithoutCommentsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2820,7 +2782,6 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -2890,7 +2851,6 @@ export type ProfileUpdateWithoutCommentsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -2952,7 +2912,6 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3006,7 +2965,6 @@ export type ProfileCreateWithoutFavoritesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3068,7 +3026,6 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3138,7 +3095,6 @@ export type ProfileUpdateWithoutFavoritesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3200,7 +3156,6 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3254,7 +3209,6 @@ export type ProfileCreateWithoutCompanyInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3315,7 +3269,6 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3396,7 +3349,6 @@ export type ProfileCreateWithoutHoursInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3458,7 +3410,6 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3528,7 +3479,6 @@ export type ProfileUpdateWithoutHoursInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3590,7 +3540,6 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3644,7 +3593,6 @@ export type ProfileCreateWithoutContactsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3706,7 +3654,6 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3776,7 +3723,6 @@ export type ProfileUpdateWithoutContactsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3838,7 +3784,6 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -3892,7 +3837,6 @@ export type ProfileCreateWithoutEventsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -3954,7 +3898,6 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4024,7 +3967,6 @@ export type ProfileUpdateWithoutEventsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4086,7 +4028,6 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4140,7 +4081,6 @@ export type ProfileCreateWithoutPricesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4202,7 +4142,6 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4272,7 +4211,6 @@ export type ProfileUpdateWithoutPricesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4334,7 +4272,6 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4388,7 +4325,6 @@ export type ProfileCreateWithoutServicesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4450,7 +4386,6 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4520,7 +4455,6 @@ export type ProfileUpdateWithoutServicesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4582,7 +4516,6 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4636,7 +4569,6 @@ export type ProfileCreateWithoutVerificationInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4698,7 +4630,6 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4768,7 +4699,6 @@ export type ProfileUpdateWithoutVerificationInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4830,7 +4760,6 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -4884,7 +4813,6 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -4946,7 +4874,6 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5016,7 +4943,6 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5078,7 +5004,6 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5132,7 +5057,6 @@ export type ProfileCreateWithoutTopPlacementInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5194,7 +5118,6 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5264,7 +5187,6 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5326,7 +5248,6 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5380,7 +5301,6 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5442,7 +5362,6 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5512,7 +5431,6 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5574,7 +5492,6 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5631,7 +5548,6 @@ export type ProfileCreateManyOwnerInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5673,7 +5589,6 @@ export type ProfileUpdateWithoutOwnerInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5734,7 +5649,6 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5792,7 +5706,6 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5837,7 +5750,6 @@ export type ProfileCreateManyCityInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -5879,7 +5791,6 @@ export type ProfileUpdateWithoutCityInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5940,7 +5851,6 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -5998,7 +5908,6 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6043,7 +5952,6 @@ export type ProfileCreateManyDistrictInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -6085,7 +5993,6 @@ export type ProfileUpdateWithoutDistrictInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6146,7 +6053,6 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6204,7 +6110,6 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6249,7 +6154,6 @@ export type ProfileCreateManyCompanyInput = {
   heightCm?: number | null
   weightKg?: number | null
   languages?: Prisma.ProfileCreatelanguagesInput | string[]
-  nationality?: string | null
   hairColor?: $Enums.HairColor | null
   eyeColor?: $Enums.EyeColor | null
   breastSize?: $Enums.BreastSize | null
@@ -6291,7 +6195,6 @@ export type ProfileUpdateWithoutCompanyInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6352,7 +6255,6 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6410,7 +6312,6 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   languages?: Prisma.ProfileUpdatelanguagesInput | string[]
-  nationality?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
   eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
   breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
@@ -6577,7 +6478,6 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   heightCm?: boolean
   weightKg?: boolean
   languages?: boolean
-  nationality?: boolean
   hairColor?: boolean
   eyeColor?: boolean
   breastSize?: boolean
@@ -6641,7 +6541,6 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   heightCm?: boolean
   weightKg?: boolean
   languages?: boolean
-  nationality?: boolean
   hairColor?: boolean
   eyeColor?: boolean
   breastSize?: boolean
@@ -6691,7 +6590,6 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   heightCm?: boolean
   weightKg?: boolean
   languages?: boolean
-  nationality?: boolean
   hairColor?: boolean
   eyeColor?: boolean
   breastSize?: boolean
@@ -6741,7 +6639,6 @@ export type ProfileSelectScalar = {
   heightCm?: boolean
   weightKg?: boolean
   languages?: boolean
-  nationality?: boolean
   hairColor?: boolean
   eyeColor?: boolean
   breastSize?: boolean
@@ -6757,7 +6654,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "nationality" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
@@ -6884,13 +6781,6 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     heightCm: number | null
     weightKg: number | null
     languages: string[]
-    /**
-     * НЕ ИСПОЛЬЗУЕТСЯ. Свободная строка о происхождении — то самое, от чего
-     * ушли в пользу самодекларируемого `appearanceType`: происхождение
-     * относится к особой категории по ст. 9 GDPR. Из API и интерфейса убрано;
-     * колонку снести отдельной миграцией, убедившись, что данных в ней нет.
-     */
-    nationality: string | null
     hairColor: $Enums.HairColor | null
     eyeColor: $Enums.EyeColor | null
     breastSize: $Enums.BreastSize | null
@@ -7379,7 +7269,6 @@ export interface ProfileFieldRefs {
   readonly heightCm: Prisma.FieldRef<"Profile", 'Int'>
   readonly weightKg: Prisma.FieldRef<"Profile", 'Int'>
   readonly languages: Prisma.FieldRef<"Profile", 'String[]'>
-  readonly nationality: Prisma.FieldRef<"Profile", 'String'>
   readonly hairColor: Prisma.FieldRef<"Profile", 'HairColor'>
   readonly eyeColor: Prisma.FieldRef<"Profile", 'EyeColor'>
   readonly breastSize: Prisma.FieldRef<"Profile", 'BreastSize'>

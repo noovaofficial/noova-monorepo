@@ -64,7 +64,7 @@ async function companyOwnerOr403(fastify: FastifyInstance, userId: string) {
     where: { id: userId },
     select: { role: true, advertiserKind: true },
   });
-  if (!user || user.role !== 'advertiser') {
+  if (user?.role !== 'advertiser') {
     throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
   }
   // Салон — это анкета, а не компания рядом с ней (N-34): у него нет и не
