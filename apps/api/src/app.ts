@@ -86,7 +86,7 @@ export async function buildApp(): Promise<FastifyInstance> {
         message: 'Некорректные параметры запроса',
         statusCode: 400,
         // Отдаём поле и код правила, но не текст: формулировки живут
-        // в словарях фронта, иначе их не перевести на три языка.
+        // в словарях фронта, иначе их не перевести на все языки интерфейса.
         issues: (error.validation ?? []).map((issue) => ({
           field: String(issue.instancePath ?? '').replace(/^\//, '') || undefined,
           code: issue.keyword,

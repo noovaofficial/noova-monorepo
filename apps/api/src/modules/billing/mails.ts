@@ -34,6 +34,22 @@ const REMINDER: Record<Locale, (date: string) => Copy> = {
     fallback: 'If the button does not work, open this link:',
     note: 'After expiry the profiles stay visible for a few more days, then they are unpublished. They come back automatically once you pay.',
   }),
+  es: (date) => ({
+    subject: `Noova — tu publicación termina el ${date}`,
+    heading: 'La publicación está a punto de terminar',
+    intro: `Tu publicación finaliza el ${date}. Prorrógala a tiempo para que tus perfiles sigan en el catálogo.`,
+    button: 'Prorrogar la publicación',
+    fallback: 'Si el botón no funciona, abre este enlace:',
+    note: 'Tras el vencimiento los perfiles siguen visibles unos días más y después dejan de publicarse. Vuelven automáticamente en cuanto pagues.',
+  }),
+  fr: (date) => ({
+    subject: `Noova — votre publication expire le ${date}`,
+    heading: 'Votre publication va bientôt expirer',
+    intro: `Votre publication prend fin le ${date}. Prolongez-la à temps pour que vos profils restent au catalogue.`,
+    button: 'Prolonger la publication',
+    fallback: 'Si le bouton ne fonctionne pas, ouvrez ce lien :',
+    note: 'Après expiration, les profils restent visibles quelques jours, puis sont dépubliés. Ils reviennent automatiquement dès le paiement.',
+  }),
   ru: (date) => ({
     subject: `Noova — размещение заканчивается ${date}`,
     heading: 'Срок размещения скоро выйдет',
@@ -60,6 +76,22 @@ const GRACE: Record<Locale, (date: string) => Copy> = {
     button: 'Renew now',
     fallback: 'If the button does not work, open this link:',
     note: 'After payment the listing continues from today; nothing is lost.',
+  }),
+  es: (date) => ({
+    subject: 'Noova — publicación vencida, los perfiles siguen visibles',
+    heading: 'Tu publicación ha vencido',
+    intro: `El plazo pagado ha terminado. Hasta el ${date} tus perfiles siguen en el catálogo: es el periodo de cortesía. Prorroga ahora o dejarán de publicarse.`,
+    button: 'Prorrogar ahora',
+    fallback: 'Si el botón no funciona, abre este enlace:',
+    note: 'Tras el pago la publicación continúa desde hoy; no se pierde nada.',
+  }),
+  fr: (date) => ({
+    subject: 'Noova — publication expirée, profils encore visibles',
+    heading: 'Votre publication a expiré',
+    intro: `La durée payée est terminée. Jusqu'au ${date}, vos profils restent au catalogue : c'est la période de grâce. Prolongez maintenant, sinon ils seront dépubliés.`,
+    button: 'Prolonger maintenant',
+    fallback: 'Si le bouton ne fonctionne pas, ouvrez ce lien :',
+    note: "Après paiement, la publication reprend à partir d'aujourd'hui ; rien n'est perdu.",
   }),
   ru: (date) => ({
     subject: 'Noova — срок размещения вышел, анкеты пока в каталоге',
@@ -89,6 +121,24 @@ const EXPIRED: Record<Locale, Copy> = {
     button: 'Pay for listing',
     fallback: 'If the button does not work, open this link:',
     note: 'After payment the profiles return to the catalog automatically — no new review needed.',
+  },
+  es: {
+    subject: 'Noova — perfiles sin publicar: la publicación no se ha prorrogado',
+    heading: 'Tus perfiles ya no son visibles',
+    intro:
+      'El periodo de cortesía ha terminado y tus perfiles se han retirado del catálogo. Tus datos y fotos se conservan.',
+    button: 'Pagar la publicación',
+    fallback: 'Si el botón no funciona, abre este enlace:',
+    note: 'Tras el pago los perfiles vuelven al catálogo automáticamente, sin nueva revisión.',
+  },
+  fr: {
+    subject: 'Noova — profils dépubliés : publication non prolongée',
+    heading: 'Vos profils ne sont plus visibles',
+    intro:
+      'La période de grâce est terminée et vos profils ont été retirés du catalogue. Vos données et vos photos sont conservées.',
+    button: 'Payer la publication',
+    fallback: 'Si le bouton ne fonctionne pas, ouvrez ce lien :',
+    note: 'Après paiement, les profils reviennent au catalogue automatiquement, sans nouvelle vérification.',
   },
   ru: {
     subject: 'Noova — анкеты сняты с публикации: размещение не продлено',

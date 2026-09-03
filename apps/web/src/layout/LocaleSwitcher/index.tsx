@@ -7,7 +7,14 @@ import { Button } from '@/design-system/components/Button';
 import { usePathname, useRouter } from '@/shared/i18n/navigation';
 import styles from './LocaleSwitcher.module.css';
 
-const LABELS: Record<Locale, string> = { de: 'Deutsch', en: 'English', ru: 'Русский' };
+/** Название языка на нём самом: так его узнают, не зная текущего языка сайта. */
+const LABELS: Record<Locale, string> = {
+  en: 'English',
+  de: 'Deutsch',
+  es: 'Español',
+  fr: 'Français',
+  ru: 'Русский',
+};
 
 export function LocaleSwitcher() {
   const t = useTranslations('nav');

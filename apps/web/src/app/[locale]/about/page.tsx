@@ -1,3 +1,4 @@
+import { LOCALES } from '@noova/shared';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import styles from '@/modules/content/components/ContentPage/ContentPage.module.css';
@@ -13,7 +14,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: t('lead'),
     alternates: {
       canonical: `/${locale}/about`,
-      languages: { de: '/de/about', en: '/en/about', ru: '/ru/about' },
+      // Собирается из LOCALES, а не перечислением: добавленный язык иначе
+      // остаётся без hreflang и конкурирует в выдаче с остальными.
+      languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/about`])),
     },
   };
 }

@@ -5,7 +5,7 @@ export type FieldErrors = Record<string, string>;
 
 /**
  * Переводит issue от zod в ключ словаря. Сообщения самого zod не показываем:
- * они на английском и не переводятся, а нам нужны три языка.
+ * они на английском и не переводятся, а нам нужны все языки интерфейса.
  */
 function messageKeyFor(field: string, code: string): string {
   switch (field) {

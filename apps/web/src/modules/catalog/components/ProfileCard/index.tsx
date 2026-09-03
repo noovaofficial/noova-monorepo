@@ -49,7 +49,7 @@ function pickServices<T>(seed: string, services: T[], count = 3): T[] {
 export function ProfileCard({ profile, locale, priority = false, unavailable = false }: Props) {
   const t = useTranslations('card');
   // Ключи услуг переводятся здесь: в БД лежит только ключ, иначе название
-  // не показать на трёх языках.
+  // не показать на всех языках интерфейса.
   const price = formatMoney(profile.fromPrice, locale);
 
   const cardClass = unavailable ? `${styles.card} ${styles.muted}` : styles.card;

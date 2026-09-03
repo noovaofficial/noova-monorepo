@@ -1,3 +1,4 @@
+import { LOCALES } from '@noova/shared';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import styles from '@/modules/content/components/ContentPage/ContentPage.module.css';
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: t('lead'),
     alternates: {
       canonical: `/${locale}/contact`,
-      languages: { de: '/de/contact', en: '/en/contact', ru: '/ru/contact' },
+      languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/contact`])),
     },
   };
 }

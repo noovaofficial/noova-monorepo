@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import styles from './WorkingHours.module.css';
 
 /** Минуты от полуночи в «10:00». Разделитель без учёта локали: время суток
- *  во всех трёх языках пишется одинаково. */
+ *  во всех языках интерфейса пишется одинаково. */
 function hhmm(minutes: number): string {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;

@@ -27,16 +27,19 @@ export type StaffSection = {
 };
 
 export const STAFF_SECTIONS: StaffSection[] = [
+  // Порядок задан владельцем продукта: сначала ежедневная работа очереди,
+  // затем разбор денег, затем настройка справочников и правил. Он же
+  // порядок в шапке и в меню учётной записи — список один на оба места.
   { key: 'moderation', href: '/moderation' },
+  { key: 'log', href: '/moderation/log' },
+  { key: 'billingOps', href: '/admin/billing', adminOnly: true },
   { key: 'staff', href: '/admin', adminOnly: true },
   { key: 'allUsers', href: '/moderation/users' },
-  { key: 'log', href: '/moderation/log' },
   { key: 'locations', href: '/admin/locations', adminOnly: true },
   { key: 'serviceCatalog', href: '/admin/services', adminOnly: true },
   // Цены и бонусы — деньги проекта, а не операционная работа очереди:
   // модератор их не видит и не меняет.
   { key: 'monetization', href: '/admin/monetization', adminOnly: true },
-  { key: 'billingOps', href: '/admin/billing', adminOnly: true },
   // Акции раздают размещения и монеты — то же решение владельца продукта,
   // что и цены, и той же ролью.
   { key: 'campaigns', href: '/admin/campaigns', adminOnly: true },

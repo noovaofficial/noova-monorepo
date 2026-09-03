@@ -1,4 +1,4 @@
-import type { Locale } from '@noova/shared';
+import { LOCALES, type Locale } from '@noova/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
@@ -44,11 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       }),
       alternates: {
         canonical: `/${locale}/profile/${slug}`,
-        languages: {
-          de: `/de/profile/${slug}`,
-          en: `/en/profile/${slug}`,
-          ru: `/ru/profile/${slug}`,
-        },
+        languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/profile/${slug}`])),
       },
       openGraph: {
         title,

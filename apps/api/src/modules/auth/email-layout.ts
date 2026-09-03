@@ -73,6 +73,8 @@ export type EmailContent = {
 const SECURITY: Record<Locale, string> = {
   de: 'Noova fragt niemals per E-Mail nach Ihrem Passwort und schreibt Sie nie zuerst in Messengern an. Erhalten Sie eine solche Nachricht, ist es Betrug.',
   en: 'Noova never asks for your password by email and never messages you first on any messenger. If you get such a message, it is a scam.',
+  es: 'Noova nunca pide tu contraseña por correo ni te escribe primero en mensajería. Si recibes un mensaje así, es una estafa.',
+  fr: "Noova ne demande jamais votre mot de passe par e-mail et ne vous écrit jamais en premier sur une messagerie. Si vous recevez un tel message, c'est une escroquerie.",
   ru: 'Noova никогда не спрашивает пароль в письмах и не пишет первой в мессенджерах. Если вам пришло такое сообщение — это мошенники.',
 };
 
@@ -90,6 +92,8 @@ const SUPPORT = {
 const SUPPORT_LABEL: Record<Locale, string> = {
   de: 'Fragen? Schreiben Sie uns:',
   en: 'Questions? Get in touch:',
+  es: '¿Preguntas? Escríbenos:',
+  fr: 'Des questions ? Écrivez-nous :',
   ru: 'Вопросы — пишите нам:',
 };
 
@@ -97,6 +101,8 @@ const SUPPORT_LABEL: Record<Locale, string> = {
 const FOOTER: Record<Locale, string> = {
   de: 'Diese Nachricht wurde automatisch versendet. Bitte antworten Sie nicht darauf.',
   en: 'This message was sent automatically. Please do not reply to it.',
+  es: 'Este mensaje se ha enviado automáticamente. No respondas a él.',
+  fr: 'Ce message a été envoyé automatiquement. Merci de ne pas y répondre.',
   ru: 'Письмо отправлено автоматически, отвечать на него не нужно.',
 };
 

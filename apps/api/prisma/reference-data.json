@@ -4,8 +4,10 @@
       "id": "114ed69b-7ad1-41bc-a842-eec130f4f64c",
       "code": "DE",
       "name": {
-        "de": "Deutschland",
         "en": "Germany",
+        "de": "Deutschland",
+        "es": "Alemania",
+        "fr": "Allemagne",
         "ru": "Германия"
       },
       "isActive": true
@@ -14,8 +16,10 @@
       "id": "cmtabb17j000052b0xtqs4jq4",
       "code": "NL",
       "name": {
-        "de": "Niederlande",
         "en": "Netherlands",
+        "de": "Niederlande",
+        "es": "Países Bajos",
+        "fr": "Pays-Bas",
         "ru": "Нидерланды"
       },
       "isActive": true
@@ -26,8 +30,10 @@
       "id": "cmtabd6js000452b0gkp27mpc",
       "slug": "amsterdam",
       "name": {
-        "de": "Amsterdam",
         "en": "Amsterdam",
+        "de": "Amsterdam",
+        "es": "Ámsterdam",
+        "fr": "Amsterdam",
         "ru": "Амстердам"
       },
       "countryCode": "NL",
@@ -39,8 +45,10 @@
           "id": "cmtdatfja00awa8b0mdrtle8n",
           "slug": "centrum",
           "name": {
-            "de": "Centrum",
             "en": "Centrum",
+            "de": "Centrum",
+            "es": "Centrum",
+            "fr": "Centrum",
             "ru": "Центр"
           },
           "lat": 52.3682393,
@@ -51,8 +59,10 @@
           "id": "cmtdatfjd00b0a8b0ohnavash",
           "slug": "de-pijp",
           "name": {
-            "de": "De Pijp",
             "en": "De Pijp",
+            "de": "De Pijp",
+            "es": "De Pijp",
+            "fr": "De Pijp",
             "ru": "Де-Пейп"
           },
           "lat": 52.3533455,
@@ -63,8 +73,10 @@
           "id": "cmtdatfje00b4a8b0cjjqoul1",
           "slug": "jordaan",
           "name": {
-            "de": "Jordaan",
             "en": "Jordaan",
+            "de": "Jordaan",
+            "es": "Jordaan",
+            "fr": "Jordaan",
             "ru": "Йордан"
           },
           "lat": 52.3754157,
@@ -75,8 +87,10 @@
           "id": "cmtdatfjj00bka8b04zg7w4zw",
           "slug": "noord",
           "name": {
-            "de": "Noord",
             "en": "Noord",
+            "de": "Noord",
+            "es": "Noord",
+            "fr": "Noord",
             "ru": "Норд"
           },
           "lat": 52.402572,
@@ -87,8 +101,10 @@
           "id": "cmtdatfjg00bca8b0rusnw3l3",
           "slug": "oost",
           "name": {
-            "de": "Oost",
             "en": "Oost",
+            "de": "Oost",
+            "es": "Oost",
+            "fr": "Oost",
             "ru": "Ост"
           },
           "lat": 52.3518137,
@@ -99,8 +115,10 @@
           "id": "cmtdatfjf00b8a8b09hjbkm1s",
           "slug": "oud-west",
           "name": {
-            "de": "Oud-West",
             "en": "Oud-West",
+            "de": "Oud-West",
+            "es": "Oud-West",
+            "fr": "Oud-West",
             "ru": "Ауд-Вест"
           },
           "lat": 52.3648147,
@@ -111,8 +129,10 @@
           "id": "cmtdatfji00bga8b0g1nuxb0k",
           "slug": "zuid",
           "name": {
-            "de": "Zuid",
             "en": "Zuid",
+            "de": "Zuid",
+            "es": "Zuid",
+            "fr": "Zuid",
             "ru": "Зёйд"
           },
           "lat": 52.3373435,
@@ -125,8 +145,10 @@
       "id": "cmt19tfre0001z7b0jevq7fcj",
       "slug": "berlin",
       "name": {
-        "de": "Berlin",
         "en": "Berlin",
+        "de": "Berlin",
+        "es": "Berlín",
+        "fr": "Berlin",
         "ru": "Берлин"
       },
       "countryCode": "DE",
@@ -138,8 +160,10 @@
           "id": "cmt19tfri0003z7b0lfl5sfue",
           "slug": "charlottenburg",
           "name": {
-            "de": "Charlottenburg",
             "en": "Charlottenburg",
+            "de": "Charlottenburg",
+            "es": "Charlottenburg",
+            "fr": "Charlottenburg",
             "ru": "Шарлоттенбург"
           },
           "lat": 52.505,
@@ -150,8 +174,10 @@
           "id": "cmt19tfri0006z7b0e8i5psjm",
           "slug": "friedrichshain",
           "name": {
-            "de": "Friedrichshain",
             "en": "Friedrichshain",
+            "de": "Friedrichshain",
+            "es": "Friedrichshain",
+            "fr": "Friedrichshain",
             "ru": "Фридрихсхайн"
           },
           "lat": 52.515,
@@ -162,8 +188,10 @@
           "id": "cmt19tfri0004z7b0agkspzcf",
           "slug": "kreuzberg",
           "name": {
-            "de": "Kreuzberg",
             "en": "Kreuzberg",
+            "de": "Kreuzberg",
+            "es": "Kreuzberg",
+            "fr": "Kreuzberg",
             "ru": "Кройцберг"
           },
           "lat": 52.498,
@@ -174,8 +202,10 @@
           "id": "cmt19tfrh0002z7b07wgjt8rj",
           "slug": "mitte",
           "name": {
-            "de": "Mitte",
             "en": "Mitte",
+            "de": "Mitte",
+            "es": "Mitte",
+            "fr": "Mitte",
             "ru": "Митте"
           },
           "lat": 52.5244,
@@ -186,8 +216,10 @@
           "id": "cmt19tfri0007z7b0fxg8dzm5",
           "slug": "neukoelln",
           "name": {
-            "de": "Neukölln",
             "en": "Neukölln",
+            "de": "Neukölln",
+            "es": "Neukölln",
+            "fr": "Neukölln",
             "ru": "Нойкёльн"
           },
           "lat": 52.481,
@@ -198,8 +230,10 @@
           "id": "cmt19tfri0005z7b0nu7dil7y",
           "slug": "prenzlauer-berg",
           "name": {
-            "de": "Prenzlauer Berg",
             "en": "Prenzlauer Berg",
+            "de": "Prenzlauer Berg",
+            "es": "Prenzlauer Berg",
+            "fr": "Prenzlauer Berg",
             "ru": "Пренцлауэр-Берг"
           },
           "lat": 52.539,
@@ -210,8 +244,10 @@
           "id": "cmt19tfri0008z7b0fecolu1j",
           "slug": "schoeneberg",
           "name": {
-            "de": "Schöneberg",
             "en": "Schöneberg",
+            "de": "Schöneberg",
+            "es": "Schöneberg",
+            "fr": "Schöneberg",
             "ru": "Шёнеберг"
           },
           "lat": 52.483,
@@ -222,8 +258,10 @@
           "id": "cmt19tfri0009z7b0ujqhrngt",
           "slug": "tiergarten",
           "name": {
-            "de": "Tiergarten",
             "en": "Tiergarten",
+            "de": "Tiergarten",
+            "es": "Tiergarten",
+            "fr": "Tiergarten",
             "ru": "Тиргартен"
           },
           "lat": 52.514,
@@ -236,8 +274,10 @@
       "id": "cmtabyujw00125nb0dqdh1xrq",
       "slug": "bremen",
       "name": {
-        "de": "Bremen",
         "en": "Bremen",
+        "de": "Bremen",
+        "es": "Bremen",
+        "fr": "Brême",
         "ru": "Бремен"
       },
       "countryCode": "DE",
@@ -249,8 +289,10 @@
           "id": "cmtdatfhw007ca8b0pptsup9a",
           "slug": "findorff",
           "name": {
-            "de": "Findorff",
             "en": "Findorff",
+            "de": "Findorff",
+            "es": "Findorff",
+            "fr": "Findorff",
             "ru": "Финдорф"
           },
           "lat": 53.094685,
@@ -261,8 +303,10 @@
           "id": "cmtdatfi0007oa8b07l1qsyyh",
           "slug": "horn-lehe",
           "name": {
-            "de": "Horn-Lehe",
             "en": "Horn-Lehe",
+            "de": "Horn-Lehe",
+            "es": "Horn-Lehe",
+            "fr": "Horn-Lehe",
             "ru": "Хорн-Лее"
           },
           "lat": 53.103623,
@@ -273,8 +317,10 @@
           "id": "cmtdatfhr0070a8b00ltsrnbd",
           "slug": "mitte",
           "name": {
-            "de": "Mitte",
             "en": "Mitte",
+            "de": "Mitte",
+            "es": "Mitte",
+            "fr": "Mitte",
             "ru": "Митте"
           },
           "lat": 53.0786741,
@@ -285,8 +331,10 @@
           "id": "cmtdatfht0074a8b037o34spo",
           "slug": "neustadt",
           "name": {
-            "de": "Neustadt",
             "en": "Neustadt",
+            "de": "Neustadt",
+            "es": "Neustadt",
+            "fr": "Neustadt",
             "ru": "Нойштадт"
           },
           "lat": 53.0695355,
@@ -297,8 +345,10 @@
           "id": "cmtdatfhu0078a8b0stc2g5ed",
           "slug": "schwachhausen",
           "name": {
-            "de": "Schwachhausen",
             "en": "Schwachhausen",
+            "de": "Schwachhausen",
+            "es": "Schwachhausen",
+            "fr": "Schwachhausen",
             "ru": "Швахгаузен"
           },
           "lat": 53.0854265,
@@ -309,8 +359,10 @@
           "id": "cmtdatfhy007ka8b0x3fyxnkl",
           "slug": "vegesack",
           "name": {
-            "de": "Vegesack",
             "en": "Vegesack",
+            "de": "Vegesack",
+            "es": "Vegesack",
+            "fr": "Vegesack",
             "ru": "Фегезак"
           },
           "lat": 53.1705249,
@@ -321,8 +373,10 @@
           "id": "cmtdatfhx007ga8b0izj6h4gk",
           "slug": "walle",
           "name": {
-            "de": "Walle",
             "en": "Walle",
+            "de": "Walle",
+            "es": "Walle",
+            "fr": "Walle",
             "ru": "Валле"
           },
           "lat": 53.1028746,
@@ -335,8 +389,10 @@
       "id": "cmtabyumw001q5nb0cxykcben",
       "slug": "den-haag",
       "name": {
-        "de": "Den Haag",
         "en": "The Hague",
+        "de": "Den Haag",
+        "es": "La Haya",
+        "fr": "La Haye",
         "ru": "Гаага"
       },
       "countryCode": "NL",
@@ -348,8 +404,10 @@
           "id": "cmtdatfjw00cga8b0s15b0ixe",
           "slug": "centrum",
           "name": {
-            "de": "Centrum",
             "en": "Centrum",
+            "de": "Centrum",
+            "es": "Centrum",
+            "fr": "Centrum",
             "ru": "Центр"
           },
           "lat": 52.0775985,
@@ -360,8 +418,10 @@
           "id": "cmtdatfk200d0a8b0i0i6s5xe",
           "slug": "escamp",
           "name": {
-            "de": "Escamp",
             "en": "Escamp",
+            "de": "Escamp",
+            "es": "Escamp",
+            "fr": "Escamp",
             "ru": "Эскамп"
           },
           "lat": 52.0442339,
@@ -372,8 +432,10 @@
           "id": "cmtdatfk400d4a8b0s8a1gw98",
           "slug": "haagse-hout",
           "name": {
-            "de": "Haagse Hout",
             "en": "Haagse Hout",
+            "de": "Haagse Hout",
+            "es": "Haagse Hout",
+            "fr": "Haagse Hout",
             "ru": "Хагсе-Хаут"
           },
           "lat": 52.0922914,
@@ -384,8 +446,10 @@
           "id": "cmtdatfjy00coa8b0qjfq31hs",
           "slug": "laak",
           "name": {
-            "de": "Laak",
             "en": "Laak",
+            "de": "Laak",
+            "es": "Laak",
+            "fr": "Laak",
             "ru": "Лаак"
           },
           "lat": 52.0631617,
@@ -396,8 +460,10 @@
           "id": "cmtdatfk100cwa8b0bmlbrxqc",
           "slug": "loosduinen",
           "name": {
-            "de": "Loosduinen",
             "en": "Loosduinen",
+            "de": "Loosduinen",
+            "es": "Loosduinen",
+            "fr": "Loosduinen",
             "ru": "Лосдёйнен"
           },
           "lat": 52.0531565,
@@ -408,8 +474,10 @@
           "id": "cmtdatfjx00cka8b0j4a7dwmy",
           "slug": "scheveningen",
           "name": {
-            "de": "Scheveningen",
             "en": "Scheveningen",
+            "de": "Scheveningen",
+            "es": "Scheveningen",
+            "fr": "Scheveningen",
             "ru": "Схевенинген"
           },
           "lat": 52.1067449,
@@ -420,8 +488,10 @@
           "id": "cmtdatfk000csa8b00jr5f98u",
           "slug": "segbroek",
           "name": {
-            "de": "Segbroek",
             "en": "Segbroek",
+            "de": "Segbroek",
+            "es": "Segbroek",
+            "fr": "Segbroek",
             "ru": "Сегбрук"
           },
           "lat": 52.0770088,
@@ -434,8 +504,10 @@
       "id": "cmtabyuig000q5nb0gwu3h07x",
       "slug": "dortmund",
       "name": {
-        "de": "Dortmund",
         "en": "Dortmund",
+        "de": "Dortmund",
+        "es": "Dortmund",
+        "fr": "Dortmund",
         "ru": "Дортмунд"
       },
       "countryCode": "DE",
@@ -447,8 +519,10 @@
           "id": "cmtdatfgp0050a8b0tv4rsoiu",
           "slug": "aplerbeck",
           "name": {
-            "de": "Aplerbeck",
             "en": "Aplerbeck",
+            "de": "Aplerbeck",
+            "es": "Aplerbeck",
+            "fr": "Aplerbeck",
             "ru": "Аплербек"
           },
           "lat": 51.4896852,
@@ -459,8 +533,10 @@
           "id": "cmtdatfgs0058a8b0fvqk0t9q",
           "slug": "brackel",
           "name": {
-            "de": "Brackel",
             "en": "Brackel",
+            "de": "Brackel",
+            "es": "Brackel",
+            "fr": "Brackel",
             "ru": "Бракель"
           },
           "lat": 51.5279321,
@@ -471,8 +547,10 @@
           "id": "cmtdatfgr0054a8b0zkcndfpb",
           "slug": "eving",
           "name": {
-            "de": "Eving",
             "en": "Eving",
+            "de": "Eving",
+            "es": "Eving",
+            "fr": "Eving",
             "ru": "Эвинг"
           },
           "lat": 51.5558445,
@@ -483,8 +561,10 @@
           "id": "cmtdatfgj004sa8b0kc16tsdm",
           "slug": "hoerde",
           "name": {
-            "de": "Hörde",
             "en": "Hörde",
+            "de": "Hörde",
+            "es": "Hörde",
+            "fr": "Hörde",
             "ru": "Хёрде"
           },
           "lat": 51.4884311,
@@ -495,8 +575,10 @@
           "id": "cmtdatfgl004wa8b0m86lpob5",
           "slug": "hombruch",
           "name": {
-            "de": "Hombruch",
             "en": "Hombruch",
+            "de": "Hombruch",
+            "es": "Hombruch",
+            "fr": "Hombruch",
             "ru": "Хомбрух"
           },
           "lat": 51.4647031,
@@ -507,8 +589,10 @@
           "id": "cmtdatfgu005ca8b0rj8g9m6m",
           "slug": "huckarde",
           "name": {
-            "de": "Huckarde",
             "en": "Huckarde",
+            "de": "Huckarde",
+            "es": "Huckarde",
+            "fr": "Huckarde",
             "ru": "Хукарде"
           },
           "lat": 51.5317893,
@@ -519,8 +603,10 @@
           "id": "cmtdatfgi004oa8b06fs7ql75",
           "slug": "mitte",
           "name": {
-            "de": "Innenstadt",
             "en": "Innenstadt",
+            "de": "Innenstadt",
+            "es": "Innenstadt",
+            "fr": "Innenstadt",
             "ru": "Инненштадт"
           },
           "lat": 51.5090745,
@@ -533,8 +619,10 @@
       "id": "cmtabyukb00165nb0roe6bpqn",
       "slug": "dresden",
       "name": {
-        "de": "Dresden",
         "en": "Dresden",
+        "de": "Dresden",
+        "es": "Dresde",
+        "fr": "Dresde",
         "ru": "Дрезден"
       },
       "countryCode": "DE",
@@ -546,8 +634,10 @@
           "id": "cmtdatfi2007sa8b0claqvxqc",
           "slug": "altstadt",
           "name": {
-            "de": "Altstadt",
             "en": "Altstadt",
+            "de": "Altstadt",
+            "es": "Altstadt",
+            "fr": "Altstadt",
             "ru": "Альтштадт"
           },
           "lat": 51.0523842,
@@ -558,8 +648,10 @@
           "id": "cmtdatfi70084a8b0inw96jjd",
           "slug": "blasewitz",
           "name": {
-            "de": "Blasewitz",
             "en": "Blasewitz",
+            "de": "Blasewitz",
+            "es": "Blasewitz",
+            "fr": "Blasewitz",
             "ru": "Блазевиц"
           },
           "lat": 51.0521778,
@@ -570,8 +662,10 @@
           "id": "cmtdatfie008ga8b07g7c58c2",
           "slug": "loebtau",
           "name": {
-            "de": "Löbtau",
             "en": "Löbtau",
+            "de": "Löbtau",
+            "es": "Löbtau",
+            "fr": "Löbtau",
             "ru": "Лёбтау"
           },
           "lat": 51.0413452,
@@ -582,8 +676,10 @@
           "id": "cmtdatfi4007wa8b0qlwuvk09",
           "slug": "neustadt",
           "name": {
-            "de": "Neustadt",
             "en": "Neustadt",
+            "de": "Neustadt",
+            "es": "Neustadt",
+            "fr": "Neustadt",
             "ru": "Нойштадт"
           },
           "lat": 51.0755656,
@@ -594,8 +690,10 @@
           "id": "cmtdatfi80088a8b0iofcf24z",
           "slug": "pieschen",
           "name": {
-            "de": "Pieschen",
             "en": "Pieschen",
+            "de": "Pieschen",
+            "es": "Pieschen",
+            "fr": "Pieschen",
             "ru": "Пишен"
           },
           "lat": 51.0831018,
@@ -606,8 +704,10 @@
           "id": "cmtdatfia008ca8b07azsi3t2",
           "slug": "plauen",
           "name": {
-            "de": "Plauen",
             "en": "Plauen",
+            "de": "Plauen",
+            "es": "Plauen",
+            "fr": "Plauen",
             "ru": "Плауэн"
           },
           "lat": 51.026885,
@@ -618,8 +718,10 @@
           "id": "cmtdatfi60080a8b02da801k4",
           "slug": "striesen",
           "name": {
-            "de": "Striesen",
             "en": "Striesen",
+            "de": "Striesen",
+            "es": "Striesen",
+            "fr": "Striesen",
             "ru": "Штризен"
           },
           "lat": 51.0434696,
@@ -632,8 +734,10 @@
       "id": "cmtabyui0000m5nb0l0sdpvxv",
       "slug": "duesseldorf",
       "name": {
-        "de": "Düsseldorf",
         "en": "Düsseldorf",
+        "de": "Düsseldorf",
+        "es": "Düsseldorf",
+        "fr": "Düsseldorf",
         "ru": "Дюссельдорф"
       },
       "countryCode": "DE",
@@ -645,8 +749,10 @@
           "id": "cmtdatfg5003wa8b0n1t8f3cp",
           "slug": "altstadt",
           "name": {
-            "de": "Altstadt",
             "en": "Altstadt",
+            "de": "Altstadt",
+            "es": "Altstadt",
+            "fr": "Altstadt",
             "ru": "Альтштадт"
           },
           "lat": 51.2259125,
@@ -657,8 +763,10 @@
           "id": "cmtdatfg90044a8b0i1nm2hfp",
           "slug": "bilk",
           "name": {
-            "de": "Bilk",
             "en": "Bilk",
+            "de": "Bilk",
+            "es": "Bilk",
+            "fr": "Bilk",
             "ru": "Бильк"
           },
           "lat": 51.2027583,
@@ -669,8 +777,10 @@
           "id": "cmtdatfgf004ka8b0k128dquw",
           "slug": "derendorf",
           "name": {
-            "de": "Derendorf",
             "en": "Derendorf",
+            "de": "Derendorf",
+            "es": "Derendorf",
+            "fr": "Derendorf",
             "ru": "Дерендорф"
           },
           "lat": 51.2445487,
@@ -681,8 +791,10 @@
           "id": "cmtdatfgd004ga8b0kpb45kw6",
           "slug": "flingern",
           "name": {
-            "de": "Flingern",
             "en": "Flingern",
+            "de": "Flingern",
+            "es": "Flingern",
+            "fr": "Flingern",
             "ru": "Флингерн"
           },
           "lat": 51.2313815,
@@ -693,8 +805,10 @@
           "id": "cmtdatfgc004ca8b0ty4aqqx1",
           "slug": "friedrichstadt",
           "name": {
-            "de": "Friedrichstadt",
             "en": "Friedrichstadt",
+            "de": "Friedrichstadt",
+            "es": "Friedrichstadt",
+            "fr": "Friedrichstadt",
             "ru": "Фридрихштадт"
           },
           "lat": 51.2135645,
@@ -705,8 +819,10 @@
           "id": "cmtdatfgb0048a8b0je6jd6ua",
           "slug": "oberkassel",
           "name": {
-            "de": "Oberkassel",
             "en": "Oberkassel",
+            "de": "Oberkassel",
+            "es": "Oberkassel",
+            "fr": "Oberkassel",
             "ru": "Оберкассель"
           },
           "lat": 51.2295816,
@@ -717,8 +833,10 @@
           "id": "cmtdatfg80040a8b0eazw4id9",
           "slug": "pempelfort",
           "name": {
-            "de": "Pempelfort",
             "en": "Pempelfort",
+            "de": "Pempelfort",
+            "es": "Pempelfort",
+            "fr": "Pempelfort",
             "ru": "Пемпельфорт"
           },
           "lat": 51.2396009,
@@ -731,8 +849,10 @@
       "id": "cmtabyult001i5nb0pn7rz2rp",
       "slug": "duisburg",
       "name": {
-        "de": "Duisburg",
         "en": "Duisburg",
+        "de": "Duisburg",
+        "es": "Duisburgo",
+        "fr": "Duisbourg",
         "ru": "Дуйсбург"
       },
       "countryCode": "DE",
@@ -744,8 +864,10 @@
           "id": "cmtdatfj700aoa8b0ya5qk6u5",
           "slug": "hamborn",
           "name": {
-            "de": "Hamborn",
             "en": "Hamborn",
+            "de": "Hamborn",
+            "es": "Hamborn",
+            "fr": "Hamborn",
             "ru": "Хамборн"
           },
           "lat": 51.492381,
@@ -756,8 +878,10 @@
           "id": "cmtdatfj200a8a8b0hmsvd3wz",
           "slug": "hochfeld",
           "name": {
-            "de": "Hochfeld",
             "en": "Hochfeld",
+            "de": "Hochfeld",
+            "es": "Hochfeld",
+            "fr": "Hochfeld",
             "ru": "Хохфельд"
           },
           "lat": 51.4191438,
@@ -768,8 +892,10 @@
           "id": "cmtdatfj300aca8b031s5t976",
           "slug": "meiderich",
           "name": {
-            "de": "Meiderich",
             "en": "Meiderich",
+            "de": "Meiderich",
+            "es": "Meiderich",
+            "fr": "Meiderich",
             "ru": "Майдерих"
           },
           "lat": 51.4682939,
@@ -780,8 +906,10 @@
           "id": "cmtdatfj000a4a8b08dxgnbsh",
           "slug": "mitte",
           "name": {
-            "de": "Duisburg-Mitte",
             "en": "Duisburg-Mitte",
+            "de": "Duisburg-Mitte",
+            "es": "Duisburg-Mitte",
+            "fr": "Duisburg-Mitte",
             "ru": "Митте"
           },
           "lat": 51.4186953,
@@ -792,8 +920,10 @@
           "id": "cmtdatfj800asa8b0dvx3rh4t",
           "slug": "neudorf",
           "name": {
-            "de": "Neudorf",
             "en": "Neudorf",
+            "de": "Neudorf",
+            "es": "Neudorf",
+            "fr": "Neudorf",
             "ru": "Нойдорф"
           },
           "lat": 51.4218258,
@@ -804,8 +934,10 @@
           "id": "cmtdatfj600aka8b0ob4uat73",
           "slug": "rheinhausen",
           "name": {
-            "de": "Rheinhausen",
             "en": "Rheinhausen",
+            "de": "Rheinhausen",
+            "es": "Rheinhausen",
+            "fr": "Rheinhausen",
             "ru": "Райнхаузен"
           },
           "lat": 51.4029342,
@@ -816,8 +948,10 @@
           "id": "cmtdatfj500aga8b08osqcis1",
           "slug": "ruhrort",
           "name": {
-            "de": "Ruhrort",
             "en": "Ruhrort",
+            "de": "Ruhrort",
+            "es": "Ruhrort",
+            "fr": "Ruhrort",
             "ru": "Рурорт"
           },
           "lat": 51.450016,
@@ -830,8 +964,10 @@
       "id": "cmtabyujb000y5nb0lyiu2snt",
       "slug": "essen",
       "name": {
-        "de": "Essen",
         "en": "Essen",
+        "de": "Essen",
+        "es": "Essen",
+        "fr": "Essen",
         "ru": "Эссен"
       },
       "countryCode": "DE",
@@ -843,8 +979,10 @@
           "id": "cmtdatfh2005oa8b0pb9ovnat",
           "slug": "altenessen",
           "name": {
-            "de": "Altenessen",
             "en": "Altenessen",
+            "de": "Altenessen",
+            "es": "Altenessen",
+            "fr": "Altenessen",
             "ru": "Альтенэссен"
           },
           "lat": 51.4912248,
@@ -855,8 +993,10 @@
           "id": "cmtdatfh4005sa8b067tl20gj",
           "slug": "borbeck",
           "name": {
-            "de": "Borbeck",
             "en": "Borbeck",
+            "de": "Borbeck",
+            "es": "Borbeck",
+            "fr": "Borbeck",
             "ru": "Борбек"
           },
           "lat": 51.4729243,
@@ -867,8 +1007,10 @@
           "id": "cmtdatfha0064a8b07em705gd",
           "slug": "kettwig",
           "name": {
-            "de": "Kettwig",
             "en": "Kettwig",
+            "de": "Kettwig",
+            "es": "Kettwig",
+            "fr": "Kettwig",
             "ru": "Кеттвиг"
           },
           "lat": 51.3635478,
@@ -879,8 +1021,10 @@
           "id": "cmtdatfh0005ka8b0udxv2lhu",
           "slug": "ruettenscheid",
           "name": {
-            "de": "Rüttenscheid",
             "en": "Rüttenscheid",
+            "de": "Rüttenscheid",
+            "es": "Rüttenscheid",
+            "fr": "Rüttenscheid",
             "ru": "Рюттеншайд"
           },
           "lat": 51.4353172,
@@ -891,8 +1035,10 @@
           "id": "cmtdatfgw005ga8b0a6s2drff",
           "slug": "stadtkern",
           "name": {
-            "de": "Stadtkern",
             "en": "Stadtkern",
+            "de": "Stadtkern",
+            "es": "Stadtkern",
+            "fr": "Stadtkern",
             "ru": "Штадткерн"
           },
           "lat": 51.4568812,
@@ -903,8 +1049,10 @@
           "id": "cmtdatfh6005wa8b0o4neb6ad",
           "slug": "steele",
           "name": {
-            "de": "Steele",
             "en": "Steele",
+            "de": "Steele",
+            "es": "Steele",
+            "fr": "Steele",
             "ru": "Штеле"
           },
           "lat": 51.4477081,
@@ -915,8 +1063,10 @@
           "id": "cmtdatfh80060a8b0sd2db972",
           "slug": "werden",
           "name": {
-            "de": "Werden",
             "en": "Werden",
+            "de": "Werden",
+            "es": "Werden",
+            "fr": "Werden",
             "ru": "Верден"
           },
           "lat": 51.3882195,
@@ -929,8 +1079,10 @@
       "id": "cmtabyuh3000e5nb0gi8k1a1n",
       "slug": "frankfurt",
       "name": {
-        "de": "Frankfurt am Main",
         "en": "Frankfurt am Main",
+        "de": "Frankfurt am Main",
+        "es": "Fráncfort del Meno",
+        "fr": "Francfort-sur-le-Main",
         "ru": "Франкфурт-на-Майне"
       },
       "countryCode": "DE",
@@ -942,8 +1094,10 @@
           "id": "cmtdatffj002ga8b051w79gmw",
           "slug": "bahnhofsviertel",
           "name": {
-            "de": "Bahnhofsviertel",
             "en": "Bahnhofsviertel",
+            "de": "Bahnhofsviertel",
+            "es": "Bahnhofsviertel",
+            "fr": "Bahnhofsviertel",
             "ru": "Банхофсфиртель"
           },
           "lat": 50.1084107,
@@ -954,8 +1108,10 @@
           "id": "cmtdatfft0030a8b0junzs0eh",
           "slug": "bockenheim",
           "name": {
-            "de": "Bockenheim",
             "en": "Bockenheim",
+            "de": "Bockenheim",
+            "es": "Bockenheim",
+            "fr": "Bockenheim",
             "ru": "Бокенхайм"
           },
           "lat": 50.1233115,
@@ -966,8 +1122,10 @@
           "id": "cmtdatffn002oa8b0c5uf34d0",
           "slug": "bornheim",
           "name": {
-            "de": "Bornheim",
             "en": "Bornheim",
+            "de": "Bornheim",
+            "es": "Bornheim",
+            "fr": "Bornheim",
             "ru": "Борнхайм"
           },
           "lat": 50.1297313,
@@ -978,8 +1136,10 @@
           "id": "cmtdatffg002ca8b0rl2oxhvh",
           "slug": "innenstadt",
           "name": {
-            "de": "Innenstadt",
             "en": "Innenstadt",
+            "de": "Innenstadt",
+            "es": "Innenstadt",
+            "fr": "Innenstadt",
             "ru": "Инненштадт"
           },
           "lat": 50.1145581,
@@ -990,8 +1150,10 @@
           "id": "cmtdatffp002sa8b05hwbhomu",
           "slug": "nordend",
           "name": {
-            "de": "Nordend",
             "en": "Nordend",
+            "de": "Nordend",
+            "es": "Nordend",
+            "fr": "Nordend",
             "ru": "Нордэнд"
           },
           "lat": 50.1249136,
@@ -1002,8 +1164,10 @@
           "id": "cmtdatffm002ka8b0thevawek",
           "slug": "sachsenhausen",
           "name": {
-            "de": "Sachsenhausen",
             "en": "Sachsenhausen",
+            "de": "Sachsenhausen",
+            "es": "Sachsenhausen",
+            "fr": "Sachsenhausen",
             "ru": "Заксенхаузен"
           },
           "lat": 50.1002618,
@@ -1014,8 +1178,10 @@
           "id": "cmtdatffr002wa8b0btgks609",
           "slug": "westend",
           "name": {
-            "de": "Westend",
             "en": "Westend",
+            "de": "Westend",
+            "es": "Westend",
+            "fr": "Westend",
             "ru": "Вестэнд"
           },
           "lat": 50.118164,
@@ -1028,8 +1194,10 @@
       "id": "cmt7h31k60004ckb0up9vohap",
       "slug": "hamburg",
       "name": {
-        "de": "Hamburg",
         "en": "Hamburg",
+        "de": "Hamburg",
+        "es": "Hamburgo",
+        "fr": "Hambourg",
         "ru": "Гамбург"
       },
       "countryCode": "DE",
@@ -1041,8 +1209,10 @@
           "id": "cmtdatfdz0004a8b0mlvv19ng",
           "slug": "altona",
           "name": {
-            "de": "Altona",
             "en": "Altona",
+            "de": "Altona",
+            "es": "Altona",
+            "fr": "Altona",
             "ru": "Альтона"
           },
           "lat": 53.5496598,
@@ -1053,8 +1223,10 @@
           "id": "cmtdatfe20008a8b0qahhrrit",
           "slug": "eimsbuettel",
           "name": {
-            "de": "Eimsbüttel",
             "en": "Eimsbüttel",
+            "de": "Eimsbüttel",
+            "es": "Eimsbüttel",
+            "fr": "Eimsbüttel",
             "ru": "Эймсбюттель"
           },
           "lat": 53.5729372,
@@ -1065,8 +1237,10 @@
           "id": "cmtdatfe9000ga8b0qr3ae803",
           "slug": "hafencity",
           "name": {
-            "de": "HafenCity",
             "en": "HafenCity",
+            "de": "HafenCity",
+            "es": "HafenCity",
+            "fr": "HafenCity",
             "ru": "Хафенсити"
           },
           "lat": 53.5429127,
@@ -1077,8 +1251,10 @@
           "id": "cmtdatfeh000oa8b0u0ql0sv8",
           "slug": "harburg",
           "name": {
-            "de": "Harburg",
             "en": "Harburg",
+            "de": "Harburg",
+            "es": "Harburg",
+            "fr": "Harburg",
             "ru": "Харбург"
           },
           "lat": 53.4562216,
@@ -1089,8 +1265,10 @@
           "id": "cmtdatfe5000ca8b0n2revw9b",
           "slug": "st-georg",
           "name": {
-            "de": "St. Georg",
             "en": "St. Georg",
+            "de": "St. Georg",
+            "es": "St. Georg",
+            "fr": "St. Georg",
             "ru": "Санкт-Георг"
           },
           "lat": 53.5571491,
@@ -1101,8 +1279,10 @@
           "id": "cmtdatfdg0000a8b0ap74cke6",
           "slug": "st-pauli",
           "name": {
-            "de": "St. Pauli",
             "en": "St. Pauli",
+            "de": "St. Pauli",
+            "es": "St. Pauli",
+            "fr": "St. Pauli",
             "ru": "Санкт-Паули"
           },
           "lat": 53.5539347,
@@ -1113,8 +1293,10 @@
           "id": "cmtdatfeb000ka8b07vs0hsij",
           "slug": "wandsbek",
           "name": {
-            "de": "Wandsbek",
             "en": "Wandsbek",
+            "de": "Wandsbek",
+            "es": "Wandsbek",
+            "fr": "Wandsbek",
             "ru": "Вандсбек"
           },
           "lat": 53.5760029,
@@ -1127,8 +1309,10 @@
       "id": "cmtabyuks001a5nb00p7vjn39",
       "slug": "hannover",
       "name": {
-        "de": "Hannover",
         "en": "Hanover",
+        "de": "Hannover",
+        "es": "Hanóver",
+        "fr": "Hanovre",
         "ru": "Ганновер"
       },
       "countryCode": "DE",
@@ -1140,8 +1324,10 @@
           "id": "cmtdatfio0098a8b04l9yf8c8",
           "slug": "kleefeld",
           "name": {
-            "de": "Kleefeld",
             "en": "Kleefeld",
+            "de": "Kleefeld",
+            "es": "Kleefeld",
+            "fr": "Kleefeld",
             "ru": "Клеефельд"
           },
           "lat": 52.375679,
@@ -1152,8 +1338,10 @@
           "id": "cmtdatfig008oa8b02vpyqd29",
           "slug": "linden",
           "name": {
-            "de": "Linden",
             "en": "Linden",
+            "de": "Linden",
+            "es": "Linden",
+            "fr": "Linden",
             "ru": "Линден"
           },
           "lat": 52.3571986,
@@ -1164,8 +1352,10 @@
           "id": "cmtdatfii008sa8b0m1l2f9gj",
           "slug": "list",
           "name": {
-            "de": "List",
             "en": "List",
+            "de": "List",
+            "es": "List",
+            "fr": "List",
             "ru": "Лист"
           },
           "lat": 52.3961351,
@@ -1176,8 +1366,10 @@
           "id": "cmtdatfif008ka8b0duplq167",
           "slug": "mitte",
           "name": {
-            "de": "Mitte",
             "en": "Mitte",
+            "de": "Mitte",
+            "es": "Mitte",
+            "fr": "Mitte",
             "ru": "Митте"
           },
           "lat": 52.3756854,
@@ -1188,8 +1380,10 @@
           "id": "cmtdatfil0090a8b0ot1v25ix",
           "slug": "nordstadt",
           "name": {
-            "de": "Nordstadt",
             "en": "Nordstadt",
+            "de": "Nordstadt",
+            "es": "Nordstadt",
+            "fr": "Nordstadt",
             "ru": "Нордштадт"
           },
           "lat": 52.3851317,
@@ -1200,8 +1394,10 @@
           "id": "cmtdatfij008wa8b0y01nvzq0",
           "slug": "suedstadt",
           "name": {
-            "de": "Südstadt",
             "en": "Südstadt",
+            "de": "Südstadt",
+            "es": "Südstadt",
+            "fr": "Südstadt",
             "ru": "Зюдштадт"
           },
           "lat": 52.3600544,
@@ -1212,8 +1408,10 @@
           "id": "cmtdatfin0094a8b0qgthv1eh",
           "slug": "vahrenwald",
           "name": {
-            "de": "Vahrenwald",
             "en": "Vahrenwald",
+            "de": "Vahrenwald",
+            "es": "Vahrenwald",
+            "fr": "Vahrenwald",
             "ru": "Фаренвальд"
           },
           "lat": 52.3972264,
@@ -1226,8 +1424,10 @@
       "id": "cmtabyugm000a5nb07lcxp0l2",
       "slug": "koeln",
       "name": {
-        "de": "Köln",
         "en": "Cologne",
+        "de": "Köln",
+        "es": "Colonia",
+        "fr": "Cologne",
         "ru": "Кёльн"
       },
       "countryCode": "DE",
@@ -1239,8 +1439,10 @@
           "id": "cmtdatfez001ka8b0nhw562oc",
           "slug": "altstadt",
           "name": {
-            "de": "Altstadt",
             "en": "Altstadt",
+            "de": "Altstadt",
+            "es": "Altstadt",
+            "fr": "Altstadt",
             "ru": "Альтштадт"
           },
           "lat": 50.9384798,
@@ -1251,8 +1453,10 @@
           "id": "cmtdatff8001wa8b0kunkmyqb",
           "slug": "deutz",
           "name": {
-            "de": "Deutz",
             "en": "Deutz",
+            "de": "Deutz",
+            "es": "Deutz",
+            "fr": "Deutz",
             "ru": "Дойц"
           },
           "lat": 50.9367586,
@@ -1263,8 +1467,10 @@
           "id": "cmtdatff4001oa8b0px3j9kej",
           "slug": "ehrenfeld",
           "name": {
-            "de": "Ehrenfeld",
             "en": "Ehrenfeld",
+            "de": "Ehrenfeld",
+            "es": "Ehrenfeld",
+            "fr": "Ehrenfeld",
             "ru": "Эренфельд"
           },
           "lat": 50.9488643,
@@ -1275,8 +1481,10 @@
           "id": "cmtdatffc0024a8b0adtpzwtd",
           "slug": "lindenthal",
           "name": {
-            "de": "Lindenthal",
             "en": "Lindenthal",
+            "de": "Lindenthal",
+            "es": "Lindenthal",
+            "fr": "Lindenthal",
             "ru": "Линденталь"
           },
           "lat": 50.9298969,
@@ -1287,8 +1495,10 @@
           "id": "cmtdatffe0028a8b0ncwey0m0",
           "slug": "muelheim",
           "name": {
-            "de": "Mülheim",
             "en": "Mülheim",
+            "de": "Mülheim",
+            "es": "Mülheim",
+            "fr": "Mülheim",
             "ru": "Мюльхайм"
           },
           "lat": 50.9659028,
@@ -1299,8 +1509,10 @@
           "id": "cmtdatff6001sa8b0xhdd47hy",
           "slug": "nippes",
           "name": {
-            "de": "Nippes",
             "en": "Nippes",
+            "de": "Nippes",
+            "es": "Nippes",
+            "fr": "Nippes",
             "ru": "Ниппес"
           },
           "lat": 50.988649,
@@ -1311,8 +1523,10 @@
           "id": "cmtdatffa0020a8b028w3c10i",
           "slug": "suelz",
           "name": {
-            "de": "Sülz",
             "en": "Sülz",
+            "de": "Sülz",
+            "es": "Sülz",
+            "fr": "Sülz",
             "ru": "Зюльц"
           },
           "lat": 50.9189277,
@@ -1325,8 +1539,10 @@
       "id": "cmtabyuiu000u5nb07no7ce3v",
       "slug": "leipzig",
       "name": {
-        "de": "Leipzig",
         "en": "Leipzig",
+        "de": "Leipzig",
+        "es": "Leipzig",
+        "fr": "Leipzig",
         "ru": "Лейпциг"
       },
       "countryCode": "DE",
@@ -1338,8 +1554,10 @@
           "id": "cmtdatfhg006ga8b04j7q26w9",
           "slug": "connewitz",
           "name": {
-            "de": "Connewitz",
             "en": "Connewitz",
+            "de": "Connewitz",
+            "es": "Connewitz",
+            "fr": "Connewitz",
             "ru": "Конневиц"
           },
           "lat": 51.3032502,
@@ -1350,8 +1568,10 @@
           "id": "cmtdatfhk006oa8b0cp50gxjo",
           "slug": "gohlis",
           "name": {
-            "de": "Gohlis",
             "en": "Gohlis",
+            "de": "Gohlis",
+            "es": "Gohlis",
+            "fr": "Gohlis",
             "ru": "Голис"
           },
           "lat": 51.36706,
@@ -1362,8 +1582,10 @@
           "id": "cmtdatfhi006ka8b0s6e222kp",
           "slug": "plagwitz",
           "name": {
-            "de": "Plagwitz",
             "en": "Plagwitz",
+            "de": "Plagwitz",
+            "es": "Plagwitz",
+            "fr": "Plagwitz",
             "ru": "Плагвиц"
           },
           "lat": 51.3281994,
@@ -1374,8 +1596,10 @@
           "id": "cmtdatfho006wa8b056a935vb",
           "slug": "reudnitz",
           "name": {
-            "de": "Reudnitz",
             "en": "Reudnitz",
+            "de": "Reudnitz",
+            "es": "Reudnitz",
+            "fr": "Reudnitz",
             "ru": "Ройдниц"
           },
           "lat": 51.335919,
@@ -1386,8 +1610,10 @@
           "id": "cmtdatfhm006sa8b0kxq4vihd",
           "slug": "schleussig",
           "name": {
-            "de": "Schleußig",
             "en": "Schleußig",
+            "de": "Schleußig",
+            "es": "Schleußig",
+            "fr": "Schleußig",
             "ru": "Шлойсиг"
           },
           "lat": 51.3237026,
@@ -1398,8 +1624,10 @@
           "id": "cmtdatfhe006ca8b01cff2aqf",
           "slug": "suedvorstadt",
           "name": {
-            "de": "Südvorstadt",
             "en": "Südvorstadt",
+            "de": "Südvorstadt",
+            "es": "Südvorstadt",
+            "fr": "Südvorstadt",
             "ru": "Зюдфорштадт"
           },
           "lat": 51.3225214,
@@ -1410,8 +1638,10 @@
           "id": "cmtdatfhc0068a8b0vkjxa0nu",
           "slug": "zentrum",
           "name": {
-            "de": "Zentrum",
             "en": "Zentrum",
+            "de": "Zentrum",
+            "es": "Zentrum",
+            "fr": "Zentrum",
             "ru": "Центр"
           },
           "lat": 51.3402743,
@@ -1424,8 +1654,10 @@
       "id": "cmtabyug100065nb0de26jw15",
       "slug": "muenchen",
       "name": {
-        "de": "München",
         "en": "Munich",
+        "de": "München",
+        "es": "Múnich",
+        "fr": "Munich",
         "ru": "Мюнхен"
       },
       "countryCode": "DE",
@@ -1437,8 +1669,10 @@
           "id": "cmtdatfej000sa8b0fhuf9i53",
           "slug": "altstadt-lehel",
           "name": {
-            "de": "Altstadt-Lehel",
             "en": "Altstadt-Lehel",
+            "de": "Altstadt-Lehel",
+            "es": "Altstadt-Lehel",
+            "fr": "Altstadt-Lehel",
             "ru": "Альтштадт-Лехель"
           },
           "lat": 48.1378285,
@@ -1449,8 +1683,10 @@
           "id": "cmtdatfex001ga8b0l2cisgrd",
           "slug": "bogenhausen",
           "name": {
-            "de": "Bogenhausen",
             "en": "Bogenhausen",
+            "de": "Bogenhausen",
+            "es": "Bogenhausen",
+            "fr": "Bogenhausen",
             "ru": "Богенхаузен"
           },
           "lat": 48.1452222,
@@ -1461,8 +1697,10 @@
           "id": "cmtdatfer0014a8b0g82axoyb",
           "slug": "haidhausen",
           "name": {
-            "de": "Haidhausen",
             "en": "Haidhausen",
+            "de": "Haidhausen",
+            "es": "Haidhausen",
+            "fr": "Haidhausen",
             "ru": "Хайдхаузен"
           },
           "lat": 48.1326627,
@@ -1473,8 +1711,10 @@
           "id": "cmtdatfel000wa8b0kwf29ttr",
           "slug": "maxvorstadt",
           "name": {
-            "de": "Maxvorstadt",
             "en": "Maxvorstadt",
+            "de": "Maxvorstadt",
+            "es": "Maxvorstadt",
+            "fr": "Maxvorstadt",
             "ru": "Максфорштадт"
           },
           "lat": 48.1510916,
@@ -1485,8 +1725,10 @@
           "id": "cmtdatfev001ca8b09j29vnju",
           "slug": "neuhausen",
           "name": {
-            "de": "Neuhausen",
             "en": "Neuhausen",
+            "de": "Neuhausen",
+            "es": "Neuhausen",
+            "fr": "Neuhausen",
             "ru": "Нойхаузен"
           },
           "lat": 48.1542217,
@@ -1497,8 +1739,10 @@
           "id": "cmtdatfep0010a8b0b7gkvlw8",
           "slug": "schwabing",
           "name": {
-            "de": "Schwabing",
             "en": "Schwabing",
+            "de": "Schwabing",
+            "es": "Schwabing",
+            "fr": "Schwabing",
             "ru": "Швабинг"
           },
           "lat": 48.168926,
@@ -1509,8 +1753,10 @@
           "id": "cmtdatfet0018a8b0qhzejnip",
           "slug": "sendling",
           "name": {
-            "de": "Sendling",
             "en": "Sendling",
+            "de": "Sendling",
+            "es": "Sendling",
+            "fr": "Sendling",
             "ru": "Зендлинг"
           },
           "lat": 48.1180125,
@@ -1523,8 +1769,10 @@
       "id": "cmtabyul7001e5nb0ys91amk7",
       "slug": "nuernberg",
       "name": {
-        "de": "Nürnberg",
         "en": "Nuremberg",
+        "de": "Nürnberg",
+        "es": "Núremberg",
+        "fr": "Nuremberg",
         "ru": "Нюрнберг"
       },
       "countryCode": "DE",
@@ -1536,8 +1784,10 @@
           "id": "cmtdatfiq009ca8b0fxz637ph",
           "slug": "altstadt",
           "name": {
-            "de": "Altstadt",
             "en": "Altstadt",
+            "de": "Altstadt",
+            "es": "Altstadt",
+            "fr": "Altstadt",
             "ru": "Альтштадт"
           },
           "lat": 49.4514045,
@@ -1548,8 +1798,10 @@
           "id": "cmtdatfir009ga8b0nfc43p9k",
           "slug": "gostenhof",
           "name": {
-            "de": "Gostenhof",
             "en": "Gostenhof",
+            "de": "Gostenhof",
+            "es": "Gostenhof",
+            "fr": "Gostenhof",
             "ru": "Гостенхоф"
           },
           "lat": 49.4476663,
@@ -1560,8 +1812,10 @@
           "id": "cmtdatfiy009wa8b0vua8butu",
           "slug": "maxfeld",
           "name": {
-            "de": "Maxfeld",
             "en": "Maxfeld",
+            "de": "Maxfeld",
+            "es": "Maxfeld",
+            "fr": "Maxfeld",
             "ru": "Максфельд"
           },
           "lat": 49.4633221,
@@ -1572,8 +1826,10 @@
           "id": "cmtdatfit009ka8b08pcgjhyi",
           "slug": "st-johannis",
           "name": {
-            "de": "St. Johannis",
             "en": "St. Johannis",
+            "de": "St. Johannis",
+            "es": "St. Johannis",
+            "fr": "St. Johannis",
             "ru": "Санкт-Йоханнис"
           },
           "lat": 49.4585661,
@@ -1584,8 +1840,10 @@
           "id": "cmtdatfiz00a0a8b0dhrkv4zm",
           "slug": "steinbuehl",
           "name": {
-            "de": "Steinbühl",
             "en": "Steinbühl",
+            "de": "Steinbühl",
+            "es": "Steinbühl",
+            "fr": "Steinbühl",
             "ru": "Штайнбюль"
           },
           "lat": 49.4401403,
@@ -1596,8 +1854,10 @@
           "id": "cmtdatfiu009oa8b03gnkhj09",
           "slug": "suedstadt",
           "name": {
-            "de": "Südstadt",
             "en": "Südstadt",
+            "de": "Südstadt",
+            "es": "Südstadt",
+            "fr": "Südstadt",
             "ru": "Зюдштадт"
           },
           "lat": 49.4257629,
@@ -1608,8 +1868,10 @@
           "id": "cmtdatfiw009sa8b0is9mi30j",
           "slug": "woehrd",
           "name": {
-            "de": "Wöhrd",
             "en": "Wöhrd",
+            "de": "Wöhrd",
+            "es": "Wöhrd",
+            "fr": "Wöhrd",
             "ru": "Вёрд"
           },
           "lat": 49.453549,
@@ -1622,8 +1884,10 @@
       "id": "cmtabyumd001m5nb0tyzzkf08",
       "slug": "rotterdam",
       "name": {
-        "de": "Rotterdam",
         "en": "Rotterdam",
+        "de": "Rotterdam",
+        "es": "Róterdam",
+        "fr": "Rotterdam",
         "ru": "Роттердам"
       },
       "countryCode": "NL",
@@ -1635,8 +1899,10 @@
           "id": "cmtdatfjl00boa8b0b6tqf61g",
           "slug": "centrum",
           "name": {
-            "de": "Centrum",
             "en": "Centrum",
+            "de": "Centrum",
+            "es": "Centrum",
+            "fr": "Centrum",
             "ru": "Центр"
           },
           "lat": 51.9199618,
@@ -1647,8 +1913,10 @@
           "id": "cmtdatfju00cca8b0piby0cgy",
           "slug": "charlois",
           "name": {
-            "de": "Charlois",
             "en": "Charlois",
+            "de": "Charlois",
+            "es": "Charlois",
+            "fr": "Charlois",
             "ru": "Шарлуа"
           },
           "lat": 51.8835701,
@@ -1659,8 +1927,10 @@
           "id": "cmtdatfjn00bsa8b0qb1naugg",
           "slug": "delfshaven",
           "name": {
-            "de": "Delfshaven",
             "en": "Delfshaven",
+            "de": "Delfshaven",
+            "es": "Delfshaven",
+            "fr": "Delfshaven",
             "ru": "Делфсхавен"
           },
           "lat": 51.9081039,
@@ -1671,8 +1941,10 @@
           "id": "cmtdatfjr00c4a8b0j8y8tjps",
           "slug": "feijenoord",
           "name": {
-            "de": "Feijenoord",
             "en": "Feijenoord",
+            "de": "Feijenoord",
+            "es": "Feijenoord",
+            "fr": "Feijenoord",
             "ru": "Фейеноорд"
           },
           "lat": 51.9072468,
@@ -1683,8 +1955,10 @@
           "id": "cmtdatfjt00c8a8b027ehq9j4",
           "slug": "hillegersberg",
           "name": {
-            "de": "Hillegersberg",
             "en": "Hillegersberg",
+            "de": "Hillegersberg",
+            "es": "Hillegersberg",
+            "fr": "Hillegersberg",
             "ru": "Хиллегерсберг"
           },
           "lat": 51.9549095,
@@ -1695,8 +1969,10 @@
           "id": "cmtdatfjo00bwa8b09vp4kyqz",
           "slug": "kralingen",
           "name": {
-            "de": "Kralingen",
             "en": "Kralingen",
+            "de": "Kralingen",
+            "es": "Kralingen",
+            "fr": "Kralingen",
             "ru": "Кралинген"
           },
           "lat": 51.9259546,
@@ -1707,8 +1983,10 @@
           "id": "cmtdatfjp00c0a8b0d8r565sv",
           "slug": "noord",
           "name": {
-            "de": "Noord",
             "en": "Noord",
+            "de": "Noord",
+            "es": "Noord",
+            "fr": "Noord",
             "ru": "Норд"
           },
           "lat": 51.9330231,
@@ -1721,8 +1999,10 @@
       "id": "cmtabyuhk000i5nb092cpiszp",
       "slug": "stuttgart",
       "name": {
-        "de": "Stuttgart",
         "en": "Stuttgart",
+        "de": "Stuttgart",
+        "es": "Stuttgart",
+        "fr": "Stuttgart",
         "ru": "Штутгарт"
       },
       "countryCode": "DE",
@@ -1734,8 +2014,10 @@
           "id": "cmtdatfg2003oa8b0n56i2koh",
           "slug": "bad-cannstatt",
           "name": {
-            "de": "Bad Cannstatt",
             "en": "Bad Cannstatt",
+            "de": "Bad Cannstatt",
+            "es": "Bad Cannstatt",
+            "fr": "Bad Cannstatt",
             "ru": "Бад-Каннштатт"
           },
           "lat": 48.8048828,
@@ -1746,8 +2028,10 @@
           "id": "cmtdatffu0034a8b0nwjb0heo",
           "slug": "mitte",
           "name": {
-            "de": "Mitte",
             "en": "Mitte",
+            "de": "Mitte",
+            "es": "Mitte",
+            "fr": "Mitte",
             "ru": "Митте"
           },
           "lat": 48.7759,
@@ -1758,8 +2042,10 @@
           "id": "cmtdatffw0038a8b0ucz5juwc",
           "slug": "nord",
           "name": {
-            "de": "Nord",
             "en": "Nord",
+            "de": "Nord",
+            "es": "Nord",
+            "fr": "Nord",
             "ru": "Норд"
           },
           "lat": 48.7978226,
@@ -1770,8 +2056,10 @@
           "id": "cmtdatfg1003ka8b0kpuz0j1p",
           "slug": "ost",
           "name": {
-            "de": "Ost",
             "en": "Ost",
+            "de": "Ost",
+            "es": "Ost",
+            "fr": "Ost",
             "ru": "Ост"
           },
           "lat": 48.7821428,
@@ -1782,8 +2070,10 @@
           "id": "cmtdatffy003ca8b0fqierh24",
           "slug": "sued",
           "name": {
-            "de": "Süd",
             "en": "Süd",
+            "de": "Süd",
+            "es": "Süd",
+            "fr": "Süd",
             "ru": "Зюд"
           },
           "lat": 48.764201,
@@ -1794,8 +2084,10 @@
           "id": "cmtdatfg4003sa8b0l2gimj1y",
           "slug": "vaihingen",
           "name": {
-            "de": "Vaihingen",
             "en": "Vaihingen",
+            "de": "Vaihingen",
+            "es": "Vaihingen",
+            "fr": "Vaihingen",
             "ru": "Файхинген"
           },
           "lat": 48.7314075,
@@ -1806,8 +2098,10 @@
           "id": "cmtdatfg0003ga8b0atay0r07",
           "slug": "west",
           "name": {
-            "de": "West",
             "en": "West",
+            "de": "West",
+            "es": "West",
+            "fr": "West",
             "ru": "Вест"
           },
           "lat": 48.7739006,
@@ -1820,8 +2114,10 @@
       "id": "cmtabyund001u5nb0l2ielsgb",
       "slug": "utrecht",
       "name": {
-        "de": "Utrecht",
         "en": "Utrecht",
+        "de": "Utrecht",
+        "es": "Utrecht",
+        "fr": "Utrecht",
         "ru": "Утрехт"
       },
       "countryCode": "NL",
@@ -1833,8 +2129,10 @@
           "id": "cmtdatfk500d8a8b06p9r6flw",
           "slug": "binnenstad",
           "name": {
-            "de": "Binnenstad",
             "en": "Binnenstad",
+            "de": "Binnenstad",
+            "es": "Binnenstad",
+            "fr": "Binnenstad",
             "ru": "Биннестад"
           },
           "lat": 52.0886017,
@@ -1845,8 +2143,10 @@
           "id": "cmtdatfke00dwa8b00jdzgoi4",
           "slug": "leidsche-rijn",
           "name": {
-            "de": "Leidsche Rijn",
             "en": "Leidsche Rijn",
+            "de": "Leidsche Rijn",
+            "es": "Leidsche Rijn",
+            "fr": "Leidsche Rijn",
             "ru": "Лейдсе-Рейн"
           },
           "lat": 52.0827104,
@@ -1857,8 +2157,10 @@
           "id": "cmtdatfk700dca8b0rnjjgpb2",
           "slug": "lombok",
           "name": {
-            "de": "Lombok",
             "en": "Lombok",
+            "de": "Lombok",
+            "es": "Lombok",
+            "fr": "Lombok",
             "ru": "Ломбок"
           },
           "lat": 52.0912231,
@@ -1869,8 +2171,10 @@
           "id": "cmtdatfka00dka8b0rdhrky0k",
           "slug": "noordoost",
           "name": {
-            "de": "Noordoost",
             "en": "Noordoost",
+            "de": "Noordoost",
+            "es": "Noordoost",
+            "fr": "Noordoost",
             "ru": "Нордост"
           },
           "lat": 52.1051288,
@@ -1881,8 +2185,10 @@
           "id": "cmtdatfk800dga8b06yzn9xw2",
           "slug": "oost",
           "name": {
-            "de": "Oost",
             "en": "Oost",
+            "de": "Oost",
+            "es": "Oost",
+            "fr": "Oost",
             "ru": "Ост"
           },
           "lat": 52.0775687,
@@ -1893,8 +2199,10 @@
           "id": "cmtdatfkd00dsa8b0kewku1ct",
           "slug": "overvecht",
           "name": {
-            "de": "Overvecht",
             "en": "Overvecht",
+            "de": "Overvecht",
+            "es": "Overvecht",
+            "fr": "Overvecht",
             "ru": "Овервехт"
           },
           "lat": 52.1205408,
@@ -1905,8 +2213,10 @@
           "id": "cmtdatfkb00doa8b0d6lpobq3",
           "slug": "zuid",
           "name": {
-            "de": "Zuid",
             "en": "Zuid",
+            "de": "Zuid",
+            "es": "Zuid",
+            "fr": "Zuid",
             "ru": "Зёйд"
           },
           "lat": 52.0642612,
@@ -1920,64 +2230,80 @@
     {
       "key": "companionship",
       "name": {
-        "de": "Begleitung",
         "en": "Companionship",
+        "de": "Begleitung",
+        "es": "Compañía",
+        "fr": "Accompagnement",
         "ru": "Сопровождение"
       }
     },
     {
       "key": "cosplay",
       "name": {
-        "de": "Cosplay",
         "en": "Cosplay",
+        "de": "Cosplay",
+        "es": "Cosplay",
+        "fr": "Cosplay",
         "ru": "Косплей"
       }
     },
     {
       "key": "sex",
       "name": {
-        "de": "Sex",
         "en": "Sex",
+        "de": "Sex",
+        "es": "Sexo",
+        "fr": "Sexe",
         "ru": "Секс"
       }
     },
     {
       "key": "massage",
       "name": {
-        "de": "Massage",
         "en": "Massage",
+        "de": "Massage",
+        "es": "Masaje",
+        "fr": "Massage",
         "ru": "Массаж"
       }
     },
     {
       "key": "extreme",
       "name": {
-        "de": "Extrem",
         "en": "Extreme",
+        "de": "Extrem",
+        "es": "Extremo",
+        "fr": "Extrême",
         "ru": "Экстрим"
       }
     },
     {
       "key": "striptease",
       "name": {
-        "de": "Striptease",
         "en": "Striptease",
+        "de": "Striptease",
+        "es": "Striptease",
+        "fr": "Striptease",
         "ru": "Стриптиз"
       }
     },
     {
       "key": "bdsm",
       "name": {
-        "de": "BDSM",
         "en": "BDSM",
+        "de": "BDSM",
+        "es": "BDSM",
+        "fr": "BDSM",
         "ru": "Садо-мазо"
       }
     },
     {
       "key": "format",
       "name": {
-        "de": "Format",
         "en": "Format",
+        "de": "Format",
+        "es": "Formato",
+        "fr": "Format",
         "ru": "Формат встречи"
       }
     }
@@ -1993,8 +2319,10 @@
       "position": 0,
       "isActive": true,
       "name": {
-        "de": "Dinner-Date",
         "en": "Dinner date",
+        "de": "Dinner-Date",
+        "es": "Cena romántica",
+        "fr": "Dîner en tête-à-tête",
         "ru": "Ужин"
       }
     },
@@ -2008,8 +2336,10 @@
       "position": 1,
       "isActive": true,
       "name": {
-        "de": "Anime",
         "en": "Anime",
+        "de": "Anime",
+        "es": "Anime",
+        "fr": "Anime",
         "ru": "Аниме"
       }
     },
@@ -2023,8 +2353,10 @@
       "position": 1,
       "isActive": true,
       "name": {
-        "de": "Veranstaltungen",
         "en": "Events",
+        "de": "Veranstaltungen",
+        "es": "Eventos",
+        "fr": "Événements",
         "ru": "Мероприятия"
       }
     },
@@ -2038,8 +2370,10 @@
       "position": 2,
       "isActive": true,
       "name": {
-        "de": "Fotoshootings",
         "en": "Photoshoots",
+        "de": "Fotoshootings",
+        "es": "Sesiones de fotos",
+        "fr": "Séances photo",
         "ru": "Фотосессии"
       }
     },
@@ -2053,8 +2387,10 @@
       "position": 3,
       "isActive": true,
       "name": {
-        "de": "Reisebegleitung",
         "en": "Travel companion",
+        "de": "Reisebegleitung",
+        "es": "Acompañante de viaje",
+        "fr": "Accompagnement en voyage",
         "ru": "Сопровождение в поездках"
       }
     },
@@ -2068,8 +2404,10 @@
       "position": 4,
       "isActive": true,
       "name": {
-        "de": "Auslandsreisen",
         "en": "Trips abroad",
+        "de": "Auslandsreisen",
+        "es": "Viajes al extranjero",
+        "fr": "Voyages à l'étranger",
         "ru": "Поездки за границу"
       }
     },
@@ -2083,8 +2421,10 @@
       "position": 5,
       "isActive": true,
       "name": {
-        "de": "Über Nacht",
         "en": "Overnight",
+        "de": "Über Nacht",
+        "es": "Toda la noche",
+        "fr": "Nuit complète",
         "ru": "Ночь"
       }
     },
@@ -2098,8 +2438,10 @@
       "position": 106,
       "isActive": true,
       "name": {
-        "de": "Klassischer Sex",
         "en": "Classic sex",
+        "de": "Klassischer Sex",
+        "es": "Sexo clásico",
+        "fr": "Rapport classique",
         "ru": "Секс классический"
       }
     },
@@ -2113,8 +2455,10 @@
       "position": 107,
       "isActive": true,
       "name": {
-        "de": "Analsex",
         "en": "Anal sex",
+        "de": "Analsex",
+        "es": "Sexo anal",
+        "fr": "Rapport anal",
         "ru": "Секс анальный"
       }
     },
@@ -2128,8 +2472,10 @@
       "position": 108,
       "isActive": true,
       "name": {
-        "de": "Gruppensex",
         "en": "Group sex",
+        "de": "Gruppensex",
+        "es": "Sexo en grupo",
+        "fr": "Rapport en groupe",
         "ru": "Секс групповой"
       }
     },
@@ -2143,8 +2489,10 @@
       "position": 109,
       "isActive": true,
       "name": {
-        "de": "Lesbischer Sex",
         "en": "Lesbian sex",
+        "de": "Lesbischer Sex",
+        "es": "Sexo lésbico",
+        "fr": "Rapport lesbien",
         "ru": "Секс лесбийский"
       }
     },
@@ -2158,8 +2506,10 @@
       "position": 110,
       "isActive": true,
       "name": {
-        "de": "Spider-Man",
         "en": "Spider-Man",
+        "de": "Spider-Man",
+        "es": "Spider-Man",
+        "fr": "Spider-Man",
         "ru": "Человек-паук"
       }
     },
@@ -2173,8 +2523,10 @@
       "position": 110,
       "isActive": true,
       "name": {
-        "de": "Für Paare",
         "en": "For couples",
+        "de": "Für Paare",
+        "es": "Para parejas",
+        "fr": "Pour couples",
         "ru": "Семейной паре"
       }
     },
@@ -2188,8 +2540,10 @@
       "position": 111,
       "isActive": true,
       "name": {
-        "de": "Blowjob",
         "en": "Blowjob",
+        "de": "Blowjob",
+        "es": "Felación",
+        "fr": "Fellation",
         "ru": "Минет"
       }
     },
@@ -2203,8 +2557,10 @@
       "position": 111,
       "isActive": true,
       "name": {
-        "de": "Latex",
         "en": "Latex",
+        "de": "Latex",
+        "es": "Látex",
+        "fr": "Latex",
         "ru": "Латексный костюм"
       }
     },
@@ -2218,8 +2574,10 @@
       "position": 112,
       "isActive": true,
       "name": {
-        "de": "Lederanzug",
         "en": "Leather outfit",
+        "de": "Lederanzug",
+        "es": "Conjunto de cuero",
+        "fr": "Tenue en cuir",
         "ru": "Кожаный костюм"
       }
     },
@@ -2233,8 +2591,10 @@
       "position": 113,
       "isActive": true,
       "name": {
-        "de": "Deep Throat",
         "en": "Deep throat",
+        "de": "Deep Throat",
+        "es": "Garganta profunda",
+        "fr": "Gorge profonde",
         "ru": "Минет глубокий"
       }
     },
@@ -2248,8 +2608,10 @@
       "position": 113,
       "isActive": true,
       "name": {
-        "de": "Krankenschwester",
         "en": "Nurse",
+        "de": "Krankenschwester",
+        "es": "Enfermera",
+        "fr": "Infirmière",
         "ru": "Медсестра"
       }
     },
@@ -2263,8 +2625,10 @@
       "position": 114,
       "isActive": true,
       "name": {
-        "de": "Kehlenoral",
         "en": "Throat oral",
+        "de": "Kehlenoral",
+        "es": "Oral profundo",
+        "fr": "Oral profond",
         "ru": "Минет горловой"
       }
     },
@@ -2278,8 +2642,10 @@
       "position": 114,
       "isActive": true,
       "name": {
-        "de": "Katze",
         "en": "Cat",
+        "de": "Katze",
+        "es": "Gatita",
+        "fr": "Chatte",
         "ru": "Кошка"
       }
     },
@@ -2293,8 +2659,10 @@
       "position": 115,
       "isActive": true,
       "name": {
-        "de": "Oral im Auto",
         "en": "Oral in car",
+        "de": "Oral im Auto",
+        "es": "Oral en el coche",
+        "fr": "Oral en voiture",
         "ru": "Минет в машине"
       }
     },
@@ -2308,8 +2676,10 @@
       "position": 115,
       "isActive": true,
       "name": {
-        "de": "Zimmermädchen",
         "en": "Maid",
+        "de": "Zimmermädchen",
+        "es": "Sirvienta",
+        "fr": "Soubrette",
         "ru": "Горничная"
       }
     },
@@ -2323,8 +2693,10 @@
       "position": 116,
       "isActive": true,
       "name": {
-        "de": "Schulmädchen",
         "en": "Schoolgirl",
+        "de": "Schulmädchen",
+        "es": "Colegiala",
+        "fr": "Écolière",
         "ru": "Школьница"
       }
     },
@@ -2338,8 +2710,10 @@
       "position": 116,
       "isActive": true,
       "name": {
-        "de": "Cunnilingus",
         "en": "Cunnilingus",
+        "de": "Cunnilingus",
+        "es": "Cunnilingus",
+        "fr": "Cunnilingus",
         "ru": "Куннилингус"
       }
     },
@@ -2353,8 +2727,10 @@
       "position": 117,
       "isActive": true,
       "name": {
-        "de": "Polizistin",
         "en": "Police officer",
+        "de": "Polizistin",
+        "es": "Policía",
+        "fr": "Policière",
         "ru": "Полицейский"
       }
     },
@@ -2368,8 +2744,10 @@
       "position": 117,
       "isActive": true,
       "name": {
-        "de": "Küssen",
         "en": "Kissing",
+        "de": "Küssen",
+        "es": "Besos",
+        "fr": "Baisers",
         "ru": "Целуюсь"
       }
     },
@@ -2383,8 +2761,10 @@
       "position": 118,
       "isActive": true,
       "name": {
-        "de": "Teufelin",
         "en": "She-devil",
+        "de": "Teufelin",
+        "es": "Diablesa",
+        "fr": "Diablesse",
         "ru": "Дьяволица"
       }
     },
@@ -2398,8 +2778,10 @@
       "position": 118,
       "isActive": true,
       "name": {
-        "de": "Spielzeug",
         "en": "Toys",
+        "de": "Spielzeug",
+        "es": "Juguetes",
+        "fr": "Jouets",
         "ru": "Игрушки"
       }
     },
@@ -2413,8 +2795,10 @@
       "position": 119,
       "isActive": true,
       "name": {
-        "de": "Abschluss auf die Brust",
         "en": "Finish on breasts",
+        "de": "Abschluss auf die Brust",
+        "es": "Final en los pechos",
+        "fr": "Finition sur la poitrine",
         "ru": "Окончание на грудь"
       }
     },
@@ -2428,8 +2812,10 @@
       "position": 120,
       "isActive": true,
       "name": {
-        "de": "Abschluss ins Gesicht",
         "en": "Finish on face",
+        "de": "Abschluss ins Gesicht",
+        "es": "Final en la cara",
+        "fr": "Finition sur le visage",
         "ru": "Окончание на лицо"
       }
     },
@@ -2443,8 +2829,10 @@
       "position": 121,
       "isActive": true,
       "name": {
-        "de": "Abschluss in den Mund",
         "en": "Finish in mouth",
+        "de": "Abschluss in den Mund",
+        "es": "Final en la boca",
+        "fr": "Finition dans la bouche",
         "ru": "Окончание в рот"
       }
     },
@@ -2458,8 +2846,10 @@
       "position": 122,
       "isActive": true,
       "name": {
-        "de": "69er-Stellung",
         "en": "69 position",
+        "de": "69er-Stellung",
+        "es": "Postura 69",
+        "fr": "Position 69",
         "ru": "Поза 69"
       }
     },
@@ -2473,8 +2863,10 @@
       "position": 123,
       "isActive": true,
       "name": {
-        "de": "Squirting",
         "en": "Squirting",
+        "de": "Squirting",
+        "es": "Squirting",
+        "fr": "Squirting",
         "ru": "Сквирт"
       }
     },
@@ -2486,8 +2878,10 @@
       "position": 223,
       "isActive": true,
       "name": {
-        "de": "Klassische Massage",
         "en": "Classic massage",
+        "de": "Klassische Massage",
+        "es": "Masaje clásico",
+        "fr": "Massage classique",
         "ru": "Массаж классический"
       }
     },
@@ -2499,8 +2893,10 @@
       "position": 224,
       "isActive": true,
       "name": {
-        "de": "Professionelle Massage",
         "en": "Professional massage",
+        "de": "Professionelle Massage",
+        "es": "Masaje profesional",
+        "fr": "Massage professionnel",
         "ru": "Массаж профессиональный"
       }
     },
@@ -2512,8 +2908,10 @@
       "position": 225,
       "isActive": true,
       "name": {
-        "de": "Entspannungsmassage",
         "en": "Relaxing massage",
+        "de": "Entspannungsmassage",
+        "es": "Masaje relajante",
+        "fr": "Massage relaxant",
         "ru": "Массаж расслабляющий"
       }
     },
@@ -2525,8 +2923,10 @@
       "position": 226,
       "isActive": true,
       "name": {
-        "de": "Urologische Massage",
         "en": "Urological massage",
+        "de": "Urologische Massage",
+        "es": "Masaje urológico",
+        "fr": "Massage urologique",
         "ru": "Массаж урологический"
       }
     },
@@ -2538,8 +2938,10 @@
       "position": 227,
       "isActive": true,
       "name": {
-        "de": "Erotische Massage",
         "en": "Erotic massage",
+        "de": "Erotische Massage",
+        "es": "Masaje erótico",
+        "fr": "Massage érotique",
         "ru": "Массаж эротический"
       }
     },
@@ -2551,8 +2953,10 @@
       "position": 228,
       "isActive": true,
       "name": {
-        "de": "Massage für Paare",
         "en": "Massage for couples",
+        "de": "Massage für Paare",
+        "es": "Masaje para parejas",
+        "fr": "Massage pour couples",
         "ru": "Массаж семейной паре"
       }
     },
@@ -2564,8 +2968,10 @@
       "position": 229,
       "isActive": true,
       "name": {
-        "de": "Massagetisch",
         "en": "Massage table",
+        "de": "Massagetisch",
+        "es": "Camilla de masaje",
+        "fr": "Table de massage",
         "ru": "Массажный стол"
       }
     },
@@ -2579,8 +2985,10 @@
       "position": 300,
       "isActive": true,
       "name": {
-        "de": "Strapon für den Kunden",
         "en": "Strap-on to client",
+        "de": "Strapon für den Kunden",
+        "es": "Arnés al cliente",
+        "fr": "Gode-ceinture au client",
         "ru": "Страпон клиенту"
       }
     },
@@ -2594,8 +3002,10 @@
       "position": 301,
       "isActive": true,
       "name": {
-        "de": "Strapon für mich",
         "en": "Strap-on to me",
+        "de": "Strapon für mich",
+        "es": "Arnés a mí",
+        "fr": "Gode-ceinture sur moi",
         "ru": "Страпон мне"
       }
     },
@@ -2609,8 +3019,10 @@
       "position": 308,
       "isActive": true,
       "name": {
-        "de": "Fingern des Kunden",
         "en": "Fingering the client",
+        "de": "Fingern des Kunden",
+        "es": "Estimulación manual al cliente",
+        "fr": "Doigté au client",
         "ru": "Фингеринг клиенту"
       }
     },
@@ -2624,8 +3036,10 @@
       "position": 309,
       "isActive": true,
       "name": {
-        "de": "Fingern bei mir",
         "en": "Fingering me",
+        "de": "Fingern bei mir",
+        "es": "Estimulación manual a mí",
+        "fr": "Doigté sur moi",
         "ru": "Фингеринг мне"
       }
     },
@@ -2639,8 +3053,10 @@
       "position": 330,
       "isActive": true,
       "name": {
-        "de": "Profi-Striptease",
         "en": "Professional striptease",
+        "de": "Profi-Striptease",
+        "es": "Striptease profesional",
+        "fr": "Striptease professionnel",
         "ru": "Стриптиз профи"
       }
     },
@@ -2654,8 +3070,10 @@
       "position": 331,
       "isActive": true,
       "name": {
-        "de": "Amateur-Striptease",
         "en": "Amateur striptease",
+        "de": "Amateur-Striptease",
+        "es": "Striptease amateur",
+        "fr": "Striptease amateur",
         "ru": "Стриптиз не профи"
       }
     },
@@ -2669,8 +3087,10 @@
       "position": 332,
       "isActive": true,
       "name": {
-        "de": "Leichte Lesbenshow",
         "en": "Light lesbian show",
+        "de": "Leichte Lesbenshow",
+        "es": "Show lésbico suave",
+        "fr": "Show lesbien soft",
         "ru": "Лесби-шоу лёгкое"
       }
     },
@@ -2684,8 +3104,10 @@
       "position": 333,
       "isActive": true,
       "name": {
-        "de": "Explizite Lesbenshow",
         "en": "Explicit lesbian show",
+        "de": "Explizite Lesbenshow",
+        "es": "Show lésbico explícito",
+        "fr": "Show lesbien explicite",
         "ru": "Лесби откровенное"
       }
     },
@@ -2699,8 +3121,10 @@
       "position": 435,
       "isActive": true,
       "name": {
-        "de": "Anilingus für den Kunden",
         "en": "Anilingus to client",
+        "de": "Anilingus für den Kunden",
+        "es": "Anilingus al cliente",
+        "fr": "Anulingus au client",
         "ru": "Анилингус клиенту"
       }
     },
@@ -2714,8 +3138,10 @@
       "position": 436,
       "isActive": true,
       "name": {
-        "de": "Anilingus für mich",
         "en": "Anilingus to me",
+        "de": "Anilingus für mich",
+        "es": "Anilingus a mí",
+        "fr": "Anulingus sur moi",
         "ru": "Анилингус мне"
       }
     },
@@ -2729,8 +3155,10 @@
       "position": 443,
       "isActive": true,
       "name": {
-        "de": "Doppelpenetration",
         "en": "Double penetration",
+        "de": "Doppelpenetration",
+        "es": "Doble penetración",
+        "fr": "Double pénétration",
         "ru": "Двойное проникновение"
       }
     },
@@ -2744,8 +3172,10 @@
       "position": 544,
       "isActive": true,
       "name": {
-        "de": "Ballbusting",
         "en": "Ballbusting",
+        "de": "Ballbusting",
+        "es": "Ballbusting",
+        "fr": "Ballbusting",
         "ru": "Боллбастинг"
       }
     },
@@ -2759,8 +3189,10 @@
       "position": 545,
       "isActive": true,
       "name": {
-        "de": "Herrin",
         "en": "Mistress",
+        "de": "Herrin",
+        "es": "Ama",
+        "fr": "Maîtresse",
         "ru": "Госпожа"
       }
     },
@@ -2774,8 +3206,10 @@
       "position": 546,
       "isActive": true,
       "name": {
-        "de": "Dominanz",
         "en": "Domination",
+        "de": "Dominanz",
+        "es": "Dominación",
+        "fr": "Domination",
         "ru": "Доминирование"
       }
     },
@@ -2789,8 +3223,10 @@
       "position": 547,
       "isActive": true,
       "name": {
-        "de": "Sklavin",
         "en": "Slave",
+        "de": "Sklavin",
+        "es": "Esclava",
+        "fr": "Esclave",
         "ru": "Рабыня"
       }
     },
@@ -2804,8 +3240,10 @@
       "position": 548,
       "isActive": true,
       "name": {
-        "de": "Unterwerfung",
         "en": "Submission",
+        "de": "Unterwerfung",
+        "es": "Sumisión",
+        "fr": "Soumission",
         "ru": "Подчинение"
       }
     },
@@ -2819,8 +3257,10 @@
       "position": 549,
       "isActive": true,
       "name": {
-        "de": "Bondage",
         "en": "Bondage",
+        "de": "Bondage",
+        "es": "Bondage",
+        "fr": "Bondage",
         "ru": "Бондаж"
       }
     },
@@ -2834,8 +3274,10 @@
       "position": 550,
       "isActive": true,
       "name": {
-        "de": "Spanking",
         "en": "Spanking",
+        "de": "Spanking",
+        "es": "Azotes",
+        "fr": "Fessée",
         "ru": "Порка"
       }
     },
@@ -2849,8 +3291,10 @@
       "position": 551,
       "isActive": true,
       "name": {
-        "de": "Fetisch",
         "en": "Fetish",
+        "de": "Fetisch",
+        "es": "Fetiche",
+        "fr": "Fétichisme",
         "ru": "Фетиш"
       }
     },
@@ -2864,8 +3308,10 @@
       "position": 552,
       "isActive": true,
       "name": {
-        "de": "Trampling",
         "en": "Trampling",
+        "de": "Trampling",
+        "es": "Trampling",
+        "fr": "Trampling",
         "ru": "Трамплинг"
       }
     },
@@ -2879,8 +3325,10 @@
       "position": 553,
       "isActive": true,
       "name": {
-        "de": "Shibari",
         "en": "Shibari",
+        "de": "Shibari",
+        "es": "Shibari",
+        "fr": "Shibari",
         "ru": "Шибари"
       }
     },
@@ -2894,8 +3342,10 @@
       "position": 554,
       "isActive": true,
       "name": {
-        "de": "Facesitting",
         "en": "Facesitting",
+        "de": "Facesitting",
+        "es": "Facesitting",
+        "fr": "Facesitting",
         "ru": "Фейсситтинг"
       }
     },
@@ -2907,8 +3357,10 @@
       "position": 658,
       "isActive": true,
       "name": {
-        "de": "Bei mir",
         "en": "Incall",
+        "de": "Bei mir",
+        "es": "En mi lugar",
+        "fr": "Chez moi",
         "ru": "У себя"
       }
     },
@@ -2920,8 +3372,10 @@
       "position": 659,
       "isActive": true,
       "name": {
-        "de": "Hausbesuch",
         "en": "Outcall",
+        "de": "Hausbesuch",
+        "es": "A domicilio",
+        "fr": "Chez vous",
         "ru": "Выезд"
       }
     },
@@ -2935,8 +3389,10 @@
       "position": 660,
       "isActive": true,
       "name": {
-        "de": "Hotelbesuch",
         "en": "Hotel visit",
+        "de": "Hotelbesuch",
+        "es": "Visita al hotel",
+        "fr": "Visite à l'hôtel",
         "ru": "Визит в отель"
       }
     }

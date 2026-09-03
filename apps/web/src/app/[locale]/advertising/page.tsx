@@ -1,4 +1,4 @@
-import { DEFAULT_BILLING_CONFIG, gcToEur, PLAN_KINDS, toPriceBook } from '@noova/shared';
+import { DEFAULT_BILLING_CONFIG, gcToEur, LOCALES, PLAN_KINDS, toPriceBook } from '@noova/shared';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: t('lead'),
     alternates: {
       canonical: `/${locale}/advertising`,
-      languages: { de: '/de/advertising', en: '/en/advertising', ru: '/ru/advertising' },
+      languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/advertising`])),
     },
   };
 }
