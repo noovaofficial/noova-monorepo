@@ -111,11 +111,11 @@ deploy-files: ## Скопировать на сервер файлы, котор
 deploy: ## Выпуск на сервер целиком: сборка, перенос, запуск, проверка (SERVER=user@host)
 	@SERVER=$(SERVER) ./scripts/deploy.sh
 
-migrate-server: ## Переезд на другую машину (FROM=deploy@old TO=deploy@new KEY=… [RELAY=…])
+migrate-server: ## Переезд на другую машину (FROM=deploy@old TO=deploy@new KEY=… [RELAY=…] [DIRECT_MAIL=1] [STORAGE=…])
 	@test -n "$(FROM)" || (echo "Укажите FROM=deploy@старый"; exit 1)
 	@test -n "$(TO)" || (echo "Укажите TO=deploy@новый"; exit 1)
 	@test -n "$(KEY)" || (echo "Укажите KEY=путь к закрытому ключу бэкапов"; exit 1)
-	FROM='$(FROM)' TO='$(TO)' KEY='$(KEY)' RELAY='$(RELAY)' DIR='$(DIR)' ./scripts/migrate-server.sh
+	FROM='$(FROM)' TO='$(TO)' KEY='$(KEY)' RELAY='$(RELAY)' DIRECT_MAIL='$(DIRECT_MAIL)' STORAGE='$(STORAGE)' DIR='$(DIR)' ./scripts/migrate-server.sh
 
 rollback: ## Вернуть прежний образ без миграций (SERVER=user@host TAG=<тег>)
 	@test -n "$(SERVER)" || (echo "Укажите SERVER=user@host"; exit 1)
