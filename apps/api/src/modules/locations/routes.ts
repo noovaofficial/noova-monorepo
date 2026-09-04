@@ -18,6 +18,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { CITIES_TAG } from '../../plugins/revalidate.js';
 
 /** Строки переводов в объект по локалям; неполный набор — ошибка данных. */
 function fromRows(rows: { locale: string; name: string }[], fallback: string): Translated {
@@ -115,6 +116,10 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         select: { id: true, code: true, isActive: true, _count: { select: { cities: true } } },
       });
+      // Отключение страны прячет её города со стороны посетителя (N-32) —
+      // без сброса это было бы видно только после истечения ISR (до 5 минут).
+      fastify.revalidate([CITIES_TAG]);
+
       return {
         id: updated.id,
         code: updated.code,
@@ -258,6 +263,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: cityShape,
       });
 
+      fastify.revalidate([CITIES_TAG]);
       return reply.status(201).send(present(created));
     },
   );
@@ -287,6 +293,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         select: cityShape,
       });
+      fastify.revalidate([CITIES_TAG]);
       return present(updated);
     },
   );
@@ -329,6 +336,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: cityId },
         select: cityShape,
       });
+      fastify.revalidate([CITIES_TAG]);
       return reply.status(201).send(present(city));
     },
   );
@@ -362,6 +370,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: updated.cityId },
         select: cityShape,
       });
+      fastify.revalidate([CITIES_TAG]);
       return present(city);
     },
   );

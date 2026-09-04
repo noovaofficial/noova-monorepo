@@ -13,6 +13,8 @@ declare module 'fastify' {
 export const PROFILES_TAG = 'profiles';
 /** Прайс монетизации: витрина `/advertising` кэшируется по этому тегу. */
 export const BILLING_TAG = 'billing';
+/** Справочник городов/районов — должен совпадать с `CITIES_TAG` во фронте. */
+export const CITIES_TAG = 'cities';
 export const profileTag = (slug: string) => `profile:${slug}`;
 
 /**

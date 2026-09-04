@@ -128,6 +128,9 @@ export const PROFILES_TAG = 'profiles';
  *  должен совпадать с `BILLING_TAG` в plugins/revalidate.ts. */
 export const BILLING_TAG = 'billing';
 
+/** Справочник городов/районов — должен совпадать с `CITIES_TAG` в plugins/revalidate.ts. */
+export const CITIES_TAG = 'cities';
+
 /** ТОП на главной: случайная выборка анкет с оплаченным местом (§3.4). */
 export function fetchTopProfiles(city: string, options?: FetchOptions): Promise<Page<ProfileCard>> {
   return request(`/profiles/top?city=${encodeURIComponent(city)}`, pageSchema(profileCardSchema), {
@@ -233,7 +236,7 @@ export function fetchCompany(slug: string, options?: FetchOptions): Promise<Comp
 }
 
 export function fetchCities(options?: FetchOptions): Promise<CityOption[]> {
-  return request('/cities', z.array(cityOptionSchema), options);
+  return request('/cities', z.array(cityOptionSchema), { tags: [CITIES_TAG], ...options });
 }
 
 /** Название одного города; если справочник недоступен — сам слуг. */
