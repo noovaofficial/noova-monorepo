@@ -310,6 +310,49 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Удаление сотрудника — в отличие от блокировки, необратимо: учётка
+   * пропадает, а не просто теряет доступ. Решения из журнала модерации не
+   * трогает: `ModerationAction.moderatorId` допускает null именно ради
+   * этого — запись о том, кто и что одобрил, остаётся доказательством и
+   * без живого автора (см. схему).
+   */
+  fastify.delete(
+    '/admin/staff/:id',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 204: z.null() },
+      },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+
+      // Удалить себя значит остаться без единственного способа отменить это.
+      if (request.params.id === userId) {
+        throw fastify.httpErrors.badRequest('Нельзя удалить собственную учётную запись');
+      }
+
+      const target = await fastify.prisma.user.findFirst({
+        where: { id: request.params.id, role: { in: ['moderator', 'admin'] } },
+        select: { id: true, email: true },
+      });
+      if (!target) throw fastify.httpErrors.notFound('Сотрудник не найден');
+
+      await fastify.destroyAllSessions(target.id);
+      await fastify.prisma.user.delete({ where: { id: target.id } });
+
+      fastify.log.info(
+        { actor: userId, deleted: target.id, email: target.email },
+        'удалена служебная учётная запись',
+      );
+
+      return reply.status(204).send(null);
+    },
+  );
+
   fastify.get(
     '/admin/moderation-log',
     {
@@ -358,8 +401,8 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const items = rows.map((row) => ({
         id: row.id,
-        moderatorEmail: row.moderator.email,
-        moderatorId: row.moderator.id,
+        moderatorEmail: row.moderator?.email ?? null,
+        moderatorId: row.moderator?.id ?? null,
         subjectType: row.subjectType,
         subjectId: row.subjectId,
         subject: subjects.get(`${row.subjectType}:${row.subjectId}`) ?? null,

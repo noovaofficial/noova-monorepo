@@ -134,3 +134,14 @@ export const deleteAccountSchema = z.object({
   password: z.string().min(1).max(200),
 });
 export type DeleteAccountInput = z.infer<typeof deleteAccountSchema>;
+
+/**
+ * Смена пароля из своей учётной записи. Требует текущий пароль — как и
+ * удаление, иначе угнанная сессия превращается в постоянный доступ: угнавший
+ * меняет пароль и выкидывает настоящего владельца.
+ */
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1).max(200),
+  newPassword: passwordSchema,
+});
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

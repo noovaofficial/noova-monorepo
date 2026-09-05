@@ -166,7 +166,7 @@ export type ModerationActionGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type ModerationActionGroupByOutputType = {
   id: string
-  moderatorId: string
+  moderatorId: string | null
   subjectType: $Enums.ModerationSubject
   subjectId: string
   decision: $Enums.ModerationDecision
@@ -197,18 +197,18 @@ export type ModerationActionWhereInput = {
   OR?: Prisma.ModerationActionWhereInput[]
   NOT?: Prisma.ModerationActionWhereInput | Prisma.ModerationActionWhereInput[]
   id?: Prisma.StringFilter<"ModerationAction"> | string
-  moderatorId?: Prisma.StringFilter<"ModerationAction"> | string
+  moderatorId?: Prisma.StringNullableFilter<"ModerationAction"> | string | null
   subjectType?: Prisma.EnumModerationSubjectFilter<"ModerationAction"> | $Enums.ModerationSubject
   subjectId?: Prisma.StringFilter<"ModerationAction"> | string
   decision?: Prisma.EnumModerationDecisionFilter<"ModerationAction"> | $Enums.ModerationDecision
   reason?: Prisma.StringNullableFilter<"ModerationAction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ModerationAction"> | Date | string
-  moderator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  moderator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type ModerationActionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  moderatorId?: Prisma.SortOrder
+  moderatorId?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   decision?: Prisma.SortOrder
@@ -222,18 +222,18 @@ export type ModerationActionWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ModerationActionWhereInput | Prisma.ModerationActionWhereInput[]
   OR?: Prisma.ModerationActionWhereInput[]
   NOT?: Prisma.ModerationActionWhereInput | Prisma.ModerationActionWhereInput[]
-  moderatorId?: Prisma.StringFilter<"ModerationAction"> | string
+  moderatorId?: Prisma.StringNullableFilter<"ModerationAction"> | string | null
   subjectType?: Prisma.EnumModerationSubjectFilter<"ModerationAction"> | $Enums.ModerationSubject
   subjectId?: Prisma.StringFilter<"ModerationAction"> | string
   decision?: Prisma.EnumModerationDecisionFilter<"ModerationAction"> | $Enums.ModerationDecision
   reason?: Prisma.StringNullableFilter<"ModerationAction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ModerationAction"> | Date | string
-  moderator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  moderator?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id">
 
 export type ModerationActionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  moderatorId?: Prisma.SortOrder
+  moderatorId?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   decision?: Prisma.SortOrder
@@ -249,7 +249,7 @@ export type ModerationActionScalarWhereWithAggregatesInput = {
   OR?: Prisma.ModerationActionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ModerationActionScalarWhereWithAggregatesInput | Prisma.ModerationActionScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ModerationAction"> | string
-  moderatorId?: Prisma.StringWithAggregatesFilter<"ModerationAction"> | string
+  moderatorId?: Prisma.StringNullableWithAggregatesFilter<"ModerationAction"> | string | null
   subjectType?: Prisma.EnumModerationSubjectWithAggregatesFilter<"ModerationAction"> | $Enums.ModerationSubject
   subjectId?: Prisma.StringWithAggregatesFilter<"ModerationAction"> | string
   decision?: Prisma.EnumModerationDecisionWithAggregatesFilter<"ModerationAction"> | $Enums.ModerationDecision
@@ -264,12 +264,12 @@ export type ModerationActionCreateInput = {
   decision: $Enums.ModerationDecision
   reason?: string | null
   createdAt?: Date | string
-  moderator: Prisma.UserCreateNestedOneWithoutModerationActionsInput
+  moderator?: Prisma.UserCreateNestedOneWithoutModerationActionsInput
 }
 
 export type ModerationActionUncheckedCreateInput = {
   id?: string
-  moderatorId: string
+  moderatorId?: string | null
   subjectType: $Enums.ModerationSubject
   subjectId: string
   decision: $Enums.ModerationDecision
@@ -284,12 +284,12 @@ export type ModerationActionUpdateInput = {
   decision?: Prisma.EnumModerationDecisionFieldUpdateOperationsInput | $Enums.ModerationDecision
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  moderator?: Prisma.UserUpdateOneRequiredWithoutModerationActionsNestedInput
+  moderator?: Prisma.UserUpdateOneWithoutModerationActionsNestedInput
 }
 
 export type ModerationActionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  moderatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectType?: Prisma.EnumModerationSubjectFieldUpdateOperationsInput | $Enums.ModerationSubject
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   decision?: Prisma.EnumModerationDecisionFieldUpdateOperationsInput | $Enums.ModerationDecision
@@ -299,7 +299,7 @@ export type ModerationActionUncheckedUpdateInput = {
 
 export type ModerationActionCreateManyInput = {
   id?: string
-  moderatorId: string
+  moderatorId?: string | null
   subjectType: $Enums.ModerationSubject
   subjectId: string
   decision: $Enums.ModerationDecision
@@ -318,7 +318,7 @@ export type ModerationActionUpdateManyMutationInput = {
 
 export type ModerationActionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  moderatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  moderatorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subjectType?: Prisma.EnumModerationSubjectFieldUpdateOperationsInput | $Enums.ModerationSubject
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   decision?: Prisma.EnumModerationDecisionFieldUpdateOperationsInput | $Enums.ModerationDecision
@@ -465,7 +465,7 @@ export type ModerationActionScalarWhereInput = {
   OR?: Prisma.ModerationActionScalarWhereInput[]
   NOT?: Prisma.ModerationActionScalarWhereInput | Prisma.ModerationActionScalarWhereInput[]
   id?: Prisma.StringFilter<"ModerationAction"> | string
-  moderatorId?: Prisma.StringFilter<"ModerationAction"> | string
+  moderatorId?: Prisma.StringNullableFilter<"ModerationAction"> | string | null
   subjectType?: Prisma.EnumModerationSubjectFilter<"ModerationAction"> | $Enums.ModerationSubject
   subjectId?: Prisma.StringFilter<"ModerationAction"> | string
   decision?: Prisma.EnumModerationDecisionFilter<"ModerationAction"> | $Enums.ModerationDecision
@@ -519,7 +519,7 @@ export type ModerationActionSelect<ExtArgs extends runtime.Types.Extensions.Inte
   decision?: boolean
   reason?: boolean
   createdAt?: boolean
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }, ExtArgs["result"]["moderationAction"]>
 
 export type ModerationActionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -530,7 +530,7 @@ export type ModerationActionSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   decision?: boolean
   reason?: boolean
   createdAt?: boolean
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }, ExtArgs["result"]["moderationAction"]>
 
 export type ModerationActionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -541,7 +541,7 @@ export type ModerationActionSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   decision?: boolean
   reason?: boolean
   createdAt?: boolean
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }, ExtArgs["result"]["moderationAction"]>
 
 export type ModerationActionSelectScalar = {
@@ -556,23 +556,23 @@ export type ModerationActionSelectScalar = {
 
 export type ModerationActionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "moderatorId" | "subjectType" | "subjectId" | "decision" | "reason" | "createdAt", ExtArgs["result"]["moderationAction"]>
 export type ModerationActionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }
 export type ModerationActionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }
 export type ModerationActionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  moderator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  moderator?: boolean | Prisma.ModerationAction$moderatorArgs<ExtArgs>
 }
 
 export type $ModerationActionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ModerationAction"
   objects: {
-    moderator: Prisma.$UserPayload<ExtArgs>
+    moderator: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    moderatorId: string
+    moderatorId: string | null
     subjectType: $Enums.ModerationSubject
     subjectId: string
     decision: $Enums.ModerationDecision
@@ -972,7 +972,7 @@ readonly fields: ModerationActionFieldRefs;
  */
 export interface Prisma__ModerationActionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  moderator<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  moderator<T extends Prisma.ModerationAction$moderatorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ModerationAction$moderatorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1407,6 +1407,25 @@ export type ModerationActionDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many ModerationActions to delete.
    */
   limit?: number
+}
+
+/**
+ * ModerationAction.moderator
+ */
+export type ModerationAction$moderatorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

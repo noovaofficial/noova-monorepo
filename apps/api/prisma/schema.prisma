@@ -236,8 +236,12 @@ model ClientProfile {
 /// поэтому здесь `subjectId` строкой, а не внешним ключом.
 model ModerationAction {
   id          String             @id @default(cuid())
-  moderatorId String
-  moderator   User               @relation("moderatorActions", fields: [moderatorId], references: [id])
+  // Опционально и SetNull, а не Restrict: иначе удалить сотрудника,
+  // принявшего хоть одно решение, было бы физически нельзя — то есть
+  // никогда, у любого действующего модератора решения уже есть. Запись о
+  // решении переживает удаление автора, только теряет с ним связь.
+  moderatorId String?
+  moderator   User?              @relation("moderatorActions", fields: [moderatorId], references: [id], onDelete: SetNull)
   subjectType ModerationSubject
   subjectId   String
   decision    ModerationDecision

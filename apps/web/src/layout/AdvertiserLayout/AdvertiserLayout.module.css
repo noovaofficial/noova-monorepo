@@ -1,0 +1,49 @@
+/* Диалог поверх всего: `Overlay` выносит его в портал на body, поэтому
+   z-index здесь не спорит с сайдбаром или topbar. */
+.dialogWrap {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zOverlay);
+  display: grid;
+  place-items: center;
+  padding: var(--space4);
+}
+
+.dialogBackdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: var(--overlay);
+  cursor: default;
+}
+
+/* Без своих фона и рамки: карточку рисует сама PromoCodeForm (у неё уже
+   есть и то и другое — для страницы, где вокруг другой контент). Обёртка
+   здесь только позиционирует и задаёт ширину, иначе получилась бы рамка
+   внутри рамки. */
+.dialogCard {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+}
+
+.dialogClose {
+  position: absolute;
+  top: var(--space3);
+  right: var(--space3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: var(--surfaceSunken);
+  color: var(--secondaryText);
+  cursor: pointer;
+}
+
+.dialogClose:hover {
+  color: var(--primaryText);
+}

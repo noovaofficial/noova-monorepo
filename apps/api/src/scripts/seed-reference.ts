@@ -14,7 +14,14 @@
  * dev-зависимостей, а значит и `tsx`, — запустить там можно только то, что
  * собрано в `dist` (см. tsup.config.ts).
  *
- * Идемпотентно: повторный запуск обновляет существующее и ничего не удаляет.
+ * Идемпотентно, но односторонне: заводит то, чего в базе ещё нет, и не
+ * трогает то, что уже есть. Раньше повторный запуск обновлял существующие
+ * записи целиком, включая `isActive`, — и как только страны, города, районы
+ * и услуги стали редактироваться из админки (N-32/N-35), это превратилось в
+ * баг: администратор отключает город, а на следующем `make deploy` тот снова
+ * включается, потому что в `reference-data.json` он всё ещё активен. Правки
+ * из админки теперь для этого шага неприкосновенны — он лишь досоздаёт
+ * недостающее на чистой или пополняемой базе.
  */
 import 'dotenv/config';
 import { DEFAULT_LOCALE, LOCALES, type Translated, translatedSchema } from '@noova/shared';
@@ -60,152 +67,154 @@ async function writeTranslations(
 }
 
 async function seedServices() {
+  let createdGroups = 0;
   for (const group of SERVICE_GROUPS) {
+    const existing = await prisma.serviceGroupTranslation.findFirst({
+      where: { groupKey: group.key },
+    });
+    if (existing) continue;
+
     const name = check(group.name, `группы ${group.key}`);
     await writeTranslations(name, (locale, value) =>
-      prisma.serviceGroupTranslation.upsert({
-        where: { groupKey_locale: { groupKey: group.key, locale } },
-        create: { groupKey: group.key, locale, name: value },
-        update: { name: value },
-      }),
+      prisma.serviceGroupTranslation.create({ data: { groupKey: group.key, locale, name: value } }),
     );
+    createdGroups += 1;
   }
 
+  let createdServices = 0;
   for (const service of SERVICES) {
-    const name = check(service.name, `услуги ${service.key}`);
-    const fields = {
-      group: service.group,
-      appliesTo: service.appliesTo,
-      position: service.position,
-      isActive: service.isActive,
-    };
+    const existing = await prisma.service.findUnique({ where: { key: service.key } });
+    if (existing) continue;
 
+    const name = check(service.name, `услуги ${service.key}`);
     // Ищем по ключу, а id проставляем только при создании: на чистой машине
     // справочник получит те же идентификаторы, что в выгрузке, а на машине,
     // где запись уже есть со своим id, ничего не сломается.
-    const saved = await prisma.service.upsert({
-      where: { key: service.key },
-      create: { id: service.id, key: service.key, ...fields },
-      update: fields,
+    const saved = await prisma.service.create({
+      data: {
+        id: service.id,
+        key: service.key,
+        group: service.group,
+        appliesTo: service.appliesTo,
+        position: service.position,
+        isActive: service.isActive,
+      },
     });
 
     await writeTranslations(name, (locale, value) =>
-      prisma.serviceTranslation.upsert({
-        where: { serviceId_locale: { serviceId: saved.id, locale } },
-        create: { serviceId: saved.id, locale, name: value },
-        update: { name: value },
-      }),
+      prisma.serviceTranslation.create({ data: { serviceId: saved.id, locale, name: value } }),
     );
+    createdServices += 1;
   }
 
-  // Услугу, выпавшую из справочника, не удаляем: она может быть выбрана в
-  // анкетах, и удаление порвало бы связи. Просто скрываем из выбора.
-  const keys = SERVICES.map((s) => s.key);
-  const { count } = await prisma.service.updateMany({
-    where: { key: { notIn: keys } },
-    data: { isActive: false },
-  });
-
-  const active = SERVICES.filter((s) => s.isActive).length;
   console.log(
-    `Услуги: ${active} активных, ${SERVICES.length - active} отключённых, ${count} лишних скрыто`,
+    `Услуги: ${SERVICES.length} в справочнике, новых заведено — групп ${createdGroups}, услуг ${createdServices}`,
   );
 }
 
 async function seedCountries(): Promise<Map<string, string>> {
   const byCode = new Map<string, string>();
+  let createdCount = 0;
 
   for (const country of COUNTRIES) {
+    const existing = await prisma.country.findUnique({ where: { code: country.code } });
+    if (existing) {
+      byCode.set(country.code, existing.id);
+      continue;
+    }
+
     const name = check(country.name, `страны ${country.code}`);
-    const saved = await prisma.country.upsert({
-      where: { code: country.code },
-      create: {
+    const saved = await prisma.country.create({
+      data: {
         id: country.id,
         code: country.code,
         name: name[DEFAULT_LOCALE],
         isActive: country.isActive,
       },
-      update: { name: name[DEFAULT_LOCALE], isActive: country.isActive },
     });
 
     await writeTranslations(name, (locale, value) =>
-      prisma.countryTranslation.upsert({
-        where: { countryId_locale: { countryId: saved.id, locale } },
-        create: { countryId: saved.id, locale, name: value },
-        update: { name: value },
-      }),
+      prisma.countryTranslation.create({ data: { countryId: saved.id, locale, name: value } }),
     );
     byCode.set(country.code, saved.id);
+    createdCount += 1;
   }
 
-  console.log(`Страны: ${COUNTRIES.length}`);
+  console.log(`Страны: ${COUNTRIES.length} в справочнике, новых заведено ${createdCount}`);
   return byCode;
 }
 
 async function seedLocations(countryIds: Map<string, string>) {
-  let districtCount = 0;
+  let createdCities = 0;
+  let createdDistricts = 0;
 
   for (const city of CITIES) {
-    const cityName = check(city.name, `города ${city.slug}`);
-    const countryId = countryIds.get(city.countryCode);
-    if (!countryId) {
-      throw new Error(
-        `Город ${city.slug} ссылается на страну ${city.countryCode}, которой нет в COUNTRIES.`,
+    let cityId: string;
+    const existingCity = await prisma.city.findUnique({ where: { slug: city.slug } });
+
+    if (existingCity) {
+      cityId = existingCity.id;
+    } else {
+      const cityName = check(city.name, `города ${city.slug}`);
+      const countryId = countryIds.get(city.countryCode);
+      if (!countryId) {
+        throw new Error(
+          `Город ${city.slug} ссылается на страну ${city.countryCode}, которой нет в COUNTRIES.`,
+        );
+      }
+
+      // `City.name` остаётся техническим именем для админки и журналов:
+      // показывать его посетителю нельзя — для этого есть переводы.
+      const saved = await prisma.city.create({
+        data: {
+          id: city.id,
+          slug: city.slug,
+          name: cityName[DEFAULT_LOCALE],
+          countryId,
+          lat: city.lat,
+          lng: city.lng,
+          isActive: city.isActive,
+        },
+      });
+
+      await writeTranslations(cityName, (locale, value) =>
+        prisma.cityTranslation.create({ data: { cityId: saved.id, locale, name: value } }),
       );
+      cityId = saved.id;
+      createdCities += 1;
     }
 
-    // `City.name` остаётся техническим именем для админки и журналов:
-    // показывать его посетителю нельзя — для этого есть переводы.
-    const fields = {
-      name: cityName[DEFAULT_LOCALE],
-      countryId,
-      lat: city.lat,
-      lng: city.lng,
-      isActive: city.isActive,
-    };
-    const saved = await prisma.city.upsert({
-      where: { slug: city.slug },
-      create: { id: city.id, slug: city.slug, ...fields },
-      update: fields,
-    });
-
-    await writeTranslations(cityName, (locale, value) =>
-      prisma.cityTranslation.upsert({
-        where: { cityId_locale: { cityId: saved.id, locale } },
-        create: { cityId: saved.id, locale, name: value },
-        update: { name: value },
-      }),
-    );
-
     for (const district of city.districts) {
-      const districtName = check(district.name, `района ${city.slug}/${district.slug}`);
-      const districtFields = {
-        name: districtName[DEFAULT_LOCALE],
-        lat: district.lat,
-        lng: district.lng,
-        isActive: district.isActive,
-      };
+      const existingDistrict = await prisma.district.findUnique({
+        where: { cityId_slug: { cityId, slug: district.slug } },
+      });
+      if (existingDistrict) continue;
 
-      // Район не удаляем, даже если он выпал из справочника: на него могут
-      // ссылаться анкеты, а связь строгая — удаление уронило бы их.
-      const savedDistrict = await prisma.district.upsert({
-        where: { cityId_slug: { cityId: saved.id, slug: district.slug } },
-        create: { id: district.id, slug: district.slug, cityId: saved.id, ...districtFields },
-        update: districtFields,
+      const districtName = check(district.name, `района ${city.slug}/${district.slug}`);
+      const savedDistrict = await prisma.district.create({
+        data: {
+          id: district.id,
+          slug: district.slug,
+          cityId,
+          name: districtName[DEFAULT_LOCALE],
+          lat: district.lat,
+          lng: district.lng,
+          isActive: district.isActive,
+        },
       });
 
       await writeTranslations(districtName, (locale, value) =>
-        prisma.districtTranslation.upsert({
-          where: { districtId_locale: { districtId: savedDistrict.id, locale } },
-          create: { districtId: savedDistrict.id, locale, name: value },
-          update: { name: value },
+        prisma.districtTranslation.create({
+          data: { districtId: savedDistrict.id, locale, name: value },
         }),
       );
-      districtCount += 1;
+      createdDistricts += 1;
     }
   }
 
-  console.log(`Города: ${CITIES.length}, районов: ${districtCount}`);
+  console.log(
+    `Города: ${CITIES.length} в справочнике, новых заведено ${createdCities}, новых районов ${createdDistricts}`,
+  );
 }
 
 async function main() {

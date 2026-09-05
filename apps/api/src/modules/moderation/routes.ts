@@ -910,6 +910,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
    * Блокировка учётной записи — крайняя мера: человек перестаёт входить,
    * а значит не может ни увидеть подробностей, ни что-либо исправить.
    * Причину он видит на форме входа.
+   *
+   * Каскадом баним и его анкеты: заблокированный владелец не может их снять
+   * с публикации сам, а без этого шага его листинг остался бы висеть в
+   * каталоге как ни в чём не бывало — учётная запись закрыта, а витрина
+   * продолжает её рекламировать. Уже забаненные отдельно (за своё нарушение)
+   * не трогаем — им и так конец, не нужно затирать причину их блокировки.
    */
   fastify.post(
     '/moderation/users/:id/block',
@@ -945,6 +951,40 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: managedUserSelect,
       });
 
+      const profilesToBan = await fastify.prisma.profile.findMany({
+        where: { ownerId: target.id, status: { not: 'banned' } },
+        select: { id: true, slug: true },
+      });
+
+      if (profilesToBan.length > 0) {
+        const profileIds = profilesToBan.map((p) => p.id);
+        await fastify.prisma.$transaction([
+          fastify.prisma.profile.updateMany({
+            where: { id: { in: profileIds } },
+            data: { status: 'banned', moderationNote: request.body.reason },
+          }),
+          // Блокировка — это и есть разбор жалоб на анкету.
+          fastify.prisma.profileReport.updateMany({
+            where: { profileId: { in: profileIds }, resolvedAt: null },
+            data: { resolvedAt: new Date() },
+          }),
+        ]);
+
+        for (const profile of profilesToBan) {
+          await writeAction(
+            fastify,
+            userId,
+            'profile',
+            profile.id,
+            'rejected',
+            request.body.reason,
+          );
+        }
+
+        // Убирает анкеты из каталога сразу, а не по истечении ISR.
+        fastify.revalidate([PROFILES_TAG, ...profilesToBan.map((p) => profileTag(p.slug))]);
+      }
+
       // Блокировка должна действовать сразу, а не после истечения куки.
       await fastify.destroyAllSessions(target.id);
       await writeAction(fastify, userId, 'user', target.id, 'rejected', request.body.reason);
@@ -952,6 +992,13 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Анкеты, забаненные вместе с учёткой, снятие блокировки не возвращает:
+   * решение по каждой — отдельное действие модератора через
+   * `/moderation/profiles/:id/unblock`, как и при её собственной блокировке.
+   * Иначе снятие бана с аккаунта молча вернуло бы в каталог содержимое,
+   * которое могло быть забанено за своё, не связанное с аккаунтом нарушение.
+   */
   fastify.post(
     '/moderation/users/:id/unblock',
     {

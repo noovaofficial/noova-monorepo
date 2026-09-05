@@ -10,7 +10,6 @@ import styles from '../Header.module.css';
 import { HeaderActions } from '../HeaderActions';
 import { HeaderFilters } from '../HeaderFilters';
 import { LocaleSwitcher } from '../LocaleSwitcher';
-import { QuickLinks } from '../QuickLinks';
 import { ThemeToggle } from '../ThemeToggle';
 import { FilterIcon, MapIcon } from './icons';
 
@@ -57,52 +56,52 @@ export async function Header() {
         </div>
 
         <div className={`${styles.row} ${styles.row2}`}>
-          <QuickLinks>
-            {/* useSearchParams внутри требует границы Suspense: без неё
-                статические страницы целиком уходят в клиентский рендер.
+          {/* Персонал и рекламодатель сюда не попадают вовсе — у них свой
+              сайдбар (см. AppShell, SidebarLayout). Здесь остались только
+              гость и клиент, которым нужны фильтры каталога.
 
-                Фолбэк повторяет обе кнопки, а не только «Фильтры»: иначе
-                ссылки на карту нет в серверной разметке и она появляется
-                рывком после гидрации. Здесь она без текущих фильтров —
-                клиентская версия заменит её на ту, что их несёт. */}
-            <Suspense
-              fallback={
-                <>
-                  <span className={styles.filterBtn}>
-                    <FilterIcon />
-                    <span className={styles.btnLabel}>{t('filters')}</span>
-                  </span>
-                  <CityLink
-                    className={styles.filterBtn}
-                    href="/catalog/escort/map"
-                    citySlugs={citySlugs}
-                  >
-                    <MapIcon />
-                    <span className={styles.btnLabel}>{t('mapView')}</span>
-                    <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
-                  </CityLink>
-                </>
-              }
-            >
-              <HeaderFilters catalog={catalog} />
-            </Suspense>
-
-            {/* Второй класс — только ради телефона: тот же контейнер несёт
-                разделы сотрудников (см. QuickLinks), и прятать его целиком
-                значило бы оставить их без навигации. */}
-            <div className={`${styles.quickFilters} ${styles.quickChips}`}>
-              {QUICK_FILTERS.map((item) => (
+              useSearchParams внутри HeaderFilters требует границы Suspense:
+              без неё статические страницы целиком уходят в клиентский
+              рендер. Фолбэк повторяет обе кнопки, а не только «Фильтры»:
+              иначе ссылки на карту нет в серверной разметке и она
+              появляется рывком после гидрации. Здесь она без текущих
+              фильтров — клиентская версия заменит её на ту, что их несёт. */}
+          <Suspense
+            fallback={
+              <>
+                <span className={styles.filterBtn}>
+                  <FilterIcon />
+                  <span className={styles.btnLabel}>{t('filters')}</span>
+                </span>
                 <CityLink
-                  key={item.key}
-                  href={item.href}
+                  className={styles.filterBtn}
+                  href="/catalog/escort/map"
                   citySlugs={citySlugs}
-                  className={styles.chip}
                 >
-                  {tf(item.key)}
+                  <MapIcon />
+                  <span className={styles.btnLabel}>{t('mapView')}</span>
+                  <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
                 </CityLink>
-              ))}
-            </div>
-          </QuickLinks>
+              </>
+            }
+          >
+            <HeaderFilters catalog={catalog} />
+          </Suspense>
+
+          {/* Второй класс — только ради телефона: на широком экране полоса
+              фильтров и так помещается вместе с быстрыми срезами. */}
+          <div className={`${styles.quickFilters} ${styles.quickChips}`}>
+            {QUICK_FILTERS.map((item) => (
+              <CityLink
+                key={item.key}
+                href={item.href}
+                citySlugs={citySlugs}
+                className={styles.chip}
+              >
+                {tf(item.key)}
+              </CityLink>
+            ))}
+          </div>
 
           {/* Язык и тема прижаты вправо. На широком экране их отодвигала
               растянутая полоса чипов, но на телефоне она скрыта, и без

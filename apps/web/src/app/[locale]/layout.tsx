@@ -6,6 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import type { ReactNode } from 'react';
 import { THEME_INIT_SCRIPT } from '@/design-system/theme';
 import { AgeGate } from '@/layout/AgeGate';
+import { AppShell } from '@/layout/AppShell';
 import { AGE_GATE_INIT_SCRIPT } from '@/layout/age-gate';
 import { Footer } from '@/layout/Footer';
 import { Header } from '@/layout/Header';
@@ -116,11 +117,9 @@ export default async function LocaleLayout({
               {/* Внутри SessionProvider: избранное грузится только когда роль
                 уже известна, иначе гость получал бы 401 на каждой странице. */}
               <FavoritesProvider>
-                <Header />
-                <main id="main" className="container">
+                <AppShell header={<Header />} footer={<Footer />}>
                   {children}
-                </main>
-                <Footer />
+                </AppShell>
                 <AgeGate />
               </FavoritesProvider>
             </SessionProvider>

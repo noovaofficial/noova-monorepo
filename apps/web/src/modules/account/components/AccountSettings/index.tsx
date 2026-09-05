@@ -4,7 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { AuthError, cancelAccountDeletion, requestAccountDeletion } from '@/modules/auth/api';
+import {
+  AuthError,
+  cancelAccountDeletion,
+  changePassword,
+  requestAccountDeletion,
+} from '@/modules/auth/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { useRouter } from '@/shared/i18n/navigation';
 import styles from './AccountSettings.module.css';
@@ -19,11 +24,14 @@ export function AccountSettings() {
   // Даты — через форматтер next-intl: `toLocaleDateString()` без локали берёт
   // язык системы, и на русской странице показывал «1/15/2027».
   const format = useFormatter();
-  const { user, status, refresh } = useSession();
+  const { user, status, refresh, signOut } = useSession();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState('');
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   const request = useMutation({
     mutationFn: () => requestAccountDeletion({ password }),
@@ -37,6 +45,16 @@ export function AccountSettings() {
   const cancel = useMutation({
     mutationFn: cancelAccountDeletion,
     onSuccess: () => refresh(),
+  });
+
+  const changePw = useMutation({
+    mutationFn: () => changePassword({ currentPassword, newPassword }),
+    onSuccess: async () => {
+      // Сервер погасил все сессии, включая эту, — своя очистка кэша и куки
+      // та же, что при обычном выходе, дублировать её незачем.
+      await signOut();
+      router.push('/login');
+    },
   });
 
   if (status === 'loading') return null;
@@ -56,6 +74,7 @@ export function AccountSettings() {
     : null;
 
   const wrongPassword = request.error instanceof AuthError && request.error.status === 401;
+  const wrongCurrentPassword = changePw.error instanceof AuthError && changePw.error.status === 401;
 
   return (
     <div className={styles.wrap}>
@@ -64,6 +83,59 @@ export function AccountSettings() {
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('accountTitle')}</h2>
         <p className={styles.meta}>{user?.email}</p>
+      </div>
+
+      <div className={styles.section}>
+        <h2 className={styles.sectionTitle}>{t('passwordTitle')}</h2>
+
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            changePw.mutate();
+          }}
+        >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="current-password">
+              {t('passwordCurrent')}
+            </label>
+            <input
+              className={styles.input}
+              id="current-password"
+              type="password"
+              autoComplete="current-password"
+              value={currentPassword}
+              onChange={(event) => setCurrentPassword(event.target.value)}
+              required
+            />
+          </div>
+
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="new-password">
+              {t('passwordNew')}
+            </label>
+            <input
+              className={styles.input}
+              id="new-password"
+              type="password"
+              autoComplete="new-password"
+              minLength={10}
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              required
+            />
+            <span className={styles.meta}>{t('passwordHint')}</span>
+          </div>
+
+          {changePw.isError ? (
+            <p className={`${styles.notice} ${styles.noticeError}`}>
+              {t(wrongCurrentPassword ? 'passwordWrongCurrent' : 'passwordFailed')}
+            </p>
+          ) : null}
+
+          <Button type="submit" disabled={changePw.isPending}>
+            {t('passwordSubmit')}
+          </Button>
+        </form>
       </div>
 
       {isStaff ? null : (

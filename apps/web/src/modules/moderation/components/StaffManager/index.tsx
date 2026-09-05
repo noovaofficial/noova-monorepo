@@ -8,6 +8,7 @@ import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import {
   createStaff,
+  deleteStaff,
   fetchStaff,
   ModerationError,
   setStaffBlocked,
@@ -22,6 +23,7 @@ export function StaffManager() {
   const router = useRouter();
 
   const [showForm, setShowForm] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const isAdmin = user?.role === 'admin';
@@ -47,14 +49,22 @@ export function StaffManager() {
     onSuccess: invalidate,
   });
 
+  const remove = useMutation({
+    mutationFn: (member: StaffMember) => deleteStaff(member.id),
+    onSuccess: async () => {
+      setDeleting(null);
+      await invalidate();
+    },
+  });
+
   const staff = list.data ?? null;
-  const busy = create.isPending || block.isPending;
+  const busy = create.isPending || block.isPending || remove.isPending;
   // 409 на создании — занятый адрес, а не сбой: сообщение должно называть
   // причину, иначе админ будет пробовать тот же адрес снова.
   const error =
     create.error instanceof ModerationError && create.error.status === 409
       ? 'emailTaken'
-      : create.isError || block.isError || list.isError
+      : create.isError || block.isError || remove.isError || list.isError
         ? 'createFailed'
         : null;
 
@@ -155,6 +165,20 @@ export function StaffManager() {
                 </span>
               </div>
 
+              {deleting === member.id ? (
+                <div className={styles.reasonBox}>
+                  <span className={styles.hint}>{t('deleteHint')}</span>
+                  <div className={styles.cardActions} style={{ padding: 0 }}>
+                    <Button disabled={busy} onClick={() => remove.mutate(member)}>
+                      {t('deleteConfirm')}
+                    </Button>
+                    <Button variant="secondary" disabled={busy} onClick={() => setDeleting(null)}>
+                      {t('cancel')}
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
               <div className={styles.cardActions} style={{ padding: 0 }}>
                 <span
                   className={`${styles.badge} ${member.role === 'admin' ? styles.badgeAdmin : ''}`}
@@ -173,6 +197,17 @@ export function StaffManager() {
                 >
                   {member.isBlocked ? t('unblock') : t('block')}
                 </Button>
+
+                {deleting !== member.id ? (
+                  <Button
+                    variant="secondary"
+                    disabled={busy || isSelf}
+                    title={isSelf ? t('selfDeleteNote') : undefined}
+                    onClick={() => setDeleting(member.id)}
+                  >
+                    {t('delete')}
+                  </Button>
+                ) : null}
               </div>
             </div>
           );

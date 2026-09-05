@@ -1,4 +1,5 @@
 import {
+  type ChangePasswordInput,
   type CurrentUser,
   currentUserSchema,
   type DeleteAccountInput,
@@ -84,6 +85,11 @@ export function cancelAccountDeletion(): Promise<CurrentUser> {
 
 export function logout(): Promise<{ ok: true }> {
   return post('/auth/logout', {});
+}
+
+/** Смена пароля гасит все сессии, включая текущую — дальше нужен новый вход. */
+export function changePassword(input: ChangePasswordInput): Promise<{ ok: true }> {
+  return post('/auth/change-password', input);
 }
 
 export async function fetchCurrentUser(): Promise<CurrentUser | null> {

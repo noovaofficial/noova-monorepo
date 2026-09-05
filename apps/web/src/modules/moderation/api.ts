@@ -228,6 +228,22 @@ export function setStaffBlocked(id: string, blocked: boolean): Promise<StaffMemb
   });
 }
 
+/** Необратимое удаление сотрудника — только админ. 204 без тела. */
+export async function deleteStaff(id: string): Promise<void> {
+  const response = await fetch(`${BASE}/api/v1/admin/staff/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body) => String(body?.message ?? ''))
+      .catch(() => '');
+    throw new ModerationError(message || 'Не удалось удалить', response.status);
+  }
+}
+
 /** Пользователь целиком: тип, подписка, баланс, анкеты. */
 export const fetchUserDetail = (id: string): Promise<ManagedUserDetail> =>
   call(`/moderation/users/${id}`, managedUserDetailSchema);

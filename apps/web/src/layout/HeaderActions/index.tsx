@@ -7,7 +7,7 @@ import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import { fetchQueueCount } from '@/modules/moderation/api';
-import { isStaffRole, sectionsFor } from '@/modules/moderation/staff-sections';
+import { isStaffRole } from '@/modules/moderation/staff-sections';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './HeaderActions.module.css';
@@ -100,18 +100,6 @@ export function HeaderActions() {
               <div className={styles.warning}>{ta('emailNotVerified')}</div>
             ) : null}
 
-            {/* Один список на шапку и на меню — см. staff-sections.ts.
-                Порядок и подписи обязаны совпадать: это одни и те же разделы. */}
-            {sectionsFor(user?.role).map((section) => (
-              <Link key={section.key} href={section.href} className={styles.item} role="menuitem">
-                <MenuIcon name={section.key} className={styles.itemIcon} />
-                {ta(section.key)}
-                {section.key === 'moderation' && queueCount > 0 ? (
-                  <span className={styles.queueBadge}>{queueCount}</span>
-                ) : null}
-              </Link>
-            ))}
-
             {user?.role === 'advertiser' ? (
               <>
                 <Link href="/account/profiles" className={styles.item} role="menuitem">
@@ -148,8 +136,9 @@ export function HeaderActions() {
               </Link>
             ) : null}
 
-            {/* Настройки — всем, кроме персонала: там удаление учётной
-                записи, а сотрудников заводит и убирает администратор. */}
+            {/* У персонала «Настройки» уже в сайдбаре (StaffLayout) — здесь
+                повторять незачем. Остальным сюда, в меню аккаунта: своего
+                сайдбара у них нет. */}
             {isStaff ? null : (
               <Link href="/account/settings" className={styles.item} role="menuitem">
                 <MenuIcon name="settings" className={styles.itemIcon} />

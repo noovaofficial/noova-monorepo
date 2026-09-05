@@ -232,8 +232,9 @@ export type ModerationSubjectRef = z.infer<typeof moderationSubjectRefSchema>;
 
 export const moderationLogEntrySchema = z.object({
   id: z.string(),
-  moderatorEmail: z.string(),
-  moderatorId: z.string(),
+  /** Null — сотрудник удалён; запись о его решении остаётся (доказательство). */
+  moderatorEmail: z.string().nullable(),
+  moderatorId: z.string().nullable(),
   subjectType: moderationSubjectSchema,
   subjectId: z.string(),
   /** Null — предмет удалён; строка остаётся с пометкой. */

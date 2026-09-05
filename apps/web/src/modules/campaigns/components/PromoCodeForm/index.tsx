@@ -15,9 +15,15 @@ import styles from './PromoCodeForm.module.css';
  * Итог показываем словами — что именно начислено и до какого числа теперь
  * оплачено размещение, — а не «успешно»: человек ввёл код ради конкретного
  * подарка и должен увидеть, что получил именно его.
+ *
+ * Словарь — свой, `promo`, а не `campaigns`: тот приватный и грузится только
+ * вложенным провайдером внутри /account, /admin и /moderation. Форма же
+ * открывается модалкой из сайдбара (см. AdvertiserLayout), который стоит
+ * в дереве выше этого провайдера и его словаря не видит — с `campaigns`
+ * компонент вместо переводов рисовал бы сырые ключи.
  */
 export function PromoCodeForm() {
-  const t = useTranslations('campaigns');
+  const t = useTranslations('promo');
   const format = useFormatter();
   const queryClient = useQueryClient();
 
@@ -42,8 +48,8 @@ export function PromoCodeForm() {
 
   return (
     <section className={styles.wrap}>
-      <h2 className={styles.title}>{t('promoTitle')}</h2>
-      <p className={styles.hint}>{t('promoHint')}</p>
+      <h2 className={styles.title}>{t('title')}</h2>
+      <p className={styles.hint}>{t('hint')}</p>
 
       <form
         className={styles.row}
@@ -56,23 +62,23 @@ export function PromoCodeForm() {
           className={styles.input}
           value={code}
           onChange={(event) => setCode(event.target.value)}
-          placeholder={t('promoPlaceholder')}
-          aria-label={t('promoTitle')}
+          placeholder={t('placeholder')}
+          aria-label={t('title')}
           maxLength={32}
         />
         {/* Пустой код отправлять некуда: сервер ответит отказом, а человек
             решит, что не сработала акция. */}
         <Button type="submit" disabled={redeem.isPending || code.trim().length < 4}>
-          {t('promoSubmit')}
+          {t('submit')}
         </Button>
       </form>
 
       {reward ? (
         <p className={styles.ok}>
-          {t('promoDone', { name: reward.campaignName })}
-          {reward.grantedGc > 0 ? ` ${t('promoGotGc', { gc: reward.grantedGc })}` : ''}
+          {t('done', { name: reward.campaignName })}
+          {reward.grantedGc > 0 ? ` ${t('gotGc', { gc: reward.grantedGc })}` : ''}
           {reward.listingExpiresAt
-            ? ` ${t('promoGotDays', {
+            ? ` ${t('gotDays', {
                 days: reward.grantedDays,
                 date: format.dateTime(new Date(reward.listingExpiresAt), { dateStyle: 'long' }),
               })}`
@@ -80,8 +86,8 @@ export function PromoCodeForm() {
         </p>
       ) : null}
 
-      {reason ? <p className={styles.err}>{t(`promoError_${reason}`)}</p> : null}
-      {redeem.isError && !reason ? <p className={styles.err}>{t('promoFailed')}</p> : null}
+      {reason ? <p className={styles.err}>{t(`error_${reason}`)}</p> : null}
+      {redeem.isError && !reason ? <p className={styles.err}>{t('failed')}</p> : null}
     </section>
   );
 }

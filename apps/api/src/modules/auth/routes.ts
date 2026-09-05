@@ -1,5 +1,6 @@
 import {
   acknowledgedSchema,
+  changePasswordSchema,
   currentUserSchema,
   deleteAccountSchema,
   loginSchema,
@@ -176,6 +177,44 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request, reply) => {
       await fastify.destroyAllSessions(requireSession(request).userId);
+      await fastify.destroySession(request, reply);
+      return ACK;
+    },
+  );
+
+  /**
+   * Смена пароля из своей учётной записи — единственный самостоятельный
+   * способ для сотрудника: свою учётку он не удаляет и не восстанавливает
+   * письмом, `/auth/password-reset` ему как раз для утерянного пароля.
+   *
+   * Гасим все сессии, включая текущую: продолжать работу со старой сессией
+   * после смены пароля значило бы, что угнанная сессия переживает смену.
+   * Как и после логаута со всех устройств — входить придётся заново.
+   */
+  fastify.post(
+    '/auth/change-password',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 5, timeWindow: '1 hour', allowList: () => false } },
+      schema: { tags: ['auth'], body: changePasswordSchema, response: { 200: acknowledgedSchema } },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, passwordHash: true },
+      });
+      if (!user) throw fastify.httpErrors.unauthorized('Сессия недействительна');
+
+      const ok = await verifyPassword(user.passwordHash, request.body.currentPassword);
+      if (!ok) throw fastify.httpErrors.unauthorized('Неверный пароль');
+
+      await fastify.prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash: await hashPassword(request.body.newPassword) },
+      });
+
+      await fastify.destroyAllSessions(user.id);
       await fastify.destroySession(request, reply);
       return ACK;
     },

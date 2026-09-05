@@ -1,0 +1,223 @@
+.shell {
+  min-height: 100vh;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: var(--zOverlay);
+  background: var(--surface);
+  padding: var(--space3) var(--space4);
+  border-radius: var(--radiusMd);
+}
+
+.skip:focus {
+  left: var(--space4);
+  top: var(--space2);
+}
+
+/* Сайдбар вне потока страницы и не участвует в её прокрутке — контенту
+   вместо него отдана margin-left той же ширины (.contentArea). На узком
+   экране он уезжает за левый край и становится выезжающей панелью. */
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 248px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space1);
+  padding: var(--space5) var(--space3);
+  background: var(--surfaceMuted);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  /* На +1 выше topbar: на мобильном они на время открытой панели делят
+     верхние 64px экрана, а без разницы в z-index более поздний в DOM
+     topbar (см. разметку) лёг бы поверх панели, а не под ней. */
+  z-index: calc(var(--zHeader) + 1);
+  transition: transform 0.2s ease;
+}
+
+.sidebarFoot {
+  margin-top: auto;
+  padding-top: var(--space3);
+  border-top: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space2) var(--space2) var(--space5);
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--textXl);
+  color: var(--primaryText);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space1);
+}
+
+.groupLabel {
+  display: block;
+  padding: var(--space3) var(--space2) var(--space1);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  width: 100%;
+  padding: var(--space2) var(--space3);
+  border: none;
+  background: none;
+  border-radius: var(--radiusMd);
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+  cursor: pointer;
+  text-align: left;
+}
+
+.item:hover {
+  background: var(--surfaceSunken);
+  color: var(--primaryText);
+}
+
+.itemActive {
+  background: var(--primarySubtle);
+  color: var(--onPrimarySubtle);
+}
+
+/* Выход — необратимое по ощущению действие в один клик, без формы и
+   подтверждения: красный здесь не «ошибка», а предупреждение раньше клика,
+   а не после него. */
+.itemDanger {
+  color: var(--danger);
+}
+
+.itemDanger:hover {
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.itemIcon {
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+}
+
+.badge {
+  margin-left: auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--textOnBrand);
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Скрыт по умолчанию: без медиазапроса ниже он не должен показываться
+   даже в те доли секунды, что drawer теоретически мог бы быть открыт
+   на широком экране (переключатель для этого не предусмотрен). */
+.scrim {
+  display: none;
+}
+
+.contentArea {
+  margin-left: 248px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--zHeader);
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  padding: 0 var(--space5);
+  background: var(--headerBg);
+  backdrop-filter: saturate(140%) blur(12px);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.menuBtn {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--secondaryText);
+  flex-shrink: 0;
+}
+
+.topbarEnd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.content {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  padding: var(--space6) var(--space6) var(--space12);
+}
+
+@media (max-width: 860px) {
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadowLg);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .contentArea {
+    margin-left: 0;
+  }
+
+  .menuBtn {
+    display: flex;
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: calc(var(--zHeader) - 1);
+    border: none;
+    padding: 0;
+    cursor: default;
+  }
+
+  .content {
+    padding: var(--space5) var(--space4) var(--space10);
+  }
+}

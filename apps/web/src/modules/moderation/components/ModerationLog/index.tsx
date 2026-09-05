@@ -141,7 +141,7 @@ export function ModerationLog() {
                     {subject?.accountEmail ? ` · ${subject.accountEmail}` : ''}
                   </span>
                   <span className={styles.meta}>
-                    {entry.moderatorEmail} · {formatted(entry.createdAt)}
+                    {entry.moderatorEmail ?? t('moderatorGone')} · {formatted(entry.createdAt)}
                   </span>
                   {entry.reason ? <span className={styles.reason}>{entry.reason}</span> : null}
                 </div>
