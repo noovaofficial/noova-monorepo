@@ -86,4 +86,45 @@ describe('обработка фотографий', () => {
     expect(processed.variants.full.width).toBe(1280);
     expect(processed.blurDataUrl.startsWith('data:image/webp;base64,')).toBe(true);
   });
+
+  it('клеит вотермарку на каждый вариант ещё до модерации', async () => {
+    // Ровный цвет без вотермарки после ресайза и перекодирования в webp
+    // остался бы ровным: разброс яркости по кадру появляется только оттого,
+    // что поверх легли полупрозрачные буквы.
+    const flat = await sharp({
+      create: { width: 800, height: 1000, channels: 3, background: { r: 40, g: 40, b: 40 } },
+    })
+      .jpeg()
+      .toBuffer();
+
+    const processed = await processImage(flat);
+
+    for (const [name, variant] of Object.entries(processed.variants)) {
+      const { data, info } = await sharp(variant.buffer)
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+
+      let min = 255;
+      let max = 0;
+      for (let i = 0; i < data.length; i += info.channels) {
+        const value = data[i] ?? 0;
+        min = Math.min(min, value);
+        max = Math.max(max, value);
+      }
+
+      expect(max - min, `разброс яркости в варианте ${name}`).toBeGreaterThan(10);
+    }
+  });
+
+  it('не растягивает плитку вотермарки шире мелкого кадра', async () => {
+    // Тайл вотермарки крупнее 100×140 без клампа — sharp отказывается
+    // тайлить composite крупнее базового изображения.
+    const tiny = await sharp({
+      create: { width: 100, height: 140, channels: 3, background: '#fff' },
+    })
+      .jpeg()
+      .toBuffer();
+
+    await expect(processImage(tiny)).resolves.toBeDefined();
+  });
 });

@@ -17,9 +17,24 @@ export const SESSION_HINT_SCRIPT = `
 }catch(e){}})();
 `.trim();
 
+/**
+ * Вызывается, когда сервер подтвердил, что сессии нет. Раньше стирались
+ * только data-атрибуты, а сами куки `noova_signed_in`/`noova_role` оставались
+ * в браузере: `SessionProvider` не может их очистить сам, `httpOnly`-кука
+ * сессии тут ни при чём — она угасает независимо, и эти две повисают.
+ * Из-за этого `proxy.ts` на каждой следующей загрузке снова уводил гостя по
+ * протухшей куке роли с витрины на `/moderation` или `/account/profiles`, а
+ * та страница — сразу на `/login`: анонимный вход на главную превращался в
+ * постоянный редирект туда и обратно. Стираем куки здесь же, при первом
+ * обнаружении расхождения, чтобы дальше `proxy.ts` видел то же, что и сервер.
+ */
 export function clearSessionHint(): void {
   document.documentElement.removeAttribute('data-signed-in');
   document.documentElement.removeAttribute('data-role');
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API асинхронный и поддержан не везде
+  document.cookie = `${SIGNED_IN_COOKIE}=; path=/; max-age=0`;
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API асинхронный и поддержан не везде
+  document.cookie = `${ROLE_COOKIE}=; path=/; max-age=0`;
 }
 
 /** Возвращает атрибуты после перемонтирования layout — см. applyStoredTheme. */

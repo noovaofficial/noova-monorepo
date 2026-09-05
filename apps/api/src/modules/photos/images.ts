@@ -20,6 +20,28 @@ export const MAX_PHOTOS_PER_PROFILE = 20;
 export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: 1280 } as const;
 export type VariantName = keyof typeof VARIANT_WIDTHS;
 
+/**
+ * Плитка вотермарки: повторяющийся текст под углом, размер — от ширины
+ * снимка, чтобы на превью и на полном размере плотность была одинаковой.
+ * Светлая заливка с тёмной обводкой читается и на светлом, и на тёмном
+ * участке кадра — сплошной цвет терялся бы на одном из них.
+ */
+function watermarkTile(imageWidth: number, imageHeight: number): Buffer {
+  // Плитка не может быть крупнее самого кадра — sharp отказывается тайлить
+  // composite, который больше базового изображения. Актуально для мелких
+  // загрузок: минимального разрешения загрузка не требует.
+  const cap = Math.max(24, Math.min(imageWidth, imageHeight));
+  const size = Math.min(cap, Math.max(90, Math.round(imageWidth / 3.2)));
+  const fontSize = Math.round(size / 5.5);
+  const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+    <text x="50%" y="50%" font-family="sans-serif" font-weight="700" font-size="${fontSize}"
+          fill="#ffffff" fill-opacity="0.32" stroke="#000000" stroke-opacity="0.2" stroke-width="1"
+          text-anchor="middle" dominant-baseline="middle"
+          transform="rotate(-28 ${size / 2} ${size / 2})">noova</text>
+  </svg>`;
+  return Buffer.from(svg);
+}
+
 export class ImageError extends Error {
   constructor(readonly reason: 'format' | 'unreadable') {
     super(reason);
@@ -44,6 +66,10 @@ export type ProcessedImage = {
  *
  * Формат определяется по содержимому файла: и расширение, и заголовок
  * Content-Type задаёт клиент, доверять им нельзя.
+ *
+ * Вотермарка ложится здесь же, на загрузке — а не при одобрении модератором.
+ * Так модератор проверяет ровно то, что увидит посетитель, а не чистый
+ * оригинал, который потом незаметно подменится.
  */
 export async function processImage(input: Buffer): Promise<ProcessedImage> {
   let metadata: Metadata;
@@ -63,14 +89,21 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
   const variants = {} as ProcessedImage['variants'];
 
   for (const [name, targetWidth] of Object.entries(VARIANT_WIDTHS)) {
-    const pipeline = sharp(input, { failOn: 'error' })
+    // Ресайз — отдельным шагом в png (без потерь), потому что размер плитки
+    // вотермарки зависит от итоговой ширины кадра, а она известна только
+    // после withoutEnlargement. Кодируем в webp один раз, уже поверх неё.
+    const resized = await sharp(input, { failOn: 'error' })
       // rotate() без аргументов применяет ориентацию из EXIF и снимает её:
       // иначе после удаления метаданных снимок ляжет набок.
       .rotate()
       .resize({ width: targetWidth, withoutEnlargement: true })
-      .webp({ quality: 82 });
+      .png()
+      .toBuffer({ resolveWithObject: true });
 
-    const { data, info } = await pipeline.toBuffer({ resolveWithObject: true });
+    const { data, info } = await sharp(resized.data)
+      .composite([{ input: watermarkTile(resized.info.width, resized.info.height), tile: true }])
+      .webp({ quality: 82 })
+      .toBuffer({ resolveWithObject: true });
     variants[name as VariantName] = { buffer: data, width: info.width, height: info.height };
   }
 
