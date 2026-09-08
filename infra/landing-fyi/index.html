@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>noova — coming soon</title>
+  <meta name="description" content="noova is building a new dating experience. Coming soon." />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --background: #150e14;
+      --surface: #1f1620;
+      --primaryText: #f4ecf1;
+      --secondaryText: #b6a6b1;
+      --tertiaryText: #7c6c78;
+      --border: #352a37;
+      --primary: #ec5a8b;
+      --primaryHover: #f2779f;
+      --accent: #ff9a70;
+      --primarySubtle: #3a1e2c;
+      --onPrimarySubtle: #f6a9c2;
+
+      --fontDisplay: 'Sora', system-ui, sans-serif;
+      --fontBody: 'Inter', system-ui, sans-serif;
+
+      --space2: 8px;
+      --space3: 12px;
+      --space4: 16px;
+      --space6: 24px;
+      --space8: 32px;
+      --space12: 48px;
+
+      --radiusMd: 10px;
+      --radiusPill: 999px;
+
+      --containerPad: 32px;
+      --containerPadMobile: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      background: var(--background);
+      color: var(--primaryText);
+      font-family: var(--fontBody);
+    }
+
+    body {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--containerPad);
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(480px circle at 20% 15%, rgba(236, 90, 139, 0.16), transparent 60%),
+        radial-gradient(420px circle at 82% 78%, rgba(255, 154, 112, 0.14), transparent 60%);
+    }
+
+    main {
+      position: relative;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space6);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space3);
+    }
+
+    .logo span {
+      font-family: var(--fontDisplay);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space2);
+      padding: var(--space2) var(--space4);
+      border-radius: var(--radiusPill);
+      background: var(--primarySubtle);
+      color: var(--onPrimarySubtle);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--fontDisplay);
+      font-weight: 700;
+      font-size: clamp(28px, 5vw, 40px);
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    p.lead {
+      margin: 0;
+      color: var(--secondaryText);
+      font-size: 17px;
+      line-height: 1.6;
+      max-width: 440px;
+    }
+
+    .contact {
+      margin-top: var(--space6);
+      padding-top: var(--space6);
+      border-top: 1px solid var(--border);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space2);
+    }
+
+    .contact a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .contact a:hover { color: var(--primaryHover); }
+
+    footer {
+      position: relative;
+      margin-top: var(--space12);
+      color: var(--tertiaryText);
+      font-size: 13px;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: var(--containerPadMobile); }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+
+  <main>
+    <div class="logo">
+      <svg viewBox="0 0 100 100" width="30" height="30" fill="none" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+        <path
+          d="M50,82 C30,64 12,52 12,34 C12,20 24,12 36,16 C44,18 48,24 50,30 C52,24 56,18 64,16 C76,12 88,20 88,34 C88,52 70,64 50,82 Z"
+          stroke="var(--primary)" stroke-width="6"
+        />
+        <path
+          d="M50,68 C42,60 42,52 50,42 C58,52 58,60 50,68 Z"
+          stroke="var(--accent)" stroke-width="6"
+        />
+      </svg>
+      <span>noova</span>
+    </div>
+
+    <span class="badge">Coming soon</span>
+
+    <h1>A new way to meet people, from noova</h1>
+    <p class="lead">
+      We're building a dating experience focused on real people and real
+      conversations. Thoughtfully designed, carefully moderated, launching soon.
+    </p>
+
+    <div class="contact">
+      <span style="color: var(--tertiaryText); font-size: 14px;">Questions or press inquiries</span>
+      <a href="mailto:hello@noova.fyi">hello@noova.fyi</a>
+    </div>
+  </main>
+
+  <footer>&copy; 2026 noova</footer>
+</body>
+</html>
