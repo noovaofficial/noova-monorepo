@@ -1,0 +1,40 @@
+# Два сайт-блока на одной машине: корень отдаёт лендинг, mail.<домен> не
+# отдаёт ничего, кроме ACME-челленджа для сертификата почтового релея.
+#
+# Почему mail.<домен> вообще заведён в Caddy, а не оставлен только certbot'у:
+# Caddy держит 80-й порт постоянно (под лендинг), а certbot в --standalone
+# режиме тоже просит 80-й — конфликт портов на одной машине. Решение: Caddy
+# сам отдаёт файл челленджа из общего с certbot вебрута (--webroot режим,
+# см. certs.sh), а сертификат для 587-го Postfix читает уже готовым файлом
+# из ./certs — Caddy тут посредник, не источник сертификата для Postfix.
+
+{
+	# Без дефолта: вложенный плейсхолдер ({$ACME_EMAIL:admin@{$MAIL_DOMAIN}})
+	# Caddy не раскрывает, а значение важно — на него идут письма Let's
+	# Encrypt об истечении сертификата. ACME_EMAIL обязателен в .env.
+	email {$ACME_EMAIL}
+}
+
+{$MAIL_DOMAIN:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	root * /srv/landing
+	file_server
+}
+
+mail.{$MAIL_DOMAIN:localhost} {
+	handle /.well-known/acme-challenge/* {
+		root * /srv/acme-webroot
+		file_server
+	}
+	handle {
+		respond 404
+	}
+}

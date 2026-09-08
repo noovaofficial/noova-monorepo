@@ -287,9 +287,6 @@ services:
       - '443:443/udp'
     environment:
       SITE_DOMAIN: ${SITE_DOMAIN}
-      # Домен лендинга под будущий продукт — отдельный сайт-блок в Caddyfile,
-      # своя статика, без API. Пусто = блок не поднимется (fyi.localhost).
-      FYI_DOMAIN: ${FYI_DOMAIN:-}
       # Без этого Caddyfile берёт запасной адрес из своего умолчания, и
       # письма Let's Encrypt об истечении сертификата уходят не владельцу.
       ACME_EMAIL: ${ACME_EMAIL}
@@ -297,7 +294,6 @@ services:
       S3_BUCKET: ${S3_BUCKET:-noova-media}
     volumes:
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./infra/landing-fyi:/srv/landing-fyi:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:

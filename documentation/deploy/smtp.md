@@ -1,7 +1,9 @@
 # SMTP
 
-Отдельная машина под отправку, когда на Prod закрыт исходящий 25-й.
-Подготовка машины и DNS — [vps.md](vps.md). Файлы — [`infra/relay/`](../../infra/relay/).
+Отдельная машина под отправку, когда на Prod закрыт исходящий 25-й. На ней же
+живёт лендинг будущего продукта — площадке не нужны ни база, ни API, третья
+машина ради статики не оправдана. Подготовка машины и DNS — [vps.md](vps.md).
+Файлы — [`infra/relay/`](../../infra/relay/).
 
 **Почему не внешний сервис.** SendPulse, SMTP2GO, Postmark, Resend, Brevo прямо
 запрещают escort и adult; у Mailgun, Mailjet, SendGrid — оговорка на их
@@ -10,32 +12,50 @@
 
 ---
 
-## 1. Сертификат
+## 1. Запуск Caddy и лендинга
 
-Только после того, как `A mail.<домен>` распространилась.
+`A <домен>` и `A mail.<домен>` уже должны указывать на эту машину.
 
 ```bash
 scp -r infra/relay deploy@<IP релея>:~/relay
-ssh deploy@<IP релея> 'sudo ~/relay/certs.sh mail.<домен>'
-```
-
-Скрипт ставит хук продления — без него почта встанет через 90 дней.
-
-## 2. Запуск
-
-```bash
 ssh deploy@<IP релея>
 cd ~/relay
 cat > .env <<'EOF'
 MAIL_DOMAIN=<домен>
+ACME_EMAIL=<ваш email>
 RELAY_USER=noreply@<домен>
 RELAY_PASSWORD=<openssl rand -base64 24 | tr -d '/+='>
 EOF
 chmod 600 .env
+docker compose up -d caddy
+```
+
+Только `caddy` — `smtp` пока не поднимаем, ему нечем читать сертификат
+(`./certs` ещё пуст). Caddy сразу выпустит себе сертификат на `<домен>` для
+лендинга (это его собственный ACME, отдельно от следующего шага) и откроет
+80-й порт под челлендж для `mail.<домен>`.
+
+## 2. Сертификат для relay
+
+```bash
+ssh deploy@<IP релея> 'sudo ~/relay/certs.sh mail.<домен>'
+```
+
+Certbot пишет челлендж в `./acme-webroot`, а отвечает на него уже запущенный
+Caddy — `--standalone` тут не встанет, 80-й порт занят лендингом. Скрипт
+проверяет, что Caddy отвечает, прежде чем звать certbot, и ставит хук
+продления — без него почта встанет через 90 дней (продление тоже идёт через
+webroot, Caddy при этом даже не перезапускается).
+
+## 3. Запуск relay
+
+```bash
+ssh deploy@<IP релея>
+cd ~/relay
 docker compose up -d
 ```
 
-## 3. Перенос DKIM-ключа с Prod
+## 4. Перенос DKIM-ключа с Prod
 
 Контейнер сгенерировал свой при первом старте — заменяем, тогда запись в DNS
 менять не придётся.
@@ -60,7 +80,7 @@ docker compose exec smtp cat /etc/opendkim/keys/<домен>.txt
 dig +short TXT mail._domainkey.<домен> @1.1.1.1
 ```
 
-## 4. Переключить Prod на релей
+## 5. Переключить Prod на релей
 
 ```bash
 cat >> ~/noova/.env <<'EOF'
