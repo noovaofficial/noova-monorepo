@@ -20,15 +20,21 @@
 scp -r infra/relay deploy@<IP релея>:~/relay
 ssh deploy@<IP релея>
 cd ~/relay
-cat > .env <<'EOF'
+RELAY_PASSWORD="$(openssl rand -base64 24 | tr -d '/+=')"
+cat > .env <<EOF
 MAIL_DOMAIN=<домен>
 ACME_EMAIL=<ваш email>
 RELAY_USER=noreply@<домен>
-RELAY_PASSWORD=<openssl rand -base64 24 | tr -d '/+='>
+RELAY_PASSWORD=$RELAY_PASSWORD
 EOF
 chmod 600 .env
+echo "Сохраните для .env на Prod: $RELAY_PASSWORD"
 docker compose up -d caddy
 ```
+
+Пароль генерируется **до** heredoc и подставляется как переменная — heredoc в
+кавычках (`<<'EOF'`) ничего не выполняет, команда внутри осталась бы в файле
+буквальной строкой вместе с `|`, а не своим результатом.
 
 Только `caddy` — `smtp` пока не поднимаем, ему нечем читать сертификат
 (`./certs` ещё пуст). Caddy сразу выпустит себе сертификат на `<домен>` для

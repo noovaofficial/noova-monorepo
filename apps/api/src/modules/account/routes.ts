@@ -670,7 +670,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const updated = await fastify.prisma.profile.update({
         where: { id: request.params.id },
-        data: { status: 'published', publishedAt: new Date(), isVerified: true },
+        data: { status: 'published', publishedAt: new Date() },
         select: ownProfileSelect,
       });
 
