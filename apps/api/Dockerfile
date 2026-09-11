@@ -37,6 +37,13 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 
 FROM base AS runner
 ENV NODE_ENV=production
+# Alpine без этого пакета — совсем без шрифтов: ни одного, даже системного.
+# `sharp` рендерит вотермарку из SVG с текстом через librsvg, и та молча
+# проглатывает текст, для которого не может подобрать шрифт, — вместо
+# «noova» на фото ничего не появлялось (в других версиях librsvg то же
+# самое рендерится «квадратиками» — глифами-заглушками для утерянного
+# шрифта). На деве этого не видно: там шрифты системные, chrome есть.
+RUN apk add --no-cache fontconfig ttf-dejavu && fc-cache -f
 # Прод-процесс не должен ходить под root.
 RUN addgroup -g 1001 nodejs && adduser -S -u 1001 -G nodejs noova
 

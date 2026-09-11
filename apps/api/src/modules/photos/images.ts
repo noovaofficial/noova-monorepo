@@ -20,26 +20,54 @@ export const MAX_PHOTOS_PER_PROFILE = 20;
 export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: 1280 } as const;
 export type VariantName = keyof typeof VARIANT_WIDTHS;
 
+/** Лэйаут знака: тот же контур, что у `design-system/components/Logo`,
+ *  плюс словесная часть, в одной координатной сетке. */
+const MARK_VIEW_WIDTH = 300;
+const MARK_VIEW_HEIGHT = 100;
+
 /**
- * Плитка вотермарки: повторяющийся текст под углом, размер — от ширины
- * снимка, чтобы на превью и на полном размере плотность была одинаковой.
- * Светлая заливка с тёмной обводкой читается и на светлом, и на тёмном
- * участке кадра — сплошной цвет терялся бы на одном из них.
+ * Вотермарка — один знак в правом нижнем углу, а не плитка: лого и
+ * надпись «noova», чёрно-белые и полупрозрачные, шириной около 30% от
+ * кадра. Контур знака — тот же, что в `design-system/components/Logo`,
+ * но без фирменных розового/оранжевого: на чужой фотографии брендовый
+ * цвет спорил бы с самим снимком, а нейтральный читается вотермаркой,
+ * а не частью изображения.
+ *
+ * Размер и отступ зависят от итоговой ширины и высоты кадра, поэтому на
+ * превью и на полном размере знак занимает одну и ту же долю кадра.
+ * Отдаёт готовую позицию (`left`/`top`), а не полотно размером с фото:
+ * `sharp` не может тайлить composite крупнее базового изображения (уже
+ * ловили на мелких загрузках), а точечная позиция от этого не зависит.
  */
-function watermarkTile(imageWidth: number, imageHeight: number): Buffer {
-  // Плитка не может быть крупнее самого кадра — sharp отказывается тайлить
-  // composite, который больше базового изображения. Актуально для мелких
-  // загрузок: минимального разрешения загрузка не требует.
-  const cap = Math.max(24, Math.min(imageWidth, imageHeight));
-  const size = Math.min(cap, Math.max(90, Math.round(imageWidth / 3.2)));
-  const fontSize = Math.round(size / 5.5);
-  const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-    <text x="50%" y="50%" font-family="sans-serif" font-weight="700" font-size="${fontSize}"
-          fill="#ffffff" fill-opacity="0.32" stroke="#000000" stroke-opacity="0.2" stroke-width="1"
-          text-anchor="middle" dominant-baseline="middle"
-          transform="rotate(-28 ${size / 2} ${size / 2})">noova</text>
+function cornerWatermark(
+  imageWidth: number,
+  imageHeight: number,
+): { input: Buffer; left: number; top: number } {
+  const marginX = Math.round(imageWidth * 0.035);
+  const marginY = Math.round(imageHeight * 0.035);
+
+  // Ширина — 30% кадра, но не шире и не выше, чем вообще есть места с
+  // отступами: без этой поправки на низком широком кадре знак вылезал бы
+  // за нижний край, а `sharp` отказался бы накладывать composite крупнее
+  // самого изображения.
+  const byWidth = imageWidth * 0.3;
+  const byHeight = ((imageHeight - marginY * 2) * MARK_VIEW_WIDTH) / MARK_VIEW_HEIGHT;
+  const markWidth = Math.max(24, Math.min(byWidth, byHeight, imageWidth - marginX * 2));
+  const markHeight = (markWidth * MARK_VIEW_HEIGHT) / MARK_VIEW_WIDTH;
+
+  const svg = `<svg width="${markWidth}" height="${markHeight}" viewBox="0 0 ${MARK_VIEW_WIDTH} ${MARK_VIEW_HEIGHT}" xmlns="http://www.w3.org/2000/svg">
+    <g opacity="0.55" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M44,82 C24,64 6,52 6,34 C6,20 18,12 30,16 C38,18 42,24 44,30 C46,24 50,18 58,16 C70,12 82,20 82,34 C82,52 64,64 44,82 Z" stroke-width="6"/>
+      <path d="M44,68 C36,60 36,52 44,42 C52,52 52,60 44,68 Z" stroke-width="6"/>
+      <text x="100" y="58" font-family="sans-serif" font-weight="800" font-size="46" stroke="none" fill="#ffffff">noova</text>
+    </g>
   </svg>`;
-  return Buffer.from(svg);
+
+  return {
+    input: Buffer.from(svg),
+    left: Math.max(0, Math.round(imageWidth - markWidth - marginX)),
+    top: Math.max(0, Math.round(imageHeight - markHeight - marginY)),
+  };
 }
 
 export class ImageError extends Error {
@@ -89,9 +117,10 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
   const variants = {} as ProcessedImage['variants'];
 
   for (const [name, targetWidth] of Object.entries(VARIANT_WIDTHS)) {
-    // Ресайз — отдельным шагом в png (без потерь), потому что размер плитки
-    // вотермарки зависит от итоговой ширины кадра, а она известна только
-    // после withoutEnlargement. Кодируем в webp один раз, уже поверх неё.
+    // Ресайз — отдельным шагом в png (без потерь), потому что размер и
+    // положение знака зависят от итоговых ширины и высоты кадра, а они
+    // известны только после withoutEnlargement. Кодируем в webp один раз,
+    // уже поверх него.
     const resized = await sharp(input, { failOn: 'error' })
       // rotate() без аргументов применяет ориентацию из EXIF и снимает её:
       // иначе после удаления метаданных снимок ляжет набок.
@@ -100,8 +129,9 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
       .png()
       .toBuffer({ resolveWithObject: true });
 
+    const mark = cornerWatermark(resized.info.width, resized.info.height);
     const { data, info } = await sharp(resized.data)
-      .composite([{ input: watermarkTile(resized.info.width, resized.info.height), tile: true }])
+      .composite([{ input: mark.input, left: mark.left, top: mark.top }])
       .webp({ quality: 82 })
       .toBuffer({ resolveWithObject: true });
     variants[name as VariantName] = { buffer: data, width: info.width, height: info.height };
