@@ -1,7 +1,7 @@
 'use client';
 
-import type { QueueItem } from '@noova/shared';
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueueCount, QueueItem } from '@noova/shared';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -11,6 +11,7 @@ import {
   approvePhoto,
   approveVerification,
   fetchQueue,
+  fetchQueueCount,
   rejectComment,
   rejectPhoto,
   rejectVerification,
@@ -50,6 +51,23 @@ const TAB_LABELS: Record<Tab, string> = {
   blockedProfiles: 'tabBlockedProfiles',
   blocked: 'tabBlockedUsers',
 };
+
+/**
+ * Число на вкладке — поле общего счётчика очереди, того же, что у бейджа в
+ * сайдбаре: запрос один на оба места. У «Все» числа нет — итог уже в сайдбаре.
+ */
+const TAB_COUNTS: Partial<Record<Tab, keyof QueueCount>> = {
+  report: 'reports',
+  photo: 'photos',
+  verification: 'verifications',
+  identity: 'identity',
+  comment: 'comments',
+  blockedProfiles: 'blockedProfiles',
+  blocked: 'blockedUsers',
+};
+
+/** Заблокированные — не работа в очереди, а справка: бейдж у них приглушённый. */
+const INFO_TABS: ReadonlySet<Tab> = new Set<Tab>(['blockedProfiles', 'blocked']);
 
 export function ModerationQueue() {
   const t = useTranslations('moderation');
@@ -95,6 +113,12 @@ export function ModerationQueue() {
     enabled: status === 'authenticated' && isStaff && isQueueTab,
   });
 
+  const { data: counts } = useQuery({
+    queryKey: queryKeys.queueCount(),
+    queryFn: fetchQueueCount,
+    enabled: status === 'authenticated' && isStaff,
+  });
+
   const decision = useMutation({
     mutationFn: (run: () => Promise<unknown>) => run(),
     onSuccess: async () => {
@@ -134,16 +158,27 @@ export function ModerationQueue() {
       </div>
 
       <div className={styles.tabs}>
-        {TABS.map((value) => (
-          <button
-            key={value}
-            type="button"
-            className={`${styles.tab} ${tab === value ? styles.tabActive : ''}`}
-            onClick={() => setTab(value)}
-          >
-            {t(TAB_LABELS[value])}
-          </button>
-        ))}
+        {TABS.map((value) => {
+          const field = TAB_COUNTS[value];
+          const count = field && counts ? counts[field] : 0;
+          return (
+            <button
+              key={value}
+              type="button"
+              className={`${styles.tab} ${tab === value ? styles.tabActive : ''}`}
+              onClick={() => setTab(value)}
+            >
+              {t(TAB_LABELS[value])}
+              {count > 0 ? (
+                <span
+                  className={`${styles.tabBadge} ${INFO_TABS.has(value) ? styles.tabBadgeInfo : ''}`}
+                >
+                  {count}
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
 
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}

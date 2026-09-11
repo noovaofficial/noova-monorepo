@@ -85,6 +85,10 @@ export const queueCountSchema = z.object({
   reports: z.number().int().nonnegative(),
   /** Из них срочные: несовершеннолетняя или принуждение. */
   urgentReports: z.number().int().nonnegative(),
+  /** Заблокированные анкеты — справка для вкладки, в `total` не входят. */
+  blockedProfiles: z.number().int().nonnegative(),
+  /** Заблокированные пользователи — справка для вкладки, в `total` не входят. */
+  blockedUsers: z.number().int().nonnegative(),
   total: z.number().int().nonnegative(),
 });
 export type QueueCount = z.infer<typeof queueCountSchema>;

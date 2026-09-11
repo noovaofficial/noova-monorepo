@@ -91,9 +91,13 @@ export function UserList({
   });
 
   // Блокировка меняет и общий список, и таблицу заблокированных — гасим
-  // всю группу, а не текущий ключ.
+  // всю группу, а не текущий ключ. Счётчик очереди — ради числа на вкладке
+  // «Заблокированные пользователи»: без этого оно отставало бы от списка.
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ['moderation-users'], exact: false });
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['moderation-users'], exact: false }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.queueCount() }),
+    ]);
 
   const verify = useMutation({
     mutationFn: (user: ManagedUser) => verifyUserEmail(user.id),

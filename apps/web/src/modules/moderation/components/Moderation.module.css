@@ -46,6 +46,32 @@
   opacity: 0.7;
 }
 
+/* Число на вкладке очереди. Цвет — как у счётчика в сайдбаре: это та же
+   работа, разложенная по видам. */
+.tabBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--textOnBrand);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+
+/* Заблокированные — справка, а не задачи: приглушённо, чтобы глаз не путал
+   их с тем, что ждёт решения. */
+.tabBadgeInfo {
+  background: var(--surfaceSunken);
+  color: var(--secondaryText);
+}
+
 .list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

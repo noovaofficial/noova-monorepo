@@ -200,6 +200,8 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         openReports,
         profileReports,
         urgentReports,
+        blockedProfiles,
+        blockedUsers,
       ] = await Promise.all([
         fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
         fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
@@ -218,6 +220,11 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         fastify.prisma.profileReport.count({
           where: { resolvedAt: null, reason: { in: ['underage', 'coercion'] } },
         }),
+        // Заблокированные — не работа очереди, а справка на вкладках. Условия
+        // те же, что у списков этих вкладок (/moderation/blocked-profiles и
+        // /moderation/users?blocked=true), иначе число разойдётся со списком.
+        fastify.prisma.profile.count({ where: { status: 'banned' } }),
+        fastify.prisma.user.count({ where: { bannedAt: { not: null } } }),
       ]);
       const comments = pendingComments + openReports;
       return {
@@ -227,6 +234,10 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         comments,
         reports: profileReports,
         urgentReports,
+        blockedProfiles,
+        blockedUsers,
+        // Заблокированных в итоге нет: бейдж в шапке — это то, что ждёт
+        // решения, и расти от уже принятых решений он не должен.
         total: photos + verifications + identity + comments + profileReports,
       };
     },
