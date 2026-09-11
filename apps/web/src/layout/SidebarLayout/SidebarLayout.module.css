@@ -115,6 +115,16 @@
   height: 19px;
 }
 
+/* Стрелка «откроется в новой вкладке» у разделов на другом сервисе (почта):
+   мельче значка раздела и прижата вправо, как счётчик очереди. */
+.itemExternal {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  opacity: 0.6;
+}
+
 .badge {
   margin-left: auto;
   min-width: 18px;
