@@ -4,10 +4,11 @@
 #
 #   sudo ./certs.sh mail.noova.fyi
 #
-# Зачем настоящий, а не самоподписанный: api соединяется с релеем через
-# открытый интернет и проверяет имя сервера при STARTTLS. Без проверки
-# нельзя отличить релей от того, кто встал на пути, — а в теле письма
-# одноразовая ссылка на смену пароля.
+# Зачем настоящий, а не самоподписанный: к почтовому серверу ходят через
+# открытый интернет — Postfix с Prod (587, проверяет имя сервера при
+# STARTTLS, а в теле письма одноразовая ссылка на смену пароля), почтовые
+# клиенты (465, 993) и браузер (веб-интерфейс, 8443). Самоподписанный
+# сертификат первые отвергнут, а человек привыкнет нажимать «продолжить».
 #
 # Требования:
 #   1) запись A mail.<домен> уже указывает на эту машину;
@@ -53,39 +54,41 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Права. Ключ читает smtpd, а он к этому моменту уже под пользователем
-# postfix — uid 100, gid 102 в этом образе (он печатает их при старте:
-# «System accounts: postfix=100:102»). Поэтому и каталог, и ключ отдаём
-# группе 102: с root:root smtpd не пройдёт внутрь каталога и оборвёт
-# TLS-рукопожатие с «lost connection after STARTTLS», не сказав почему.
+# Права. Stalwart в контейнере работает под uid/gid 2000 (пользователь
+# stalwart в образе), поэтому и каталог, и ключ отдаём группе 2000. С
+# root:root сервер не прочитает ключ и не поднимет TLS ни на одном порту.
 #
-# Числа, а не имена: на хосте таких пользователей нет, сопоставление идёт
-# по идентификаторам. Сменится образ — сверьтесь с его логом старта.
+# Числа, а не имена: на хосте такого пользователя нет, сопоставление идёт
+# по идентификаторам. Сменится образ — сверьтесь:
+#   docker run --rm --entrypoint id stalwartlabs/stalwart:<версия>
 #
 # Копия, а не симлинк на /etc/letsencrypt: внутрь контейнера смонтирован
 # только ./certs, и симлинк указывал бы в никуда.
 # ---------------------------------------------------------------------------
-POSTFIX_GID="${POSTFIX_GID:-102}"
+STALWART_GID="${STALWART_GID:-2000}"
 
 say "Кладу в $DIR/certs"
-install -d -m 750 -o root -g "$POSTFIX_GID" "$DIR/certs"
-install -m 644 -o root -g "$POSTFIX_GID" "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
-install -m 640 -o root -g "$POSTFIX_GID" "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
+install -d -m 750 -o root -g "$STALWART_GID" "$DIR/certs"
+install -m 644 -o root -g "$STALWART_GID" "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
+install -m 640 -o root -g "$STALWART_GID" "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
 
 # ---------------------------------------------------------------------------
 # Продление. Сертификат живёт 90 дней, и без хука обновится он сам, а копии
 # в ./certs останутся прежними — почта встанет через три месяца, когда об
 # этом уже никто не будет помнить.
+#
+# Перезапуск обязателен: Stalwart читает файл сертификата при старте и сам
+# за его сменой не следит.
 # ---------------------------------------------------------------------------
 say "Ставлю хук продления"
 install -d -m 755 /etc/letsencrypt/renewal-hooks/deploy
 cat > /etc/letsencrypt/renewal-hooks/deploy/relay.sh <<EOF
 #!/usr/bin/env bash
 set -eu
-install -m 644 -o root -g $POSTFIX_GID "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
-install -m 640 -o root -g $POSTFIX_GID "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
-cd "$DIR" && docker compose restart smtp
+install -m 644 -o root -g $STALWART_GID "$LIVE/fullchain.pem" "$DIR/certs/fullchain.pem"
+install -m 640 -o root -g $STALWART_GID "$LIVE/privkey.pem" "$DIR/certs/privkey.pem"
+cd "$DIR" && docker compose restart stalwart
 EOF
 chmod +x /etc/letsencrypt/renewal-hooks/deploy/relay.sh
 
-say "Готово. Дальше: docker compose up -d"
+say "Готово. Дальше — documentation/deploy/smtp.md"
