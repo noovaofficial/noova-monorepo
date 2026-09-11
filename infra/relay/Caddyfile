@@ -1,5 +1,6 @@
-# Два сайт-блока на одной машине: корень отдаёт лендинг, mail.<домен> не
-# отдаёт ничего, кроме ACME-челленджа для сертификата почтового сервера.
+# Три сайт-блока на одной машине: корень отдаёт лендинг, webmail.<домен> —
+# веб-почту, mail.<домен> не отдаёт ничего, кроме ACME-челленджа для
+# сертификата почтового сервера.
 #
 # Почему mail.<домен> вообще заведён в Caddy, а не оставлен только certbot'у:
 # Caddy держит 80-й порт постоянно (под лендинг), а certbot в --standalone
@@ -28,6 +29,22 @@
 
 	root * /srv/landing
 	file_server
+}
+
+# Веб-почта. Сертификат на webmail.<домен> Caddy выпускает сам. Адрес
+# посетителя уходит в X-Forwarded-For, и Roundcube по нему считает неудачные
+# входы (roundcube/config.inc.php, proxy_whitelist).
+webmail.{$MAIL_DOMAIN:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "same-origin"
+		-Server
+	}
+
+	reverse_proxy roundcube:8000
 }
 
 mail.{$MAIL_DOMAIN:localhost} {

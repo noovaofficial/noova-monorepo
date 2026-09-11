@@ -45,6 +45,7 @@ ssh deploy@<IP> 'sudo -v && docker ps'       # вторым окном
 |---|---|---|
 | A | `@` | IP Prod |
 | A | `mail` | IP отправителя писем |
+| A | `webmail` | IP почтового сервера — веб-почта, [smtp.md](smtp.md) |
 | TXT | `@` | `v=spf1 ip4:<IP отправителя> ~all` |
 | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:<ящик вне домена>` |
 | TXT | `mail._domainkey` | открытая часть ключа DKIM — [smtp.md](smtp.md) |

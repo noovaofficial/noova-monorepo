@@ -1,5 +1,6 @@
-# Почта домена + лендинг будущего продукта. Одна машина, один домен
-# (MAIL_DOMAIN): корень отдаёт лендинг, mail.<домен> — почтовый сервер.
+# Почта доменов + веб-почта + лендинг будущего продукта. Одна машина:
+# корень MAIL_DOMAIN отдаёт лендинг, mail.<домен> — почтовый сервер,
+# webmail.<домен> — веб-почта.
 #
 # Зачем отдельная машина: провайдер основного сервера держит исходящий 25-й
 # порт закрытым и открывать отказался («closed in order to prevent spam»), а
@@ -10,28 +11,41 @@
 # нужны ни база, ни API.
 #
 # Почтовый сервер — Stalwart: отправляет письма сайта (Postfix на Prod сдаёт
-# их сюда по 587-му), принимает почту на домен и даёт веб-интерфейс для
-# ящиков. Настроек в этом файле почти нет: Stalwart хранит их в своей базе, а
-# то, от чего зависит отправка писем сайта, описано в stalwart/plan.ndjson
-# и накатывается по documentation/deploy/smtp.md.
+# их сюда по 587-му), принимает почту на noova.fyi и noova.cc и даёт
+# веб-интерфейс для ящиков. Настроек в этом файле почти нет: Stalwart хранит
+# их в своей базе, а то, от чего зависит отправка писем сайта, описано в
+# stalwart/plan.ndjson и накатывается по documentation/deploy/smtp.md.
+#
+# Веб-почта — Roundcube: читать и отправлять письма из браузера. Своего
+# хранилища писем у неё нет, она ходит в Stalwart по IMAP и SMTP.
 #
 # Перед первым запуском:
 #   1) PTR на этот IP → mail.<домен>, иначе письма отклоняют на входе;
-#   2) A <домен> и A mail.<домен> → этот IP, ip4 в SPF на него же;
+#   2) A <домен>, A mail.<домен>, A webmail.<домен> → этот IP, ip4 в SPF на него;
 #   3) `docker compose up -d caddy`, ПОТОМ `certs.sh mail.<домен>` — Caddy
 #      должен уже отвечать на 80-м, иначе certbot'у некуда положить
 #      челлендж (см. certs.sh и Caddyfile);
-#   4) ключ DKIM лежит в ./dkim, план накатан — smtp.md. Голый
+#   4) ключи DKIM лежат в ./dkim, план накатан — smtp.md. Голый
 #      `docker compose up -d stalwart` на пустой базе поднимает встроенный
 #      набор портов (в том числе 8080 без TLS) и ни одного домена.
 #
 # Разворачивается вручную, `make deploy` сюда не ходит.
 
+# Адреса Caddy и Stalwart фиксированные, потому что на них завязаны
+# настройки: Roundcube верит X-Forwarded-For только от адреса Caddy
+# (roundcube/config.inc.php), а имя mail.<домен> внутри контейнера Roundcube
+# указывает на адрес Stalwart (extra_hosts).
+networks:
+  mail:
+    ipam:
+      config:
+        - subnet: 10.77.0.0/24
+
 services:
-  # Лендинг — статика на корневом домене. Заодно решает ACME-челлендж для
-  # сертификата почты (mail.<домен>): сам Caddy TLS для mail.<домен> не
-  # выпускает, только отдаёт файл челленджа из общего с certbot вебрута —
-  # см. Caddyfile.
+  # Лендинг — статика на корневом домене, веб-почта через reverse_proxy, и
+  # ACME-челлендж для сертификата почты (mail.<домен>): сам Caddy TLS для
+  # mail.<домен> не выпускает, только отдаёт файл челленджа из общего с
+  # certbot вебрута — см. Caddyfile.
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -51,6 +65,9 @@ services:
       - ./acme-webroot:/srv/acme-webroot:ro
       - caddy_data:/data
       - caddy_config:/config
+    networks:
+      mail:
+        ipv4_address: 10.77.0.10
 
   # Версия закреплена точно: обновление почтового сервера — отдельное решение
   # с чтением UPGRADING, а не побочный эффект `docker compose pull`.
@@ -61,7 +78,7 @@ services:
       driver: json-file
       options: { max-size: '10m', max-file: '3' }
     ports:
-      # Приём почты на домен. Открыт всем: MX указывает сюда. Чужой релей
+      # Приём почты на домены. Открыт всем: MX указывает сюда. Чужой релей
       # Stalwart не пропускает, вход по паролю на 25-м не предлагает.
       - '25:25'
       # Submission для Postfix на Prod. ufw пускает только его IP, а пароль
@@ -88,8 +105,43 @@ services:
       # Ящики, очередь, учётки, настройки. Том, а не каталог: Stalwart пишет
       # под uid 2000, и владельца тома Docker выставляет из образа сам.
       - stalwart_data:/var/lib/stalwart
+    networks:
+      mail:
+        ipv4_address: 10.77.0.20
+
+  # Веб-почта. nonroot: процессы не под root, и взлом веб-приложения, которое
+  # разбирает чужой HTML, не даёт root в контейнере.
+  roundcube:
+    image: roundcube/roundcubemail:1.7.4-apache-nonroot
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: '10m', max-file: '3' }
+    environment:
+      # Имя, а не адрес контейнера: сертификат Stalwart выписан на
+      # mail.<домен>, и Roundcube его проверяет. Внутри контейнера это имя
+      # указывает прямо на Stalwart (extra_hosts), трафик не выходит наружу.
+      ROUNDCUBEMAIL_DEFAULT_HOST: ssl://mail.${MAIL_DOMAIN}
+      ROUNDCUBEMAIL_DEFAULT_PORT: 993
+      ROUNDCUBEMAIL_SMTP_SERVER: ssl://mail.${MAIL_DOMAIN}
+      ROUNDCUBEMAIL_SMTP_PORT: 465
+      # Ключ шифрования сессий. Без него образ генерирует новый при каждом
+      # пересоздании контейнера, и всех выкидывает из веб-почты.
+      ROUNDCUBEMAIL_DES_KEY: ${ROUNDCUBE_DES_KEY:-}
+    extra_hosts:
+      - mail.${MAIL_DOMAIN}:10.77.0.20
+    volumes:
+      # Весь /var/roundcube, а не только db: каталога db в образе нет, и том,
+      # смонтированный туда, достался бы root — Roundcube под www-data не смог
+      # бы создать базу. Здесь лежат только настройки пользователей, контакты
+      # и сессии; сами письма — в Stalwart.
+      - roundcube_data:/var/roundcube
+      - ./roundcube/config.inc.php:/var/roundcube/config/noova.inc.php:ro
+    networks:
+      - mail
 
 volumes:
   stalwart_data:
+  roundcube_data:
   caddy_data:
   caddy_config:
