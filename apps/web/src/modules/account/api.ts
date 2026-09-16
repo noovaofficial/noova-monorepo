@@ -100,6 +100,36 @@ export function saveOwnCompany(input: CompanyInput): Promise<Company> {
   return call('/me/company', companySchema, { method: 'PUT', body: JSON.stringify(input) });
 }
 
+/**
+ * Логотип — не модерируется и не входит в общую форму: отдельная загрузка,
+ * как и фото анкеты, только без выбора среди нескольких и без одобрения.
+ */
+export async function uploadCompanyLogo(file: File): Promise<{ logoUrl: string }> {
+  const form = new FormData();
+  form.append('file', file);
+
+  const response = await fetch(`${BASE}/api/v1/me/company/logo`, {
+    method: 'PUT',
+    body: form,
+    credentials: 'include',
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body) => String(body?.message ?? ''))
+      .catch(() => '');
+    throw new AccountError(message, response.status);
+  }
+
+  return z.object({ logoUrl: z.string() }).parse(await response.json());
+}
+
+export async function deleteCompanyLogo(): Promise<void> {
+  await call('/me/company/logo', z.null(), { method: 'DELETE' });
+}
+
 /** Привязка анкеты к своей компании — отдельным действием, а не полем формы. */
 export function attachProfileToCompany(profileId: string, attached: boolean) {
   return call(`/me/profiles/${profileId}/company`, z.object({ attached: z.boolean() }), {

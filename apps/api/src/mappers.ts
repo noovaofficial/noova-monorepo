@@ -114,6 +114,7 @@ type ProfileDetailRow = Omit<ProfileCardRow, 'services'> & {
   directions: string | null;
   minSessionMinutes: number | null;
   bookingPolicy: 'appointment' | 'walk_in' | null;
+  website: string | null;
   payments: ('cash' | 'card' | 'transfer')[];
   amenities: string[];
   hours: { weekday: number; opensAt: number | null; closesAt: number | null }[];
@@ -179,6 +180,7 @@ export function toProfileDetail(
     directions: row.directions,
     minSessionMinutes: row.minSessionMinutes,
     bookingPolicy: row.bookingPolicy,
+    website: row.website,
     payments: row.payments,
     amenities: row.amenities,
     hours: row.hours,

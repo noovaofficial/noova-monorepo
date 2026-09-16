@@ -22,7 +22,7 @@ export async function SalonDetails({
 
   const t = await getTranslations({ locale, namespace: 'company' });
 
-  const facts: { label: string; value: string }[] = [];
+  const facts: { label: string; value: string; href?: string }[] = [];
 
   if (company.bookingPolicy) {
     facts.push({ label: t('booking'), value: t(`booking_${company.bookingPolicy}`) });
@@ -32,6 +32,9 @@ export async function SalonDetails({
       label: t('minSession'),
       value: t('minutes', { count: company.minSessionMinutes }),
     });
+  }
+  if (company.website) {
+    facts.push({ label: t('website'), value: company.website, href: company.website });
   }
 
   // Прайс салона — это тарифы анкеты: отдельного списка нет, он уже на
@@ -55,7 +58,15 @@ export async function SalonDetails({
           {facts.map((fact) => (
             <div className={styles.fact} key={fact.label}>
               <dt className={styles.factLabel}>{fact.label}</dt>
-              <dd>{fact.value}</dd>
+              {fact.href ? (
+                <dd>
+                  <a href={fact.href} target="_blank" rel="noreferrer nofollow">
+                    {fact.value}
+                  </a>
+                </dd>
+              ) : (
+                <dd>{fact.value}</dd>
+              )}
             </div>
           ))}
         </dl>

@@ -594,6 +594,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
             ...(isSalon && body.bookingPolicy !== undefined
               ? { bookingPolicy: body.bookingPolicy }
               : {}),
+            ...(isSalon && body.website !== undefined ? { website: body.website } : {}),
             ...(isSalon && body.payments !== undefined ? { payments: body.payments } : {}),
             ...(isSalon && body.amenities !== undefined ? { amenities: body.amenities } : {}),
           },

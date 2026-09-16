@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
+import { CompanyContactsCard } from '@/modules/contacts/components/CompanyContactsCard';
 import { ApiError, fetchCompany } from '@/shared/api';
 import styles from './page.module.css';
 
@@ -39,6 +40,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+const GlobeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3c2.5 2.6 4 6 4 9s-1.5 6.4-4 9c-2.5-2.6-4-6-4-9s1.5-6.4 4-9Z" />
+  </svg>
+);
+
 export default async function CompanyPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -47,27 +55,84 @@ export default async function CompanyPage({ params }: Props) {
   if (!company) notFound();
 
   const t = await getTranslations({ locale, namespace: 'company' });
+  const tCard = await getTranslations({ locale, namespace: 'card' });
+  const tLang = await getTranslations({ locale, namespace: 'languageNames' });
+
+  const lastSeenDate = company.lastSeenAt
+    ? new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(company.lastSeenAt))
+    : null;
 
   return (
     <div className={styles.wrap}>
-      <header className={styles.head}>
-        <span className={styles.kind}>{t('agency')}</span>
-        <h1 className={styles.name}>{company.name}</h1>
+      <header className={styles.headBlock}>
+        {company.logoUrl ? (
+          // biome-ignore lint/performance/noImgElement: логотип уже готовый публичный webp фиксированного размера — оптимизировать нечего
+          <img className={styles.logo} src={company.logoUrl} alt="" />
+        ) : (
+          <div className={styles.logoPlaceholder} aria-hidden="true" />
+        )}
 
-        {/* Адрес есть только у салона — это и есть отличие от агентства. */}
-        {company.description ? <p className={styles.description}>{company.description}</p> : null}
+        <div className={styles.headInfo}>
+          <span className={styles.kind}>{t('agency')}</span>
+          <h1 className={styles.name}>{company.name}</h1>
 
-        {company.contacts.length > 0 ? (
-          <ul className={styles.contacts}>
-            {company.contacts.map((contact) => (
-              <li className={styles.contact} key={`${contact.type}:${contact.value}`}>
-                <span className={styles.contactType}>{t(`contact_${contact.type}`)}</span>
-                {contact.value}
-              </li>
-            ))}
-          </ul>
-        ) : null}
+          {company.isOnline ? (
+            <span className={styles.online}>{tCard('online')}</span>
+          ) : lastSeenDate ? (
+            <span className={styles.lastSeen}>{t('lastSeenAt', { date: lastSeenDate })}</span>
+          ) : null}
+
+          {company.website ? (
+            <a
+              className={styles.website}
+              href={company.website}
+              target="_blank"
+              rel="noreferrer nofollow"
+            >
+              <GlobeIcon />
+              {company.website}
+            </a>
+          ) : null}
+
+          {company.contactTypes.length > 0 ? (
+            <div className={styles.contacts}>
+              <CompanyContactsCard slug={company.slug} types={company.contactTypes} />
+            </div>
+          ) : null}
+        </div>
       </header>
+
+      {company.languages.length > 0 || company.payments.length > 0 || company.description ? (
+        <section className={styles.infoBlock}>
+          {company.languages.length > 0 ? (
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>{t('languages')}</span>
+              <ul className={styles.chips}>
+                {company.languages.map((code) => (
+                  <li className={styles.chip} key={code}>
+                    {tLang.has(code) ? tLang(code) : code}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {company.payments.length > 0 ? (
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>{t('payments')}</span>
+              <ul className={styles.chips}>
+                {company.payments.map((method) => (
+                  <li className={styles.chip} key={method}>
+                    {t(`payment_${method}`)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {company.description ? <p className={styles.description}>{company.description}</p> : null}
+        </section>
+      ) : null}
 
       <h2 className={styles.listTitle}>{t('profiles', { count: company.profileCount })}</h2>
       {company.profiles.length > 0 ? (

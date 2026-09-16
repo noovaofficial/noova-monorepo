@@ -1,207 +1,53 @@
-.wrap {
-  padding: var(--space8) 0 var(--space12);
-  max-width: 720px;
-}
-
-.head {
+/* Публичная ссылка — выделенным блоком в боковой панели: это то, чем
+   агентство делится с клиентами, и она не должна теряться среди полей формы. */
+.linkBox {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space4);
-  flex-wrap: wrap;
-  margin-bottom: var(--space5);
-}
-
-.title {
-  font-family: var(--fontDisplay);
-  font-weight: 700;
-  font-size: var(--text2xl);
-}
-
-/* Ссылка на публичную страницу, статус сохранения и кнопка — одной группой
-   справа от заголовка: форма длинная, и без этого правая половина шапки
-   пустует, а действия над формой видны только после прокрутки до конца. */
-.headActions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--space2);
-  text-align: right;
-}
-
-.hint {
-  color: var(--secondaryText);
-  font-size: var(--textSm);
-}
-
-a.hint:hover {
-  color: var(--accent);
-}
-
-.status {
-  border-radius: var(--radiusMd);
-  padding: var(--space1) var(--space3);
-  font-size: var(--textSm);
-}
-
-.statusError {
-  background: var(--dangerSubtle);
-  color: var(--danger);
-}
-
-.statusOk {
-  background: var(--surfaceMuted);
-  color: var(--secondaryText);
-}
-
-/* Своя строка на телефоне: справа выровненный столбик у левого края экрана
-   читается хуже, чем у левого — а по ширине там и так одна колонка. */
-@media (max-width: 560px) {
-  .headActions {
-    align-items: flex-start;
-    text-align: left;
-    width: 100%;
-  }
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space5);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.fieldset {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space3);
-  border: 1px solid var(--border);
-  border-radius: var(--radiusMd);
-  padding: var(--space4);
-}
-
-.label {
-  font-size: var(--textSm);
-  font-weight: 500;
-  color: var(--secondaryText);
-}
-
-.input,
-.select,
-.textarea {
-  border: 1px solid var(--border);
-  border-radius: var(--radiusSm);
   padding: var(--space3);
-  background: var(--surface);
-  color: var(--primaryText);
-  font: inherit;
-  width: 100%;
+  background: var(--accentSubtle);
+  color: var(--accent);
+  border-radius: var(--radiusMd);
 }
 
-.textarea {
-  resize: vertical;
-  line-height: var(--leadingRelaxed);
+.linkBox svg {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
 }
 
-.input:focus,
-.select:focus,
-.textarea:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.contactRow {
-  display: flex;
-  gap: var(--space2);
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.contactRow .select {
-  flex: 0 0 150px;
-}
-
-.contactRow .input {
-  flex: 1 1 200px;
-}
-
-.empty {
-  color: var(--secondaryText);
-  padding: var(--space10) 0;
-}
-
-.hoursRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space2);
-  flex-wrap: wrap;
-}
-
-.day {
-  flex: 0 0 130px;
+.linkText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+  font-weight: 600;
   font-size: var(--textSm);
-  color: var(--secondaryText);
 }
 
-.time {
-  border: 1px solid var(--border);
-  border-radius: var(--radiusSm);
-  padding: var(--space2) var(--space3);
-  background: var(--surface);
-  color: var(--primaryText);
-  font: inherit;
-  font-variant-numeric: tabular-nums;
+.linkText:hover {
+  text-decoration: underline;
 }
 
-.time:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.dash {
-  color: var(--secondaryText);
-}
-
-.chips {
+.logoRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space2) var(--space4);
-}
-
-.chipCheck {
-  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: var(--textSm);
-  cursor: pointer;
-}
-
-.formRow {
-  display: flex;
   gap: var(--space4);
-  flex-wrap: wrap;
 }
 
-.formRow .field {
-  flex: 1 1 200px;
+.logoPreview,
+.logoPlaceholder {
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: var(--surfaceMuted);
 }
 
-.priceRow {
-  display: flex;
-  gap: var(--space2);
-  align-items: center;
-  flex-wrap: wrap;
+.logoPreview {
+  object-fit: contain;
 }
 
-.priceRow .input {
-  flex: 1 1 180px;
-}
-
-.priceRow .time {
-  flex: 0 0 110px;
-}

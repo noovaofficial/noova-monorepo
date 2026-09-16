@@ -1,7 +1,7 @@
 import {
   type CityOption,
   cityOptionSchema,
-  companySchema,
+  companyDetailSchema,
   type Locale,
   type Page,
   type PriceBook,
@@ -21,7 +21,7 @@ import {
 } from '@noova/shared';
 import { z } from 'zod';
 
-const companyPageSchema = companySchema.extend({ profiles: z.array(profileCardSchema) });
+const companyPageSchema = companyDetailSchema.extend({ profiles: z.array(profileCardSchema) });
 type CompanyPage = z.infer<typeof companyPageSchema>;
 
 /**

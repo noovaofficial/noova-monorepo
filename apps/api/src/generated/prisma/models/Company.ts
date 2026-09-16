@@ -54,6 +54,8 @@ export type CompanyMinAggregateOutputType = {
   kind: $Enums.CompanyKind | null
   name: string | null
   description: string | null
+  website: string | null
+  logoStorageKey: string | null
   isActive: boolean | null
   ownerId: string | null
   tariffTierId: string | null
@@ -71,6 +73,8 @@ export type CompanyMaxAggregateOutputType = {
   kind: $Enums.CompanyKind | null
   name: string | null
   description: string | null
+  website: string | null
+  logoStorageKey: string | null
   isActive: boolean | null
   ownerId: string | null
   tariffTierId: string | null
@@ -88,6 +92,8 @@ export type CompanyCountAggregateOutputType = {
   kind: number
   name: number
   description: number
+  website: number
+  logoStorageKey: number
   languages: number
   payments: number
   isActive: number
@@ -123,6 +129,8 @@ export type CompanyMinAggregateInputType = {
   kind?: true
   name?: true
   description?: true
+  website?: true
+  logoStorageKey?: true
   isActive?: true
   ownerId?: true
   tariffTierId?: true
@@ -140,6 +148,8 @@ export type CompanyMaxAggregateInputType = {
   kind?: true
   name?: true
   description?: true
+  website?: true
+  logoStorageKey?: true
   isActive?: true
   ownerId?: true
   tariffTierId?: true
@@ -157,6 +167,8 @@ export type CompanyCountAggregateInputType = {
   kind?: true
   name?: true
   description?: true
+  website?: true
+  logoStorageKey?: true
   languages?: true
   payments?: true
   isActive?: true
@@ -263,6 +275,8 @@ export type CompanyGroupByOutputType = {
   kind: $Enums.CompanyKind
   name: string
   description: string | null
+  website: string | null
+  logoStorageKey: string | null
   languages: string[]
   payments: $Enums.PaymentMethod[]
   isActive: boolean
@@ -305,6 +319,8 @@ export type CompanyWhereInput = {
   kind?: Prisma.EnumCompanyKindFilter<"Company"> | $Enums.CompanyKind
   name?: Prisma.StringFilter<"Company"> | string
   description?: Prisma.StringNullableFilter<"Company"> | string | null
+  website?: Prisma.StringNullableFilter<"Company"> | string | null
+  logoStorageKey?: Prisma.StringNullableFilter<"Company"> | string | null
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
@@ -328,6 +344,8 @@ export type CompanyOrderByWithRelationInput = {
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -355,6 +373,8 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   kind?: Prisma.EnumCompanyKindFilter<"Company"> | $Enums.CompanyKind
   name?: Prisma.StringFilter<"Company"> | string
   description?: Prisma.StringNullableFilter<"Company"> | string | null
+  website?: Prisma.StringNullableFilter<"Company"> | string | null
+  logoStorageKey?: Prisma.StringNullableFilter<"Company"> | string | null
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
@@ -377,6 +397,8 @@ export type CompanyOrderByWithAggregationInput = {
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
+  logoStorageKey?: Prisma.SortOrderInput | Prisma.SortOrder
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -404,6 +426,8 @@ export type CompanyScalarWhereWithAggregatesInput = {
   kind?: Prisma.EnumCompanyKindWithAggregatesFilter<"Company"> | $Enums.CompanyKind
   name?: Prisma.StringWithAggregatesFilter<"Company"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  website?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  logoStorageKey?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
@@ -423,6 +447,8 @@ export type CompanyCreateInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -444,6 +470,8 @@ export type CompanyUncheckedCreateInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -465,6 +493,8 @@ export type CompanyUpdateInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -486,6 +516,8 @@ export type CompanyUncheckedUpdateInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -507,6 +539,8 @@ export type CompanyCreateManyInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -526,6 +560,8 @@ export type CompanyUpdateManyMutationInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -543,6 +579,8 @@ export type CompanyUncheckedUpdateManyInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -567,6 +605,8 @@ export type CompanyCountOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  logoStorageKey?: Prisma.SortOrder
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -593,6 +633,8 @@ export type CompanyMaxOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  logoStorageKey?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrder
@@ -610,6 +652,8 @@ export type CompanyMinOrderByAggregateInput = {
   kind?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  website?: Prisma.SortOrder
+  logoStorageKey?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrder
@@ -775,6 +819,8 @@ export type CompanyCreateWithoutOwnerInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -795,6 +841,8 @@ export type CompanyUncheckedCreateWithoutOwnerInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -831,6 +879,8 @@ export type CompanyUpdateWithoutOwnerInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -851,6 +901,8 @@ export type CompanyUncheckedUpdateWithoutOwnerInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -871,6 +923,8 @@ export type CompanyCreateWithoutProfilesInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -891,6 +945,8 @@ export type CompanyUncheckedCreateWithoutProfilesInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -927,6 +983,8 @@ export type CompanyUpdateWithoutProfilesInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -947,6 +1005,8 @@ export type CompanyUncheckedUpdateWithoutProfilesInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -967,6 +1027,8 @@ export type CompanyCreateWithoutContactsInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -987,6 +1049,8 @@ export type CompanyUncheckedCreateWithoutContactsInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -1023,6 +1087,8 @@ export type CompanyUpdateWithoutContactsInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1043,6 +1109,8 @@ export type CompanyUncheckedUpdateWithoutContactsInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1063,6 +1131,8 @@ export type CompanyCreateWithoutTariffTierInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -1083,6 +1153,8 @@ export type CompanyUncheckedCreateWithoutTariffTierInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -1132,6 +1204,8 @@ export type CompanyScalarWhereInput = {
   kind?: Prisma.EnumCompanyKindFilter<"Company"> | $Enums.CompanyKind
   name?: Prisma.StringFilter<"Company"> | string
   description?: Prisma.StringNullableFilter<"Company"> | string | null
+  website?: Prisma.StringNullableFilter<"Company"> | string | null
+  logoStorageKey?: Prisma.StringNullableFilter<"Company"> | string | null
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
@@ -1151,6 +1225,8 @@ export type CompanyCreateManyTariffTierInput = {
   kind: $Enums.CompanyKind
   name: string
   description?: string | null
+  website?: string | null
+  logoStorageKey?: string | null
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
@@ -1169,6 +1245,8 @@ export type CompanyUpdateWithoutTariffTierInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1189,6 +1267,8 @@ export type CompanyUncheckedUpdateWithoutTariffTierInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1209,6 +1289,8 @@ export type CompanyUncheckedUpdateManyWithoutTariffTierInput = {
   kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoStorageKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1267,6 +1349,8 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   kind?: boolean
   name?: boolean
   description?: boolean
+  website?: boolean
+  logoStorageKey?: boolean
   languages?: boolean
   payments?: boolean
   isActive?: boolean
@@ -1291,6 +1375,8 @@ export type CompanySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   kind?: boolean
   name?: boolean
   description?: boolean
+  website?: boolean
+  logoStorageKey?: boolean
   languages?: boolean
   payments?: boolean
   isActive?: boolean
@@ -1312,6 +1398,8 @@ export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   kind?: boolean
   name?: boolean
   description?: boolean
+  website?: boolean
+  logoStorageKey?: boolean
   languages?: boolean
   payments?: boolean
   isActive?: boolean
@@ -1333,6 +1421,8 @@ export type CompanySelectScalar = {
   kind?: boolean
   name?: boolean
   description?: boolean
+  website?: boolean
+  logoStorageKey?: boolean
   languages?: boolean
   payments?: boolean
   isActive?: boolean
@@ -1346,7 +1436,7 @@ export type CompanySelectScalar = {
   updatedAt?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "languages" | "payments" | "isActive" | "ownerId" | "tariffTierId" | "customProfileLimit" | "customPriceM1Gc" | "customPriceM6Gc" | "customPriceM12Gc" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "website" | "logoStorageKey" | "languages" | "payments" | "isActive" | "ownerId" | "tariffTierId" | "customProfileLimit" | "customPriceM1Gc" | "customPriceM6Gc" | "customPriceM12Gc" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
@@ -1380,6 +1470,19 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     kind: $Enums.CompanyKind
     name: string
     description: string | null
+    /**
+     * Сайт агентства — своя ссылка, а не строка в contacts: контакты это
+     * каналы связи, сайт — витрина, и мешать их в одном списке неверно.
+     */
+    website: string | null
+    /**
+     * Логотип не модерируется (в отличие от фото анкет): это не образ
+     * человека, а элемент фирменного стиля, и повод для проверки — другой.
+     * Одно поле, а не отдельная модель со множеством файлов, как у Photo:
+     * логотип у агентства один, версии не хранятся, старый файл при замене
+     * удаляется из хранилища.
+     */
+    logoStorageKey: string | null
     /**
      * Языки персонала — коды из SPOKEN_LANGUAGES.
      */
@@ -1846,6 +1949,8 @@ export interface CompanyFieldRefs {
   readonly kind: Prisma.FieldRef<"Company", 'CompanyKind'>
   readonly name: Prisma.FieldRef<"Company", 'String'>
   readonly description: Prisma.FieldRef<"Company", 'String'>
+  readonly website: Prisma.FieldRef<"Company", 'String'>
+  readonly logoStorageKey: Prisma.FieldRef<"Company", 'String'>
   readonly languages: Prisma.FieldRef<"Company", 'String[]'>
   readonly payments: Prisma.FieldRef<"Company", 'PaymentMethod[]'>
   readonly isActive: Prisma.FieldRef<"Company", 'Boolean'>

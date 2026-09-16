@@ -9,6 +9,8 @@
  * имени, и посредника между ней и площадкой нет — на этом стоит правовая
  * позиция само-размещения (L-04).
  */
+
+import { randomUUID } from 'node:crypto';
 import {
   agencyTariffUpgradeInputSchema,
   type CompanyInput,
@@ -19,6 +21,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { PROFILES_TAG } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import {
   companyTariffSelect,
@@ -30,6 +33,9 @@ import {
   TariffUpgradeNotAllowedError,
 } from '../billing/agency-tariffs.js';
 import { applyMovement, InsufficientBalanceError } from '../billing/wallet.js';
+import { ImageError } from '../photos/images.js';
+import { deleteObject, PUBLIC_PREFIX, publicUrl, putObject } from '../photos/storage.js';
+import { MAX_LOGO_BYTES, processLogo } from './logo.js';
 
 const companySelect = {
   id: true,
@@ -37,6 +43,8 @@ const companySelect = {
   kind: true,
   name: true,
   description: true,
+  website: true,
+  logoStorageKey: true,
   languages: true,
   payments: true,
   isActive: true,
@@ -50,6 +58,8 @@ type CompanyRow = {
   kind: 'agency';
   name: string;
   description: string | null;
+  website: string | null;
+  logoStorageKey: string | null;
   isActive: boolean;
   contacts: { type: string; value: string }[];
   languages: string[];
@@ -63,6 +73,8 @@ const present = (row: CompanyRow) => ({
   kind: row.kind,
   name: row.name,
   description: row.description,
+  website: row.website,
+  logoUrl: row.logoStorageKey ? publicUrl(row.logoStorageKey) : null,
   isActive: row.isActive,
   contacts: row.contacts as { type: CompanyInput['contacts'][number]['type']; value: string }[],
   languages: row.languages,
@@ -122,7 +134,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const advertiserKind = await companyOwnerOr403(fastify, userId);
 
-      const { slug, kind, name, description, contacts, languages, payments, isActive } =
+      const { slug, kind, name, description, website, contacts, languages, payments, isActive } =
         request.body;
 
       if (kind !== advertiserKind) {
@@ -144,6 +156,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         kind,
         name,
         description: description ?? null,
+        website: website ?? null,
         languages,
         payments,
         isActive,
@@ -174,7 +187,107 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: companySelect,
       });
 
+      // Публичная страница компании кэшируется тем же тегом, что и остальные
+      // листинги (см. PROFILES_TAG во фронте) — без сброса правки в кабинете
+      // доезжали бы до витрины только по истечении ISR.
+      fastify.revalidate([PROFILES_TAG]);
       return present(saved as CompanyRow);
+    },
+  );
+
+  /**
+   * Логотип агентства — не модерируется (это не фото человека, а элемент
+   * фирменного стиля) и не имеет истории версий: загрузка заменяет прежний
+   * файл, а не добавляет новый.
+   */
+  fastify.put(
+    '/me/company/logo',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 20, timeWindow: '1 hour' } },
+      schema: { tags: ['account'], response: { 200: z.object({ logoUrl: z.string() }) } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await companyOwnerOr403(fastify, userId);
+
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: { id: true, logoStorageKey: true },
+      });
+      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+
+      const file = await request.file({ limits: { fileSize: MAX_LOGO_BYTES } });
+      if (!file) throw fastify.httpErrors.badRequest('Файл не передан');
+      const buffer = await file.toBuffer().catch(() => {
+        throw fastify.httpErrors.badRequest('Файл больше допустимого размера');
+      });
+
+      let processed: Awaited<ReturnType<typeof processLogo>>;
+      try {
+        processed = await processLogo(buffer);
+      } catch (error) {
+        if (error instanceof ImageError) {
+          throw fastify.httpErrors.badRequest(
+            'Файл не является изображением поддерживаемого формата',
+          );
+        }
+        throw error;
+      }
+
+      const key = `${PUBLIC_PREFIX}/company-logo/${company.id}/${randomUUID()}.webp`;
+      await putObject(key, processed.buffer, 'image/webp');
+
+      const previousKey = company.logoStorageKey;
+      await fastify.prisma.company.update({
+        where: { id: company.id },
+        data: { logoStorageKey: key },
+      });
+
+      // Старый файл убираем уже после того, как база указывает на новый —
+      // так сбой удаления не оставит компанию без рабочего логотипа.
+      if (previousKey) {
+        await deleteObject(previousKey).catch((error) => {
+          request.log.warn({ err: error, key: previousKey }, 'не удалось удалить старый логотип');
+        });
+      }
+
+      fastify.revalidate([PROFILES_TAG]);
+      return { logoUrl: publicUrl(key) };
+    },
+  );
+
+  fastify.delete(
+    '/me/company/logo',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['account'], response: { 204: z.null() } },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+      await companyOwnerOr403(fastify, userId);
+
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: { id: true, logoStorageKey: true },
+      });
+      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+
+      if (company.logoStorageKey) {
+        await deleteObject(company.logoStorageKey).catch((error) => {
+          request.log.warn(
+            { err: error, key: company.logoStorageKey },
+            'не удалось удалить логотип',
+          );
+        });
+        await fastify.prisma.company.update({
+          where: { id: company.id },
+          data: { logoStorageKey: null },
+        });
+        fastify.revalidate([PROFILES_TAG]);
+      }
+
+      return reply.status(204).send(null);
     },
   );
 

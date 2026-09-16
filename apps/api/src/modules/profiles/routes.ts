@@ -1,5 +1,5 @@
 import {
-  companySchema,
+  companyDetailSchema,
   type Locale,
   MAP_CLUSTER_SAMPLE,
   mapClusterSchema,
@@ -12,7 +12,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { localeQuerySchema, translationSelect } from '../../i18n.js';
-import { toMoney, toProfileCard, toProfileDetail } from '../../mappers.js';
+import { isOnline, toMoney, toProfileCard, toProfileDetail } from '../../mappers.js';
 import { loadBillingConfig } from '../billing/config.js';
 import { shuffle } from '../billing/top.js';
 import { publicUrl } from '../photos/storage.js';
@@ -147,7 +147,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         params: z.object({ slug: slugSchema }),
         querystring: localeQuerySchema,
         response: {
-          200: companySchema.extend({ profiles: z.array(profileCardSchema) }),
+          200: companyDetailSchema.extend({ profiles: z.array(profileCardSchema) }),
         },
       },
     },
@@ -161,12 +161,15 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           kind: true,
           name: true,
           description: true,
-          isActive: true,
+          website: true,
+          logoStorageKey: true,
           languages: true,
           payments: true,
+          // Только типы — как у анкеты: значения отдаёт лишь раскрытие
+          // отдельным маршрутом (payments.md никак не связан, см. N-31/N-08).
           contacts: {
             orderBy: { position: 'asc' },
-            select: { type: true, value: true },
+            select: { type: true },
           },
           profiles: {
             where: { status: 'published' },
@@ -177,16 +180,26 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       if (!row) throw fastify.httpErrors.notFound('Компания не найдена');
 
+      // «Последний онлайн» агентства — по самой свежей из его анкет: своего
+      // presence у компании нет, а анкеты уже трогаются им же (см. presence.ts).
+      const lastSeenAt = row.profiles.reduce<Date | null>((max, profile) => {
+        if (!profile.lastSeenAt) return max;
+        return !max || profile.lastSeenAt > max ? profile.lastSeenAt : max;
+      }, null);
+
       return {
         id: row.id,
         slug: row.slug,
         kind: row.kind,
         name: row.name,
         description: row.description,
-        contacts: row.contacts,
+        website: row.website,
+        logoUrl: row.logoStorageKey ? publicUrl(row.logoStorageKey) : null,
         languages: row.languages,
         payments: row.payments,
-        isActive: row.isActive,
+        contactTypes: [...new Set(row.contacts.map((c) => c.type))],
+        isOnline: isOnline(lastSeenAt),
+        lastSeenAt: lastSeenAt ? lastSeenAt.toISOString() : null,
         profileCount: row.profiles.length,
         profiles: row.profiles.map(toProfileCard),
       };
@@ -212,6 +225,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           directions: true,
           minSessionMinutes: true,
           bookingPolicy: true,
+          website: true,
           payments: true,
           amenities: true,
           hours: {

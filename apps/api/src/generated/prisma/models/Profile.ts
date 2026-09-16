@@ -58,6 +58,7 @@ export type ProfileMinAggregateOutputType = {
   directions: string | null
   minSessionMinutes: number | null
   bookingPolicy: $Enums.BookingPolicy | null
+  website: string | null
   ownerId: string | null
   cityId: string | null
   districtId: string | null
@@ -100,6 +101,7 @@ export type ProfileMaxAggregateOutputType = {
   directions: string | null
   minSessionMinutes: number | null
   bookingPolicy: $Enums.BookingPolicy | null
+  website: string | null
   ownerId: string | null
   cityId: string | null
   districtId: string | null
@@ -142,6 +144,7 @@ export type ProfileCountAggregateOutputType = {
   directions: number
   minSessionMinutes: number
   bookingPolicy: number
+  website: number
   payments: number
   amenities: number
   ownerId: number
@@ -209,6 +212,7 @@ export type ProfileMinAggregateInputType = {
   directions?: true
   minSessionMinutes?: true
   bookingPolicy?: true
+  website?: true
   ownerId?: true
   cityId?: true
   districtId?: true
@@ -251,6 +255,7 @@ export type ProfileMaxAggregateInputType = {
   directions?: true
   minSessionMinutes?: true
   bookingPolicy?: true
+  website?: true
   ownerId?: true
   cityId?: true
   districtId?: true
@@ -293,6 +298,7 @@ export type ProfileCountAggregateInputType = {
   directions?: true
   minSessionMinutes?: true
   bookingPolicy?: true
+  website?: true
   payments?: true
   amenities?: true
   ownerId?: true
@@ -425,6 +431,7 @@ export type ProfileGroupByOutputType = {
   directions: string | null
   minSessionMinutes: number | null
   bookingPolicy: $Enums.BookingPolicy | null
+  website: string | null
   payments: $Enums.PaymentMethod[]
   amenities: string[]
   ownerId: string
@@ -493,6 +500,7 @@ export type ProfileWhereInput = {
   directions?: Prisma.StringNullableFilter<"Profile"> | string | null
   minSessionMinutes?: Prisma.IntNullableFilter<"Profile"> | number | null
   bookingPolicy?: Prisma.EnumBookingPolicyNullableFilter<"Profile"> | $Enums.BookingPolicy | null
+  website?: Prisma.StringNullableFilter<"Profile"> | string | null
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Profile">
   amenities?: Prisma.StringNullableListFilter<"Profile">
   ownerId?: Prisma.StringFilter<"Profile"> | string
@@ -555,6 +563,7 @@ export type ProfileOrderByWithRelationInput = {
   directions?: Prisma.SortOrderInput | Prisma.SortOrder
   minSessionMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   bookingPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
   payments?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -620,6 +629,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   directions?: Prisma.StringNullableFilter<"Profile"> | string | null
   minSessionMinutes?: Prisma.IntNullableFilter<"Profile"> | number | null
   bookingPolicy?: Prisma.EnumBookingPolicyNullableFilter<"Profile"> | $Enums.BookingPolicy | null
+  website?: Prisma.StringNullableFilter<"Profile"> | string | null
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Profile">
   amenities?: Prisma.StringNullableListFilter<"Profile">
   ownerId?: Prisma.StringFilter<"Profile"> | string
@@ -682,6 +692,7 @@ export type ProfileOrderByWithAggregationInput = {
   directions?: Prisma.SortOrderInput | Prisma.SortOrder
   minSessionMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
   bookingPolicy?: Prisma.SortOrderInput | Prisma.SortOrder
+  website?: Prisma.SortOrderInput | Prisma.SortOrder
   payments?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -735,6 +746,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   directions?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   minSessionMinutes?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   bookingPolicy?: Prisma.EnumBookingPolicyNullableWithAggregatesFilter<"Profile"> | $Enums.BookingPolicy | null
+  website?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Profile">
   amenities?: Prisma.StringNullableListFilter<"Profile">
   ownerId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
@@ -779,6 +791,7 @@ export type ProfileCreateInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -838,6 +851,7 @@ export type ProfileUncheckedCreateInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -895,6 +909,7 @@ export type ProfileUpdateInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -954,6 +969,7 @@ export type ProfileUncheckedUpdateInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1012,6 +1028,7 @@ export type ProfileCreateManyInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -1056,6 +1073,7 @@ export type ProfileUpdateManyMutationInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -1098,6 +1116,7 @@ export type ProfileUncheckedUpdateManyInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1169,6 +1188,7 @@ export type ProfileCountOrderByAggregateInput = {
   directions?: Prisma.SortOrder
   minSessionMinutes?: Prisma.SortOrder
   bookingPolicy?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   amenities?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
@@ -1224,6 +1244,7 @@ export type ProfileMaxOrderByAggregateInput = {
   directions?: Prisma.SortOrder
   minSessionMinutes?: Prisma.SortOrder
   bookingPolicy?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
@@ -1266,6 +1287,7 @@ export type ProfileMinOrderByAggregateInput = {
   directions?: Prisma.SortOrder
   minSessionMinutes?: Prisma.SortOrder
   bookingPolicy?: Prisma.SortOrder
+  website?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
@@ -1750,6 +1772,7 @@ export type ProfileCreateWithoutOwnerInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -1808,6 +1831,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   cityId: string
@@ -1894,6 +1918,7 @@ export type ProfileScalarWhereInput = {
   directions?: Prisma.StringNullableFilter<"Profile"> | string | null
   minSessionMinutes?: Prisma.IntNullableFilter<"Profile"> | number | null
   bookingPolicy?: Prisma.EnumBookingPolicyNullableFilter<"Profile"> | $Enums.BookingPolicy | null
+  website?: Prisma.StringNullableFilter<"Profile"> | string | null
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Profile">
   amenities?: Prisma.StringNullableListFilter<"Profile">
   ownerId?: Prisma.StringFilter<"Profile"> | string
@@ -1938,6 +1963,7 @@ export type ProfileCreateWithoutCityInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -1996,6 +2022,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -2078,6 +2105,7 @@ export type ProfileCreateWithoutDistrictInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -2136,6 +2164,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -2218,6 +2247,7 @@ export type ProfileCreateWithoutPhotosInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -2276,6 +2306,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -2348,6 +2379,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2406,6 +2438,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2462,6 +2495,7 @@ export type ProfileCreateWithoutReportsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -2520,6 +2554,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -2592,6 +2627,7 @@ export type ProfileUpdateWithoutReportsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2650,6 +2686,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2706,6 +2743,7 @@ export type ProfileCreateWithoutCommentsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -2764,6 +2802,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -2836,6 +2875,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -2894,6 +2934,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2950,6 +2991,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -3008,6 +3050,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -3080,6 +3123,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3138,6 +3182,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3194,6 +3239,7 @@ export type ProfileCreateWithoutCompanyInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -3251,6 +3297,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -3334,6 +3381,7 @@ export type ProfileCreateWithoutHoursInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -3392,6 +3440,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -3464,6 +3513,7 @@ export type ProfileUpdateWithoutHoursInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3522,6 +3572,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3578,6 +3629,7 @@ export type ProfileCreateWithoutContactsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -3636,6 +3688,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -3708,6 +3761,7 @@ export type ProfileUpdateWithoutContactsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -3766,6 +3820,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3822,6 +3877,7 @@ export type ProfileCreateWithoutEventsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -3880,6 +3936,7 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -3952,6 +4009,7 @@ export type ProfileUpdateWithoutEventsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4010,6 +4068,7 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4066,6 +4125,7 @@ export type ProfileCreateWithoutPricesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -4124,6 +4184,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -4196,6 +4257,7 @@ export type ProfileUpdateWithoutPricesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4254,6 +4316,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4310,6 +4373,7 @@ export type ProfileCreateWithoutServicesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -4368,6 +4432,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -4440,6 +4505,7 @@ export type ProfileUpdateWithoutServicesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4498,6 +4564,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4554,6 +4621,7 @@ export type ProfileCreateWithoutVerificationInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -4612,6 +4680,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -4684,6 +4753,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4742,6 +4812,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4798,6 +4869,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -4856,6 +4928,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -4928,6 +5001,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -4986,6 +5060,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5042,6 +5117,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -5100,6 +5176,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -5172,6 +5249,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5230,6 +5308,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5286,6 +5365,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   approxLat?: number | null
@@ -5344,6 +5424,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -5416,6 +5497,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5474,6 +5556,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5531,6 +5614,7 @@ export type ProfileCreateManyOwnerInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   cityId: string
@@ -5574,6 +5658,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5632,6 +5717,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5689,6 +5775,7 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5733,6 +5820,7 @@ export type ProfileCreateManyCityInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -5776,6 +5864,7 @@ export type ProfileUpdateWithoutCityInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -5834,6 +5923,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5891,6 +5981,7 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -5935,6 +6026,7 @@ export type ProfileCreateManyDistrictInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -5978,6 +6070,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6036,6 +6129,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6093,6 +6187,7 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6136,6 +6231,7 @@ export type ProfileCreateManyCompanyInput = {
   directions?: string | null
   minSessionMinutes?: number | null
   bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
   payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
@@ -6180,6 +6276,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -6237,6 +6334,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6294,6 +6392,7 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -6460,6 +6559,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   directions?: boolean
   minSessionMinutes?: boolean
   bookingPolicy?: boolean
+  website?: boolean
   payments?: boolean
   amenities?: boolean
   ownerId?: boolean
@@ -6523,6 +6623,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   directions?: boolean
   minSessionMinutes?: boolean
   bookingPolicy?: boolean
+  website?: boolean
   payments?: boolean
   amenities?: boolean
   ownerId?: boolean
@@ -6572,6 +6673,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   directions?: boolean
   minSessionMinutes?: boolean
   bookingPolicy?: boolean
+  website?: boolean
   payments?: boolean
   amenities?: boolean
   ownerId?: boolean
@@ -6621,6 +6723,7 @@ export type ProfileSelectScalar = {
   directions?: boolean
   minSessionMinutes?: boolean
   bookingPolicy?: boolean
+  website?: boolean
   payments?: boolean
   amenities?: boolean
   ownerId?: boolean
@@ -6654,7 +6757,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
@@ -6741,6 +6844,10 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     directions: string | null
     minSessionMinutes: number | null
     bookingPolicy: $Enums.BookingPolicy | null
+    /**
+     * Сайт салона — своя ссылка, а не строка в contacts (см. Company.website).
+     */
+    website: string | null
     payments: $Enums.PaymentMethod[]
     /**
      * Ключи из AMENITIES: закрытый набор, переводится словарями.
@@ -7251,6 +7358,7 @@ export interface ProfileFieldRefs {
   readonly directions: Prisma.FieldRef<"Profile", 'String'>
   readonly minSessionMinutes: Prisma.FieldRef<"Profile", 'Int'>
   readonly bookingPolicy: Prisma.FieldRef<"Profile", 'BookingPolicy'>
+  readonly website: Prisma.FieldRef<"Profile", 'String'>
   readonly payments: Prisma.FieldRef<"Profile", 'PaymentMethod[]'>
   readonly amenities: Prisma.FieldRef<"Profile", 'String[]'>
   readonly ownerId: Prisma.FieldRef<"Profile", 'String'>

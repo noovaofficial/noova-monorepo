@@ -16,7 +16,16 @@ export class RevealError extends Error {
  * попали бы в HTML страницы, ради чего весь гейт и затевался.
  */
 export async function revealContacts(slug: string): Promise<RevealedContacts> {
-  const response = await fetch(`${BASE}/api/v1/profiles/${slug}/contacts/reveal`, {
+  return reveal(`/profiles/${slug}/contacts/reveal`);
+}
+
+/** То же самое, но для контактов агентства — свой маршрут (см. api/company/reveal.ts). */
+export async function revealCompanyContacts(slug: string): Promise<RevealedContacts> {
+  return reveal(`/companies/${slug}/contacts/reveal`);
+}
+
+async function reveal(path: string): Promise<RevealedContacts> {
+  const response = await fetch(`${BASE}/api/v1${path}`, {
     method: 'POST',
     // Заголовка content-type нет намеренно: тела у запроса тоже нет, а Fastify
     // на «application/json» без тела отвечает ошибкой.

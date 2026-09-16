@@ -261,6 +261,7 @@ export const profileDetailSchema = profileCardSchema.extend({
   directions: z.string().nullable().default(null),
   minSessionMinutes: z.number().int().nullable().default(null),
   bookingPolicy: bookingPolicySchema.nullable().default(null),
+  website: z.string().nullable().default(null),
   payments: z.array(paymentMethodSchema).default([]),
   amenities: z.array(z.string()).default([]),
   hours: z.array(salonHoursSchema).default([]),

@@ -2,9 +2,35 @@
   padding: var(--space8) 0 var(--space12);
 }
 
-.head {
-  margin-bottom: var(--space8);
+/* Шапка: лого слева, справа — название и всё, что относится к самому
+   агентству (статус, сайт, контакты). Разбитый на два блока подряд макет
+   («кто это» / «что рассказывают о себе») читается яснее одного полотна. */
+.headBlock {
+  display: flex;
+  gap: var(--space5);
+  margin-bottom: var(--space6);
   max-width: 720px;
+}
+
+.logo,
+.logoPlaceholder {
+  flex: 0 0 auto;
+  width: 112px;
+  height: 112px;
+  border-radius: var(--radiusLg);
+  border: 1px solid var(--border);
+  background: var(--surfaceMuted);
+}
+
+.logo {
+  object-fit: contain;
+}
+
+.headInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .kind {
@@ -19,40 +45,90 @@
   font-family: var(--fontDisplay);
   font-weight: 700;
   font-size: var(--text3xl);
-  margin: var(--space2) 0 var(--space3);
 }
 
-.address {
+.online {
+  align-self: flex-start;
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--success);
+}
+
+.lastSeen {
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
+}
+
+.website {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space1);
+  color: var(--accent);
+  font-size: var(--textSm);
+  font-weight: 600;
+}
+
+.website svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.website:hover {
+  text-decoration: underline;
+}
+
+.contacts {
+  margin-top: var(--space3);
+  max-width: 360px;
+}
+
+/* Языки, оплата и описание — отдельным блоком под шапкой, а не частью её:
+   это то, что агентство рассказывает о себе, а не кто оно и как его найти. */
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space4);
+  max-width: 720px;
+  padding: var(--space5);
+  margin-bottom: var(--space8);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.infoLabel {
+  font-size: var(--textSm);
+  font-weight: 600;
   color: var(--secondaryText);
-  margin-bottom: var(--space3);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  list-style: none;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  padding: 4px 12px;
+  font-size: var(--textSm);
+  background: var(--surfaceMuted);
 }
 
 .description {
   color: var(--secondaryText);
   line-height: var(--leadingRelaxed);
   white-space: pre-line;
-}
-
-.contacts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space3);
-  margin-top: var(--space4);
-  list-style: none;
-}
-
-.contact {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space2);
-  border: 1px solid var(--border);
-  border-radius: var(--radiusPill);
-  padding: var(--space2) var(--space4);
-  font-size: var(--textSm);
-}
-
-.contactType {
-  color: var(--tertiaryText);
 }
 
 .listTitle {
@@ -63,4 +139,10 @@
 
 .empty {
   color: var(--secondaryText);
+}
+
+@media (max-width: 560px) {
+  .headBlock {
+    flex-wrap: wrap;
+  }
 }

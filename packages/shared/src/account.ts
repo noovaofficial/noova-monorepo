@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { moneySchema, slugSchema } from './common';
+import { moneySchema, slugSchema, websiteSchema } from './common';
 import { paymentMethodSchema } from './company';
 import { contactInputSchema, MAX_CONTACTS_PER_PROFILE, profileContactSchema } from './contact';
 import {
@@ -101,6 +101,7 @@ export const updateProfileSchema = z.object({
   directions: z.string().trim().max(500).nullable().optional(),
   minSessionMinutes: z.number().int().min(15).max(1440).nullable().optional(),
   bookingPolicy: bookingPolicySchema.nullable().optional(),
+  website: websiteSchema.optional(),
   payments: z.array(paymentMethodSchema).max(3).optional(),
   amenities: z.array(amenitySchema).max(AMENITIES.length).optional(),
   hours: salonWeekSchema.optional(),
@@ -176,6 +177,7 @@ export const ownProfileSchema = z.object({
   directions: z.string().nullable(),
   minSessionMinutes: z.number().int().nullable(),
   bookingPolicy: bookingPolicySchema.nullable(),
+  website: z.string().nullable(),
   payments: z.array(paymentMethodSchema),
   amenities: z.array(z.string()),
   hours: z.array(salonHoursSchema),

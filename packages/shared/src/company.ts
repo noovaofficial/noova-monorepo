@@ -10,7 +10,7 @@
  * человека» была бы выдуманной сущностью ради единообразия.
  */
 import { z } from 'zod';
-import { slugSchema } from './common';
+import { slugSchema, websiteSchema } from './common';
 import { contactTypeSchema } from './contact';
 
 /** Компания есть только у агентства: салон — это анкета (N-34). */
@@ -32,6 +32,7 @@ export const companyInputSchema = z.object({
   kind: companyKindSchema,
   name: z.string().trim().min(2).max(120),
   description: z.string().trim().max(4000).optional(),
+  website: websiteSchema.optional(),
   contacts: z.array(companyContactSchema).max(8).default([]),
   /** Языки персонала: коды из SPOKEN_LANGUAGES. */
   languages: z.array(z.string().length(2)).max(8).default([]),
@@ -41,12 +42,16 @@ export const companyInputSchema = z.object({
 
 export type CompanyInput = z.infer<typeof companyInputSchema>;
 
+/** Компания глазами владельца — в кабинете, для правки формы: контакты со
+ *  значениями, логотип своей ссылкой. */
 export const companySchema = z.object({
   id: z.string(),
   slug: z.string(),
   kind: companyKindSchema,
   name: z.string(),
   description: z.string().nullable(),
+  website: z.string().nullable(),
+  logoUrl: z.string().nullable(),
   contacts: z.array(companyContactSchema),
   languages: z.array(z.string()),
   payments: z.array(paymentMethodSchema),
@@ -54,6 +59,31 @@ export const companySchema = z.object({
   profileCount: z.number().int().nonnegative(),
 });
 export type Company = z.infer<typeof companySchema>;
+
+/**
+ * Компания на публичной странице. В отличие от `companySchema`, значений
+ * контактов здесь нет — только типы (`contactTypes`), как у анкеты: это
+ * контакт агентства, но раскрывается он тем же жестом и с тем же лимитом,
+ * что и контакт анкеты (N-31, симметрично N-08).
+ */
+export const companyDetailSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  kind: companyKindSchema,
+  name: z.string(),
+  description: z.string().nullable(),
+  website: z.string().nullable(),
+  logoUrl: z.string().nullable(),
+  languages: z.array(z.string()),
+  payments: z.array(paymentMethodSchema),
+  contactTypes: z.array(contactTypeSchema),
+  /** Онлайн ли агентство прямо сейчас — по самой свежей анкете. */
+  isOnline: z.boolean(),
+  /** `null`, если ни у одной анкеты ещё не было активности. */
+  lastSeenAt: z.string().datetime().nullable(),
+  profileCount: z.number().int().nonnegative(),
+});
+export type CompanyDetail = z.infer<typeof companyDetailSchema>;
 
 /**
  * Компания в публичном представлении анкеты. Посетитель видит и салон, и

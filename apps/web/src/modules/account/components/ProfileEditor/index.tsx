@@ -389,6 +389,10 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
             directions: String(data.get('directions') ?? '').trim() || null,
             minSessionMinutes: num('minSessionMinutes'),
             bookingPolicy: enumValue('bookingPolicy', bookingPolicySchema.options),
+            // Пустая строка и добавление схемы, если её нет, — на сервере
+            // (websiteSchema): та же логика нужна и агентству, дублировать её
+            // здесь незачем.
+            website: String(data.get('website') ?? '').trim(),
             payments,
             amenities: amenities as Amenity[],
             hours: hours
@@ -676,6 +680,23 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   <option value="appointment">{tc('booking_appointment')}</option>
                   <option value="walk_in">{tc('booking_walk_in')}</option>
                 </select>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="website">
+                  {tc('website')}
+                </label>
+                <input
+                  className={styles.input}
+                  id="website"
+                  name="website"
+                  type="text"
+                  inputMode="url"
+                  placeholder="example.com"
+                  defaultValue={profile?.website ?? ''}
+                  maxLength={300}
+                />
+                <span className={styles.hint}>{tc('websiteHint')}</span>
               </div>
 
               <div className={styles.field}>

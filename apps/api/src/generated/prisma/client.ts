@@ -168,7 +168,11 @@ export type Company = Prisma.CompanyModel
 export type ProfileHours = Prisma.ProfileHoursModel
 /**
  * Model CompanyContact
- * 
+ * Контакты компании. Раньше отдавались публично без раскрытия (это контакт
+ * заведения, а не личные данные) — теперь то же правило, что у анкеты:
+ * наружу идут только типы, значения — отдельным маршрутом по явному клику.
+ * Решение владельца продукта: агентство тоже стоит защитить от массового
+ * сбора номеров тем же гейтом (N-31, симметрично N-08).
  */
 export type CompanyContact = Prisma.CompanyContactModel
 /**

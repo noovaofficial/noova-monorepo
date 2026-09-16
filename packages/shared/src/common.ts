@@ -95,6 +95,24 @@ export const booleanFromString = (defaultValue?: boolean) =>
     return undefined;
   }, z.boolean());
 
+/**
+ * Ссылка на сайт (агентства, салона). Схему протокола не требуем от
+ * владельца — «example.com» такой же нормальный ввод, как «+49…» для
+ * телефона без кода страны, и отказ на этом месте выглядел бы придиркой.
+ * Пустая строка нормализуется в `null` здесь же: иначе стереть уже введённую
+ * ссылку в форме было бы нельзя. Проверка `url()` идёт уже после подстановки
+ * схемы, поэтому мусор вроде одного слова без точки всё равно отклоняется.
+ */
+export const websiteSchema = z
+  .string()
+  .trim()
+  .max(300)
+  .transform((value) => {
+    if (value === '') return null;
+    return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  })
+  .pipe(z.string().url().nullable());
+
 export const citySchema = z.object({
   slug: slugSchema,
   name: z.string().min(1),
