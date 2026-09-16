@@ -23,8 +23,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * Тарифы размещения. Цены приходят из прайса на сервере — того же, что
- * правит админ на `/admin/monetization`: витрина и касса не могут разойтись.
+ * Тарифы размещения. Цены individual/salon приходят из прайса на сервере —
+ * того же, что правит админ на `/admin/monetization`: витрина и касса не
+ * могут разойтись. Агентства сюда не попадают: у них сетка тарифов по числу
+ * анкет (payments.md §3.3, D-13), а не одна цена — единое «от X GC» здесь
+ * было бы неточным.
  *
  * Показываем только нижнюю границу — месячный срок. Полная сетка (сроки,
  * бонусная лестница пополнений) живёт в кабинете перед оплатой: на витрине
@@ -58,7 +61,10 @@ export default async function AdvertisingPage({ params }: Props) {
       </div>
 
       <div className={styles.plans}>
-        {PLAN_KINDS.map((kind) => {
+        {/* Агентства сюда не попадают: у них не одна цена, а сетка тарифов
+            по числу анкет (payments.md §3.3, D-13) — единое «от X GC» было
+            бы неточным, кто-то платит заметно больше или меньше. */}
+        {PLAN_KINDS.filter((kind) => kind !== 'agency').map((kind) => {
           // Месячный срок — минимальная цена: начинать разговор с «990 GC»
           // значит отпугнуть ценой, которую никто не обязан платить сразу.
           const gc = book.prices[kind].m1;
@@ -78,6 +84,11 @@ export default async function AdvertisingPage({ params }: Props) {
       </div>
 
       <p className={styles.note}>{t('priceNote')}</p>
+      <p className={styles.note}>
+        {t.rich('agencyPricing', {
+          contact: (chunks) => <Link href="/contact">{chunks}</Link>,
+        })}
+      </p>
 
       <section className={styles.section} style={{ marginTop: 'var(--space8)' }}>
         <h2 className={styles.sectionTitle}>{t('includedTitle')}</h2>

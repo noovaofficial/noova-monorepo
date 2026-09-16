@@ -24,6 +24,7 @@ import { z } from 'zod';
 import { env } from '../../env.js';
 import { BILLING_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { resolveAgencyListingPriceGc } from './agency-tariffs.js';
 import { loadBillingConfig, saveBillingConfig } from './config.js';
 import { activateListing } from './listing.js';
 import {
@@ -192,8 +193,18 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
         throw fastify.httpErrors.forbidden('Размещение доступно только рекламодателю');
       }
 
-      const config = await loadBillingConfig(fastify.prisma);
-      const priceGc = config.prices[user.advertiserKind][request.body.term];
+      // У агентства цена не общая — по тарифу, назначенному его компании
+      // (payments.md §3.3, D-13); у индивидуалки и салона — как и раньше,
+      // из общего прайса.
+      const priceGc =
+        user.advertiserKind === 'agency'
+          ? await resolveAgencyListingPriceGc(fastify.prisma, {
+              ownerId: userId,
+              term: request.body.term,
+            })
+          : (await loadBillingConfig(fastify.prisma)).prices[user.advertiserKind][
+              request.body.term
+            ];
 
       try {
         const { result, restoredSlugs } = await activateListing(fastify.prisma, {

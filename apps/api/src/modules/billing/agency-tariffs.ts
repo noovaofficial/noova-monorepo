@@ -395,3 +395,26 @@ export async function computeAgencyUpgrade(
   });
   return { targetTier, costGc };
 }
+
+/**
+ * Цена продления размещения для агентства (payments.md §3.3, D-13) — из
+ * тарифа, назначенного его компании, с учётом индивидуального override.
+ * Раньше здесь была одна цена на всех из общего прайса (D-07) — тариф её
+ * заменил везде, а не только в лимите и доплате за апгрейд.
+ */
+export async function resolveAgencyListingPriceGc(
+  prisma: PrismaClient,
+  params: { ownerId: string; term: PlanTerm },
+): Promise<number> {
+  const company = await prisma.company.findUnique({
+    where: { ownerId: params.ownerId },
+    select: companyTariffSelect,
+  });
+
+  return effectiveTierPriceGc(
+    params.term,
+    company ? tariffOf(company) : null,
+    company ? customPricesOf(company) : { m1: null, m6: null, m12: null },
+    DEFAULT_BILLING_CONFIG.prices.agency[params.term],
+  );
+}

@@ -18,9 +18,15 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { BillingError, fetchBillingConfig, saveBillingConfig } from '@/modules/billing/api';
-import { useRouter } from '@/shared/i18n/navigation';
+import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './MonetizationSettings.module.css';
+
+/** Агентство здесь не редактируется: цена зависит от тарифа, назначенного
+ *  компании (payments.md §3.3, D-13, заменяет плоский D-07) — правится на
+ *  отдельной странице. Строка в этой сетке была бы декоративной и вводила
+ *  бы в заблуждение, будто одно число касается всех агентств сразу. */
+const EDITABLE_PLAN_KINDS = PLAN_KINDS.filter((kind) => kind !== 'agency');
 
 const TERM_LABEL: Record<PlanTerm, 'term1' | 'term6' | 'term12'> = {
   m1: 'term1',
@@ -291,7 +297,10 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
 
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('pricesSection')}</h2>
-        <p className={styles.hint}>{t('pricesHint')}</p>
+        <p className={styles.hint}>
+          {t('pricesHint')} {t('agencyPricesMoved')}{' '}
+          <Link href="/admin/agency-tariffs">{t('agencyPricesMovedLink')}</Link>.
+        </p>
 
         <div className={`${styles.grid} ${styles.prices}`}>
           <div className={styles.gridHead}>{t('colKind')}</div>
@@ -301,7 +310,7 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
             </div>
           ))}
 
-          {PLAN_KINDS.map((kind) => (
+          {EDITABLE_PLAN_KINDS.map((kind) => (
             <div className={styles.rowGroup} key={kind}>
               <div className={styles.kind}>{ta(KIND_LABEL[kind])}</div>
               {PLAN_TERMS.map((term) => (
