@@ -16,7 +16,8 @@ import type * as Prisma from "../internal/prismaNamespace"
  * Model Listing
  * Оплаченное размещение учётной записи. Отдельная сущность, а не поле в
  * Profile: «оплачено до» без журнала не даёт разобрать спор (N-30).
- * У агентства один листинг покрывает все анкеты — тариф плоский (D-07).
+ * У агентства один листинг покрывает все анкеты; тариф (сколько анкет
+ * входит и цена) назначается отдельно через AgencyTariffTier (D-13).
  */
 export type ListingModel = runtime.Types.Result.DefaultSelection<Prisma.$ListingPayload>
 

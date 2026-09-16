@@ -1,17 +1,24 @@
 'use client';
 
-import { type Locale, PROFILE_LIMIT_BY_ADVERTISER } from '@noova/shared';
+import { type AgencyPaywallInfo, type Locale, PROFILE_LIMIT_BY_ADVERTISER } from '@noova/shared';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { AccountError, createProfile, fetchCities, fetchOwnProfiles } from '@/modules/account/api';
+import {
+  AccountError,
+  createProfile,
+  fetchCities,
+  fetchOwnProfiles,
+  ProfilePaywall,
+} from '@/modules/account/api';
+import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { fetchPriceBook } from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
+import { AgencyPaywallNotice } from '../AgencyPaywallNotice';
 import { ProfileStatusBadge } from '../ProfileStatusBadge';
 
 export function ProfileList() {
@@ -25,11 +32,14 @@ export function ProfileList() {
   const [citySlug, setCitySlug] = useState('');
 
   const enabled = sessionStatus === 'authenticated';
+  const isAgency = user?.advertiserKind === 'agency';
   const list = useQuery({ queryKey: queryKeys.ownProfiles(), queryFn: fetchOwnProfiles, enabled });
-  const book = useQuery({
-    queryKey: queryKeys.priceBook(),
-    queryFn: fetchPriceBook,
-    enabled,
+  // Тариф агентства (payments.md §3.3, D-13): лимит и предложения на
+  // повышение приходят отсюда, а не из общего прайса — у агентства он свой.
+  const tariff = useQuery({
+    queryKey: queryKeys.ownCompanyTariff(),
+    queryFn: fetchOwnCompanyTariff,
+    enabled: enabled && isAgency,
     staleTime: 60 * 1000,
   });
   // Справочник городов меняется раз в год — свежесть держим долгую, иначе
@@ -51,12 +61,31 @@ export function ProfileList() {
   const profiles = list.data ?? null;
   const cities = cityList.data ?? [];
   const creating = create.isPending;
-  const error =
-    create.error instanceof AccountError && create.error.status === 409
+
+  // Лимит агентства достигнут — пейвол показываем сразу из уже загруженного
+  // тарифа, не дожидаясь отказа сервера: кнопка «Создать» при достигнутом
+  // пределе скрыта (см. ниже), и без этого агентство никак не добралось бы
+  // до предложения повысить тариф. Отказ сервера (`ProfilePaywall`, на
+  // случай, если данные успели устареть) остаётся приоритетным источником.
+  const reactivePaywall = create.error instanceof ProfilePaywall ? create.error.info : null;
+  const proactivePaywall: AgencyPaywallInfo | null =
+    isAgency && tariff.data && tariff.data.profileCount >= tariff.data.effectiveLimit
+      ? {
+          currentProfileCount: tariff.data.profileCount,
+          effectiveLimit: tariff.data.effectiveLimit,
+          currentTier: tariff.data.tariffTier,
+          candidateTiers: tariff.data.candidateTiers,
+        }
+      : null;
+  const paywall = reactivePaywall ?? proactivePaywall;
+
+  const error = paywall
+    ? null
+    : create.error instanceof AccountError && create.error.status === 409
       ? 'limitReached'
       : create.isError
         ? 'saveFailed'
-        : list.isError || cityList.isError
+        : list.isError || cityList.isError || (isAgency && tariff.isError)
           ? 'loadFailed'
           : null;
 
@@ -78,13 +107,14 @@ export function ProfileList() {
   // заведённой записи — форма открывалась, а отказ приходил только с сервера.
   // Тип не задан — не блокируем: сервер всё равно проверит, а лишний отказ
   // на пустом месте хуже лишней кнопки.
-  // Предел агентства — из прайса на сервере (D-07): его меняет админ, и
-  // кабинет не должен показывать число из кода, когда настройка другая.
+  // Предел агентства — из его тарифа (payments.md §3.3, D-13): тариф
+  // назначает админ или само агентство через пейвол, и число не общее для
+  // всех, как раньше (D-07), а своё у каждой компании.
   const limit =
     user.advertiserKind === null
       ? null
       : user.advertiserKind === 'agency'
-        ? (book.data?.agencyProfileLimit ?? PROFILE_LIMIT_BY_ADVERTISER.agency)
+        ? (tariff.data?.effectiveLimit ?? PROFILE_LIMIT_BY_ADVERTISER.agency)
         : PROFILE_LIMIT_BY_ADVERTISER[user.advertiserKind];
   const limitReached = profiles !== null && limit !== null && profiles.length >= limit;
 
@@ -121,7 +151,13 @@ export function ProfileList() {
       {user.isEmailVerified ? null : (
         <p className={`${styles.notice} ${styles.noticeWarn}`}>{t('verifyEmailFirst')}</p>
       )}
+      {isAgency && tariff.data && !tariff.data.hasCompany ? (
+        <p className={`${styles.notice} ${styles.noticeWarn}`}>
+          {t('fillCompanyFirst')} <Link href="/account/company">{t('fillCompanyLink')}</Link>
+        </p>
+      ) : null}
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
+      {paywall ? <AgencyPaywallNotice info={paywall} onUpgraded={() => create.reset()} /> : null}
 
       {showForm ? (
         <form className={styles.section} onSubmit={onCreate}>

@@ -28,8 +28,24 @@ export type CompanyModel = runtime.Types.Result.DefaultSelection<Prisma.$Company
 
 export type AggregateCompany = {
   _count: CompanyCountAggregateOutputType | null
+  _avg: CompanyAvgAggregateOutputType | null
+  _sum: CompanySumAggregateOutputType | null
   _min: CompanyMinAggregateOutputType | null
   _max: CompanyMaxAggregateOutputType | null
+}
+
+export type CompanyAvgAggregateOutputType = {
+  customProfileLimit: number | null
+  customPriceM1Gc: number | null
+  customPriceM6Gc: number | null
+  customPriceM12Gc: number | null
+}
+
+export type CompanySumAggregateOutputType = {
+  customProfileLimit: number | null
+  customPriceM1Gc: number | null
+  customPriceM6Gc: number | null
+  customPriceM12Gc: number | null
 }
 
 export type CompanyMinAggregateOutputType = {
@@ -40,6 +56,11 @@ export type CompanyMinAggregateOutputType = {
   description: string | null
   isActive: boolean | null
   ownerId: string | null
+  tariffTierId: string | null
+  customProfileLimit: number | null
+  customPriceM1Gc: number | null
+  customPriceM6Gc: number | null
+  customPriceM12Gc: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +73,11 @@ export type CompanyMaxAggregateOutputType = {
   description: string | null
   isActive: boolean | null
   ownerId: string | null
+  tariffTierId: string | null
+  customProfileLimit: number | null
+  customPriceM1Gc: number | null
+  customPriceM6Gc: number | null
+  customPriceM12Gc: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,11 +92,30 @@ export type CompanyCountAggregateOutputType = {
   payments: number
   isActive: number
   ownerId: number
+  tariffTierId: number
+  customProfileLimit: number
+  customPriceM1Gc: number
+  customPriceM6Gc: number
+  customPriceM12Gc: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type CompanyAvgAggregateInputType = {
+  customProfileLimit?: true
+  customPriceM1Gc?: true
+  customPriceM6Gc?: true
+  customPriceM12Gc?: true
+}
+
+export type CompanySumAggregateInputType = {
+  customProfileLimit?: true
+  customPriceM1Gc?: true
+  customPriceM6Gc?: true
+  customPriceM12Gc?: true
+}
 
 export type CompanyMinAggregateInputType = {
   id?: true
@@ -80,6 +125,11 @@ export type CompanyMinAggregateInputType = {
   description?: true
   isActive?: true
   ownerId?: true
+  tariffTierId?: true
+  customProfileLimit?: true
+  customPriceM1Gc?: true
+  customPriceM6Gc?: true
+  customPriceM12Gc?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +142,11 @@ export type CompanyMaxAggregateInputType = {
   description?: true
   isActive?: true
   ownerId?: true
+  tariffTierId?: true
+  customProfileLimit?: true
+  customPriceM1Gc?: true
+  customPriceM6Gc?: true
+  customPriceM12Gc?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +161,11 @@ export type CompanyCountAggregateInputType = {
   payments?: true
   isActive?: true
   ownerId?: true
+  tariffTierId?: true
+  customProfileLimit?: true
+  customPriceM1Gc?: true
+  customPriceM6Gc?: true
+  customPriceM12Gc?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -149,6 +209,18 @@ export type CompanyAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CompanyAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CompanySumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CompanyMinAggregateInputType
@@ -179,6 +251,8 @@ export type CompanyGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: CompanyCountAggregateInputType | true
+  _avg?: CompanyAvgAggregateInputType
+  _sum?: CompanySumAggregateInputType
   _min?: CompanyMinAggregateInputType
   _max?: CompanyMaxAggregateInputType
 }
@@ -193,9 +267,16 @@ export type CompanyGroupByOutputType = {
   payments: $Enums.PaymentMethod[]
   isActive: boolean
   ownerId: string
+  tariffTierId: string | null
+  customProfileLimit: number | null
+  customPriceM1Gc: number | null
+  customPriceM6Gc: number | null
+  customPriceM12Gc: number | null
   createdAt: Date
   updatedAt: Date
   _count: CompanyCountAggregateOutputType | null
+  _avg: CompanyAvgAggregateOutputType | null
+  _sum: CompanySumAggregateOutputType | null
   _min: CompanyMinAggregateOutputType | null
   _max: CompanyMaxAggregateOutputType | null
 }
@@ -228,11 +309,17 @@ export type CompanyWhereInput = {
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
   ownerId?: Prisma.StringFilter<"Company"> | string
+  tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
+  customProfileLimit?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM1Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM6Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM12Gc?: Prisma.IntNullableFilter<"Company"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   contacts?: Prisma.CompanyContactListRelationFilter
+  tariffTier?: Prisma.XOR<Prisma.AgencyTariffTierNullableScalarRelationFilter, Prisma.AgencyTariffTierWhereInput> | null
 }
 
 export type CompanyOrderByWithRelationInput = {
@@ -245,11 +332,17 @@ export type CompanyOrderByWithRelationInput = {
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  tariffTierId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customProfileLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   contacts?: Prisma.CompanyContactOrderByRelationAggregateInput
+  tariffTier?: Prisma.AgencyTariffTierOrderByWithRelationInput
 }
 
 export type CompanyWhereUniqueInput = Prisma.AtLeast<{
@@ -265,11 +358,17 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
+  tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
+  customProfileLimit?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM1Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM6Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM12Gc?: Prisma.IntNullableFilter<"Company"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   profiles?: Prisma.ProfileListRelationFilter
   contacts?: Prisma.CompanyContactListRelationFilter
+  tariffTier?: Prisma.XOR<Prisma.AgencyTariffTierNullableScalarRelationFilter, Prisma.AgencyTariffTierWhereInput> | null
 }, "id" | "slug" | "ownerId">
 
 export type CompanyOrderByWithAggregationInput = {
@@ -282,11 +381,18 @@ export type CompanyOrderByWithAggregationInput = {
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  tariffTierId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customProfileLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrderInput | Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanyCountOrderByAggregateInput
+  _avg?: Prisma.CompanyAvgOrderByAggregateInput
   _max?: Prisma.CompanyMaxOrderByAggregateInput
   _min?: Prisma.CompanyMinOrderByAggregateInput
+  _sum?: Prisma.CompanySumOrderByAggregateInput
 }
 
 export type CompanyScalarWhereWithAggregatesInput = {
@@ -302,6 +408,11 @@ export type CompanyScalarWhereWithAggregatesInput = {
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
   ownerId?: Prisma.StringWithAggregatesFilter<"Company"> | string
+  tariffTierId?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
+  customProfileLimit?: Prisma.IntNullableWithAggregatesFilter<"Company"> | number | null
+  customPriceM1Gc?: Prisma.IntNullableWithAggregatesFilter<"Company"> | number | null
+  customPriceM6Gc?: Prisma.IntNullableWithAggregatesFilter<"Company"> | number | null
+  customPriceM12Gc?: Prisma.IntNullableWithAggregatesFilter<"Company"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Company"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Company"> | Date | string
 }
@@ -315,11 +426,16 @@ export type CompanyCreateInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  tariffTier?: Prisma.AgencyTariffTierCreateNestedOneWithoutCompaniesInput
 }
 
 export type CompanyUncheckedCreateInput = {
@@ -332,6 +448,11 @@ export type CompanyUncheckedCreateInput = {
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
   ownerId: string
+  tariffTierId?: string | null
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
@@ -347,11 +468,16 @@ export type CompanyUpdateInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  tariffTier?: Prisma.AgencyTariffTierUpdateOneWithoutCompaniesNestedInput
 }
 
 export type CompanyUncheckedUpdateInput = {
@@ -364,6 +490,11 @@ export type CompanyUncheckedUpdateInput = {
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
@@ -380,6 +511,11 @@ export type CompanyCreateManyInput = {
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
   ownerId: string
+  tariffTierId?: string | null
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -393,6 +529,10 @@ export type CompanyUpdateManyMutationInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,6 +547,11 @@ export type CompanyUncheckedUpdateManyInput = {
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -426,8 +571,20 @@ export type CompanyCountOrderByAggregateInput = {
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  tariffTierId?: Prisma.SortOrder
+  customProfileLimit?: Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CompanyAvgOrderByAggregateInput = {
+  customProfileLimit?: Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrder
 }
 
 export type CompanyMaxOrderByAggregateInput = {
@@ -438,6 +595,11 @@ export type CompanyMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  tariffTierId?: Prisma.SortOrder
+  customProfileLimit?: Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -450,13 +612,35 @@ export type CompanyMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
+  tariffTierId?: Prisma.SortOrder
+  customProfileLimit?: Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CompanySumOrderByAggregateInput = {
+  customProfileLimit?: Prisma.SortOrder
+  customPriceM1Gc?: Prisma.SortOrder
+  customPriceM6Gc?: Prisma.SortOrder
+  customPriceM12Gc?: Prisma.SortOrder
 }
 
 export type CompanyScalarRelationFilter = {
   is?: Prisma.CompanyWhereInput
   isNot?: Prisma.CompanyWhereInput
+}
+
+export type CompanyListRelationFilter = {
+  every?: Prisma.CompanyWhereInput
+  some?: Prisma.CompanyWhereInput
+  none?: Prisma.CompanyWhereInput
+}
+
+export type CompanyOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CompanyCreateNestedOneWithoutOwnerInput = {
@@ -543,6 +727,48 @@ export type CompanyUpdateOneRequiredWithoutContactsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CompanyUpdateToOneWithWhereWithoutContactsInput, Prisma.CompanyUpdateWithoutContactsInput>, Prisma.CompanyUncheckedUpdateWithoutContactsInput>
 }
 
+export type CompanyCreateNestedManyWithoutTariffTierInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput> | Prisma.CompanyCreateWithoutTariffTierInput[] | Prisma.CompanyUncheckedCreateWithoutTariffTierInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutTariffTierInput | Prisma.CompanyCreateOrConnectWithoutTariffTierInput[]
+  createMany?: Prisma.CompanyCreateManyTariffTierInputEnvelope
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+}
+
+export type CompanyUncheckedCreateNestedManyWithoutTariffTierInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput> | Prisma.CompanyCreateWithoutTariffTierInput[] | Prisma.CompanyUncheckedCreateWithoutTariffTierInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutTariffTierInput | Prisma.CompanyCreateOrConnectWithoutTariffTierInput[]
+  createMany?: Prisma.CompanyCreateManyTariffTierInputEnvelope
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+}
+
+export type CompanyUpdateManyWithoutTariffTierNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput> | Prisma.CompanyCreateWithoutTariffTierInput[] | Prisma.CompanyUncheckedCreateWithoutTariffTierInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutTariffTierInput | Prisma.CompanyCreateOrConnectWithoutTariffTierInput[]
+  upsert?: Prisma.CompanyUpsertWithWhereUniqueWithoutTariffTierInput | Prisma.CompanyUpsertWithWhereUniqueWithoutTariffTierInput[]
+  createMany?: Prisma.CompanyCreateManyTariffTierInputEnvelope
+  set?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  disconnect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  delete?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  update?: Prisma.CompanyUpdateWithWhereUniqueWithoutTariffTierInput | Prisma.CompanyUpdateWithWhereUniqueWithoutTariffTierInput[]
+  updateMany?: Prisma.CompanyUpdateManyWithWhereWithoutTariffTierInput | Prisma.CompanyUpdateManyWithWhereWithoutTariffTierInput[]
+  deleteMany?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+}
+
+export type CompanyUncheckedUpdateManyWithoutTariffTierNestedInput = {
+  create?: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput> | Prisma.CompanyCreateWithoutTariffTierInput[] | Prisma.CompanyUncheckedCreateWithoutTariffTierInput[]
+  connectOrCreate?: Prisma.CompanyCreateOrConnectWithoutTariffTierInput | Prisma.CompanyCreateOrConnectWithoutTariffTierInput[]
+  upsert?: Prisma.CompanyUpsertWithWhereUniqueWithoutTariffTierInput | Prisma.CompanyUpsertWithWhereUniqueWithoutTariffTierInput[]
+  createMany?: Prisma.CompanyCreateManyTariffTierInputEnvelope
+  set?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  disconnect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  delete?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  connect?: Prisma.CompanyWhereUniqueInput | Prisma.CompanyWhereUniqueInput[]
+  update?: Prisma.CompanyUpdateWithWhereUniqueWithoutTariffTierInput | Prisma.CompanyUpdateWithWhereUniqueWithoutTariffTierInput[]
+  updateMany?: Prisma.CompanyUpdateManyWithWhereWithoutTariffTierInput | Prisma.CompanyUpdateManyWithWhereWithoutTariffTierInput[]
+  deleteMany?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+}
+
 export type CompanyCreateWithoutOwnerInput = {
   id?: string
   slug: string
@@ -552,10 +778,15 @@ export type CompanyCreateWithoutOwnerInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  tariffTier?: Prisma.AgencyTariffTierCreateNestedOneWithoutCompaniesInput
 }
 
 export type CompanyUncheckedCreateWithoutOwnerInput = {
@@ -567,6 +798,11 @@ export type CompanyUncheckedCreateWithoutOwnerInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  tariffTierId?: string | null
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
@@ -598,10 +834,15 @@ export type CompanyUpdateWithoutOwnerInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  tariffTier?: Prisma.AgencyTariffTierUpdateOneWithoutCompaniesNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutOwnerInput = {
@@ -613,6 +854,11 @@ export type CompanyUncheckedUpdateWithoutOwnerInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
@@ -628,10 +874,15 @@ export type CompanyCreateWithoutProfilesInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+  tariffTier?: Prisma.AgencyTariffTierCreateNestedOneWithoutCompaniesInput
 }
 
 export type CompanyUncheckedCreateWithoutProfilesInput = {
@@ -644,6 +895,11 @@ export type CompanyUncheckedCreateWithoutProfilesInput = {
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
   ownerId: string
+  tariffTierId?: string | null
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
@@ -674,10 +930,15 @@ export type CompanyUpdateWithoutProfilesInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+  tariffTier?: Prisma.AgencyTariffTierUpdateOneWithoutCompaniesNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutProfilesInput = {
@@ -690,6 +951,11 @@ export type CompanyUncheckedUpdateWithoutProfilesInput = {
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
@@ -704,10 +970,15 @@ export type CompanyCreateWithoutContactsInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutCompanyInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
+  tariffTier?: Prisma.AgencyTariffTierCreateNestedOneWithoutCompaniesInput
 }
 
 export type CompanyUncheckedCreateWithoutContactsInput = {
@@ -720,6 +991,11 @@ export type CompanyUncheckedCreateWithoutContactsInput = {
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
   ownerId: string
+  tariffTierId?: string | null
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
@@ -750,10 +1026,15 @@ export type CompanyUpdateWithoutContactsInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
+  tariffTier?: Prisma.AgencyTariffTierUpdateOneWithoutCompaniesNestedInput
 }
 
 export type CompanyUncheckedUpdateWithoutContactsInput = {
@@ -766,9 +1047,178 @@ export type CompanyUncheckedUpdateWithoutContactsInput = {
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyCreateWithoutTariffTierInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: boolean
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutCompanyInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyUncheckedCreateWithoutTariffTierInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: boolean
+  ownerId: string
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCompanyInput
+  contacts?: Prisma.CompanyContactUncheckedCreateNestedManyWithoutCompanyInput
+}
+
+export type CompanyCreateOrConnectWithoutTariffTierInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput>
+}
+
+export type CompanyCreateManyTariffTierInputEnvelope = {
+  data: Prisma.CompanyCreateManyTariffTierInput | Prisma.CompanyCreateManyTariffTierInput[]
+  skipDuplicates?: boolean
+}
+
+export type CompanyUpsertWithWhereUniqueWithoutTariffTierInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  update: Prisma.XOR<Prisma.CompanyUpdateWithoutTariffTierInput, Prisma.CompanyUncheckedUpdateWithoutTariffTierInput>
+  create: Prisma.XOR<Prisma.CompanyCreateWithoutTariffTierInput, Prisma.CompanyUncheckedCreateWithoutTariffTierInput>
+}
+
+export type CompanyUpdateWithWhereUniqueWithoutTariffTierInput = {
+  where: Prisma.CompanyWhereUniqueInput
+  data: Prisma.XOR<Prisma.CompanyUpdateWithoutTariffTierInput, Prisma.CompanyUncheckedUpdateWithoutTariffTierInput>
+}
+
+export type CompanyUpdateManyWithWhereWithoutTariffTierInput = {
+  where: Prisma.CompanyScalarWhereInput
+  data: Prisma.XOR<Prisma.CompanyUpdateManyMutationInput, Prisma.CompanyUncheckedUpdateManyWithoutTariffTierInput>
+}
+
+export type CompanyScalarWhereInput = {
+  AND?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+  OR?: Prisma.CompanyScalarWhereInput[]
+  NOT?: Prisma.CompanyScalarWhereInput | Prisma.CompanyScalarWhereInput[]
+  id?: Prisma.StringFilter<"Company"> | string
+  slug?: Prisma.StringFilter<"Company"> | string
+  kind?: Prisma.EnumCompanyKindFilter<"Company"> | $Enums.CompanyKind
+  name?: Prisma.StringFilter<"Company"> | string
+  description?: Prisma.StringNullableFilter<"Company"> | string | null
+  languages?: Prisma.StringNullableListFilter<"Company">
+  payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
+  isActive?: Prisma.BoolFilter<"Company"> | boolean
+  ownerId?: Prisma.StringFilter<"Company"> | string
+  tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
+  customProfileLimit?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM1Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM6Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  customPriceM12Gc?: Prisma.IntNullableFilter<"Company"> | number | null
+  createdAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Company"> | Date | string
+}
+
+export type CompanyCreateManyTariffTierInput = {
+  id?: string
+  slug: string
+  kind: $Enums.CompanyKind
+  name: string
+  description?: string | null
+  languages?: Prisma.CompanyCreatelanguagesInput | string[]
+  payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: boolean
+  ownerId: string
+  customProfileLimit?: number | null
+  customPriceM1Gc?: number | null
+  customPriceM6Gc?: number | null
+  customPriceM12Gc?: number | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CompanyUpdateWithoutTariffTierInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutCompanyNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateWithoutTariffTierInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCompanyNestedInput
+  contacts?: Prisma.CompanyContactUncheckedUpdateManyWithoutCompanyNestedInput
+}
+
+export type CompanyUncheckedUpdateManyWithoutTariffTierInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumCompanyKindFieldUpdateOperationsInput | $Enums.CompanyKind
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  languages?: Prisma.CompanyUpdatelanguagesInput | string[]
+  payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM6Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  customPriceM12Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -821,11 +1271,17 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   payments?: boolean
   isActive?: boolean
   ownerId?: boolean
+  tariffTierId?: boolean
+  customProfileLimit?: boolean
+  customPriceM1Gc?: boolean
+  customPriceM6Gc?: boolean
+  customPriceM12Gc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
   contacts?: boolean | Prisma.Company$contactsArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
@@ -839,9 +1295,15 @@ export type CompanySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   payments?: boolean
   isActive?: boolean
   ownerId?: boolean
+  tariffTierId?: boolean
+  customProfileLimit?: boolean
+  customPriceM1Gc?: boolean
+  customPriceM6Gc?: boolean
+  customPriceM12Gc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
 export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -854,9 +1316,15 @@ export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   payments?: boolean
   isActive?: boolean
   ownerId?: boolean
+  tariffTierId?: boolean
+  customProfileLimit?: boolean
+  customPriceM1Gc?: boolean
+  customPriceM6Gc?: boolean
+  customPriceM12Gc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
 }, ExtArgs["result"]["company"]>
 
 export type CompanySelectScalar = {
@@ -869,22 +1337,30 @@ export type CompanySelectScalar = {
   payments?: boolean
   isActive?: boolean
   ownerId?: boolean
+  tariffTierId?: boolean
+  customProfileLimit?: boolean
+  customPriceM1Gc?: boolean
+  customPriceM6Gc?: boolean
+  customPriceM12Gc?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "languages" | "payments" | "isActive" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "languages" | "payments" | "isActive" | "ownerId" | "tariffTierId" | "customProfileLimit" | "customPriceM1Gc" | "customPriceM6Gc" | "customPriceM12Gc" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
   contacts?: boolean | Prisma.Company$contactsArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
   _count?: boolean | Prisma.CompanyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CompanyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
 }
 export type CompanyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  tariffTier?: boolean | Prisma.Company$tariffTierArgs<ExtArgs>
 }
 
 export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -893,6 +1369,7 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     owner: Prisma.$UserPayload<ExtArgs>
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     contacts: Prisma.$CompanyContactPayload<ExtArgs>[]
+    tariffTier: Prisma.$AgencyTariffTierPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -916,6 +1393,25 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      */
     isActive: boolean
     ownerId: string
+    /**
+     * Тариф из сетки (payments.md §3.3, D-13). `null` — переходное состояние
+     * до первого чтения сетки; в норме назначается при создании компании.
+     */
+    tariffTierId: string | null
+    /**
+     * Индивидуальный потолок анкет — сильнее лимита назначенного тарифа,
+     * если задан. Для ручной договорённости с конкретным агентством без
+     * создания отдельного тарифа в общей сетке под одну компанию.
+     */
+    customProfileLimit: number | null
+    /**
+     * Индивидуальная цена по сроку — сильнее цены назначенного тарифа, если
+     * задана. Три поля, а не JSON: форма известна Prisma и Zod без парсинга,
+     * как и остальные суммы в схеме.
+     */
+    customPriceM1Gc: number | null
+    customPriceM6Gc: number | null
+    customPriceM12Gc: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["company"]>
@@ -1315,6 +1811,7 @@ export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends runtime.
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.Company$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.Company$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tariffTier<T extends Prisma.Company$tariffTierArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Company$tariffTierArgs<ExtArgs>>): Prisma.Prisma__AgencyTariffTierClient<runtime.Types.Result.GetResult<Prisma.$AgencyTariffTierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1353,6 +1850,11 @@ export interface CompanyFieldRefs {
   readonly payments: Prisma.FieldRef<"Company", 'PaymentMethod[]'>
   readonly isActive: Prisma.FieldRef<"Company", 'Boolean'>
   readonly ownerId: Prisma.FieldRef<"Company", 'String'>
+  readonly tariffTierId: Prisma.FieldRef<"Company", 'String'>
+  readonly customProfileLimit: Prisma.FieldRef<"Company", 'Int'>
+  readonly customPriceM1Gc: Prisma.FieldRef<"Company", 'Int'>
+  readonly customPriceM6Gc: Prisma.FieldRef<"Company", 'Int'>
+  readonly customPriceM12Gc: Prisma.FieldRef<"Company", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Company", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Company", 'DateTime'>
 }
@@ -1801,6 +2303,25 @@ export type Company$contactsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.CompanyContactScalarFieldEnum | Prisma.CompanyContactScalarFieldEnum[]
+}
+
+/**
+ * Company.tariffTier
+ */
+export type Company$tariffTierArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AgencyTariffTier
+   */
+  select?: Prisma.AgencyTariffTierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AgencyTariffTier
+   */
+  omit?: Prisma.AgencyTariffTierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgencyTariffTierInclude<ExtArgs> | null
+  where?: Prisma.AgencyTariffTierWhereInput
 }
 
 /**

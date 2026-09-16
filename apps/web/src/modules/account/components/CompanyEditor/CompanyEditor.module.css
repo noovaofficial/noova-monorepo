@@ -5,7 +5,7 @@
 
 .head {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space4);
   flex-wrap: wrap;
@@ -18,26 +18,50 @@
   font-size: var(--text2xl);
 }
 
+/* Ссылка на публичную страницу, статус сохранения и кнопка — одной группой
+   справа от заголовка: форма длинная, и без этого правая половина шапки
+   пустует, а действия над формой видны только после прокрутки до конца. */
+.headActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space2);
+  text-align: right;
+}
+
 .hint {
   color: var(--secondaryText);
   font-size: var(--textSm);
 }
 
-.notice {
+a.hint:hover {
+  color: var(--accent);
+}
+
+.status {
   border-radius: var(--radiusMd);
-  padding: var(--space3) var(--space4);
-  margin-bottom: var(--space4);
+  padding: var(--space1) var(--space3);
   font-size: var(--textSm);
 }
 
-.noticeError {
+.statusError {
   background: var(--dangerSubtle);
   color: var(--danger);
 }
 
-.noticeOk {
+.statusOk {
   background: var(--surfaceMuted);
   color: var(--secondaryText);
+}
+
+/* Своя строка на телефоне: справа выровненный столбик у левого края экрана
+   читается хуже, чем у левого — а по ширине там и так одна колонка. */
+@media (max-width: 560px) {
+  .headActions {
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+  }
 }
 
 .form {
@@ -104,11 +128,6 @@
 
 .contactRow .input {
   flex: 1 1 200px;
-}
-
-.actions {
-  display: flex;
-  gap: var(--space2);
 }
 
 .empty {

@@ -5,10 +5,15 @@ import {
   type AdjustLimit,
   type AdminBillingConfig,
   type AdminPriceBook,
+  type AgencyTariffGrid,
+  type AgencyTariffTier,
+  type AgencyTariffTierInput,
   activateListingResultSchema,
   adjustBalanceResultSchema,
   adjustLimitSchema,
   adminPriceBookSchema,
+  agencyTariffGridSchema,
+  agencyTariffTierSchema,
   type BillingOperations,
   type BuyTopResult,
   billingOperationsSchema,
@@ -28,7 +33,7 @@ import {
   type Wallet,
   walletSchema,
 } from '@noova/shared';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -60,6 +65,9 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
       .catch(() => '');
     throw new BillingError(message || `Запрос ${path} завершился ошибкой`, response.status);
   }
+
+  // 204 приходит без тела: `response.json()` на нём падает разбором.
+  if (response.status === 204) return schema.parse(null);
 
   return schema.parse(await response.json());
 }
@@ -142,3 +150,31 @@ export const buyTop = (profileId: string): Promise<BuyTopResult> =>
     method: 'POST',
     body: JSON.stringify({ profileId }),
   });
+
+// --- Тарифы агентств по числу анкет (payments.md §3.3, D-13) ---------------
+
+/** Общая сетка тарифов — по возрастанию `position`. */
+export const fetchAgencyTariffGrid = (): Promise<AgencyTariffGrid> =>
+  call('/admin/agency-tariffs', agencyTariffGridSchema);
+
+export const createAgencyTariffTier = (input: AgencyTariffTierInput): Promise<AgencyTariffTier> =>
+  call('/admin/agency-tariffs', agencyTariffTierSchema, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+
+export const updateAgencyTariffTier = (
+  id: string,
+  input: AgencyTariffTierInput,
+): Promise<AgencyTariffTier> =>
+  call(`/admin/agency-tariffs/${id}`, agencyTariffTierSchema, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+
+/**
+ * Удаление тарифа. Сервер отказывает 409-м, если тариф ещё назначен
+ * агентствам — компонент показывает это как обычную ошибку сохранения.
+ */
+export const deleteAgencyTariffTier = (id: string): Promise<null> =>
+  call(`/admin/agency-tariffs/${id}`, z.null(), { method: 'DELETE' });

@@ -13,6 +13,7 @@ export const queryKeys = {
   /** Кабинет владельца. */
   ownProfiles: () => ['own-profiles'] as const,
   ownCompany: () => ['own-company'] as const,
+  ownCompanyTariff: () => ['own-company-tariff'] as const,
   ownProfile: (id: string) => ['own-profile', id] as const,
   // Локаль — часть ключа: названия переведены на стороне API, и без неё
   // смена языка отдавала бы прежний список из кэша.
@@ -37,6 +38,9 @@ export const queryKeys = {
   // Локаль в ключе: названия городов приходят с сервера переведёнными.
   campaigns: (locale: string) => ['campaigns', locale] as const,
   billingConfig: () => ['billing-config'] as const,
+  agencyTariffGrid: () => ['agency-tariff-grid'] as const,
+  companies: (query: string) => ['companies', query] as const,
+  companyTariff: (id: string) => ['company-tariff', id] as const,
   /** Свой предел корректировки баланса. Зависит от роли, но роль на сессии одна. */
   adjustLimit: () => ['adjust-limit'] as const,
 

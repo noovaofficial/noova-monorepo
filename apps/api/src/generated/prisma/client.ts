@@ -236,6 +236,21 @@ export type BillingSettings = Prisma.BillingSettingsModel
  */
 export type PriceBookEntry = Prisma.PriceBookEntryModel
 /**
+ * Model AgencyTariffTier
+ * Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет
+ * плоский тариф D-07). Общая сетка на все агентства по умолчанию: диапазон
+ * анкет + цена по сроку. Пусто после миграции — сетка приходит из
+ * seedAgencyTariffDefaults при первом чтении, как и остальные конфигурации
+ * монетизации (BillingSettings/PriceBookEntry/TopupTier).
+ */
+export type AgencyTariffTier = Prisma.AgencyTariffTierModel
+/**
+ * Model AgencyTariffPrice
+ * Цена тарифа агентства по сроку — та же форма, что PriceBookEntry, но
+ * ключ — тариф, а не тип рекламодателя (у агентства тариф теперь не один).
+ */
+export type AgencyTariffPrice = Prisma.AgencyTariffPriceModel
+/**
  * Model TopupTier
  * Бонусная лестница пополнений (payments.md §2.1). Начисление не хранится —
  * считается из курса и бонуса, иначе три числа разойдутся.
@@ -256,7 +271,8 @@ export type BillingTransaction = Prisma.BillingTransactionModel
  * Model Listing
  * Оплаченное размещение учётной записи. Отдельная сущность, а не поле в
  * Profile: «оплачено до» без журнала не даёт разобрать спор (N-30).
- * У агентства один листинг покрывает все анкеты — тариф плоский (D-07).
+ * У агентства один листинг покрывает все анкеты; тариф (сколько анкет
+ * входит и цена) назначается отдельно через AgencyTariffTier (D-13).
  */
 export type Listing = Prisma.ListingModel
 /**

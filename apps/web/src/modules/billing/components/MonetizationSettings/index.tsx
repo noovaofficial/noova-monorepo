@@ -45,6 +45,9 @@ type FormState = {
   rate: string;
   tiers: { eur: string; bonus: string }[];
   prices: Record<PlanKind, Record<PlanTerm, string>>;
+  /** Устаревшее поле (D-07 заменён сеткой тарифов агентств — см. страницу
+   *  «Тарифы агентств», D-13). Здесь только для round-trip: схема сервера
+   *  всё ещё требует его как аварийный fallback, но в форме его не видно. */
   agencyLimit: string;
   topWeek: string;
   topSlots: string;
@@ -156,14 +159,6 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
   const monthlyEur = (gc: string, term: PlanTerm): string => {
     if (gcPerEur <= 0) return '—';
     return t('perMonthShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] });
-  };
-
-  /** Во что обходится агентству одна анкета — единственный способ увидеть,
-   *  осталась ли объёмная скидка при плоском тарифе. */
-  const perProfileEur = (gc: string, term: PlanTerm): string => {
-    const limit = num(form.agencyLimit);
-    if (gcPerEur <= 0 || limit <= 0) return '—';
-    return t('perProfileShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] / limit });
   };
 
   /** €-эквивалент недели по курсу — чтобы цена ТОПа читалась рядом с тарифами. */
@@ -319,34 +314,11 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
                     value={form.prices[kind][term]}
                     onChange={(event) => setPrice(kind, term, event.target.value)}
                   />
-                  <span className={styles.sub}>
-                    {monthlyEur(form.prices[kind][term], term)}
-                    {kind === 'agency' ? (
-                      <> · {perProfileEur(form.prices[kind][term], term)}</>
-                    ) : null}
-                  </span>
+                  <span className={styles.sub}>{monthlyEur(form.prices[kind][term], term)}</span>
                 </div>
               ))}
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('agencySection')}</h2>
-        <p className={styles.hint}>{t('agencyHint')}</p>
-
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="agency-limit">
-            {t('agencyLimit')}
-          </label>
-          <input
-            className={`${styles.input} ${styles.narrow}`}
-            id="agency-limit"
-            inputMode="numeric"
-            value={form.agencyLimit}
-            onChange={(event) => setForm((prev) => ({ ...prev, agencyLimit: event.target.value }))}
-          />
         </div>
       </section>
 

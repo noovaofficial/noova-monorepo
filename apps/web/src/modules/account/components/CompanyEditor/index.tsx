@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AccountError, fetchOwnCompany, saveOwnCompany } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './CompanyEditor.module.css';
 
@@ -103,18 +104,37 @@ export function CompanyEditor() {
     <div className={styles.wrap}>
       <div className={styles.head}>
         <h1 className={styles.title}>{t('cabinetAgency')}</h1>
-        <span className={styles.hint}>
-          {query.data ? t('publicAt', { slug: query.data.slug }) : t('notCreated')}
-        </span>
-      </div>
 
-      {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{error}</p> : null}
-      {saved && !error ? (
-        <p className={`${styles.notice} ${styles.noticeOk}`}>{t('saved')}</p>
-      ) : null}
+        {/* Ссылка, статус и кнопка сохранения — одной группой справа: форма
+            длинная, а действия над ней нужны сразу, не долистывая вниз. */}
+        <div className={styles.headActions}>
+          {query.data ? (
+            <Link
+              className={styles.hint}
+              href={`/company/${query.data.slug}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t('publicAt', { slug: query.data.slug })}
+            </Link>
+          ) : (
+            <span className={styles.hint}>{t('notCreated')}</span>
+          )}
+
+          {error ? <span className={`${styles.status} ${styles.statusError}`}>{error}</span> : null}
+          {saved && !error ? (
+            <span className={`${styles.status} ${styles.statusOk}`}>{t('saved')}</span>
+          ) : null}
+
+          <Button type="submit" form="company-editor-form" disabled={save.isPending}>
+            {t('save')}
+          </Button>
+        </div>
+      </div>
 
       <form
         className={styles.form}
+        id="company-editor-form"
         onSubmit={(event) => {
           event.preventDefault();
           setSaved(false);
@@ -269,12 +289,6 @@ export function CompanyEditor() {
             </Button>
           ) : null}
         </fieldset>
-
-        <div className={styles.actions}>
-          <Button type="submit" disabled={save.isPending}>
-            {t('save')}
-          </Button>
-        </div>
       </form>
     </div>
   );

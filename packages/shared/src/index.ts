@@ -1,4 +1,5 @@
 export * from './account';
+export * from './agency-tariffs';
 export * from './analytics';
 export * from './auth';
 export * from './billing';

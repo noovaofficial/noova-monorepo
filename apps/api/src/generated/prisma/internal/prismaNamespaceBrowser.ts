@@ -81,6 +81,8 @@ export const ModelName = {
   PromoSlot: 'PromoSlot',
   BillingSettings: 'BillingSettings',
   PriceBookEntry: 'PriceBookEntry',
+  AgencyTariffTier: 'AgencyTariffTier',
+  AgencyTariffPrice: 'AgencyTariffPrice',
   TopupTier: 'TopupTier',
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
@@ -363,6 +365,11 @@ export const CompanyScalarFieldEnum = {
   payments: 'payments',
   isActive: 'isActive',
   ownerId: 'ownerId',
+  tariffTierId: 'tariffTierId',
+  customProfileLimit: 'customProfileLimit',
+  customPriceM1Gc: 'customPriceM1Gc',
+  customPriceM6Gc: 'customPriceM6Gc',
+  customPriceM12Gc: 'customPriceM12Gc',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -528,6 +535,31 @@ export const PriceBookEntryScalarFieldEnum = {
 } as const
 
 export type PriceBookEntryScalarFieldEnum = (typeof PriceBookEntryScalarFieldEnum)[keyof typeof PriceBookEntryScalarFieldEnum]
+
+
+export const AgencyTariffTierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  position: 'position',
+  minProfiles: 'minProfiles',
+  maxProfiles: 'maxProfiles',
+  isDefault: 'isDefault',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTariffTierScalarFieldEnum = (typeof AgencyTariffTierScalarFieldEnum)[keyof typeof AgencyTariffTierScalarFieldEnum]
+
+
+export const AgencyTariffPriceScalarFieldEnum = {
+  tierId: 'tierId',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTariffPriceScalarFieldEnum = (typeof AgencyTariffPriceScalarFieldEnum)[keyof typeof AgencyTariffPriceScalarFieldEnum]
 
 
 export const TopupTierScalarFieldEnum = {

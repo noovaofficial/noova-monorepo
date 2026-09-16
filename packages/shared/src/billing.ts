@@ -24,7 +24,7 @@ export type PlanTerm = z.infer<typeof planTermSchema>;
 export const PLAN_TERMS: PlanTerm[] = ['m1', 'm6', 'm12'];
 export const TERM_MONTHS: Record<PlanTerm, number> = { m1: 1, m6: 6, m12: 12 };
 
-const gcPriceSchema = z.number().int().positive().max(1_000_000);
+export const gcPriceSchema = z.number().int().positive().max(1_000_000);
 
 /** Все типы и все сроки обязательны: дырка в сетке — это тариф без цены. */
 export const priceGridSchema = z.record(planKindSchema, z.record(planTermSchema, gcPriceSchema));
@@ -53,7 +53,8 @@ export const billingConfigInputSchema = z.object({
     .min(1)
     .max(12)
     .refine(isAscending, { message: 'Пороги пополнения должны идти по возрастанию' }),
-  /** Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07). */
+  /** Устарело (D-07 заменён тарифной сеткой агентств, см. AgencyTariffTier,
+   *  D-13). Аварийный fallback для компании без назначенного тарифа. */
   agencyProfileLimit: z.number().int().min(1).max(100),
   /** ТОП (§3.4): неделя в GC, всего мест, сколько показывать на главной. */
   top: z

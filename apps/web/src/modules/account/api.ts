@@ -1,4 +1,6 @@
 import {
+  type AgencyPaywallInfo,
+  agencyPaywallInfoSchema,
   type CityOption,
   type Company,
   type CompanyInput,
@@ -125,11 +127,46 @@ export async function deleteProfile(id: string, password: string): Promise<void>
   });
 }
 
-export function createProfile(input: CreateProfileInput): Promise<OwnProfile> {
-  return call('/me/profiles', ownProfileSchema, {
+/**
+ * Отказ по лимиту у агентства несёт не просто сообщение, а данные для
+ * пейвола (тарифы-кандидаты и доплата за каждый) — отдельный класс, чтобы
+ * кабинет мог сразу предложить повышение, а не просто показать текст.
+ */
+export class ProfilePaywall extends Error {
+  constructor(readonly info: AgencyPaywallInfo) {
+    super('profile-limit-paywall');
+    this.name = 'ProfilePaywall';
+  }
+}
+
+/**
+ * Создание анкеты — отдельным запросом, а не через общий `call()`: у 409
+ * форма тела зависит от типа рекламодателя (пейвол агентства или простое
+ * сообщение у индивидуалки/салона), и общий разбор ошибок её бы не различил.
+ */
+export async function createProfile(input: CreateProfileInput): Promise<OwnProfile> {
+  const response = await fetch(`${BASE}/api/v1/me/profiles`, {
     method: 'POST',
+    headers: { 'content-type': 'application/json' },
     body: JSON.stringify(input),
+    credentials: 'include',
+    cache: 'no-store',
   });
+
+  if (response.status === 409) {
+    const body = await response.json().catch(() => null);
+    const paywall = agencyPaywallInfoSchema.safeParse(body);
+    if (paywall.success) throw new ProfilePaywall(paywall.data);
+    throw new AccountError(String((body as { message?: string } | null)?.message ?? ''), 409);
+  }
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    const issues = Array.isArray(body?.issues) ? (body.issues as ValidationIssue[]) : [];
+    throw new AccountError(String(body?.message ?? ''), response.status, issues);
+  }
+
+  return ownProfileSchema.parse(await response.json());
 }
 
 export function updateProfile(id: string, input: UpdateProfileInput): Promise<OwnProfile> {

@@ -1,0 +1,32 @@
+.tierHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space4);
+}
+
+.nameField {
+  flex: 1 1 240px;
+}
+
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  white-space: nowrap;
+}
+
+.rangeRow {
+  display: flex;
+  gap: var(--space4);
+  margin-bottom: var(--space4);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space3);
+  margin-top: var(--space4);
+}

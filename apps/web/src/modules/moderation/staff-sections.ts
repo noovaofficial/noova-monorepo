@@ -21,6 +21,8 @@ export type StaffSection = {
     | 'locations'
     | 'serviceCatalog'
     | 'monetization'
+    | 'agencyTariffs'
+    | 'agencies'
     | 'billingOps'
     | 'campaigns'
     | 'mailAdmin'
@@ -53,6 +55,12 @@ export const STAFF_SECTIONS: StaffSection[] = [
   // Цены и бонусы — деньги проекта, а не операционная работа очереди:
   // модератор их не видит и не меняет.
   { key: 'monetization', href: '/admin/monetization', adminOnly: true, group: 'reference' },
+  // Сетка тарифов агентств по числу анкет (D-13) — то же решение владельца
+  // продукта о деньгах, только своя страница: тарифов несколько, и правка
+  // одной строкой в форме монетизации не поместилась бы.
+  { key: 'agencyTariffs', href: '/admin/agency-tariffs', adminOnly: true, group: 'reference' },
+  // Индивидуальный override тарифа/лимита для конкретного агентства.
+  { key: 'agencies', href: '/admin/companies', adminOnly: true, group: 'reference' },
   // Акции раздают размещения и монеты — то же решение владельца продукта,
   // что и цены, и той же ролью.
   { key: 'campaigns', href: '/admin/campaigns', adminOnly: true, group: 'reference' },

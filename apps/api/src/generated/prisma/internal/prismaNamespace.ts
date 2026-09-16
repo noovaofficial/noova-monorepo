@@ -427,6 +427,8 @@ export const ModelName = {
   PromoSlot: 'PromoSlot',
   BillingSettings: 'BillingSettings',
   PriceBookEntry: 'PriceBookEntry',
+  AgencyTariffTier: 'AgencyTariffTier',
+  AgencyTariffPrice: 'AgencyTariffPrice',
   TopupTier: 'TopupTier',
   BillingTransaction: 'BillingTransaction',
   Listing: 'Listing',
@@ -450,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2674,6 +2676,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AgencyTariffTier: {
+      payload: Prisma.$AgencyTariffTierPayload<ExtArgs>
+      fields: Prisma.AgencyTariffTierFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AgencyTariffTierFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AgencyTariffTierFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        findFirst: {
+          args: Prisma.AgencyTariffTierFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AgencyTariffTierFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        findMany: {
+          args: Prisma.AgencyTariffTierFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>[]
+        }
+        create: {
+          args: Prisma.AgencyTariffTierCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        createMany: {
+          args: Prisma.AgencyTariffTierCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AgencyTariffTierCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>[]
+        }
+        delete: {
+          args: Prisma.AgencyTariffTierDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        update: {
+          args: Prisma.AgencyTariffTierUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        deleteMany: {
+          args: Prisma.AgencyTariffTierDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AgencyTariffTierUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AgencyTariffTierUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>[]
+        }
+        upsert: {
+          args: Prisma.AgencyTariffTierUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffTierPayload>
+        }
+        aggregate: {
+          args: Prisma.AgencyTariffTierAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAgencyTariffTier>
+        }
+        groupBy: {
+          args: Prisma.AgencyTariffTierGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTariffTierGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AgencyTariffTierCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTariffTierCountAggregateOutputType> | number
+        }
+      }
+    }
+    AgencyTariffPrice: {
+      payload: Prisma.$AgencyTariffPricePayload<ExtArgs>
+      fields: Prisma.AgencyTariffPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AgencyTariffPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AgencyTariffPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        findFirst: {
+          args: Prisma.AgencyTariffPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AgencyTariffPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        findMany: {
+          args: Prisma.AgencyTariffPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>[]
+        }
+        create: {
+          args: Prisma.AgencyTariffPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        createMany: {
+          args: Prisma.AgencyTariffPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AgencyTariffPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>[]
+        }
+        delete: {
+          args: Prisma.AgencyTariffPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        update: {
+          args: Prisma.AgencyTariffPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.AgencyTariffPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AgencyTariffPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AgencyTariffPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.AgencyTariffPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTariffPricePayload>
+        }
+        aggregate: {
+          args: Prisma.AgencyTariffPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAgencyTariffPrice>
+        }
+        groupBy: {
+          args: Prisma.AgencyTariffPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTariffPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AgencyTariffPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTariffPriceCountAggregateOutputType> | number
+        }
+      }
+    }
     TopupTier: {
       payload: Prisma.$TopupTierPayload<ExtArgs>
       fields: Prisma.TopupTierFieldRefs
@@ -3561,6 +3711,11 @@ export const CompanyScalarFieldEnum = {
   payments: 'payments',
   isActive: 'isActive',
   ownerId: 'ownerId',
+  tariffTierId: 'tariffTierId',
+  customProfileLimit: 'customProfileLimit',
+  customPriceM1Gc: 'customPriceM1Gc',
+  customPriceM6Gc: 'customPriceM6Gc',
+  customPriceM12Gc: 'customPriceM12Gc',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3726,6 +3881,31 @@ export const PriceBookEntryScalarFieldEnum = {
 } as const
 
 export type PriceBookEntryScalarFieldEnum = (typeof PriceBookEntryScalarFieldEnum)[keyof typeof PriceBookEntryScalarFieldEnum]
+
+
+export const AgencyTariffTierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  position: 'position',
+  minProfiles: 'minProfiles',
+  maxProfiles: 'maxProfiles',
+  isDefault: 'isDefault',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTariffTierScalarFieldEnum = (typeof AgencyTariffTierScalarFieldEnum)[keyof typeof AgencyTariffTierScalarFieldEnum]
+
+
+export const AgencyTariffPriceScalarFieldEnum = {
+  tierId: 'tierId',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTariffPriceScalarFieldEnum = (typeof AgencyTariffPriceScalarFieldEnum)[keyof typeof AgencyTariffPriceScalarFieldEnum]
 
 
 export const TopupTierScalarFieldEnum = {
@@ -4578,6 +4758,8 @@ export type GlobalOmitConfig = {
   promoSlot?: Prisma.PromoSlotOmit
   billingSettings?: Prisma.BillingSettingsOmit
   priceBookEntry?: Prisma.PriceBookEntryOmit
+  agencyTariffTier?: Prisma.AgencyTariffTierOmit
+  agencyTariffPrice?: Prisma.AgencyTariffPriceOmit
   topupTier?: Prisma.TopupTierOmit
   billingTransaction?: Prisma.BillingTransactionOmit
   listing?: Prisma.ListingOmit

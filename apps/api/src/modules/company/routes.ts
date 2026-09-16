@@ -9,11 +9,27 @@
  * имени, и посредника между ней и площадкой нет — на этом стоит правовая
  * позиция само-размещения (L-04).
  */
-import { type CompanyInput, companyInputSchema, companySchema } from '@noova/shared';
+import {
+  agencyTariffUpgradeInputSchema,
+  type CompanyInput,
+  companyInputSchema,
+  companySchema,
+  companyTariffStateSchema,
+} from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireSession } from '../../plugins/session.js';
+import {
+  companyTariffSelect,
+  computeAgencyUpgrade,
+  fallbackAgencyProfileLimit,
+  presentCompanyTariffState,
+  resolveDefaultAgencyTierId,
+  TariffTierNotFoundError,
+  TariffUpgradeNotAllowedError,
+} from '../billing/agency-tariffs.js';
+import { applyMovement, InsufficientBalanceError } from '../billing/wallet.js';
 
 const companySelect = {
   id: true,
@@ -133,11 +149,17 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         isActive,
       };
 
+      // Тариф назначается сразу при заведении компании, а не по факту первой
+      // анкеты сверх лимита: без этого свежая компания на секунду висела бы
+      // без тарифа, и первый же лимит-чек читал бы аварийный fallback.
+      const defaultTariffTierId = await resolveDefaultAgencyTierId(fastify.prisma);
+
       const saved = await fastify.prisma.company.upsert({
         where: { ownerId: userId },
         create: {
           ...fields,
           ownerId: userId,
+          tariffTierId: defaultTariffTierId,
           contacts: { create: contacts.map((c, position) => ({ ...c, position })) },
         },
         update: {
@@ -195,6 +217,118 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       return { attached: request.body.attached };
+    },
+  );
+
+  // --- Тариф по числу анкет (payments.md §3.3, D-13) -----------------------
+
+  fastify.get(
+    '/me/company/tariff',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['account'], response: { 200: companyTariffStateSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await companyOwnerOr403(fastify, userId);
+
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: companyTariffSelect,
+      });
+      const profileCount = await fastify.prisma.profile.count({ where: { ownerId: userId } });
+
+      // Компании ещё нет — обычное состояние сразу после регистрации
+      // агентства (до `PUT /me/company`), а не ошибка обращения: анкеты
+      // можно заводить и без неё. Тарифа тоже пока нет — действует
+      // аварийный fallback, а не отказ загрузки.
+      if (!company) {
+        return {
+          companyId: '',
+          companyName: '',
+          hasCompany: false,
+          profileCount,
+          tariffTier: null,
+          customProfileLimit: null,
+          customPrices: { m1: null, m6: null, m12: null },
+          effectiveLimit: await fallbackAgencyProfileLimit(fastify.prisma),
+          // Апгрейд требует компанию (см. ниже) — без неё показывать тарифы
+          // на выбор нечем: подсказка «заполните данные» уже ведёт куда надо.
+          candidateTiers: [],
+        };
+      }
+
+      return presentCompanyTariffState(fastify.prisma, company, profileCount);
+    },
+  );
+
+  /**
+   * Самостоятельный апгрейд из пейвола: доплата за остаток оплаченного
+   * периода списывается сразу, без одобрения — это покупка, а не заявка.
+   * Сбрасывает индивидуальный override: после апгрейда действует тариф из
+   * сетки, а не прежняя ручная договорённость.
+   */
+  fastify.post(
+    '/me/company/tariff/upgrade',
+    {
+      onRequest: fastify.requireAuth,
+      schema: {
+        tags: ['account'],
+        body: agencyTariffUpgradeInputSchema,
+        response: { 200: companyTariffStateSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await companyOwnerOr403(fastify, userId);
+
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: companyTariffSelect,
+      });
+      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+
+      try {
+        const { targetTier, costGc } = await computeAgencyUpgrade(fastify.prisma, {
+          company,
+          ownerId: userId,
+          input: request.body,
+        });
+
+        await fastify.prisma.$transaction(async (tx) => {
+          await applyMovement(tx, { userId, kind: 'SPEND', gcAmount: -costGc });
+          await tx.company.update({
+            where: { id: company.id },
+            data: {
+              tariffTierId: targetTier.id,
+              customProfileLimit: null,
+              customPriceM1Gc: null,
+              customPriceM6Gc: null,
+              customPriceM12Gc: null,
+            },
+          });
+        });
+
+        const updated = await fastify.prisma.company.findUniqueOrThrow({
+          where: { id: company.id },
+          select: companyTariffSelect,
+        });
+        const profileCount = await fastify.prisma.profile.count({ where: { ownerId: userId } });
+        return presentCompanyTariffState(fastify.prisma, updated, profileCount);
+      } catch (error) {
+        if (error instanceof TariffTierNotFoundError) {
+          throw fastify.httpErrors.badRequest(error.message);
+        }
+        if (error instanceof TariffUpgradeNotAllowedError) {
+          throw fastify.httpErrors.badRequest(error.message);
+        }
+        if (error instanceof InsufficientBalanceError) {
+          throw fastify.httpErrors.conflict(
+            `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
+          );
+        }
+        throw error;
+      }
     },
   );
 };

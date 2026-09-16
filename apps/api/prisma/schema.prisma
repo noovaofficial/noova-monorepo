@@ -654,6 +654,23 @@ model Company {
   profiles Profile[]
   contacts CompanyContact[]
 
+  /// Тариф из сетки (payments.md §3.3, D-13). `null` — переходное состояние
+  /// до первого чтения сетки; в норме назначается при создании компании.
+  tariffTierId String?
+  tariffTier   AgencyTariffTier? @relation(fields: [tariffTierId], references: [id], onDelete: SetNull)
+
+  /// Индивидуальный потолок анкет — сильнее лимита назначенного тарифа,
+  /// если задан. Для ручной договорённости с конкретным агентством без
+  /// создания отдельного тарифа в общей сетке под одну компанию.
+  customProfileLimit Int?
+
+  /// Индивидуальная цена по сроку — сильнее цены назначенного тарифа, если
+  /// задана. Три поля, а не JSON: форма известна Prisma и Zod без парсинга,
+  /// как и остальные суммы в схеме.
+  customPriceM1Gc  Int?
+  customPriceM6Gc  Int?
+  customPriceM12Gc Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -907,7 +924,10 @@ model BillingSettings {
   id                     String   @id @default("default")
   /// Витринный курс: сколько GC за 1 €. Реальная цена ниже за счёт бонуса.
   gcPerEur               Float
-  /// Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07).
+  /// Устарело (D-07 заменён тарифной сеткой агентств, см. AgencyTariffTier,
+  /// D-13). Аварийный fallback для компании без назначенного тарифа — в
+  /// норме не должен срабатывать: миграция и создание компании назначают
+  /// тариф сразу.
   agencyProfileLimit     Int
   /// ТОП (payments.md §3.4): цена недели, всего мест и сколько показывать на главной.
   topWeekGc              Int      @default(300)
@@ -931,6 +951,49 @@ model PriceBookEntry {
   updatedAt DateTime       @updatedAt
 
   @@id([kind, term])
+}
+
+/// Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет
+/// плоский тариф D-07). Общая сетка на все агентства по умолчанию: диапазон
+/// анкет + цена по сроку. Пусто после миграции — сетка приходит из
+/// seedAgencyTariffDefaults при первом чтении, как и остальные конфигурации
+/// монетизации (BillingSettings/PriceBookEntry/TopupTier).
+model AgencyTariffTier {
+  id   String @id @default(cuid())
+  name String
+
+  /// Порядок в интерфейсе и при выборе «следующего» тарифа в пейволе — не
+  /// по minProfiles: диапазоны могут пересекаться (акционный тариф на тот
+  /// же охват анкет), и выбор кандидата должен решаться однозначно.
+  position    Int @unique
+  minProfiles Int
+  maxProfiles Int
+
+  /// Ровно один тариф — тариф по умолчанию: на него садится новая компания
+  /// при заведении и агентства без назначения после миграции.
+  isDefault Boolean @default(false)
+  isActive  Boolean @default(true)
+
+  prices    AgencyTariffPrice[]
+  companies Company[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([minProfiles, maxProfiles])
+}
+
+/// Цена тарифа агентства по сроку — та же форма, что PriceBookEntry, но
+/// ключ — тариф, а не тип рекламодателя (у агентства тариф теперь не один).
+model AgencyTariffPrice {
+  tierId String
+  tier   AgencyTariffTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
+  term   PlanTerm
+  gc     Int
+
+  updatedAt DateTime @updatedAt
+
+  @@id([tierId, term])
 }
 
 /// Бонусная лестница пополнений (payments.md §2.1). Начисление не хранится —
@@ -978,7 +1041,8 @@ model BillingTransaction {
 
 /// Оплаченное размещение учётной записи. Отдельная сущность, а не поле в
 /// Profile: «оплачено до» без журнала не даёт разобрать спор (N-30).
-/// У агентства один листинг покрывает все анкеты — тариф плоский (D-07).
+/// У агентства один листинг покрывает все анкеты; тариф (сколько анкет
+/// входит и цена) назначается отдельно через AgencyTariffTier (D-13).
 model Listing {
   id     String @id @default(cuid())
   userId String

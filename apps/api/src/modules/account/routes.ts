@@ -1,8 +1,10 @@
 import {
+  agencyPaywallInfoSchema,
   type ContactInput,
   cityOptionSchema,
   createProfileSchema,
   deleteAccountSchema,
+  effectiveProfileLimit,
   LISTING_KIND_BY_ADVERTISER,
   normalizeContact,
   ownProfileSchema,
@@ -20,6 +22,7 @@ import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { verifyPassword } from '../auth/passwords.js';
+import { buildAgencyPaywallInfo, companyTariffSelect } from '../billing/agency-tariffs.js';
 import { loadBillingConfig } from '../billing/config.js';
 import { hasVisibleListing } from '../billing/listing.js';
 import { toOwnPhoto } from '../photos/routes.js';
@@ -244,32 +247,59 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['account'],
         body: createProfileSchema,
-        response: { 201: ownProfileSchema },
+        // 409 у агентства несёт не просто отказ, а данные для пейвола:
+        // тарифы-кандидаты и доплату за каждый, чтобы кабинет мог сразу
+        // предложить повышение, а не только сказать «лимит достигнут». У
+        // индивидуалки и салона тарифа нет — там это просто сообщение, и
+        // оба варианта объединены в один ответ явно, а не через общий
+        // обработчик ошибок: у него для 409 своей схемы нет.
+        response: {
+          201: ownProfileSchema,
+          409: z.union([agencyPaywallInfoSchema, z.object({ message: z.string() })]),
+        },
       },
     },
     async (request, reply) => {
       const { userId } = requireSession(request);
       const { advertiserKind } = await advertiserOr403(fastify, userId);
 
-      // Предел агентства — из конфигурации монетизации (D-07): тариф плоский,
-      // и число анкет в нём меняет админ, а не выкладка.
-      const limit =
+      // У агентства предел и цена зависят от тарифа, назначенного компании
+      // (payments.md §3.3, D-13 — заменяет плоский тариф D-07); у остальных
+      // типов предел фиксирован в коде.
+      const company =
         advertiserKind === 'agency'
-          ? (await loadBillingConfig(fastify.prisma)).agencyProfileLimit
-          : PROFILE_LIMIT_BY_ADVERTISER[advertiserKind];
+          ? await fastify.prisma.company.findUnique({
+              where: { ownerId: userId },
+              select: companyTariffSelect,
+            })
+          : null;
       const existing = await fastify.prisma.profile.count({ where: { ownerId: userId } });
-      if (existing >= limit) {
-        throw fastify.httpErrors.conflict(
-          advertiserKind === 'individual'
-            ? 'У индивидуальной анкеты может быть только одна анкета'
-            : 'Достигнут лимит анкет',
-        );
-      }
 
-      const company = await fastify.prisma.company.findUnique({
-        where: { ownerId: userId },
-        select: { id: true },
-      });
+      if (advertiserKind === 'agency') {
+        const limit = effectiveProfileLimit(
+          company?.tariffTier ?? null,
+          company?.customProfileLimit ?? null,
+          (await loadBillingConfig(fastify.prisma)).agencyProfileLimit,
+        );
+        if (existing >= limit) {
+          const paywall = await buildAgencyPaywallInfo(fastify.prisma, {
+            company,
+            ownerId: userId,
+            existingCount: existing,
+          });
+          return reply.status(409).send(paywall);
+        }
+      } else {
+        const limit = PROFILE_LIMIT_BY_ADVERTISER[advertiserKind];
+        if (existing >= limit) {
+          return reply.status(409).send({
+            message:
+              advertiserKind === 'individual'
+                ? 'У индивидуальной анкеты может быть только одна анкета'
+                : 'Достигнут лимит анкет',
+          });
+        }
+      }
 
       const city = await fastify.prisma.city.findUnique({
         where: { slug: request.body.citySlug },

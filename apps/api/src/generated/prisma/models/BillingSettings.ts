@@ -512,7 +512,10 @@ export type $BillingSettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
      */
     gcPerEur: number
     /**
-     * Сколько анкет входит в тариф агентства. Потолок, не порог доплаты (D-07).
+     * Устарело (D-07 заменён тарифной сеткой агентств, см. AgencyTariffTier,
+     * D-13). Аварийный fallback для компании без назначенного тарифа — в
+     * норме не должен срабатывать: миграция и создание компании назначают
+     * тариф сразу.
      */
     agencyProfileLimit: number
     /**
