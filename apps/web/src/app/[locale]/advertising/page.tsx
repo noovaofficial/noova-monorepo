@@ -5,20 +5,24 @@ import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import styles from '@/modules/content/components/ContentPage/ContentPage.module.css';
 import { fetchPriceBook, safely } from '@/shared/api';
 import { Link } from '@/shared/i18n/navigation';
+import { socialMeta } from '@/shared/metadata';
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'advertising' });
+  const title = t('title');
+  const description = t('lead');
 
   return {
-    title: t('title'),
-    description: t('lead'),
+    title,
+    description,
     alternates: {
       canonical: `/${locale}/advertising`,
       languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/advertising`])),
     },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

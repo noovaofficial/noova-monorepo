@@ -1,10 +1,13 @@
 {
   "meta": {
     "siteName": "Noova",
-    "homeTitle": "Escortes et salons de massage à {city}",
-    "homeDescription": "Noova est un annuaire d'annonces réservé aux adultes (18+). Profils vérifiés, tarifs transparents, vérification de l'âge et de l'identité.",
-    "profileTitle": "{name} — {city}",
-    "profileDescription": "{name}, {city}. Profil vérifié sur Noova. Services, tarifs et détails."
+    "homeTitle": "Rendez-vous intimes | Rencontres érotiques | Services d'escort à {city}",
+    "homeDescription": "Noova est un annuaire d'annonces vérifiées pour adultes (18+) : escortes et salons de massage. Vraies photos, vérification de l'âge et de l'identité, prix honnêtes.",
+    "cityHomeDescription": "Profils d'escortes et salons de massage à {city} : profils vérifiés, vraies photos, vérification d'identité. Consultez les annonces et contactez directement.",
+    "profileTitleEscort": "Rendez-vous intime avec {name} à {city}",
+    "profileTitleMassage": "{name} — Intime | Massage à {city}",
+    "profileDescriptionEscort": "Rendez-vous intime avec {name} à {city}. Profil vérifié sur Noova : vraies photos, services, tarifs et contacts.",
+    "profileDescriptionMassage": "{name} — salon de massage à {city} sur Noova : services, tarifs, horaires et contacts."
   },
   "nav": {
     "login": "Se connecter",
@@ -35,8 +38,10 @@
     "clearGroup": "Effacer",
     "empty": "Aucun résultat",
     "emptyHint": "Essayez de retirer un filtre.",
-    "catalogEscort": "Profils à {city}",
+    "catalogEscort": "Profils d’escortes à {city}",
+    "catalogEscortDescription": "Profils d’escortes à {city} avec des filtres d’apparence, de services et de prix. Profils vérifiés, vraies photos.",
     "catalogMassage": "Salons de massage à {city}",
+    "catalogMassageDescription": "Salons de massage à {city} : filtrez par service et prix, établissements vérifiés.",
     "top": "TOP",
     "online": "En ligne maintenant",
     "bdsm": "BDSM",
@@ -726,6 +731,7 @@
   },
   "map": {
     "title": "Profils sur la carte",
+    "description": "Profils d’escortes et salons de massage sur la carte. Un marqueur indique une zone, pas une adresse exacte.",
     "backToList": "Voir en liste",
     "loading": "Chargement…",
     "found": "{count, plural, one {# profil} other {# profils}}",
@@ -1051,8 +1057,8 @@
     "districtCount": "{count, plural, one {# quartier} other {# quartiers}}"
   },
   "cityPicker": {
-    "title": "Choisissez une ville",
-    "description": "Le catalogue est organisé par ville.",
+    "title": "Rendez-vous intimes | Rencontres érotiques | Services d'escort",
+    "description": "Profils vérifiés pour rencontres intimes et services d'escort : vraies photos, vérification de l'âge et de l'identité, prix honnêtes. Choisissez une ville pour voir les profils.",
     "empty": "Aucune ville pour l'instant",
     "switchLabel": "Ville"
   },
@@ -1082,7 +1088,8 @@
   "company": {
     "salon": "Salon de massage",
     "agency": "Agence",
-    "titleAgency": "Agence {name}",
+    "titleAgency": "{name} — Services d'escort et rendez-vous intimes",
+    "agencyDescriptionFallback": "{name} — agence sur Noova : profils d'escortes vérifiés, contacts à jour et conditions de collaboration.",
     "profiles": "{count, plural, one {# annonce} other {# annonces}}",
     "noProfiles": "Aucune annonce publiée pour l'instant",
     "lastSeenAt": "Dernière connexion {date}",

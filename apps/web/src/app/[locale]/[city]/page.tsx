@@ -14,6 +14,7 @@ import {
 } from '@/shared/api';
 import { requireCity } from '@/shared/city';
 import { Link } from '@/shared/i18n/navigation';
+import { socialMeta } from '@/shared/metadata';
 import styles from './page.module.css';
 
 // Главная перегенерируется раз в 5 минут: листинг меняется часто, но не настолько,
@@ -26,10 +27,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, city } = await params;
   const tm = await getTranslations({ locale, namespace: 'meta' });
   const found = await requireCity(locale, city);
+  const title = tm('homeTitle', { city: found.name });
+  const description = tm('cityHomeDescription', { city: found.name });
 
   return {
-    title: tm('homeTitle', { city: found.name }),
-    description: tm('homeDescription'),
+    title,
+    description,
     alternates: {
       canonical: `/${locale}/${city}`,
       // hreflang: каждый язык — отдельный документ, иначе они конкурируют
@@ -40,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'x-default': `/${DEFAULT_LOCALE}/${city}`,
       },
     },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

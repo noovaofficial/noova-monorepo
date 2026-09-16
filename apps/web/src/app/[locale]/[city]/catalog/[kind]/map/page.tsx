@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { CatalogMap } from '@/modules/catalog/components/CatalogMap';
 import { requireCity } from '@/shared/city';
+import { socialMeta } from '@/shared/metadata';
 
 type Props = { params: Promise<{ locale: Locale; city: string; kind: string }> };
 
@@ -13,15 +14,19 @@ const KINDS: ListingKind[] = ['escort', 'massage'];
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'map' });
+  const title = t('title');
+  const description = t('description');
 
   return {
-    title: t('title'),
+    title,
+    description,
     /**
      * Карта не индексируется. Она не несёт текста, который стоило бы искать,
      * и дублирует содержимое каталога — а дубль в индексе только отнимает
      * вес у самого каталога.
      */
     robots: { index: false, follow: true },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

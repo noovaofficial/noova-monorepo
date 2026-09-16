@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
 import { CompanyContactsCard } from '@/modules/contacts/components/CompanyContactsCard';
 import { ApiError, fetchCompany } from '@/shared/api';
+import { socialMeta } from '@/shared/metadata';
 import styles from './page.module.css';
 
 export const revalidate = 600;
@@ -33,10 +34,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!company) return { title: 'Noova' };
 
   const t = await getTranslations({ locale, namespace: 'company' });
+  const title = t('titleAgency', { name: company.name });
+  // Собственный текст агентства уникальнее шаблона — используем его, когда
+  // он есть, и шаблонный фоллбэк только когда агентство ничего не написало.
+  const description = company.description || t('agencyDescriptionFallback', { name: company.name });
+
   return {
-    title: t('titleAgency', { name: company.name }),
-    description: company.description ?? undefined,
+    title,
+    description,
     alternates: { canonical: `/${locale}/company/${slug}` },
+    ...socialMeta({ title, description, image: company.logoUrl ?? undefined, locale }),
   };
 }
 

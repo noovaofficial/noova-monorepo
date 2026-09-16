@@ -2,6 +2,7 @@ import { LOCALES } from '@noova/shared';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import styles from '@/modules/content/components/ContentPage/ContentPage.module.css';
+import { socialMeta } from '@/shared/metadata';
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -24,14 +25,17 @@ const CONTACTS = [
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'contact' });
+  const title = t('title');
+  const description = t('lead');
 
   return {
-    title: t('title'),
-    description: t('lead'),
+    title,
+    description,
     alternates: {
       canonical: `/${locale}/contact`,
       languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/contact`])),
     },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

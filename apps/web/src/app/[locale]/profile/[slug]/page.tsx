@@ -20,6 +20,7 @@ import { ReportProfile } from '@/modules/reports/components/ReportProfile';
 import { ApiError, fetchComments, fetchNearby, fetchProfile } from '@/shared/api';
 import { durationKey, formatMoney } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
+import { socialMeta } from '@/shared/metadata';
 import styles from './page.module.css';
 
 // ISR: страница анкеты редко меняется, но должна подхватывать правки без редеплоя.
@@ -34,23 +35,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const profile = await fetchProfile(slug, { revalidate, locale });
     const tm = await getTranslations({ locale, namespace: 'meta' });
-    const title = tm('profileTitle', { name: profile.displayName, city: profile.city.name });
+    const vars = { name: profile.displayName, city: profile.city.name };
+    const title = tm(
+      profile.kind === 'massage' ? 'profileTitleMassage' : 'profileTitleEscort',
+      vars,
+    );
+    const description = tm(
+      profile.kind === 'massage' ? 'profileDescriptionMassage' : 'profileDescriptionEscort',
+      vars,
+    );
+
+    const social = socialMeta({ title, description, image: profile.photos[0]?.url, locale });
 
     return {
       title,
-      description: tm('profileDescription', {
-        name: profile.displayName,
-        city: profile.city.name,
-      }),
+      description,
       alternates: {
         canonical: `/${locale}/profile/${slug}`,
         languages: Object.fromEntries(LOCALES.map((l) => [l, `/${l}/profile/${slug}`])),
       },
-      openGraph: {
-        title,
-        type: 'profile',
-        images: profile.photos[0] ? [{ url: profile.photos[0].url }] : undefined,
-      },
+      ...social,
+      openGraph: { ...social.openGraph, type: 'profile' },
     };
   } catch {
     // Метаданные не должны ронять страницу — 404 отдаст сам компонент.

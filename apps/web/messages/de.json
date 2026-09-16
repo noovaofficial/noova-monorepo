@@ -1,10 +1,13 @@
 {
   "meta": {
     "siteName": "Noova",
-    "homeTitle": "Begleitung und Massagestudios in {city}",
-    "homeDescription": "Noova ist ein Anzeigenverzeichnis für Erwachsene (18+). Verifizierte Anzeigen, transparente Preise, Alters- und Identitätsprüfung.",
-    "profileTitle": "{name} — {city}",
-    "profileDescription": "{name}, {city}. Verifizierte Anzeige auf Noova. Services, Preise und Angaben."
+    "homeTitle": "Intimdates | Erotische Dates | Escort-Service in {city}",
+    "homeDescription": "Noova ist ein Verzeichnis verifizierter Anzeigen für Erwachsene (18+): Escort und Massagestudios. Echte Fotos, Alters- und Identitätsprüfung, faire Preise.",
+    "cityHomeDescription": "Escort-Anzeigen und Massagestudios in {city}: verifizierte Profile, echte Fotos, Identitätsprüfung. Anzeigen ansehen und direkt Kontakt aufnehmen.",
+    "profileTitleEscort": "Intimdate mit {name} in {city}",
+    "profileTitleMassage": "{name} — Intim | Massage in {city}",
+    "profileDescriptionEscort": "Intimdate mit {name} in {city}. Verifizierte Anzeige auf Noova: echte Fotos, Services, Preise und Kontakte.",
+    "profileDescriptionMassage": "{name} — Massagestudio in {city} auf Noova: Services, Preise, Öffnungszeiten und Kontakte."
   },
   "nav": {
     "login": "Anmelden",
@@ -35,8 +38,10 @@
     "clearGroup": "Leeren",
     "empty": "Nichts gefunden",
     "emptyHint": "Entfernen Sie einige Filter.",
-    "catalogEscort": "Anzeigen in {city}",
+    "catalogEscort": "Escort-Anzeigen in {city}",
+    "catalogEscortDescription": "Escort-Anzeigen in {city} mit Filtern nach Aussehen, Services und Preis. Verifizierte Profile, echte Fotos.",
     "catalogMassage": "Massagestudios in {city}",
+    "catalogMassageDescription": "Massagestudios in {city}: Filter nach Service und Preis, verifizierte Studios.",
     "top": "TOP",
     "online": "Jetzt online",
     "bdsm": "BDSM",
@@ -726,6 +731,7 @@
   },
   "map": {
     "title": "Profile auf der Karte",
+    "description": "Escort-Anzeigen und Massagestudios auf der Karte. Eine Markierung zeigt einen Bereich, keine genaue Adresse.",
     "backToList": "Als Liste",
     "loading": "Wird geladen…",
     "found": "{count, plural, one {# Profil} other {# Profile}}",
@@ -1051,8 +1057,8 @@
     "districtCount": "{count, plural, one {# Bezirk} other {# Bezirke}}"
   },
   "cityPicker": {
-    "title": "Stadt wählen",
-    "description": "Der Katalog wird nach Stadt geführt.",
+    "title": "Intimdates | Erotische Dates | Escort-Service",
+    "description": "Verifizierte Anzeigen für Intimdates und Escort-Service: echte Fotos, Alters- und Identitätsprüfung, faire Preise. Stadt wählen, um Anzeigen zu sehen.",
     "empty": "Noch keine Städte",
     "switchLabel": "Stadt"
   },
@@ -1082,7 +1088,8 @@
   "company": {
     "salon": "Massagestudio",
     "agency": "Agentur",
-    "titleAgency": "Agentur {name}",
+    "titleAgency": "{name} — Escort-Service und Intimdates",
+    "agencyDescriptionFallback": "{name} — Agentur auf Noova: verifizierte Escort-Anzeigen, aktuelle Kontakte und Konditionen der Zusammenarbeit.",
     "profiles": "{count, plural, one {# Anzeige} other {# Anzeigen}}",
     "noProfiles": "Noch keine veröffentlichten Anzeigen",
     "lastSeenAt": "Zuletzt online {date}",

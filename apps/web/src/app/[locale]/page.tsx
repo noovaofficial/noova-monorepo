@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { redirectToSingleCity } from '@/shared/city';
 import { Link } from '@/shared/i18n/navigation';
+import { socialMeta } from '@/shared/metadata';
 import styles from './cities.module.css';
 
 export const revalidate = 300;
@@ -12,10 +13,12 @@ type Props = { params: Promise<{ locale: Locale }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'cityPicker' });
+  const title = t('title');
+  const description = t('description');
 
   return {
-    title: t('title'),
-    description: t('description'),
+    title,
+    description,
     alternates: {
       canonical: `/${locale}`,
       languages: {
@@ -23,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'x-default': '/de',
       },
     },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

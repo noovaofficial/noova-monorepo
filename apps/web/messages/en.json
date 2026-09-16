@@ -1,10 +1,13 @@
 {
   "meta": {
     "siteName": "Noova",
-    "homeTitle": "Escorts and massage studios in {city}",
-    "homeDescription": "Noova is an adults-only (18+) listings directory. Verified profiles, transparent pricing, age and identity verification.",
-    "profileTitle": "{name} — {city}",
-    "profileDescription": "{name}, {city}. Verified profile on Noova. Services, rates and details."
+    "homeTitle": "Intim dates | Erotic dates | Escort services in {city}",
+    "homeDescription": "Noova is a directory of verified adult (18+) listings: escorts and massage studios. Real photos, age and identity verification, honest prices.",
+    "cityHomeDescription": "Escort profiles and massage studios in {city}: verified profiles, real photos, identity verification. Browse listings and get in touch directly.",
+    "profileTitleEscort": "Intim date with {name} in {city}",
+    "profileTitleMassage": "{name} — Intim | Massage in {city}",
+    "profileDescriptionEscort": "Intim date with {name} in {city}. Verified profile on Noova: real photos, services, rates and contacts.",
+    "profileDescriptionMassage": "{name} — a massage studio in {city} on Noova: services, prices, opening hours and contacts."
   },
   "nav": {
     "login": "Log in",
@@ -35,8 +38,10 @@
     "clearGroup": "Clear",
     "empty": "Nothing found",
     "emptyHint": "Try removing some filters.",
-    "catalogEscort": "Profiles in {city}",
+    "catalogEscort": "Escort profiles in {city}",
+    "catalogEscortDescription": "Escort profiles in {city} with filters for appearance, services and price. Verified profiles, real photos.",
     "catalogMassage": "Massage studios in {city}",
+    "catalogMassageDescription": "Massage studios in {city}: filter by service and price, verified venues.",
     "top": "TOP",
     "online": "Online now",
     "bdsm": "BDSM",
@@ -726,6 +731,7 @@
   },
   "map": {
     "title": "Profiles on the map",
+    "description": "Escort profiles and massage studios on the map. A marker shows an area, not an exact address.",
     "backToList": "As a list",
     "loading": "Loading…",
     "found": "{count, plural, one {# profile} other {# profiles}}",
@@ -1051,8 +1057,8 @@
     "districtCount": "{count, plural, one {# district} other {# districts}}"
   },
   "cityPicker": {
-    "title": "Choose a city",
-    "description": "The catalogue is organised by city.",
+    "title": "Intim dates | Erotic dates | Escort services",
+    "description": "Verified profiles for intim dates and escort services: real photos, age and identity verification, honest prices. Choose a city to see profiles.",
     "empty": "No cities yet",
     "switchLabel": "City"
   },
@@ -1082,7 +1088,8 @@
   "company": {
     "salon": "Massage studio",
     "agency": "Agency",
-    "titleAgency": "Agency {name}",
+    "titleAgency": "{name} — Escort services and intim dates",
+    "agencyDescriptionFallback": "{name} — an agency on Noova: verified escort profiles, up-to-date contacts and terms of cooperation.",
     "profiles": "{count, plural, one {# listing} other {# listings}}",
     "noProfiles": "No published listings yet",
     "lastSeenAt": "Last online {date}",

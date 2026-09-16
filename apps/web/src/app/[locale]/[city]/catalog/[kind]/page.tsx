@@ -6,6 +6,7 @@ import { CatalogResults } from '@/modules/catalog/components/CatalogResults';
 import { parseFilters } from '@/modules/filters/params';
 import { fetchProfileCount, fetchProfiles, safely } from '@/shared/api';
 import { requireCity } from '@/shared/city';
+import { socialMeta } from '@/shared/metadata';
 import styles from './page.module.css';
 
 type Props = {
@@ -52,15 +53,19 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const { locale, city, kind } = await params;
   const search = await searchParams;
   const t = await getTranslations({ locale, namespace: 'filters' });
+  const isMassage = kind === 'massage';
+  const cityName = (await requireCity(locale, city)).name;
 
-  const title = t(kind === 'massage' ? 'catalogMassage' : 'catalogEscort', {
-    city: (await requireCity(locale, city)).name,
+  const title = t(isMassage ? 'catalogMassage' : 'catalogEscort', { city: cityName });
+  const description = t(isMassage ? 'catalogMassageDescription' : 'catalogEscortDescription', {
+    city: cityName,
   });
 
   const filtered = appliedFilterCount(search) > 0;
 
   return {
     title,
+    description,
     alternates: {
       // canonical всегда на базовый срез: страницы выдачи — это один и тот же
       // раздел, а не разные документы.
@@ -70,6 +75,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     // только базовый срез, остальное закрываем — иначе поисковик утонет
     // в дублях, и от этого пострадают основные страницы.
     robots: filtered ? { index: false, follow: true } : { index: true, follow: true },
+    ...socialMeta({ title, description, locale }),
   };
 }
 

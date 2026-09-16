@@ -1,10 +1,13 @@
 {
   "meta": {
     "siteName": "Noova",
-    "homeTitle": "Escorts y salones de masaje en {city}",
-    "homeDescription": "Noova es un directorio de anuncios solo para adultos (+18). Perfiles verificados, precios transparentes, verificación de edad e identidad.",
-    "profileTitle": "{name} — {city}",
-    "profileDescription": "{name}, {city}. Perfil verificado en Noova. Servicios, tarifas y detalles."
+    "homeTitle": "Citas íntimas | Citas eróticas | Servicios de acompañantes en {city}",
+    "homeDescription": "Noova es un directorio de anuncios verificados para adultos (+18): acompañantes y salones de masaje. Fotos reales, verificación de edad e identidad, precios honestos.",
+    "cityHomeDescription": "Perfiles de acompañantes y salones de masaje en {city}: perfiles verificados, fotos reales, verificación de identidad. Consulta los anuncios y contacta directamente.",
+    "profileTitleEscort": "Cita íntima con {name} en {city}",
+    "profileTitleMassage": "{name} — Íntimo | Masaje en {city}",
+    "profileDescriptionEscort": "Cita íntima con {name} en {city}. Perfil verificado en Noova: fotos reales, servicios, tarifas y contactos.",
+    "profileDescriptionMassage": "{name} — salón de masaje en {city} en Noova: servicios, precios, horario y contactos."
   },
   "nav": {
     "login": "Iniciar sesión",
@@ -35,8 +38,10 @@
     "clearGroup": "Limpiar",
     "empty": "No se ha encontrado nada",
     "emptyHint": "Prueba a quitar algún filtro.",
-    "catalogEscort": "Perfiles en {city}",
+    "catalogEscort": "Perfiles de acompañantes en {city}",
+    "catalogEscortDescription": "Perfiles de acompañantes en {city} con filtros de apariencia, servicios y precio. Perfiles verificados, fotos reales.",
     "catalogMassage": "Salones de masaje en {city}",
+    "catalogMassageDescription": "Salones de masaje en {city}: filtra por servicio y precio, locales verificados.",
     "top": "TOP",
     "online": "En línea ahora",
     "bdsm": "BDSM",
@@ -726,6 +731,7 @@
   },
   "map": {
     "title": "Perfiles en el mapa",
+    "description": "Perfiles de acompañantes y salones de masaje en el mapa. El marcador señala una zona, no una dirección exacta.",
     "backToList": "Ver como lista",
     "loading": "Cargando…",
     "found": "{count, plural, one {# perfil} other {# perfiles}}",
@@ -1051,8 +1057,8 @@
     "districtCount": "{count, plural, one {# distrito} other {# distritos}}"
   },
   "cityPicker": {
-    "title": "Elige una ciudad",
-    "description": "El catálogo está organizado por ciudades.",
+    "title": "Citas íntimas | Citas eróticas | Servicios de acompañantes",
+    "description": "Perfiles verificados para citas íntimas y servicios de acompañantes: fotos reales, verificación de edad e identidad, precios honestos. Elige una ciudad para ver los perfiles.",
     "empty": "Todavía no hay ciudades",
     "switchLabel": "Ciudad"
   },
@@ -1082,7 +1088,8 @@
   "company": {
     "salon": "Salón de masaje",
     "agency": "Agencia",
-    "titleAgency": "Agencia {name}",
+    "titleAgency": "{name} — Servicios de acompañantes y citas íntimas",
+    "agencyDescriptionFallback": "{name} — agencia en Noova: perfiles de acompañantes verificados, contactos actualizados y condiciones de colaboración.",
     "profiles": "{count, plural, one {# anuncio} other {# anuncios}}",
     "noProfiles": "Todavía no hay anuncios publicados",
     "lastSeenAt": "Última conexión {date}",
