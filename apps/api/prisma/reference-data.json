@@ -3395,6 +3395,142 @@
         "fr": "Visite à l'hôtel",
         "ru": "Визит в отель"
       }
+    },
+    {
+      "id": "cfrs6y9apab0acu6zi5mf7szp",
+      "key": "gfe",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 6,
+      "isActive": true,
+      "name": {
+        "en": "Girlfriend experience (GFE)",
+        "de": "Freundinnenerlebnis (GFE)",
+        "es": "Experiencia de novia (GFE)",
+        "fr": "Expérience petite amie (GFE)",
+        "ru": "Опыт девушки (GFE)"
+      }
+    },
+    {
+      "id": "cet39rppgyfi5dh5nejva6bf4",
+      "key": "shower_together",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 7,
+      "isActive": true,
+      "name": {
+        "en": "Shower together",
+        "de": "Gemeinsam duschen",
+        "es": "Ducha juntos",
+        "fr": "Douche ensemble",
+        "ru": "Душ вместе"
+      }
+    },
+    {
+      "id": "cyy0bv86ngeux247a80yvvdc3",
+      "key": "roleplay",
+      "group": "cosplay",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 119,
+      "isActive": true,
+      "name": {
+        "en": "Roleplay / uniform",
+        "de": "Rollenspiel / Uniform",
+        "es": "Juego de roles / uniforme",
+        "fr": "Jeu de rôle / uniforme",
+        "ru": "Ролевые игры / униформа"
+      }
+    },
+    {
+      "id": "cscxp0vuqzor4suijufcify8r",
+      "key": "handjob",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 124,
+      "isActive": true,
+      "name": {
+        "en": "Handjob",
+        "de": "Handjob",
+        "es": "Masturbación manual",
+        "fr": "Masturbation manuelle",
+        "ru": "Хэндджоб"
+      }
+    },
+    {
+      "id": "c3n2ywc4b67g17ng58c3yv0fg",
+      "key": "titjob",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 125,
+      "isActive": true,
+      "name": {
+        "en": "Titjob",
+        "de": "Sex zwischen den Brüsten",
+        "es": "Sexo entre los pechos",
+        "fr": "Sexe entre les seins",
+        "ru": "Секс между грудей"
+      }
+    },
+    {
+      "id": "cbi3ll562b03db4rbq7rvw94o",
+      "key": "kamasutra",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 126,
+      "isActive": true,
+      "name": {
+        "en": "Kamasutra",
+        "de": "Kamasutra",
+        "es": "Kamasutra",
+        "fr": "Kamasutra",
+        "ru": "Камасутра"
+      }
+    },
+    {
+      "id": "cljtdotf76ts4busd4f61mj7f",
+      "key": "masturbation_show",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 127,
+      "isActive": true,
+      "name": {
+        "en": "Masturbation show",
+        "de": "Masturbationsshow",
+        "es": "Show de masturbación",
+        "fr": "Spectacle de masturbation",
+        "ru": "Мастурбация"
+      }
+    },
+    {
+      "id": "ch2hk41zs83m6vqq1kz7bdmfc",
+      "key": "foot_fetish",
+      "group": "bdsm",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 555,
+      "isActive": true,
+      "name": {
+        "en": "Foot fetish",
+        "de": "Fußfetisch",
+        "es": "Fetichismo de pies",
+        "fr": "Fétichisme des pieds",
+        "ru": "Фут-фетишизм"
+      }
     }
   ]
 }

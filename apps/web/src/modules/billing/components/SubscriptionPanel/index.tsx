@@ -155,15 +155,18 @@ export function SubscriptionPanel() {
               <div className={styles.row}>
                 <dt className={styles.rowLabel}>{t('subscriptionTariff')}</dt>
                 <dd className={styles.rowValue}>
-                  {tariff.data.tariffTier?.name ?? t('subscriptionTariffNone')}
+                  {/* Название тарифа из сетки ("До 8 анкет" и т. п.) при
+                      индивидуальном override не показываем совсем: оно несёт
+                      значение из сетки, которое override уже перекрыл, и
+                      рядом с реальным лимитом выглядело бы противоречиво. */}
+                  {hasCustomTariff
+                    ? t('subscriptionTariffCustom')
+                    : (tariff.data.tariffTier?.name ?? t('subscriptionTariffNone'))}
                   {tariff.data.tariffTier ? (
                     <span className={styles.rowHint}>
                       {' '}
                       · {t('subscriptionTariffLimit', { limit: tariff.data.effectiveLimit })}
                     </span>
-                  ) : null}
-                  {hasCustomTariff ? (
-                    <span className={styles.rowHint}> · {t('subscriptionTariffCustom')}</span>
                   ) : null}
                 </dd>
               </div>

@@ -17,7 +17,7 @@ import { contactTypeSchema } from './contact';
  * её никто не найдёт, либо наоборот. Коды ISO 639-1, подписи — из словаря
  * `languageNames`.
  */
-export const SPOKEN_LANGUAGES = ['de', 'en', 'ru', 'pl', 'tr', 'es', 'fr', 'it'] as const;
+export const SPOKEN_LANGUAGES = ['de', 'en', 'ru', 'uk', 'pl', 'tr', 'es', 'fr', 'it'] as const;
 export type SpokenLanguage = (typeof SPOKEN_LANGUAGES)[number];
 
 /** Тип листинга. Раздельные ветки каталога с главной страницы. */
