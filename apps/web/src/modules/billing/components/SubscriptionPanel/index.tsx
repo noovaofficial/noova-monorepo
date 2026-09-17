@@ -1,10 +1,17 @@
 'use client';
 
-import { gcToEur, PLAN_TERMS, type PlanTerm, TERM_MONTHS } from '@noova/shared';
+import {
+  effectiveTierPriceGc,
+  gcToEur,
+  PLAN_TERMS,
+  type PlanTerm,
+  TERM_MONTHS,
+} from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { activateListing, fetchListing, fetchPriceBook, fetchWallet } from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
@@ -46,6 +53,10 @@ export function SubscriptionPanel() {
   const queryClient = useQueryClient();
 
   const isAdvertiser = user?.role === 'advertiser';
+  // У агентства цена не общая, а по тарифу, назначенному компании (см.
+  // billing/agency-tariffs.ts `resolveAgencyListingPriceGc`, которым и
+  // реально считается списание). Общий прайс тогда служит только фоллбэком.
+  const isAgency = isAdvertiser && user?.advertiserKind === 'agency';
   const listing = useQuery({
     queryKey: queryKeys.listing(),
     queryFn: fetchListing,
@@ -56,6 +67,11 @@ export function SubscriptionPanel() {
     queryFn: fetchPriceBook,
     enabled: isAdvertiser,
     staleTime: 60 * 1000,
+  });
+  const tariff = useQuery({
+    queryKey: queryKeys.ownCompanyTariff(),
+    queryFn: fetchOwnCompanyTariff,
+    enabled: isAgency,
   });
   const wallet = useQuery({
     queryKey: queryKeys.wallet(),
@@ -93,7 +109,33 @@ export function SubscriptionPanel() {
   const isExtension = current?.status === 'active';
   const gcPerEur = book.data?.gcPerEur;
   const balance = wallet.data?.balanceGc;
-  const prices = book.data?.prices[user.advertiserKind];
+  // Индивидуальные условия — это override админа (лимит и/или цена сверх
+  // тарифа), а не просто «не тариф по умолчанию»: обычное самостоятельное
+  // повышение на больший тариф из сетки индивидуальным не является.
+  const hasCustomTariff =
+    tariff.data != null &&
+    (tariff.data.customProfileLimit !== null ||
+      Object.values(tariff.data.customPrices).some((value) => value !== null));
+  // Агентство — цена по его тарифу (с учётом индивидуального override), а не
+  // из общего прайса: тариф с сеткой по числу анкет заменяет плоскую цену
+  // для агентств (payments.md §3.3, D-13). Пока свой тариф не загрузился,
+  // цену не показываем вовсе — общая цифра здесь была бы неправильной.
+  const prices =
+    isAgency && book.data
+      ? tariff.data
+        ? (Object.fromEntries(
+            PLAN_TERMS.map((planTerm) => [
+              planTerm,
+              effectiveTierPriceGc(
+                planTerm,
+                tariff.data.tariffTier,
+                tariff.data.customPrices,
+                book.data.prices.agency[planTerm],
+              ),
+            ]),
+          ) as Record<PlanTerm, number>)
+        : undefined
+      : book.data?.prices[user.advertiserKind];
   const price = term && prices ? prices[term] : null;
 
   return (
@@ -104,31 +146,57 @@ export function SubscriptionPanel() {
         {listing.isPending ? <p className={styles.text}>{t('loading')}</p> : null}
         {listing.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
 
-        {listing.isSuccess && current ? (
+        {(listing.isSuccess && current) || (isAgency && tariff.data) ? (
           <dl className={styles.rows}>
-            <div className={styles.row}>
-              <dt className={styles.rowLabel}>{t('subscriptionPlan')}</dt>
-              <dd className={styles.rowValue}>{ta(ADVERTISER_LABEL[user.advertiserKind])}</dd>
-            </div>
-
-            {/* Дата и остаток вместе: «до 15 января» без «осталось 12 дней»
-                требует считать в уме, а одни «12 дней» нечем проверить. */}
-            <div className={styles.row}>
-              <dt className={styles.rowLabel}>{t('subscriptionUntil')}</dt>
-              <dd className={styles.rowValue}>
-                {format.dateTime(new Date(current.expiresAt), { dateStyle: 'long' })}
-                <span className={styles.rowHint}>
-                  {' '}
-                  · {t('subscriptionDaysLeft', { days: daysLeft(current.expiresAt) })}
-                </span>
-              </dd>
-            </div>
-
-            {current.status !== 'active' ? (
+            {/* Тариф — по своему ряду, независимо от того, есть ли уже
+                активное размещение: агентству нужно видеть его до оплаты, а
+                не только после. */}
+            {isAgency && tariff.data ? (
               <div className={styles.row}>
-                <dt className={styles.rowLabel}>{t('subscriptionStatus')}</dt>
-                <dd className={styles.rowValue}>{t(`subscriptionStatus_${current.status}`)}</dd>
+                <dt className={styles.rowLabel}>{t('subscriptionTariff')}</dt>
+                <dd className={styles.rowValue}>
+                  {tariff.data.tariffTier?.name ?? t('subscriptionTariffNone')}
+                  {tariff.data.tariffTier ? (
+                    <span className={styles.rowHint}>
+                      {' '}
+                      · {t('subscriptionTariffLimit', { limit: tariff.data.effectiveLimit })}
+                    </span>
+                  ) : null}
+                  {hasCustomTariff ? (
+                    <span className={styles.rowHint}> · {t('subscriptionTariffCustom')}</span>
+                  ) : null}
+                </dd>
               </div>
+            ) : null}
+
+            {current ? (
+              <>
+                <div className={styles.row}>
+                  <dt className={styles.rowLabel}>{t('subscriptionPlan')}</dt>
+                  <dd className={styles.rowValue}>{ta(ADVERTISER_LABEL[user.advertiserKind])}</dd>
+                </div>
+
+                {/* Дата и остаток вместе: «до 15 января» без «осталось 12
+                    дней» требует считать в уме, а одни «12 дней» нечем
+                    проверить. */}
+                <div className={styles.row}>
+                  <dt className={styles.rowLabel}>{t('subscriptionUntil')}</dt>
+                  <dd className={styles.rowValue}>
+                    {format.dateTime(new Date(current.expiresAt), { dateStyle: 'long' })}
+                    <span className={styles.rowHint}>
+                      {' '}
+                      · {t('subscriptionDaysLeft', { days: daysLeft(current.expiresAt) })}
+                    </span>
+                  </dd>
+                </div>
+
+                {current.status !== 'active' ? (
+                  <div className={styles.row}>
+                    <dt className={styles.rowLabel}>{t('subscriptionStatus')}</dt>
+                    <dd className={styles.rowValue}>{t(`subscriptionStatus_${current.status}`)}</dd>
+                  </div>
+                ) : null}
+              </>
             ) : null}
           </dl>
         ) : null}
