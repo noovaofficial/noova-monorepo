@@ -54,3 +54,29 @@
 		reverse_proxy web:3000
 	}
 }
+
+# Поддомены агентств (N-38): {slug}.{домен}. Сертификат выпускается по
+# первому обращению (on_demand выше это разрешает, но именно этот сайт
+# должен явно попросить его для себя — иначе Caddy обслуживает такой хост
+# обычным авто-HTTPS и получает отказ, так как заранее эти имена не заданы).
+#
+# Наружу отдаём только сам Next.js: страница агентства и всё, что ей нужно
+# (API, фото), ходит по своим абсолютным адресам на апексе, а не по
+# относительным путям текущего хоста — второй раз проксировать /api и /media
+# здесь незачем.
+*.{$SITE_DOMAIN:localhost} {
+	tls {
+		on_demand
+	}
+
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy web:3000
+}
