@@ -3,7 +3,7 @@
 import { DEFAULT_LOCALE } from '@noova/shared';
 import { createNavigation } from 'next-intl/navigation';
 import type { ComponentProps } from 'react';
-import { useIsAgencySubdomain } from '@/shared/i18n/SubdomainContext';
+import { useAgencySlug } from '@/shared/i18n/SubdomainContext';
 import { siteHost } from '@/shared/subdomain';
 import { routing } from './routing';
 
@@ -22,9 +22,20 @@ export { getPathname, redirect, usePathname };
  * `proxy.ts` переписывает там любой путь на страницу компании. Сам
  * поддомен отдаёт только дефолтную локаль, но переключатель языка должен
  * вести на выбранный язык — а он есть только на апексе, у `/company/{slug}`.
+ *
+ * `href === '/'` — особый случай: это не «на главную», а «остаться на этой
+ * же странице» (так вызывает `router.replace` переключатель языка). Видимый
+ * браузером путь на поддомене всегда `/` — само переписывание в `proxy.ts`
+ * серверное и адресную строку не меняет, поэтому без явного слуга понять,
+ * что это значит «страница компании», неоткуда.
  */
-function apexHref(href: string, locale: string = DEFAULT_LOCALE): string {
-  const path = href.startsWith('/') ? href : `/${href}`;
+function apexHref(
+  href: string,
+  agencySlug: string | null,
+  locale: string = DEFAULT_LOCALE,
+): string {
+  const path =
+    href === '/' && agencySlug ? `/company/${agencySlug}` : `/${href.replace(/^\/+/, '')}`;
   return `https://${siteHost()}/${locale}${path}`;
 }
 
@@ -37,17 +48,17 @@ type LinkProps = ComponentProps<typeof IntlLink>;
  * только страница компании.
  */
 export function Link({ href, ...rest }: LinkProps) {
-  const isAgencySubdomain = useIsAgencySubdomain();
-  if (isAgencySubdomain && typeof href === 'string') {
-    return <a href={apexHref(href)} {...rest} />;
+  const agencySlug = useAgencySlug();
+  if (agencySlug !== null && typeof href === 'string') {
+    return <a href={apexHref(href, agencySlug)} {...rest} />;
   }
   return <IntlLink href={href} {...rest} />;
 }
 
 export function useRouter() {
   const router = useIntlRouter();
-  const isAgencySubdomain = useIsAgencySubdomain();
-  if (!isAgencySubdomain) return router;
+  const agencySlug = useAgencySlug();
+  if (agencySlug === null) return router;
 
   return {
     ...router,
@@ -57,10 +68,10 @@ export function useRouter() {
     // Остальное (`scroll` и т. п.) уже не имеет смысла: это полноценная
     // навигация браузером, а не переход в приложении.
     push: (href: string, options?: { locale?: string }) => {
-      window.location.href = apexHref(href, options?.locale);
+      window.location.href = apexHref(href, agencySlug, options?.locale);
     },
     replace: (href: string, options?: { locale?: string }) => {
-      window.location.href = apexHref(href, options?.locale);
+      window.location.href = apexHref(href, agencySlug, options?.locale);
     },
   };
 }

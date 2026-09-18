@@ -98,7 +98,7 @@ export default async function LocaleLayout({
   // запроса, ему негде. Из-за `headers()` layout перестаёт быть статическим,
   // но большая часть страниц под ним и так рендерится по запросу.
   const hdrs = await headers();
-  const isAgencySubdomain = agencySlugFromHost(hdrs.get('host') ?? '') !== null;
+  const agencySlug = agencySlugFromHost(hdrs.get('host') ?? '');
 
   return (
     // data-theme и data-adult намеренно НЕ задаются здесь. Смена языка
@@ -120,7 +120,7 @@ export default async function LocaleLayout({
             добавляют вложенные провайдеры в /account, /admin и /moderation.
             Иначе посетитель каталога скачивал бы подписи админки. */}
         <NextIntlClientProvider messages={pickNamespaces(messages, PUBLIC_CLIENT_NAMESPACES)}>
-          <SubdomainProvider isAgencySubdomain={isAgencySubdomain}>
+          <SubdomainProvider agencySlug={agencySlug}>
             {/* Query выше сессии: провайдер сессии сам ходит в API. Публичные
                 страницы это не затрагивает — они грузятся на сервере. */}
             <QueryProvider>
