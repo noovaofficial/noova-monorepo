@@ -19,13 +19,13 @@ export { getPathname, redirect, usePathname };
 
 /**
  * На поддомене агентства (N-38) относительная ссылка вела бы туда же —
- * `proxy.ts` переписывает там любой путь на страницу компании. Апекс
- * всегда на дефолтной локали: полная версия с языками — только на самом
- * `/company/{slug}`, не на поддомене.
+ * `proxy.ts` переписывает там любой путь на страницу компании. Сам
+ * поддомен отдаёт только дефолтную локаль, но переключатель языка должен
+ * вести на выбранный язык — а он есть только на апексе, у `/company/{slug}`.
  */
-function apexHref(href: string): string {
+function apexHref(href: string, locale: string = DEFAULT_LOCALE): string {
   const path = href.startsWith('/') ? href : `/${href}`;
-  return `https://${siteHost()}/${DEFAULT_LOCALE}${path}`;
+  return `https://${siteHost()}/${locale}${path}`;
 }
 
 type LinkProps = ComponentProps<typeof IntlLink>;
@@ -51,13 +51,16 @@ export function useRouter() {
 
   return {
     ...router,
-    // Второй аргумент (`{ locale }`, `{ scroll }`) на апекс не переносится:
-    // это уже полноценная навигация браузером, а не переход в приложении.
-    push: (href: string, _options?: unknown) => {
-      window.location.href = apexHref(href);
+    // Из второго аргумента переносится только `locale` — переключатель языка
+    // вызывает `router.replace(pathname, { locale: next })`, и на поддомене
+    // это должно увести на выбранный язык на апексе, а не всегда на дефолтный.
+    // Остальное (`scroll` и т. п.) уже не имеет смысла: это полноценная
+    // навигация браузером, а не переход в приложении.
+    push: (href: string, options?: { locale?: string }) => {
+      window.location.href = apexHref(href, options?.locale);
     },
-    replace: (href: string, _options?: unknown) => {
-      window.location.href = apexHref(href);
+    replace: (href: string, options?: { locale?: string }) => {
+      window.location.href = apexHref(href, options?.locale);
     },
   };
 }
