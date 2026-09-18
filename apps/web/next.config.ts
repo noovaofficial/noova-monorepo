@@ -62,6 +62,29 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  /**
+   * Поддомен агентства (N-38): `{slug}.{домен}` ведёт на ту же страницу,
+   * что и `/company/{slug}` — путь не убираем, это короткая дополнительная
+   * ссылка, а не замена (уже проиндексированный адрес не должен переезжать).
+   * Только дефолтная локаль: тащить сюда определение языка по поддомену
+   * незачем — полная версия с языками остаётся на основном пути.
+   *
+   * На голом localhost (нет реального DNS) хост всегда один и тот же —
+   * правило пропускаем, иначе `/:path*` без `has` совпадал бы всегда.
+   */
+  async rewrites() {
+    const siteHost = new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').hostname;
+    if (siteHost === 'localhost' || siteHost === '127.0.0.1') return [];
+
+    const escapedHost = siteHost.replace(/\./g, '\\.');
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host' as const, value: `(?<slug>.+)\\.${escapedHost}` }],
+        destination: '/de/company/:slug/:path*',
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

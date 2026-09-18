@@ -19,6 +19,7 @@ import { agencyTariffRoutes } from './modules/billing/agency-tariffs.routes.js';
 import { billingRoutes } from './modules/billing/routes.js';
 import { campaignRoutes } from './modules/campaigns/routes.js';
 import { commentRoutes } from './modules/comments/routes.js';
+import { domainCheckRoutes } from './modules/company/domain-check.js';
 import { companyRevealRoutes } from './modules/company/reveal.js';
 import { companyRoutes } from './modules/company/routes.js';
 import { favoriteRoutes } from './modules/favorites/routes.js';
@@ -124,6 +125,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   });
 
   await app.register(healthRoutes);
+  await app.register(domainCheckRoutes);
   await app.register(
     async (api) => {
       await api.register(authRoutes);

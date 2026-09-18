@@ -52,6 +52,21 @@ const sessionKey = (id: string) => `session:${id}`;
 const userSessionsKey = (userId: string) => `user-sessions:${userId}`;
 
 /**
+ * Домен куки. Без него кука host-only и привязана строго к апексу — на
+ * поддомене агентства (N-38, `{slug}.{домен}`) браузер её вообще не пришлёт,
+ * и вошедший посетитель на странице агентства выглядел бы гостем: раскрытие
+ * контактов, избранное потеряли бы личность сессии. `Domain=` без ведущей
+ * точки уже покрывает и апекс, и все поддомены (RFC 6265).
+ *
+ * На localhost нет ни поддоменов, ни смысла: `Domain=localhost` браузеры
+ * трактуют по-разному, и без явной необходимости лучше host-only, как раньше.
+ */
+const cookieDomain = (() => {
+  const host = new URL(env.PUBLIC_SITE_URL).hostname;
+  return host === 'localhost' || host === '127.0.0.1' ? undefined : host;
+})();
+
+/**
  * Сессии серверные, а не JWT: учётку нужно уметь мгновенно отзывать при бане
  * или жалобе, а выданный JWT отозвать нельзя.
  */
@@ -77,6 +92,7 @@ const sessionPlugin: FastifyPluginAsync = async (fastify) => {
 
     reply.setCookie(env.SESSION_COOKIE, sessionId, {
       path: '/',
+      domain: cookieDomain,
       httpOnly: true,
       sameSite: 'lax',
       secure: isProduction,
@@ -89,6 +105,7 @@ const sessionPlugin: FastifyPluginAsync = async (fastify) => {
     // кнопку «Войти» уже вошедшему пользователю.
     const publicCookie = {
       path: '/',
+      domain: cookieDomain,
       httpOnly: false,
       sameSite: 'lax' as const,
       secure: isProduction,
@@ -109,9 +126,11 @@ const sessionPlugin: FastifyPluginAsync = async (fastify) => {
       }
       await fastify.redis.del(sessionKey(sessionId));
     }
-    reply.clearCookie(env.SESSION_COOKIE, { path: '/' });
-    reply.clearCookie(SIGNED_IN_COOKIE, { path: '/' });
-    reply.clearCookie(ROLE_COOKIE, { path: '/' });
+    // Domain должен совпадать с тем, что стоял при setCookie — иначе браузер
+    // видит в этом другую куку и не очищает ту, что реально прочитана.
+    reply.clearCookie(env.SESSION_COOKIE, { path: '/', domain: cookieDomain });
+    reply.clearCookie(SIGNED_IN_COOKIE, { path: '/', domain: cookieDomain });
+    reply.clearCookie(ROLE_COOKIE, { path: '/', domain: cookieDomain });
   });
 
   fastify.decorate('destroyAllSessions', async (userId: string) => {

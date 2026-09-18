@@ -3,6 +3,14 @@
 
 {
 	email {$ACME_EMAIL:admin@noova.app}
+
+	# Поддомены агентств (N-38): у каждого поддомена свой сертификат,
+	# выпущенный по первому обращению — заводить их заранее не нужно.
+	# Wildcard-сертификат потребовал бы DNS-01 у конкретного провайдера;
+	# on-demand с проверкой в API обходится без этой зависимости.
+	on_demand_tls {
+		ask http://api:4000/internal/domain-check
+	}
 }
 
 {$SITE_DOMAIN:localhost} {

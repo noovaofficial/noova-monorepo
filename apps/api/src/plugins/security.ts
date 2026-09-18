@@ -9,11 +9,34 @@ import type { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 import { corsOrigins, env } from '../env.js';
 
+/**
+ * Браузер шлёт клиентские запросы (раскрытие контактов, избранное) на
+ * `NEXT_PUBLIC_API_URL` — это апекс, а не сам поддомен, с которого открыта
+ * страница. Со страницы агентства (N-38, `{slug}.{домен}`) такой запрос
+ * межсайтовый по Origin, и статический список `CORS_ORIGINS` его не знает
+ * заранее — слугов агентств сколько угодно. Разрешаем не по списку, а по
+ * совпадению с хостом `PUBLIC_SITE_URL` или его поддоменом.
+ */
+function isAllowedOrigin(origin: string): boolean {
+  if (corsOrigins.includes(origin)) return true;
+  try {
+    const site = new URL(env.PUBLIC_SITE_URL);
+    const requested = new URL(origin);
+    return requested.protocol === site.protocol && requested.hostname.endsWith(`.${site.hostname}`);
+  } catch {
+    return false;
+  }
+}
+
 const securityPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(sensible);
   await fastify.register(helmet, { contentSecurityPolicy: false });
   await fastify.register(cors, {
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      // Без Origin — не браузерный кросс-сайт запрос (curl, сервер-сервер):
+      // проверять нечего, CORS на такие запросы не распространяется.
+      callback(null, !origin || isAllowedOrigin(origin));
+    },
     // Куку сессии браузер пришлёт только при явном разрешении.
     credentials: true,
     methods: ['GET', 'HEAD', 'POST', 'PATCH', 'PUT', 'DELETE'],

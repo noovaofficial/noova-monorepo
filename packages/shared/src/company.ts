@@ -21,14 +21,44 @@ export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 export const companyKindSchema = z.enum(['agency']);
 export type CompanyKind = z.infer<typeof companyKindSchema>;
 
+/**
+ * Слуги, которые компания занять не может: у каждого агентства есть
+ * поддомен `{slug}.{домен}` (N-38), и слуг, совпадающий со служебным
+ * поддоменом, увёл бы трафик от настоящего сервиса — например, у площадки
+ * уже есть `mail.{домен}` (почтовый релей, docker-compose `smtp`).
+ */
+export const RESERVED_SUBDOMAINS = [
+  'www',
+  'api',
+  'admin',
+  'mail',
+  'smtp',
+  'ftp',
+  'cdn',
+  'static',
+  'assets',
+  'media',
+  'app',
+  'ns1',
+  'ns2',
+  'mx',
+  'autodiscover',
+  'webmail',
+] as const;
+
 export const companyContactSchema = z.object({
   type: contactTypeSchema,
   value: z.string().trim().min(3).max(64),
 });
 export type CompanyContact = z.infer<typeof companyContactSchema>;
 
+export const companySlugSchema = slugSchema.refine(
+  (value) => !(RESERVED_SUBDOMAINS as readonly string[]).includes(value),
+  { message: 'Этот адрес занят служебным поддоменом — выберите другой' },
+);
+
 export const companyInputSchema = z.object({
-  slug: slugSchema,
+  slug: companySlugSchema,
   kind: companyKindSchema,
   name: z.string().trim().min(2).max(120),
   description: z.string().trim().max(4000).optional(),
