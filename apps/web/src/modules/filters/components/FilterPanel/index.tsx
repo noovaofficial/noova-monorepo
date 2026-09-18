@@ -5,7 +5,7 @@ import {
   bodyTypeSchema,
   breastSizeSchema,
   breastTypeSchema,
-  cityFromPath,
+  type CityOption,
   eyeColorSchema,
   hairColorSchema,
   type ListingKind,
@@ -18,35 +18,49 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { clearFilters, setValue, toggleValue } from '@/modules/filters/params';
 import { Overlay } from '@/overlays/Overlay';
-import { usePathname, useRouter } from '@/shared/i18n/navigation';
+import { useRouter } from '@/shared/i18n/navigation';
 import { ChipGroup } from '../ChipGroup';
 import styles from '../FilterPanel.module.css';
 
 type Props = {
   kind: ListingKind;
   catalog: ServiceGroup[];
+  /**
+   * Города текущей страны — для сужения среза «вся страна» до нескольких
+   * конкретных городов (N-43). Непустой список включает группу «Города»;
+   * пустой (в т.ч. когда уже выбран один конкретный город) — прячет её,
+   * выбирать город из списка одного смысла не имеет.
+   */
+  countryCities?: CityOption[];
   initial: string;
   onClose: () => void;
   /**
-   * Куда применять фильтры.
-   *
-   * `live` — правки пишутся в текущий URL сразу, выдача под панелью
-   * обновляется. Так работает на странице каталога.
-   *
-   * `navigate` — панель открыта не над выдачей (например, из шапки на
-   * главной), менять текущий адрес бессмысленно. Фильтры копятся локально
-   * и применяются переходом в каталог по кнопке «Показать».
+   * Куда вести по кнопке «Показать». На каталоге и карте — это текущий
+   * адрес (правки просто дописывают его query), с главной — адрес каталога
+   * этого города/страны. Панель сама его не считает: у неё нет справочника
+   * городов, чтобы отличить город от кода страны (N-42) — адрес обязан
+   * посчитать и передать вызывающий компонент.
    */
-  mode?: 'live' | 'navigate';
-  targetPath?: string;
+  targetPath: string;
 };
 
 /**
- * Панель фильтров. Всё состояние — в URL: правки применяются сразу, а кнопка
- * внизу лишь закрывает панель. Промежуточного «черновика» фильтров нет
- * намеренно — иначе адресная строка расходится с тем, что видит человек.
+ * Панель фильтров.
+ *
+ * Правки копятся в локальном состоянии, а не пишутся в URL по каждому
+ * клику: применяются они разом, кнопкой «Показать» внизу. Раньше на
+ * странице каталога чипы применялись сразу — удобно казалось для быстрой
+ * правки, но на деле сбивало: человек ещё выбирает, а выдача под панелью
+ * уже дёргается и то и дело пустеет на середине выбора.
  */
-export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', targetPath }: Props) {
+export function FilterPanel({
+  kind,
+  catalog,
+  countryCities = [],
+  initial,
+  onClose,
+  targetPath,
+}: Props) {
   const t = useTranslations('filters');
   const tHair = useTranslations('hairColor');
   const tEye = useTranslations('eyeColor');
@@ -58,39 +72,21 @@ export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', ta
   const tLang = useTranslations('languageNames');
 
   const router = useRouter();
-  const pathname = usePathname();
   const [params, setParams] = useState(() => new URLSearchParams(initial));
 
-  /** Пишем в URL через replace: история не должна распухать от каждого чипа. */
-  const push = (next: URLSearchParams) => {
-    setParams(next);
-    if (mode !== 'live') return;
-    const query = next.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
-  };
-
   const apply = () => {
-    if (mode === 'live') {
-      onClose();
-      return;
-    }
     const query = params.toString();
-    // Город берём из текущего пути: каталог живёт под ним (N-32). Без города
-    // адрес попал бы на заглушку `/catalog/...`, а та уводит редиректом —
-    // и выбранные фильтры терялись бы по дороге.
-    const city = cityFromPath(pathname);
-    const target = targetPath ?? `${city ? `/${city}` : ''}/catalog/${kind}`;
-    router.push(query ? `${target}?${query}` : target);
+    router.push(query ? `${targetPath}?${query}` : targetPath);
     onClose();
   };
 
-  const toggle = (key: string, value: string) => push(toggleValue(params, key, value));
-  const set = (key: string, value: string) => push(setValue(params, key, value || undefined));
+  const toggle = (key: string, value: string) => setParams(toggleValue(params, key, value));
+  const set = (key: string, value: string) => setParams(setValue(params, key, value || undefined));
   const clearKey = (key: string) => {
     const next = new URLSearchParams(params);
     next.delete(key);
     next.delete('page');
-    push(next);
+    setParams(next);
   };
 
   const selected = (key: string) => params.getAll(key);
@@ -155,9 +151,25 @@ export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', ta
           </div>
 
           <div className={styles.body}>
-            {/* Цена первой: это первое, по чему отсеивают, и держать её
-                за списком параметров внешности значит прятать главное. Дальше
-                внешность, услуги, остальное. */}
+            {/* Города — только в срезе «вся страна» (N-43): сужение до
+                нескольких городов имеет смысл, только когда сейчас показаны
+                все сразу. Идёт первым, наравне с ценой — это тоже вопрос
+                «где», а не «какая». */}
+            {countryCities.length > 0 ? (
+              <ChipGroup
+                title={t('cities')}
+                options={countryCities.map((city) => city.slug)}
+                selected={selected('cities')}
+                translate={(slug) => countryCities.find((city) => city.slug === slug)?.name ?? slug}
+                onToggle={(value) => toggle('cities', value)}
+                onClear={() => clearKey('cities')}
+                clearLabel={t('clearGroup')}
+              />
+            ) : null}
+
+            {/* Цена следующая: это первое, по чему отсеивают среди
+                параметров анкеты, и держать её за списком внешности значит
+                прятать главное. Дальше внешность, услуги, остальное. */}
             <div className={styles.group}>
               <span className={styles.groupTitle}>{t('price')}</span>
               <div className={styles.range}>
@@ -318,7 +330,7 @@ export function FilterPanel({ kind, catalog, initial, onClose, mode = 'live', ta
           </div>
 
           <div className={styles.foot}>
-            <Button variant="secondary" onClick={() => push(clearFilters(params))}>
+            <Button variant="secondary" onClick={() => setParams(clearFilters(params))}>
               {t('reset')}
             </Button>
             <Button onClick={apply}>{t('apply')}</Button>

@@ -34,6 +34,7 @@
     "verifiedOnly": "Verified only",
     "languages": "Languages",
     "city": "City",
+    "cities": "Cities",
     "district": "District",
     "clearGroup": "Clear",
     "empty": "Nothing found",
@@ -65,6 +66,7 @@
   },
   "home": {
     "escortSection": "Profiles in {city}",
+    "agenciesSection": "Agencies in {city}",
     "massageSection": "Massage studios in {city}",
     "total": "({count} total)",
     "showAll": "Show all →",
@@ -72,8 +74,7 @@
     "showAllStudios": "Show all studios",
     "empty": "No profiles match these filters",
     "emptyHint": "Try removing some filters.",
-    "topSection": "TOP — {city}",
-    "topCount": "(random {shown} of {total})"
+    "topSection": "TOP — {city}"
   },
   "card": {
     "verified": "Verified",
@@ -82,7 +83,8 @@
     "priceFrom": "from {price}",
     "perHour": "/hour",
     "ad": "Ad",
-    "fromAgency": "Agency {name}"
+    "fromAgency": "Agency {name}",
+    "profileCount": "{count, plural, one {# listing} other {# listings}}"
   },
   "profile": {
     "prices": "Rates",
@@ -918,6 +920,13 @@
     "topWeekLabel": "Week, GC",
     "topSlotsLabel": "TOP slots",
     "topShownLabel": "Shown on home",
+    "agencyTopTitle": "Agency TOP",
+    "agencyTopText": "In the Agencies row on the home page, TOP slots get priority, total slots — {slots, number}. A week costs {price, number} GC.",
+    "agencyTopActiveUntil": "In the agency TOP until {date}",
+    "agencyTopDone": "Done. The agency is in TOP until {date}.",
+    "agencyTopNoProfiles": "TOP is only available to an agency with a published listing.",
+    "agencyTopSection": "Agency TOP",
+    "agencyTopHint": "Agency TOP slots are sold per week with no waitlist and no auto-renewal — same principle as the listing TOP, but its own pool of slots. In the Agencies row on the home page, paid slots come first, shuffled among themselves; the rest is filled by agencies ranked by listing count.",
     "eurShort": "≈ €{amount, number, ::.##}",
     "topActiveHint": "You can buy another week once the current one ends.",
     "staffSection": "Staff permissions",
@@ -1059,13 +1068,17 @@
     "districtsOptional": "Districts are optional: a listing without one gets the city centre coordinates.",
     "countryNotFound": "Country not found",
     "cityNotFound": "City not found",
-    "districtCount": "{count, plural, one {# district} other {# districts}}"
+    "districtCount": "{count, plural, one {# district} other {# districts}}",
+    "isDefault": "Default",
+    "makeDefault": "Make default"
   },
   "cityPicker": {
     "title": "Intim dates | Erotic dates | Escort services",
     "description": "Verified profiles for intim dates and escort services: real photos, age and identity verification, honest prices. Choose a city to see profiles.",
     "empty": "No cities yet",
-    "switchLabel": "City"
+    "switchLabel": "City",
+    "allCities": "All cities",
+    "countrySwitchLabel": "Country"
   },
   "services": {
     "title": "Services",

@@ -229,3 +229,14 @@ export const cityOptionSchema = z.object({
   districts: z.array(z.object({ slug: z.string(), name: z.string() })),
 });
 export type CityOption = z.infer<typeof cityOptionSchema>;
+
+/**
+ * Справочник стран для свитча страны и корневого редиректа (N-42). Код —
+ * тот же второй сегмент адреса, что и слуг города, только в нижнем регистре.
+ */
+export const countryOptionSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  isDefault: z.boolean(),
+});
+export type CountryOption = z.infer<typeof countryOptionSchema>;

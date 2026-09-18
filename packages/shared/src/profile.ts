@@ -285,6 +285,22 @@ export type ProfileSort = z.infer<typeof profileSortSchema>;
 export const profileQuerySchema = cursorPaginationSchema.extend({
   kind: listingKindSchema.default('escort'),
   city: slugSchema.optional(),
+  /**
+   * Код страны (ISO 3166-1 alpha-2) — срез «вся страна» на главной без
+   * выбранного города. Городу отдаётся предпочтение, если пришли оба:
+   * каталог и карта такого не шлют, а домашняя страница — либо то, либо то.
+   */
+  country: z
+    .string()
+    .length(2)
+    .transform((value) => value.toUpperCase())
+    .optional(),
+  /**
+   * Сузить срез «вся страна» до нескольких городов, не выбирая один
+   * конкретный (N-43). Имеет смысл только вместе с `country` — без него
+   * работает как обычный `city`, только по нескольким городам разом.
+   */
+  cities: queryArraySchema(slugSchema).optional(),
   district: z.string().optional(),
   /** Ключи услуг из справочника. */
   services: queryArraySchema().optional(),

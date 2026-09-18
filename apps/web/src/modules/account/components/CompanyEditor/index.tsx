@@ -14,6 +14,7 @@ import {
   uploadCompanyLogo,
 } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { AgencyTopCard } from '@/modules/billing/components/AgencyTopCard';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -388,6 +389,10 @@ export function CompanyEditor() {
             )}
             {copied ? <span className={styles.hint}>{t('linkCopied')}</span> : null}
           </div>
+
+          {/* ТОП — только когда компания уже заведена: без сохранённой
+              записи покупать ещё нечего (payments.md §3.5, D-14). */}
+          {query.data ? <AgencyTopCard /> : null}
 
           <div className={styles.sidebarCard}>
             {notice ? (

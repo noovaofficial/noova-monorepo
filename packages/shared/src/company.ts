@@ -112,6 +112,8 @@ export const companyDetailSchema = z.object({
   /** `null`, если ни у одной анкеты ещё не было активности. */
   lastSeenAt: z.string().datetime().nullable(),
   profileCount: z.number().int().nonnegative(),
+  /** Оплаченное место в ТОПе агентств прямо сейчас (payments.md §3.5, D-14). */
+  isFeatured: z.boolean(),
 });
 export type CompanyDetail = z.infer<typeof companyDetailSchema>;
 
@@ -126,3 +128,21 @@ export const profileCompanySchema = z.object({
   name: z.string(),
 });
 export type ProfileCompany = z.infer<typeof profileCompanySchema>;
+
+/**
+ * Агентство в подборке на главной. Своего поля города у компании нет —
+ * только через анкеты, и агентство при срезе «вся страна» могло бы вести их
+ * сразу в нескольких городах, поэтому города на карточке тоже нет. Вместо
+ * описания — число опубликованных анкет именно в этом срезе (город/страна),
+ * не у агентства в целом.
+ */
+export const agencyCardSchema = z.object({
+  slug: z.string(),
+  name: z.string(),
+  profileCount: z.number().int().nonnegative(),
+  logoUrl: z.string().nullable(),
+  /** Оплаченное место в ТОПе агентств прямо сейчас (payments.md §3.5, D-14) —
+   *  бейдж на карточке, тот же смысл, что `ProfileCard.isFeatured`. */
+  isFeatured: z.boolean(),
+});
+export type AgencyCard = z.infer<typeof agencyCardSchema>;

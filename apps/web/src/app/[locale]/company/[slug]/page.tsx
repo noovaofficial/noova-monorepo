@@ -2,6 +2,7 @@ import type { Locale } from '@noova/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Badge } from '@/design-system/components/Badge';
 import { ProfileGrid } from '@/modules/catalog/components/ProfileGrid';
 import { CompanyContactsCard } from '@/modules/contacts/components/CompanyContactsCard';
 import { ApiError, fetchCompany } from '@/shared/api';
@@ -81,7 +82,10 @@ export default async function CompanyPage({ params }: Props) {
 
         <div className={styles.headInfo}>
           <span className={styles.kind}>{t('agency')}</span>
-          <h1 className={styles.name}>{company.name}</h1>
+          <div className={styles.nameRow}>
+            <h1 className={styles.name}>{company.name}</h1>
+            {company.isFeatured ? <Badge variant="featured">★ {tCard('featured')}</Badge> : null}
+          </div>
 
           {company.isOnline ? (
             <span className={styles.online}>{tCard('online')}</span>

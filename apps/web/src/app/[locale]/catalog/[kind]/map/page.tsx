@@ -1,6 +1,6 @@
 import type { Locale } from '@noova/shared';
 import { permanentRedirect } from 'next/navigation';
-import { activeCities } from '@/shared/city';
+import { activeCountries } from '@/shared/city';
 
 /**
  * Прежний адрес карты каталога, без города.
@@ -20,8 +20,10 @@ type Props = {
 
 export default async function LegacyCatalogMapRedirect({ params, searchParams }: Props) {
   const { locale, kind } = await params;
-  const cities = await activeCities(locale);
-  const city = cities[0];
+  const countries = await activeCountries(locale);
+  // Карта страны по умолчанию целиком (N-43), а не какой-то один её город —
+  // у карты, как и у каталога, теперь есть собственный срез «вся страна».
+  const defaultCountry = countries.find((item) => item.isDefault) ?? countries[0];
 
   // Фильтры переносим вместе с адресом: старая ссылка с выбранными услугами
   // иначе привела бы в пустой каталог, и потеря выглядела бы как сброс.
@@ -33,6 +35,10 @@ export default async function LegacyCatalogMapRedirect({ params, searchParams }:
   const query = search.toString();
   const suffix = query ? `?${query}` : '';
 
-  // Городов нет вовсе — вести некуда, кроме выбора города.
-  permanentRedirect(city ? `/${locale}/${city.slug}/catalog/${kind}/map${suffix}` : `/${locale}`);
+  // Стран нет вовсе — вести некуда, кроме корня.
+  permanentRedirect(
+    defaultCountry
+      ? `/${locale}/${defaultCountry.code.toLowerCase()}/catalog/${kind}/map${suffix}`
+      : `/${locale}`,
+  );
 }

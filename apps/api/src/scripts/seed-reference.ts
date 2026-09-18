@@ -130,6 +130,7 @@ async function seedCountries(): Promise<Map<string, string>> {
         code: country.code,
         name: name[DEFAULT_LOCALE],
         isActive: country.isActive,
+        isDefault: country.isDefault,
       },
     });
 

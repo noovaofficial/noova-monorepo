@@ -311,6 +311,7 @@ export type UserWhereInput = {
   listings?: Prisma.ListingListRelationFilter
   topupOrders?: Prisma.TopupOrderListRelationFilter
   topPlacements?: Prisma.TopPlacementListRelationFilter
+  agencyTopPlacements?: Prisma.AgencyTopPlacementListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
@@ -348,6 +349,7 @@ export type UserOrderByWithRelationInput = {
   listings?: Prisma.ListingOrderByRelationAggregateInput
   topupOrders?: Prisma.TopupOrderOrderByRelationAggregateInput
   topPlacements?: Prisma.TopPlacementOrderByRelationAggregateInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementOrderByRelationAggregateInput
   clientProfile?: Prisma.ClientProfileOrderByWithRelationInput
   authTokens?: Prisma.AuthTokenOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
@@ -388,6 +390,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   listings?: Prisma.ListingListRelationFilter
   topupOrders?: Prisma.TopupOrderListRelationFilter
   topPlacements?: Prisma.TopPlacementListRelationFilter
+  agencyTopPlacements?: Prisma.AgencyTopPlacementListRelationFilter
   clientProfile?: Prisma.XOR<Prisma.ClientProfileNullableScalarRelationFilter, Prisma.ClientProfileWhereInput> | null
   authTokens?: Prisma.AuthTokenListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
@@ -470,6 +473,7 @@ export type UserCreateInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -507,6 +511,7 @@ export type UserUncheckedCreateInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -542,6 +547,7 @@ export type UserUpdateInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -579,6 +585,7 @@ export type UserUncheckedUpdateInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1034,6 +1041,22 @@ export type UserUpdateOneWithoutTopPlacementsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTopPlacementsInput, Prisma.UserUpdateWithoutTopPlacementsInput>, Prisma.UserUncheckedUpdateWithoutTopPlacementsInput>
 }
 
+export type UserCreateNestedOneWithoutAgencyTopPlacementsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedCreateWithoutAgencyTopPlacementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAgencyTopPlacementsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutAgencyTopPlacementsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedCreateWithoutAgencyTopPlacementsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAgencyTopPlacementsInput
+  upsert?: Prisma.UserUpsertWithoutAgencyTopPlacementsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAgencyTopPlacementsInput, Prisma.UserUpdateWithoutAgencyTopPlacementsInput>, Prisma.UserUncheckedUpdateWithoutAgencyTopPlacementsInput>
+}
+
 export type UserCreateNestedOneWithoutCreatedCampaignsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedCampaignsInput, Prisma.UserUncheckedCreateWithoutCreatedCampaignsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedCampaignsInput
@@ -1087,6 +1110,7 @@ export type UserCreateWithoutCreatedByInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1122,6 +1146,7 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1167,6 +1192,7 @@ export type UserCreateWithoutCreatedStaffInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1203,6 +1229,7 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1291,6 +1318,7 @@ export type UserUpdateWithoutCreatedStaffInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1327,6 +1355,7 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1361,6 +1390,7 @@ export type UserCreateWithoutClientProfileInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -1397,6 +1427,7 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -1447,6 +1478,7 @@ export type UserUpdateWithoutClientProfileInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -1483,6 +1515,7 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1517,6 +1550,7 @@ export type UserCreateWithoutModerationActionsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1553,6 +1587,7 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1603,6 +1638,7 @@ export type UserUpdateWithoutModerationActionsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1639,6 +1675,7 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1673,6 +1710,7 @@ export type UserCreateWithoutAuthTokensInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -1709,6 +1747,7 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -1759,6 +1798,7 @@ export type UserUpdateWithoutAuthTokensInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -1795,6 +1835,7 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1828,6 +1869,7 @@ export type UserCreateWithoutProfilesInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -1864,6 +1906,7 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -1914,6 +1957,7 @@ export type UserUpdateWithoutProfilesInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -1950,6 +1994,7 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -1985,6 +2030,7 @@ export type UserCreateWithoutProfileReportsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2021,6 +2067,7 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2071,6 +2118,7 @@ export type UserUpdateWithoutProfileReportsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2107,6 +2155,7 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2141,6 +2190,7 @@ export type UserCreateWithoutCommentsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2177,6 +2227,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2227,6 +2278,7 @@ export type UserUpdateWithoutCommentsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2263,6 +2315,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2297,6 +2350,7 @@ export type UserCreateWithoutCommentReportsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2333,6 +2387,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2383,6 +2438,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2419,6 +2475,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2453,6 +2510,7 @@ export type UserCreateWithoutFavoritesInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
@@ -2489,6 +2547,7 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
@@ -2539,6 +2598,7 @@ export type UserUpdateWithoutFavoritesInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
@@ -2575,6 +2635,7 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
@@ -2608,6 +2669,7 @@ export type UserCreateWithoutCompanyInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2644,6 +2706,7 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2694,6 +2757,7 @@ export type UserUpdateWithoutCompanyInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2730,6 +2794,7 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -2764,6 +2829,7 @@ export type UserCreateWithoutBillingTransactionsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2800,6 +2866,7 @@ export type UserUncheckedCreateWithoutBillingTransactionsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2839,6 +2906,7 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -2875,6 +2943,7 @@ export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -2925,6 +2994,7 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -2961,6 +3031,7 @@ export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3006,6 +3077,7 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3042,6 +3114,7 @@ export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3076,6 +3149,7 @@ export type UserCreateWithoutListingsInput = {
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -3112,6 +3186,7 @@ export type UserUncheckedCreateWithoutListingsInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -3162,6 +3237,7 @@ export type UserUpdateWithoutListingsInput = {
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3198,6 +3274,7 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3232,6 +3309,7 @@ export type UserCreateWithoutTopupOrdersInput = {
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -3268,6 +3346,7 @@ export type UserUncheckedCreateWithoutTopupOrdersInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -3318,6 +3397,7 @@ export type UserUpdateWithoutTopupOrdersInput = {
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3354,6 +3434,7 @@ export type UserUncheckedUpdateWithoutTopupOrdersInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3388,6 +3469,7 @@ export type UserCreateWithoutTopPlacementsInput = {
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -3424,6 +3506,7 @@ export type UserUncheckedCreateWithoutTopPlacementsInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -3474,6 +3557,7 @@ export type UserUpdateWithoutTopPlacementsInput = {
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3510,6 +3594,167 @@ export type UserUncheckedUpdateWithoutTopPlacementsInput = {
   billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutAgencyTopPlacementsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutAgencyTopPlacementsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutAgencyTopPlacementsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedCreateWithoutAgencyTopPlacementsInput>
+}
+
+export type UserUpsertWithoutAgencyTopPlacementsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedUpdateWithoutAgencyTopPlacementsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedCreateWithoutAgencyTopPlacementsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAgencyTopPlacementsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAgencyTopPlacementsInput, Prisma.UserUncheckedUpdateWithoutAgencyTopPlacementsInput>
+}
+
+export type UserUpdateWithoutAgencyTopPlacementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAgencyTopPlacementsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3545,6 +3790,7 @@ export type UserCreateWithoutCreatedCampaignsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -3581,6 +3827,7 @@ export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -3631,6 +3878,7 @@ export type UserUpdateWithoutCreatedCampaignsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3667,6 +3915,7 @@ export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3701,6 +3950,7 @@ export type UserCreateWithoutCampaignGrantsInput = {
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
@@ -3737,6 +3987,7 @@ export type UserUncheckedCreateWithoutCampaignGrantsInput = {
   listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
   topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
   topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
   clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
   authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
@@ -3787,6 +4038,7 @@ export type UserUpdateWithoutCampaignGrantsInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3823,6 +4075,7 @@ export type UserUncheckedUpdateWithoutCampaignGrantsInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3875,6 +4128,7 @@ export type UserUpdateWithoutCreatedByInput = {
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
@@ -3910,6 +4164,7 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
   topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
   topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
   clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
   authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
@@ -3952,6 +4207,7 @@ export type UserCountOutputType = {
   listings: number
   topupOrders: number
   topPlacements: number
+  agencyTopPlacements: number
   authTokens: number
   favorites: number
   comments: number
@@ -3970,6 +4226,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   listings?: boolean | UserCountOutputTypeCountListingsArgs
   topupOrders?: boolean | UserCountOutputTypeCountTopupOrdersArgs
   topPlacements?: boolean | UserCountOutputTypeCountTopPlacementsArgs
+  agencyTopPlacements?: boolean | UserCountOutputTypeCountAgencyTopPlacementsArgs
   authTokens?: boolean | UserCountOutputTypeCountAuthTokensArgs
   favorites?: boolean | UserCountOutputTypeCountFavoritesArgs
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
@@ -4031,6 +4288,13 @@ export type UserCountOutputTypeCountTopupOrdersArgs<ExtArgs extends runtime.Type
  */
 export type UserCountOutputTypeCountTopPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TopPlacementWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAgencyTopPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AgencyTopPlacementWhereInput
 }
 
 /**
@@ -4121,6 +4385,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
   topupOrders?: boolean | Prisma.User$topupOrdersArgs<ExtArgs>
   topPlacements?: boolean | Prisma.User$topPlacementsArgs<ExtArgs>
+  agencyTopPlacements?: boolean | Prisma.User$agencyTopPlacementsArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
@@ -4203,6 +4468,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   listings?: boolean | Prisma.User$listingsArgs<ExtArgs>
   topupOrders?: boolean | Prisma.User$topupOrdersArgs<ExtArgs>
   topPlacements?: boolean | Prisma.User$topPlacementsArgs<ExtArgs>
+  agencyTopPlacements?: boolean | Prisma.User$agencyTopPlacementsArgs<ExtArgs>
   clientProfile?: boolean | Prisma.User$clientProfileArgs<ExtArgs>
   authTokens?: boolean | Prisma.User$authTokensArgs<ExtArgs>
   favorites?: boolean | Prisma.User$favoritesArgs<ExtArgs>
@@ -4236,6 +4502,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     listings: Prisma.$ListingPayload<ExtArgs>[]
     topupOrders: Prisma.$TopupOrderPayload<ExtArgs>[]
     topPlacements: Prisma.$TopPlacementPayload<ExtArgs>[]
+    agencyTopPlacements: Prisma.$AgencyTopPlacementPayload<ExtArgs>[]
     clientProfile: Prisma.$ClientProfilePayload<ExtArgs> | null
     authTokens: Prisma.$AuthTokenPayload<ExtArgs>[]
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
@@ -4693,6 +4960,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   listings<T extends Prisma.User$listingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   topupOrders<T extends Prisma.User$topupOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$topupOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TopupOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   topPlacements<T extends Prisma.User$topPlacementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$topPlacementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TopPlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  agencyTopPlacements<T extends Prisma.User$agencyTopPlacementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$agencyTopPlacementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgencyTopPlacementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clientProfile<T extends Prisma.User$clientProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientProfileArgs<ExtArgs>>): Prisma.Prisma__ClientProfileClient<runtime.Types.Result.GetResult<Prisma.$ClientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   authTokens<T extends Prisma.User$authTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$authTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorites<T extends Prisma.User$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5310,6 +5578,30 @@ export type User$topPlacementsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.TopPlacementScalarFieldEnum | Prisma.TopPlacementScalarFieldEnum[]
+}
+
+/**
+ * User.agencyTopPlacements
+ */
+export type User$agencyTopPlacementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AgencyTopPlacement
+   */
+  select?: Prisma.AgencyTopPlacementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AgencyTopPlacement
+   */
+  omit?: Prisma.AgencyTopPlacementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgencyTopPlacementInclude<ExtArgs> | null
+  where?: Prisma.AgencyTopPlacementWhereInput
+  orderBy?: Prisma.AgencyTopPlacementOrderByWithRelationInput | Prisma.AgencyTopPlacementOrderByWithRelationInput[]
+  cursor?: Prisma.AgencyTopPlacementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AgencyTopPlacementScalarFieldEnum | Prisma.AgencyTopPlacementScalarFieldEnum[]
 }
 
 /**

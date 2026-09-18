@@ -2,6 +2,7 @@ import { DEFAULT_LOCALE, isLocale, RESERVED_CITY_SLUGS } from '@noova/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './shared/i18n/routing';
+import { LOCATION_COOKIE } from './shared/location-cookie';
 import { agencySlugFromHost } from './shared/subdomain';
 
 const handleI18n = createMiddleware(routing);
@@ -90,6 +91,25 @@ export default function proxy(request: NextRequest) {
   }
 
   const response = handleI18n(request);
+
+  // Запоминаем последний посещённый сегмент — город или код страны, как
+  // есть, без проверки (N-42): проверяет и различает их `resolveHome`,
+  // у которой есть доступ к справочнику, здесь его нет. Статические
+  // маршруты (`RESERVED_CITY_SLUGS`) не трогаем — это не локация.
+  //
+  // На ветке ролевого редиректа ниже эта cookie не долетает: `response`
+  // там заменяется новым объектом, и это верно — редирект случается именно
+  // потому, что сотрудник не должен быть на этой витринной странице,
+  // запоминать её как последнюю локацию незачем.
+  const firstSegment = pathWithoutLocale(request.nextUrl.pathname).split('/')[1] ?? '';
+  if (firstSegment !== '' && !ROUTE_SEGMENTS.has(firstSegment)) {
+    response.cookies.set(LOCATION_COOKIE, firstSegment, {
+      httpOnly: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+    });
+  }
 
   // Редирект строится по куке с ролью. Это подсказка интерфейсу, а не защита:
   // куку легко подделать, но она влияет только на то, какую страницу открыть.

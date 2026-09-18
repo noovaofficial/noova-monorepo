@@ -1,4 +1,5 @@
 import {
+  agencyCardSchema,
   companyDetailSchema,
   type Locale,
   MAP_CLUSTER_SAMPLE,
@@ -134,6 +135,104 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
   );
 
   /**
+   * Агентства на главной, между анкетами и массажными салонами (N-44).
+   *
+   * У компании нет своего поля города — оно есть только у её анкет, поэтому
+   * срез «город»/«страна» ищет агентство по опубликованным анкетам, а не по
+   * собственному адресу: то же самое, что уже делает `/profiles` для анкет.
+   *
+   * Порядок (payments.md §3.5, D-14): сначала оплаченные места ТОПа агентств
+   * (`isFeatured`), тасуются между собой — честная ротация, как у ТОПа анкет.
+   * Остаток `limit` добирают неоплаченные, по убыванию числа анкет в этом же
+   * срезе. Секция не пустеет из-за нехватки оплаченных мест — только если
+   * во всём срезе нет вообще ни одного подходящего агентства.
+   */
+  fastify.get(
+    '/companies',
+    {
+      schema: {
+        tags: ['profiles'],
+        querystring: z.object({
+          city: z.string().optional(),
+          country: z.string().length(2).optional(),
+          limit: z.coerce.number().int().min(1).max(24).default(10),
+        }),
+        response: { 200: z.array(agencyCardSchema) },
+      },
+    },
+    async (request) => {
+      const { city, country, limit } = request.query;
+      // Один и тот же срез — и чтобы отобрать агентство (у него есть хоть
+      // одна подходящая анкета), и чтобы посчитать, сколько их у него именно
+      // здесь: агентство «всей страны» может вести анкеты в разных городах,
+      // и число на карточке должно быть про этот срез, а не про агентство
+      // целиком.
+      const asPublished = city
+        ? { status: 'published' as const, city: { slug: city } }
+        : country
+          ? { status: 'published' as const, country: { code: country.toUpperCase() } }
+          : { status: 'published' as const };
+
+      const featuredRows = await fastify.prisma.company.findMany({
+        where: {
+          kind: 'agency',
+          isActive: true,
+          isFeatured: true,
+          profiles: { some: asPublished },
+        },
+        select: {
+          slug: true,
+          name: true,
+          logoStorageKey: true,
+          _count: { select: { profiles: { where: asPublished } } },
+        },
+      });
+      const featured = shuffle(featuredRows).slice(0, limit);
+
+      const remaining = limit - featured.length;
+      const organicRows =
+        remaining > 0
+          ? await fastify.prisma.company.findMany({
+              where: {
+                kind: 'agency',
+                isActive: true,
+                isFeatured: false,
+                profiles: { some: asPublished },
+              },
+              // Потолок перед сортировкой в приложении: число опубликованных
+              // анкет в срезе не выражается прямым `orderBy` на фильтрованном
+              // count — Prisma такого не умеет, а агентств немного (D-14).
+              take: 200,
+              select: {
+                slug: true,
+                name: true,
+                logoStorageKey: true,
+                _count: { select: { profiles: { where: asPublished } } },
+              },
+            })
+          : [];
+      const organic = organicRows
+        .sort((a, b) => b._count.profiles - a._count.profiles || a.slug.localeCompare(b.slug))
+        .slice(0, remaining);
+
+      const present = (row: (typeof featuredRows)[number], isFeatured: boolean) => ({
+        slug: row.slug,
+        name: row.name,
+        profileCount: row._count.profiles,
+        logoUrl: row.logoStorageKey ? publicUrl(row.logoStorageKey) : null,
+        // Известно уже по тому, из какой выборки строка — заново читать
+        // поле из базы незачем.
+        isFeatured,
+      });
+
+      return [
+        ...featured.map((row) => present(row, true)),
+        ...organic.map((row) => present(row, false)),
+      ];
+    },
+  );
+
+  /**
    * Страница компании: салон или агентство с их анкетами (N-31).
    *
    * Отключённая компания отдаёт 404, а не пустую страницу: снятая с витрины
@@ -165,6 +264,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           logoStorageKey: true,
           languages: true,
           payments: true,
+          isFeatured: true,
           // Только типы — как у анкеты: значения отдаёт лишь раскрытие
           // отдельным маршрутом (payments.md никак не связан, см. N-31/N-08).
           contacts: {
@@ -201,6 +301,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         isOnline: isOnline(lastSeenAt),
         lastSeenAt: lastSeenAt ? lastSeenAt.toISOString() : null,
         profileCount: row.profiles.length,
+        isFeatured: row.isFeatured,
         profiles: row.profiles.map(toProfileCard),
       };
     },
@@ -394,7 +495,9 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     {
       schema: {
         tags: ['profiles'],
-        querystring: z.object({ city: z.string().optional() }).and(localeQuerySchema),
+        querystring: z
+          .object({ city: z.string().optional(), country: z.string().length(2).optional() })
+          .and(localeQuerySchema),
         response: { 200: pageSchema(profileCardSchema) },
       },
     },
@@ -404,7 +507,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: {
           status: 'published',
           isFeatured: true,
-          ...(request.query.city ? { city: { slug: request.query.city } } : {}),
+          ...(request.query.city
+            ? { city: { slug: request.query.city } }
+            : request.query.country
+              ? { country: { code: request.query.country.toUpperCase() } }
+              : {}),
         },
         // Мест немного (§3.4): берём все и тасуем — так выборка честная,
         // а не «первые N по дате».

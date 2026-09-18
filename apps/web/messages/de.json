@@ -34,6 +34,7 @@
     "verifiedOnly": "Nur verifizierte",
     "languages": "Sprachen",
     "city": "Stadt",
+    "cities": "Städte",
     "district": "Bezirk",
     "clearGroup": "Leeren",
     "empty": "Nichts gefunden",
@@ -65,6 +66,7 @@
   },
   "home": {
     "escortSection": "Anzeigen in {city}",
+    "agenciesSection": "Agenturen in {city}",
     "massageSection": "Massagestudios in {city}",
     "total": "(insgesamt {count})",
     "showAll": "Alle anzeigen →",
@@ -72,8 +74,7 @@
     "showAllStudios": "Alle Studios anzeigen",
     "empty": "Keine Anzeigen für diese Filter",
     "emptyHint": "Entfernen Sie einige Filter.",
-    "topSection": "TOP — {city}",
-    "topCount": "(zufällig {shown} von {total})"
+    "topSection": "TOP — {city}"
   },
   "card": {
     "verified": "Verifiziert",
@@ -82,7 +83,8 @@
     "priceFrom": "ab {price}",
     "perHour": "/Stunde",
     "ad": "Anzeige",
-    "fromAgency": "Agentur {name}"
+    "fromAgency": "Agentur {name}",
+    "profileCount": "{count, plural, one {# Anzeige} other {# Anzeigen}}"
   },
   "profile": {
     "prices": "Preise",
@@ -918,6 +920,13 @@
     "topWeekLabel": "Woche, GC",
     "topSlotsLabel": "TOP-Plätze",
     "topShownLabel": "Auf der Startseite",
+    "agencyTopTitle": "Agentur-TOP",
+    "agencyTopText": "In der Reihe „Agenturen” auf der Startseite haben TOP-Plätze Vorrang, Plätze insgesamt — {slots, number}. Eine Woche kostet {price, number} GC.",
+    "agencyTopActiveUntil": "Im Agentur-TOP bis {date}",
+    "agencyTopDone": "Fertig. Die Agentur ist bis {date} im TOP.",
+    "agencyTopNoProfiles": "TOP steht nur einer Agentur mit einer veröffentlichten Anzeige zur Verfügung.",
+    "agencyTopSection": "Agentur-TOP",
+    "agencyTopHint": "Plätze im Agentur-TOP werden pro Woche verkauft, ohne Warteliste und ohne automatische Verlängerung — gleiches Prinzip wie beim Anzeigen-TOP, aber ein eigener Platz-Pool. In der Reihe „Agenturen” auf der Startseite stehen bezahlte Plätze zuerst, zufällig untereinander; den Rest füllen Agenturen nach Anzahl der Anzeigen.",
     "eurShort": "≈ {amount, number, ::.##} €",
     "topActiveHint": "Eine weitere Woche lässt sich kaufen, sobald die aktuelle endet.",
     "staffSection": "Rechte der Mitarbeiter",
@@ -1059,13 +1068,17 @@
     "districtsOptional": "Bezirke sind optional: eine Anzeige ohne Bezirk erhält die Koordinaten des Stadtzentrums.",
     "countryNotFound": "Land nicht gefunden",
     "cityNotFound": "Stadt nicht gefunden",
-    "districtCount": "{count, plural, one {# Bezirk} other {# Bezirke}}"
+    "districtCount": "{count, plural, one {# Bezirk} other {# Bezirke}}",
+    "isDefault": "Standard",
+    "makeDefault": "Als Standard festlegen"
   },
   "cityPicker": {
     "title": "Intimdates | Erotische Dates | Escort-Service",
     "description": "Verifizierte Anzeigen für Intimdates und Escort-Service: echte Fotos, Alters- und Identitätsprüfung, faire Preise. Stadt wählen, um Anzeigen zu sehen.",
     "empty": "Noch keine Städte",
-    "switchLabel": "Stadt"
+    "switchLabel": "Stadt",
+    "allCities": "Alle Städte",
+    "countrySwitchLabel": "Land"
   },
   "services": {
     "title": "Dienstleistungen",

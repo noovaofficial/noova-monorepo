@@ -30,6 +30,8 @@ export async function seedBillingDefaults(prisma: PrismaClient): Promise<void> {
         topWeekGc: defaults.top.weekGc,
         topSlots: defaults.top.slots,
         topShown: defaults.top.shown,
+        agencyTopWeekGc: defaults.agencyTop.weekGc,
+        agencyTopSlots: defaults.agencyTop.slots,
         moderatorAdjustLimitGc: DEFAULT_ADMIN_BILLING_CONFIG.moderatorAdjustLimitGc,
       },
       update: {},
@@ -67,6 +69,7 @@ export async function loadBillingConfig(prisma: PrismaClient): Promise<AdminBill
     agencyProfileLimit: settings.agencyProfileLimit,
     moderatorAdjustLimitGc: settings.moderatorAdjustLimitGc,
     top: { weekGc: settings.topWeekGc, slots: settings.topSlots, shown: settings.topShown },
+    agencyTop: { weekGc: settings.agencyTopWeekGc, slots: settings.agencyTopSlots },
     prices,
     topupTiers:
       tiers.length > 0
@@ -94,6 +97,8 @@ export async function saveBillingConfig(
         topWeekGc: input.top.weekGc,
         topSlots: input.top.slots,
         topShown: input.top.shown,
+        agencyTopWeekGc: input.agencyTop.weekGc,
+        agencyTopSlots: input.agencyTop.slots,
         moderatorAdjustLimitGc: input.moderatorAdjustLimitGc,
       },
       update: {
@@ -102,6 +107,8 @@ export async function saveBillingConfig(
         topWeekGc: input.top.weekGc,
         topSlots: input.top.slots,
         topShown: input.top.shown,
+        agencyTopWeekGc: input.agencyTop.weekGc,
+        agencyTopSlots: input.agencyTop.slots,
         moderatorAdjustLimitGc: input.moderatorAdjustLimitGc,
       },
     }),

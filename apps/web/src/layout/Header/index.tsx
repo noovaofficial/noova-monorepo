@@ -4,7 +4,8 @@ import { Suspense } from 'react';
 import { Logo } from '@/design-system/components/Logo';
 import { CityLink } from '@/modules/locations/components/CityLink';
 import { CitySwitcher } from '@/modules/locations/components/CitySwitcher';
-import { fetchCities, fetchServiceCatalogPublic, safely } from '@/shared/api';
+import { CountrySwitcher } from '@/modules/locations/components/CountrySwitcher';
+import { fetchCities, fetchCountries, fetchServiceCatalogPublic, safely } from '@/shared/api';
 import { Link } from '@/shared/i18n/navigation';
 import styles from '../Header.module.css';
 import { HeaderActions } from '../HeaderActions';
@@ -33,11 +34,13 @@ export async function Header() {
 
   // Справочник нужен панели фильтров в момент открытия. Тянем на сервере:
   // иначе первое нажатие показало бы пустые группы услуг.
-  const [catalog, cities] = await Promise.all([
+  const [catalog, cities, countries] = await Promise.all([
     safely(fetchServiceCatalogPublic('escort', { locale: locale as Locale }), [], 'headerCatalog'),
     safely(fetchCities({ locale: locale as Locale, revalidate: 300 }), [], 'headerCities'),
+    safely(fetchCountries({ locale: locale as Locale, revalidate: 300 }), [], 'headerCountries'),
   ]);
   const citySlugs = cities.map((city) => city.slug);
+  const countryCodes = countries.map((country) => country.code.toLowerCase());
 
   return (
     <header className={styles.header}>
@@ -50,7 +53,8 @@ export async function Header() {
             <Logo />
           </Link>
           <div className={styles.actions}>
-            <CitySwitcher cities={cities} />
+            <CountrySwitcher cities={cities} countries={countries} />
+            <CitySwitcher cities={cities} countries={countries} />
             <HeaderActions />
           </div>
         </div>
@@ -77,6 +81,7 @@ export async function Header() {
                   className={styles.filterBtn}
                   href="/catalog/escort/map"
                   citySlugs={citySlugs}
+                  countryCodes={countryCodes}
                 >
                   <MapIcon />
                   <span className={styles.btnLabel}>{t('mapView')}</span>
@@ -85,7 +90,7 @@ export async function Header() {
               </>
             }
           >
-            <HeaderFilters catalog={catalog} />
+            <HeaderFilters catalog={catalog} cities={cities} countries={countries} />
           </Suspense>
 
           {/* Второй класс — только ради телефона: на широком экране полоса
@@ -96,6 +101,7 @@ export async function Header() {
                 key={item.key}
                 href={item.href}
                 citySlugs={citySlugs}
+                countryCodes={countryCodes}
                 className={styles.chip}
               >
                 {tf(item.key)}

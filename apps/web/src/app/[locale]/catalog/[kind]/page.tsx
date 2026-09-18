@@ -1,6 +1,6 @@
 import type { Locale } from '@noova/shared';
 import { permanentRedirect } from 'next/navigation';
-import { activeCities } from '@/shared/city';
+import { activeCities, activeCountries } from '@/shared/city';
 
 /**
  * Прежний адрес каталога, без города: `/{locale}/catalog/{kind}`.
@@ -20,7 +20,7 @@ type Props = {
 
 export default async function LegacyCatalogRedirect({ params, searchParams }: Props) {
   const { locale, kind } = await params;
-  const cities = await activeCities(locale);
+  const [cities, countries] = await Promise.all([activeCities(locale), activeCountries(locale)]);
 
   // Фильтры переносим вместе с адресом: старая ссылка с выбранными услугами
   // иначе привела бы в пустой каталог, и потеря выглядела бы как сброс.
@@ -30,16 +30,24 @@ export default async function LegacyCatalogRedirect({ params, searchParams }: Pr
     else if (value !== undefined) search.set(key, value);
   }
 
-  // До переезда город задавался параметром `?city=`. Он и решает, куда вести:
-  // иначе ссылка на Берлин молча открывала бы первый активный город. Из
-  // строки запроса параметр убираем — теперь город живёт в адресе, а каталог
+  // До переезда город задавался параметром `?city=`. Если он указывал на
+  // настоящий город — ведём туда же, куда вела бы старая ссылка. Из строки
+  // запроса параметр убираем — теперь город живёт в адресе, а каталог
   // его оттуда и берёт.
+  //
+  // Без параметра (или с незнакомым значением) — каталог страны по
+  // умолчанию целиком (N-43), а не какой-то один её город: у каталога
+  // теперь есть собственный срез «вся страна», гадать конкретный город
+  // незачем.
   const asked = search.get('city');
-  const city = cities.find((item) => item.slug === asked) ?? cities[0];
+  const city = cities.find((item) => item.slug === asked);
   if (asked) search.delete('city');
   const query = search.toString();
   const suffix = query ? `?${query}` : '';
 
-  // Городов нет вовсе — вести некуда, кроме выбора города.
-  permanentRedirect(city ? `/${locale}/${city.slug}/catalog/${kind}${suffix}` : `/${locale}`);
+  const defaultCountry = countries.find((item) => item.isDefault) ?? countries[0];
+  const target = city ? city.slug : defaultCountry ? defaultCountry.code.toLowerCase() : null;
+
+  // Ни городов, ни стран нет вовсе — вести некуда, кроме корня.
+  permanentRedirect(target ? `/${locale}/${target}/catalog/${kind}${suffix}` : `/${locale}`);
 }

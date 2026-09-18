@@ -434,6 +434,7 @@ export const ModelName = {
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
   TopPlacement: 'TopPlacement',
+  AgencyTopPlacement: 'AgencyTopPlacement',
   VerificationRequest: 'VerificationRequest',
   Campaign: 'Campaign',
   CampaignGrant: 'CampaignGrant'
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3194,6 +3195,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AgencyTopPlacement: {
+      payload: Prisma.$AgencyTopPlacementPayload<ExtArgs>
+      fields: Prisma.AgencyTopPlacementFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AgencyTopPlacementFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AgencyTopPlacementFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        findFirst: {
+          args: Prisma.AgencyTopPlacementFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AgencyTopPlacementFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        findMany: {
+          args: Prisma.AgencyTopPlacementFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>[]
+        }
+        create: {
+          args: Prisma.AgencyTopPlacementCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        createMany: {
+          args: Prisma.AgencyTopPlacementCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AgencyTopPlacementCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>[]
+        }
+        delete: {
+          args: Prisma.AgencyTopPlacementDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        update: {
+          args: Prisma.AgencyTopPlacementUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        deleteMany: {
+          args: Prisma.AgencyTopPlacementDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AgencyTopPlacementUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AgencyTopPlacementUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>[]
+        }
+        upsert: {
+          args: Prisma.AgencyTopPlacementUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AgencyTopPlacementPayload>
+        }
+        aggregate: {
+          args: Prisma.AgencyTopPlacementAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAgencyTopPlacement>
+        }
+        groupBy: {
+          args: Prisma.AgencyTopPlacementGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTopPlacementGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AgencyTopPlacementCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AgencyTopPlacementCountAggregateOutputType> | number
+        }
+      }
+    }
     VerificationRequest: {
       payload: Prisma.$VerificationRequestPayload<ExtArgs>
       fields: Prisma.VerificationRequestFieldRefs
@@ -3521,7 +3596,8 @@ export const CountryScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
-  isActive: 'isActive'
+  isActive: 'isActive',
+  isDefault: 'isDefault'
 } as const
 
 export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
@@ -3602,6 +3678,7 @@ export const ProfileScalarFieldEnum = {
   ownerId: 'ownerId',
   cityId: 'cityId',
   districtId: 'districtId',
+  countryId: 'countryId',
   approxLat: 'approxLat',
   approxLng: 'approxLng',
   hasManualLocation: 'hasManualLocation',
@@ -3713,6 +3790,7 @@ export const CompanyScalarFieldEnum = {
   languages: 'languages',
   payments: 'payments',
   isActive: 'isActive',
+  isFeatured: 'isFeatured',
   ownerId: 'ownerId',
   tariffTierId: 'tariffTierId',
   customProfileLimit: 'customProfileLimit',
@@ -3869,6 +3947,8 @@ export const BillingSettingsScalarFieldEnum = {
   topWeekGc: 'topWeekGc',
   topSlots: 'topSlots',
   topShown: 'topShown',
+  agencyTopWeekGc: 'agencyTopWeekGc',
+  agencyTopSlots: 'agencyTopSlots',
   moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
@@ -3985,6 +4065,20 @@ export const TopPlacementScalarFieldEnum = {
 } as const
 
 export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
+
+
+export const AgencyTopPlacementScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  userId: 'userId',
+  status: 'status',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTopPlacementScalarFieldEnum = (typeof AgencyTopPlacementScalarFieldEnum)[keyof typeof AgencyTopPlacementScalarFieldEnum]
 
 
 export const VerificationRequestScalarFieldEnum = {
@@ -4768,6 +4862,7 @@ export type GlobalOmitConfig = {
   listing?: Prisma.ListingOmit
   topupOrder?: Prisma.TopupOrderOmit
   topPlacement?: Prisma.TopPlacementOmit
+  agencyTopPlacement?: Prisma.AgencyTopPlacementOmit
   verificationRequest?: Prisma.VerificationRequestOmit
   campaign?: Prisma.CampaignOmit
   campaignGrant?: Prisma.CampaignGrantOmit

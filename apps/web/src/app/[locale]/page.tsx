@@ -1,82 +1,39 @@
-import { LOCALES, type Locale } from '@noova/shared';
-import type { Metadata } from 'next';
+import type { Locale } from '@noova/shared';
+import { cookies } from 'next/headers';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { redirectToSingleCity } from '@/shared/city';
-import { Link } from '@/shared/i18n/navigation';
-import { socialMeta } from '@/shared/metadata';
+import { resolveHome } from '@/shared/city';
+import { LOCATION_COOKIE } from '@/shared/location-cookie';
 import styles from './cities.module.css';
-
-export const revalidate = 300;
 
 type Props = { params: Promise<{ locale: Locale }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'cityPicker' });
-  const title = t('title');
-  const description = t('description');
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        ...Object.fromEntries(LOCALES.map((l) => [l, `/${l}`])),
-        'x-default': '/de',
-      },
-    },
-    ...socialMeta({ title, description, locale }),
-  };
-}
-
 /**
- * Адрес без города.
+ * Адрес без города — больше не страница выбора (N-42): она только
+ * редиректит, никогда не рендерит контент сама. Иначе у одного и того же
+ * контента (страна по умолчанию) было бы два индексируемых адреса — этот
+ * и `/{locale}/{country}` — и оба спорили бы за выдачу.
  *
- * Пока город один — редирект на него: страница выбора из одного пункта
- * бессмысленна. Появится второй — здесь сам собой окажется выбор города,
- * и отдельного поля «город по умолчанию» заводить не пришлось.
+ * Куда именно — решает `resolveHome`: на запомненный город/страну из cookie
+ * или на страну по умолчанию, если cookie нет или её значение уже не активно.
+ *
+ * Страница остаётся динамической (без `revalidate`): она читает cookie
+ * конкретного посетителя, и один закэшированный редирект не должен
+ * «утечь» на всех остальных.
  */
-export default async function CityPickerPage({ params }: Props) {
+export default async function RootPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations({ locale, namespace: 'cityPicker' });
-  const cities = await redirectToSingleCity(locale);
+  const remembered = (await cookies()).get(LOCATION_COOKIE)?.value;
+  await resolveHome(locale, remembered);
 
+  // Сюда попадаем, только если в базе нет ни одной активной страны —
+  // пустое или не засеянное окружение. Показывать больше нечего.
+  const t = await getTranslations({ locale, namespace: 'cityPicker' });
   return (
     <div className={styles.wrap}>
       <h1 className={styles.title}>{t('title')}</h1>
-      <p className={styles.lead}>{t('description')}</p>
-
-      {cities.length === 0 ? (
-        <p className={styles.empty}>{t('empty')}</p>
-      ) : (
-        // Группируем по странам: список из десятков городов вперемешку
-        // читается хуже, чем те же города под названием страны. Порядок стран
-        // — по первому появлению, а города уже отсортированы API по языку.
-        Object.entries(
-          cities.reduce<Record<string, typeof cities>>((acc, city) => {
-            const key = city.country.name;
-            acc[key] = acc[key] ?? [];
-            acc[key].push(city);
-            return acc;
-          }, {}),
-        ).map(([country, group]) => (
-          <section className={styles.country} key={country}>
-            <h2 className={styles.countryName}>{country}</h2>
-            <ul className={styles.list}>
-              {group.map((city) => (
-                <li key={city.slug}>
-                  <Link className={styles.city} href={`/${city.slug}`}>
-                    {city.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
-      )}
+      <p className={styles.empty}>{t('empty')}</p>
     </div>
   );
 }

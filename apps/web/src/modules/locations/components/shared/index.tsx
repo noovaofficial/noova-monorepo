@@ -2,7 +2,7 @@
 
 import { LOCALES, type Translated } from '@noova/shared';
 import type { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { LocationsError } from '@/modules/locations/api';
 import { Link } from '@/shared/i18n/navigation';
@@ -83,6 +83,7 @@ export function EntityRow({
   onToggle,
   pending,
   t,
+  extra,
 }: {
   name: string;
   meta: string;
@@ -91,6 +92,9 @@ export function EntityRow({
   onToggle: () => void;
   pending?: boolean;
   t: Translate;
+  /** Доп. действие только у страны (флаг «по умолчанию») — город и район
+   *  им не пользуются, поэтому проп, а не отдельная копия строки. */
+  extra?: ReactNode;
 }) {
   return (
     <div className={`${styles.row} ${isActive ? '' : styles.rowOff}`}>
@@ -99,6 +103,7 @@ export function EntityRow({
         <span className={styles.rowMeta}>{meta}</span>
       </div>
       <div className={styles.actions}>
+        {extra}
         {href ? (
           // Ссылка, а не кнопка с router.push: «Просмотр» — переход, и он
           // должен открываться в новой вкладке средним щелчком, как всякая

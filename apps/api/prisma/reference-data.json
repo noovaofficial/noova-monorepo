@@ -10,7 +10,8 @@
         "fr": "Allemagne",
         "ru": "Германия"
       },
-      "isActive": true
+      "isActive": true,
+      "isDefault": true
     },
     {
       "id": "cmtabb17j000052b0xtqs4jq4",

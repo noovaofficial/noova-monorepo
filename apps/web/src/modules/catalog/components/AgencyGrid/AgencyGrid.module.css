@@ -1,0 +1,7 @@
+/* Карточка шире и крупнее, чем у анкет, но ряд остаётся тем же — 4-5 в ряд
+   на десктопе, схлопывается без медиазапросов. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}

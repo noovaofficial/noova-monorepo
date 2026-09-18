@@ -1,5 +1,6 @@
 'use client';
 
+import type { CityOption, CountryOption } from '@noova/shared';
 import { cityFromPath, type ServiceGroup } from '@noova/shared';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -13,35 +14,69 @@ import styles from '../Header.module.css';
 /**
  * Кнопка «Фильтры» в шапке — единственная точка входа в панель.
  *
- * Ведёт себя по-разному в зависимости от страницы: на каталоге правки
- * применяются к текущей выдаче сразу, на остальных страницах копятся
- * и применяются переходом в каталог. Две кнопки на одной странице (одна
- * в шапке, другая над выдачей) сбивали бы с толку.
+ * Куда ведёт кнопка «Показать» внутри панели, зависит от страницы: на
+ * каталоге и карте правки применяются к текущей выдаче (остаёмся на месте,
+ * меняется только query), на остальных страницах — переходом в каталог.
+ * Сама панель везде работает одинаково: копит правки локально и отправляет
+ * их разом по кнопке, а не по каждому клику.
  */
-export function HeaderFilters({ catalog }: { catalog: ServiceGroup[] }) {
+export function HeaderFilters({
+  catalog,
+  cities,
+  countries,
+}: {
+  catalog: ServiceGroup[];
+  cities: CityOption[];
+  countries: CountryOption[];
+}) {
   const t = useTranslations('nav');
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  // Каталог живёт под городским префиксом (N-32): `/berlin/catalog/escort`.
-  // Сравнивать надо с путём без города — иначе на каталоге не срабатывает
-  // ничего из того, что ниже.
-  const city = cityFromPath(pathname);
-  const inCity = city ? pathname.slice(city.length + 1) : pathname;
+  // Второй сегмент пути — город, код страны (главная/каталог «всей страны»,
+  // N-43) или ничего из этого (анкета, кабинет и т.п.). `cityFromPath` сам
+  // не отличает их друг от друга — сверяем со справочниками.
+  const rawFirst = cityFromPath(pathname);
+  const matchedCity = rawFirst ? cities.find((item) => item.slug === rawFirst) : undefined;
+  const matchedCountry = matchedCity
+    ? undefined
+    : rawFirst
+      ? countries.find((item) => item.code.toLowerCase() === rawFirst.toLowerCase())
+      : undefined;
 
-  const onCatalog = inCity.startsWith('/catalog');
-  const kind = inCity.startsWith('/catalog/massage') ? 'massage' : 'escort';
+  // Куда ведут «Карта» и «Показать» без конкретного города — на каталог/карту
+  // той же страны, если она известна из адреса, иначе на страну по умолчанию.
+  // Ни разу не нужно гадать город: у страны теперь есть свой каталог (N-43).
+  const defaultCountry = countries.find((item) => item.isDefault) ?? countries[0];
+  const location = matchedCity?.slug ?? (matchedCountry ? rawFirst : null);
+  const targetLocation = location ?? defaultCountry?.code.toLowerCase() ?? null;
+
+  const inLocation = location ? pathname.slice(location.length + 1) : pathname;
+  const onCatalog = inLocation.startsWith('/catalog');
+  const kind = inLocation.startsWith('/catalog/massage') ? 'massage' : 'escort';
   const active = onCatalog ? countActiveFilters(new URLSearchParams(searchParams.toString())) : 0;
-  const onMap = inCity.endsWith('/map');
+  const onMap = inLocation.endsWith('/map');
+
+  // Список городов для сужения «всей страны» до нескольких (N-43) — только
+  // когда конкретный город ещё не выбран: внутри одного города выбирать
+  // город незачем.
+  const countryCode = matchedCity?.country.code ?? matchedCountry?.code ?? defaultCountry?.code;
+  const countryCities = matchedCity
+    ? []
+    : cities.filter((item) => item.country.code === countryCode);
 
   // Карта наследует текущие фильтры: переход «список ↔ карта» ничего
   // не сбрасывает, иначе выбранное приходится набирать заново.
   const mapQuery = onCatalog ? searchParams.toString() : '';
-  // Город несём с собой. Без префикса ссылка ведёт на заглушку старого
-  // адреса, а та уводит в первый активный город списка — то есть из Берлина
-  // выкидывало в Амстердам.
-  const mapHref = `${city ? `/${city}` : ''}/catalog/${kind}/map${mapQuery ? `?${mapQuery}` : ''}`;
+  const mapHref = `${targetLocation ? `/${targetLocation}` : ''}/catalog/${kind}/map${mapQuery ? `?${mapQuery}` : ''}`;
+
+  // Куда ведёт кнопка «Показать»: на каталоге и карте — текущая страница
+  // (правки лишь дописывают её query), иначе — переход в каталог этого
+  // города/страны с чистого листа.
+  const targetPath = onCatalog
+    ? pathname
+    : `${targetLocation ? `/${targetLocation}` : ''}/catalog/${kind}`;
 
   return (
     <>
@@ -72,9 +107,10 @@ export function HeaderFilters({ catalog }: { catalog: ServiceGroup[] }) {
         <FilterPanel
           kind={kind}
           catalog={catalog}
+          countryCities={countryCities}
           initial={onCatalog ? searchParams.toString() : ''}
           onClose={() => setOpen(false)}
-          mode={onCatalog ? 'live' : 'navigate'}
+          targetPath={targetPath}
         />
       ) : null}
     </>

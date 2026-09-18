@@ -76,18 +76,49 @@ function CountryRow({
   const label = useLabel();
   const toggle = useMutation({
     mutationFn: () =>
-      run(() => updateCountry(country.id, { name: country.name, isActive: !country.isActive })),
+      run(() =>
+        updateCountry(country.id, {
+          name: country.name,
+          isActive: !country.isActive,
+          isDefault: country.isDefault,
+        }),
+      ),
+  });
+  const setDefault = useMutation({
+    mutationFn: () =>
+      run(() =>
+        updateCountry(country.id, {
+          name: country.name,
+          isActive: country.isActive,
+          isDefault: true,
+        }),
+      ),
   });
 
   return (
     <EntityRow
       name={`${country.code} · ${label(country.name)}`}
-      meta={t('cityCount', { count: country.cityCount })}
+      meta={
+        country.isDefault
+          ? `${t('cityCount', { count: country.cityCount })} · ${t('isDefault')}`
+          : t('cityCount', { count: country.cityCount })
+      }
       isActive={country.isActive}
       href={`/admin/locations/${country.code.toLowerCase()}`}
       onToggle={() => toggle.mutate()}
       pending={toggle.isPending}
       t={t}
+      extra={
+        !country.isDefault && country.isActive ? (
+          <Button
+            variant="secondary"
+            onClick={() => setDefault.mutate()}
+            disabled={setDefault.isPending}
+          >
+            {t('makeDefault')}
+          </Button>
+        ) : null
+      }
     />
   );
 }
@@ -105,7 +136,7 @@ function CountryForm({
   const create = useMutation({
     mutationFn: () =>
       run(
-        () => createCountry({ code, name, isActive: true }),
+        () => createCountry({ code, name, isActive: true, isDefault: false }),
         () => {
           setCode('');
           setName(emptyNames());

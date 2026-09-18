@@ -6,7 +6,9 @@ import {
   adjustLimitSchema,
   adminBillingConfigSchema,
   adminPriceBookSchema,
+  agencyTopStateSchema,
   billingOperationsSchema,
+  buyAgencyTopResultSchema,
   buyTopInputSchema,
   buyTopResultSchema,
   createTopupInputSchema,
@@ -25,6 +27,14 @@ import { env } from '../../env.js';
 import { BILLING_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { resolveAgencyListingPriceGc } from './agency-tariffs.js';
+import {
+  AgencyTopAlreadyActiveError,
+  AgencyTopFullError,
+  AgencyTopNoCompanyError,
+  AgencyTopNoProfilesError,
+  agencyTopState,
+  buyAgencyTop,
+} from './agency-top.js';
 import { loadBillingConfig, saveBillingConfig } from './config.js';
 import { activateListing } from './listing.js';
 import {
@@ -290,6 +300,71 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
           throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
         }
         if (error instanceof TopNotPublishedError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        if (error instanceof InsufficientBalanceError) {
+          throw fastify.httpErrors.paymentRequired(
+            `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
+          );
+        }
+        throw error;
+      }
+    },
+  );
+
+  // --- ТОП агентств (payments.md §3.5, D-14) --------------------------------
+
+  fastify.get(
+    '/billing/agency-top',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['billing'], response: { 200: agencyTopStateSchema } },
+    },
+    async (request) => {
+      const { userId, role } = requireSession(request);
+      if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
+      const config = await loadBillingConfig(fastify.prisma);
+      return agencyTopState(fastify.prisma, userId, config.agencyTop);
+    },
+  );
+
+  /**
+   * Покупка недели в ТОПе агентств. Своей компании нет — 409, как и опять
+   * активное место (D-11) или занятые места (D-14).
+   */
+  fastify.post(
+    '/billing/agency-top',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['billing'], response: { 200: buyAgencyTopResultSchema } },
+    },
+    async (request) => {
+      const { userId, role } = requireSession(request);
+      if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
+      const config = await loadBillingConfig(fastify.prisma);
+
+      try {
+        const result = await buyAgencyTop(fastify.prisma, {
+          userId,
+          priceGc: config.agencyTop.weekGc,
+          slots: config.agencyTop.slots,
+        });
+        // Агентство видно в подборке на главной сразу.
+        fastify.revalidate([PROFILES_TAG]);
+        return result;
+      } catch (error) {
+        if (error instanceof AgencyTopAlreadyActiveError) {
+          throw fastify.httpErrors.conflict(
+            `Агентство уже в ТОПе до ${error.expiresAt.toISOString()}`,
+          );
+        }
+        if (error instanceof AgencyTopFullError) {
+          throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе агентств заняты`);
+        }
+        if (error instanceof AgencyTopNoCompanyError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        if (error instanceof AgencyTopNoProfilesError) {
           throw fastify.httpErrors.conflict(error.message);
         }
         if (error instanceof InsufficientBalanceError) {

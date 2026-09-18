@@ -1,38 +1,63 @@
 'use client';
 
-import type { CityOption } from '@noova/shared';
+import type { CityOption, CountryOption } from '@noova/shared';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from '@/shared/i18n/navigation';
 import styles from './CitySwitcher.module.css';
 
+/** Слуг города пустым не бывает — этим значением помечен пункт «Все города». */
+const ALL_CITIES = '';
+
 /**
  * Переключатель города в шапке.
  *
- * Показывается только на витринных страницах — там, где город есть в адресе:
- * главная города, каталог, карта. На анкете, в кабинете и в админке он скрыт:
- * менять там город бессмысленно, а элемент, молча уводящий на другую
- * страницу, дезориентирует (N-32).
+ * Показывается только на витринных страницах — там, где в адресе есть город
+ * или код страны (N-42): главная (города или всей страны), каталог, карта.
+ * На анкете, в кабинете и в админке он скрыт: менять там город бессмысленно,
+ * а элемент, молча уводящий на другую страницу, дезориентирует (N-32).
  *
- * Выбор города сохраняет страницу: из каталога массажа одного города
- * попадаешь в каталог массажа другого, а не на его главную.
+ * Список городов — только текущей страны: слева свой свитч для страны
+ * (`CountrySwitcher`), и мешать в одном списке Берлин с Амстердамом незачем.
  *
- * На телефоне вместо названия города — значок метки. Название занимало
- * место, которого в строке нет, но сам `select` остаётся на месте и
- * прозрачным лежит поверх значка: нажатие открывает тот же родной список
- * системы. Подменять его своим меню значило бы потерять привычное
- * поведение — колесо на iOS, поиск с клавиатуры на Android.
+ * «Все города» есть везде, где есть сам свитч: у главной, каталога и карты
+ * теперь одинаково есть срез «вся страна» (N-43), и хвост пути (`/catalog/
+ * escort`, `/catalog/escort/map`) сохраняется тем же образом, что и при
+ * выборе конкретного города.
+ *
+ * Выбор города (как и «Все города») сохраняет страницу: из каталога массажа
+ * одного города попадаешь в каталог массажа другого или всей страны, а не
+ * на чью-то главную.
+ *
+ * На телефоне вместо названия — значок метки. Название занимало место,
+ * которого в строке нет, но сам `select` остаётся на месте и прозрачным
+ * лежит поверх значка: нажатие открывает тот же родной список системы.
+ * Подменять его своим меню значило бы потерять привычное поведение —
+ * колесо на iOS, поиск с клавиатуры на Android.
  */
-export function CitySwitcher({ cities }: { cities: CityOption[] }) {
+export function CitySwitcher({
+  cities,
+  countries,
+}: {
+  cities: CityOption[];
+  countries: CountryOption[];
+}) {
   const t = useTranslations('cityPicker');
   const pathname = usePathname();
   const router = useRouter();
 
   // pathname здесь без языкового префикса — его снимает обёртка next-intl.
   const [, first = '', ...rest] = pathname.split('/');
-  const current = cities.find((city) => city.slug === first);
+  const currentCity = cities.find((city) => city.slug === first);
+  const currentCountryCode =
+    currentCity?.country.code ??
+    countries.find((country) => country.code.toLowerCase() === first.toLowerCase())?.code;
 
-  // Города в адресе нет — страница негородская. Ничего не показываем.
-  if (!current || cities.length < 2) return null;
+  // Ни город, ни код страны — страница вне витрины. Ничего не показываем.
+  if (!currentCountryCode) return null;
+
+  const countryCities = cities.filter((city) => city.country.code === currentCountryCode);
+  // +1 — сама опция «Все города», она теперь есть всегда.
+  if (countryCities.length + 1 < 2) return null;
 
   return (
     <label className={styles.wrap}>
@@ -56,10 +81,17 @@ export function CitySwitcher({ cities }: { cities: CityOption[] }) {
 
       <select
         className={styles.select}
-        value={current.slug}
-        onChange={(event) => router.push(`/${[event.target.value, ...rest].join('/')}`)}
+        value={currentCity ? currentCity.slug : ALL_CITIES}
+        onChange={(event) => {
+          const target =
+            event.target.value === ALL_CITIES
+              ? currentCountryCode.toLowerCase()
+              : event.target.value;
+          router.push(`/${[target, ...rest].join('/')}`);
+        }}
       >
-        {cities.map((city) => (
+        <option value={ALL_CITIES}>{t('allCities')}</option>
+        {countryCities.map((city) => (
           <option key={city.slug} value={city.slug}>
             {city.name}
           </option>

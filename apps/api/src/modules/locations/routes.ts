@@ -9,6 +9,7 @@
 import {
   cityInputSchema,
   citySchemaAdmin,
+  citySlugCollidesWithCountry,
   countryInputSchema,
   countrySchema,
   districtInputSchema,
@@ -52,6 +53,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           code: true,
           name: true,
           isActive: true,
+          isDefault: true,
           translations: { select: { locale: true, name: true } },
           _count: { select: { cities: true } },
         },
@@ -61,6 +63,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         code: row.code,
         name: fromRows(row.translations, row.name),
         isActive: row.isActive,
+        isDefault: row.isDefault,
         cityCount: row._count.cities,
       }));
     },
@@ -73,19 +76,30 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: { tags: ['admin'], body: countryInputSchema, response: { 201: countrySchema } },
     },
     async (request, reply) => {
-      const { code, name, isActive } = request.body;
+      const { code, name, isActive, isDefault } = request.body;
 
       const exists = await fastify.prisma.country.findUnique({ where: { code } });
       if (exists) throw fastify.httpErrors.conflict(`Страна ${code} уже заведена`);
+      if (isDefault && !isActive) {
+        throw fastify.httpErrors.badRequest(
+          'Отключённая страна не может быть страной по умолчанию',
+        );
+      }
 
-      const created = await fastify.prisma.country.create({
-        data: {
-          code,
-          name: name.de,
-          isActive,
-          translations: { create: translationRows(name) },
-        },
-        select: { id: true, code: true, isActive: true },
+      // По умолчанию — ровно одна: снимаем флаг с прежней в той же транзакции,
+      // что заводит новую, иначе между двумя запросами их окажется две.
+      const created = await fastify.prisma.$transaction(async (tx) => {
+        if (isDefault) await tx.country.updateMany({ data: { isDefault: false } });
+        return tx.country.create({
+          data: {
+            code,
+            name: name.de,
+            isActive,
+            isDefault,
+            translations: { create: translationRows(name) },
+          },
+          select: { id: true, code: true, isActive: true, isDefault: true },
+        });
       });
 
       return reply.status(201).send({ ...created, name, cityCount: 0 });
@@ -104,20 +118,43 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     async (request) => {
-      const { name, isActive } = request.body;
-      const updated = await fastify.prisma.country.update({
-        where: { id: request.params.id },
-        data: {
-          name: name.de,
-          isActive,
-          // Переводы переписываем целиком: частичный набор невозможен по
-          // контракту, а точечное обновление оставило бы строки от прошлых локалей.
-          translations: { deleteMany: {}, create: translationRows(name) },
-        },
-        select: { id: true, code: true, isActive: true, _count: { select: { cities: true } } },
+      const { name, isActive, isDefault } = request.body;
+      if (isDefault && !isActive) {
+        throw fastify.httpErrors.badRequest(
+          'Отключённая страна не может быть страной по умолчанию',
+        );
+      }
+
+      // По умолчанию — ровно одна: снимаем флаг с прежней в той же транзакции.
+      const updated = await fastify.prisma.$transaction(async (tx) => {
+        if (isDefault) {
+          await tx.country.updateMany({
+            where: { id: { not: request.params.id } },
+            data: { isDefault: false },
+          });
+        }
+        return tx.country.update({
+          where: { id: request.params.id },
+          data: {
+            name: name.de,
+            isActive,
+            isDefault,
+            // Переводы переписываем целиком: частичный набор невозможен по
+            // контракту, а точечное обновление оставило бы строки от прошлых локалей.
+            translations: { deleteMany: {}, create: translationRows(name) },
+          },
+          select: {
+            id: true,
+            code: true,
+            isActive: true,
+            isDefault: true,
+            _count: { select: { cities: true } },
+          },
+        });
       });
       // Отключение страны прячет её города со стороны посетителя (N-32) —
       // без сброса это было бы видно только после истечения ISR (до 5 минут).
+      // Смена страны по умолчанию меняет тот же корневой редирект — тег общий.
       fastify.revalidate([CITIES_TAG]);
 
       return {
@@ -125,6 +162,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         code: updated.code,
         name,
         isActive: updated.isActive,
+        isDefault: updated.isDefault,
         cityCount: updated._count.cities,
       };
     },
@@ -236,6 +274,18 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const exists = await fastify.prisma.city.findUnique({ where: { slug } });
       if (exists) throw fastify.httpErrors.conflict(`Город ${slug} уже заведён`);
+
+      // Слуг города делит второй сегмент адреса с кодом страны (N-42):
+      // `/de` не может одновременно значить и «Германия», и город «de».
+      const countryCodes = await fastify.prisma.country.findMany({ select: { code: true } });
+      if (
+        citySlugCollidesWithCountry(
+          slug,
+          countryCodes.map((c) => c.code),
+        )
+      ) {
+        throw fastify.httpErrors.conflict(`Адрес ${slug} занят кодом страны`);
+      }
 
       const country = await fastify.prisma.country.findUnique({ where: { id: countryId } });
       if (!country) throw fastify.httpErrors.badRequest('Страна не найдена');

@@ -34,6 +34,7 @@
     "verifiedOnly": "Vérifiés uniquement",
     "languages": "Langues",
     "city": "Ville",
+    "cities": "Villes",
     "district": "Quartier",
     "clearGroup": "Effacer",
     "empty": "Aucun résultat",
@@ -65,6 +66,7 @@
   },
   "home": {
     "escortSection": "Profils à {city}",
+    "agenciesSection": "Agences à {city}",
     "massageSection": "Salons de massage à {city}",
     "total": "({count} au total)",
     "showAll": "Tout afficher →",
@@ -72,8 +74,7 @@
     "showAllStudios": "Afficher tous les salons",
     "empty": "Aucun profil ne correspond à ces filtres",
     "emptyHint": "Essayez de retirer un filtre.",
-    "topSection": "TOP — {city}",
-    "topCount": "({shown} au hasard sur {total})"
+    "topSection": "TOP — {city}"
   },
   "card": {
     "verified": "Vérifié",
@@ -82,7 +83,8 @@
     "priceFrom": "à partir de {price}",
     "perHour": "/heure",
     "ad": "Annonce",
-    "fromAgency": "Agence {name}"
+    "fromAgency": "Agence {name}",
+    "profileCount": "{count, plural, one {# annonce} other {# annonces}}"
   },
   "profile": {
     "prices": "Tarifs",
@@ -918,6 +920,13 @@
     "topWeekLabel": "Semaine, GC",
     "topSlotsLabel": "Emplacements du TOP",
     "topShownLabel": "Affichés sur l'accueil",
+    "agencyTopTitle": "TOP agences",
+    "agencyTopText": "Dans la rangée « Agences » de la page d'accueil, les emplacements TOP sont prioritaires, emplacements au total — {slots, number}. Une semaine coûte {price, number} GC.",
+    "agencyTopActiveUntil": "Dans le TOP agences jusqu'au {date}",
+    "agencyTopDone": "Terminé. L'agence est dans le TOP jusqu'au {date}.",
+    "agencyTopNoProfiles": "Le TOP n'est disponible que pour une agence ayant une annonce publiée.",
+    "agencyTopSection": "TOP agences",
+    "agencyTopHint": "Les emplacements du TOP agences sont vendus à la semaine, sans liste d'attente ni renouvellement automatique — même principe que le TOP des annonces, mais avec son propre groupe d'emplacements. Dans la rangée « Agences » de la page d'accueil, les emplacements payés passent en premier, tirés au sort entre eux ; le reste est complété par les agences selon leur nombre d'annonces.",
     "eurShort": "≈ {amount, number, ::.##} €",
     "topActiveHint": "Vous pourrez acheter une nouvelle semaine à la fin de celle en cours.",
     "staffSection": "Droits du personnel",
@@ -1059,13 +1068,17 @@
     "districtsOptional": "Les quartiers sont facultatifs : une annonce sans quartier reçoit les coordonnées du centre-ville.",
     "countryNotFound": "Pays introuvable",
     "cityNotFound": "Ville introuvable",
-    "districtCount": "{count, plural, one {# quartier} other {# quartiers}}"
+    "districtCount": "{count, plural, one {# quartier} other {# quartiers}}",
+    "isDefault": "Par défaut",
+    "makeDefault": "Définir par défaut"
   },
   "cityPicker": {
     "title": "Rendez-vous intimes | Rencontres érotiques | Services d'escort",
     "description": "Profils vérifiés pour rencontres intimes et services d'escort : vraies photos, vérification de l'âge et de l'identité, prix honnêtes. Choisissez une ville pour voir les profils.",
     "empty": "Aucune ville pour l'instant",
-    "switchLabel": "Ville"
+    "switchLabel": "Ville",
+    "allCities": "Toutes les villes",
+    "countrySwitchLabel": "Pays"
   },
   "services": {
     "title": "Services",

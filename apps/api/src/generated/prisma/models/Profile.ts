@@ -62,6 +62,7 @@ export type ProfileMinAggregateOutputType = {
   ownerId: string | null
   cityId: string | null
   districtId: string | null
+  countryId: string | null
   approxLat: number | null
   approxLng: number | null
   hasManualLocation: boolean | null
@@ -105,6 +106,7 @@ export type ProfileMaxAggregateOutputType = {
   ownerId: string | null
   cityId: string | null
   districtId: string | null
+  countryId: string | null
   approxLat: number | null
   approxLng: number | null
   hasManualLocation: boolean | null
@@ -150,6 +152,7 @@ export type ProfileCountAggregateOutputType = {
   ownerId: number
   cityId: number
   districtId: number
+  countryId: number
   approxLat: number
   approxLng: number
   hasManualLocation: number
@@ -216,6 +219,7 @@ export type ProfileMinAggregateInputType = {
   ownerId?: true
   cityId?: true
   districtId?: true
+  countryId?: true
   approxLat?: true
   approxLng?: true
   hasManualLocation?: true
@@ -259,6 +263,7 @@ export type ProfileMaxAggregateInputType = {
   ownerId?: true
   cityId?: true
   districtId?: true
+  countryId?: true
   approxLat?: true
   approxLng?: true
   hasManualLocation?: true
@@ -304,6 +309,7 @@ export type ProfileCountAggregateInputType = {
   ownerId?: true
   cityId?: true
   districtId?: true
+  countryId?: true
   approxLat?: true
   approxLng?: true
   hasManualLocation?: true
@@ -437,6 +443,7 @@ export type ProfileGroupByOutputType = {
   ownerId: string
   cityId: string
   districtId: string | null
+  countryId: string
   approxLat: number | null
   approxLng: number | null
   hasManualLocation: boolean
@@ -506,6 +513,7 @@ export type ProfileWhereInput = {
   ownerId?: Prisma.StringFilter<"Profile"> | string
   cityId?: Prisma.StringFilter<"Profile"> | string
   districtId?: Prisma.StringNullableFilter<"Profile"> | string | null
+  countryId?: Prisma.StringFilter<"Profile"> | string
   approxLat?: Prisma.FloatNullableFilter<"Profile"> | number | null
   approxLng?: Prisma.FloatNullableFilter<"Profile"> | number | null
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
@@ -537,6 +545,7 @@ export type ProfileWhereInput = {
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   district?: Prisma.XOR<Prisma.DistrictNullableScalarRelationFilter, Prisma.DistrictWhereInput> | null
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   topPlacement?: Prisma.XOR<Prisma.TopPlacementNullableScalarRelationFilter, Prisma.TopPlacementWhereInput> | null
   verificationRequests?: Prisma.VerificationRequestListRelationFilter
   photos?: Prisma.PhotoListRelationFilter
@@ -569,6 +578,7 @@ export type ProfileOrderByWithRelationInput = {
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   approxLat?: Prisma.SortOrderInput | Prisma.SortOrder
   approxLng?: Prisma.SortOrderInput | Prisma.SortOrder
   hasManualLocation?: Prisma.SortOrder
@@ -600,6 +610,7 @@ export type ProfileOrderByWithRelationInput = {
   owner?: Prisma.UserOrderByWithRelationInput
   city?: Prisma.CityOrderByWithRelationInput
   district?: Prisma.DistrictOrderByWithRelationInput
+  country?: Prisma.CountryOrderByWithRelationInput
   topPlacement?: Prisma.TopPlacementOrderByWithRelationInput
   verificationRequests?: Prisma.VerificationRequestOrderByRelationAggregateInput
   photos?: Prisma.PhotoOrderByRelationAggregateInput
@@ -635,6 +646,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   ownerId?: Prisma.StringFilter<"Profile"> | string
   cityId?: Prisma.StringFilter<"Profile"> | string
   districtId?: Prisma.StringNullableFilter<"Profile"> | string | null
+  countryId?: Prisma.StringFilter<"Profile"> | string
   approxLat?: Prisma.FloatNullableFilter<"Profile"> | number | null
   approxLng?: Prisma.FloatNullableFilter<"Profile"> | number | null
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
@@ -666,6 +678,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   city?: Prisma.XOR<Prisma.CityScalarRelationFilter, Prisma.CityWhereInput>
   district?: Prisma.XOR<Prisma.DistrictNullableScalarRelationFilter, Prisma.DistrictWhereInput> | null
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   topPlacement?: Prisma.XOR<Prisma.TopPlacementNullableScalarRelationFilter, Prisma.TopPlacementWhereInput> | null
   verificationRequests?: Prisma.VerificationRequestListRelationFilter
   photos?: Prisma.PhotoListRelationFilter
@@ -698,6 +711,7 @@ export type ProfileOrderByWithAggregationInput = {
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   approxLat?: Prisma.SortOrderInput | Prisma.SortOrder
   approxLng?: Prisma.SortOrderInput | Prisma.SortOrder
   hasManualLocation?: Prisma.SortOrder
@@ -752,6 +766,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   ownerId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   cityId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   districtId?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  countryId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   approxLat?: Prisma.FloatNullableWithAggregatesFilter<"Profile"> | number | null
   approxLng?: Prisma.FloatNullableWithAggregatesFilter<"Profile"> | number | null
   hasManualLocation?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
@@ -825,6 +840,7 @@ export type ProfileCreateInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -857,6 +873,7 @@ export type ProfileUncheckedCreateInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -943,6 +960,7 @@ export type ProfileUpdateInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -975,6 +993,7 @@ export type ProfileUncheckedUpdateInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1034,6 +1053,7 @@ export type ProfileCreateManyInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -1122,6 +1142,7 @@ export type ProfileUncheckedUpdateManyInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1194,6 +1215,7 @@ export type ProfileCountOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   approxLat?: Prisma.SortOrder
   approxLng?: Prisma.SortOrder
   hasManualLocation?: Prisma.SortOrder
@@ -1248,6 +1270,7 @@ export type ProfileMaxOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   approxLat?: Prisma.SortOrder
   approxLng?: Prisma.SortOrder
   hasManualLocation?: Prisma.SortOrder
@@ -1291,6 +1314,7 @@ export type ProfileMinOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   cityId?: Prisma.SortOrder
   districtId?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   approxLat?: Prisma.SortOrder
   approxLng?: Prisma.SortOrder
   hasManualLocation?: Prisma.SortOrder
@@ -1377,6 +1401,48 @@ export type ProfileUncheckedUpdateManyWithoutOwnerNestedInput = {
   connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
   update?: Prisma.ProfileUpdateWithWhereUniqueWithoutOwnerInput | Prisma.ProfileUpdateWithWhereUniqueWithoutOwnerInput[]
   updateMany?: Prisma.ProfileUpdateManyWithWhereWithoutOwnerInput | Prisma.ProfileUpdateManyWithWhereWithoutOwnerInput[]
+  deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
+}
+
+export type ProfileCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput> | Prisma.ProfileCreateWithoutCountryInput[] | Prisma.ProfileUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCountryInput | Prisma.ProfileCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.ProfileCreateManyCountryInputEnvelope
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+}
+
+export type ProfileUncheckedCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput> | Prisma.ProfileCreateWithoutCountryInput[] | Prisma.ProfileUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCountryInput | Prisma.ProfileCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.ProfileCreateManyCountryInputEnvelope
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+}
+
+export type ProfileUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput> | Prisma.ProfileCreateWithoutCountryInput[] | Prisma.ProfileUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCountryInput | Prisma.ProfileCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.ProfileUpsertWithWhereUniqueWithoutCountryInput | Prisma.ProfileUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.ProfileCreateManyCountryInputEnvelope
+  set?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  disconnect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  delete?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  update?: Prisma.ProfileUpdateWithWhereUniqueWithoutCountryInput | Prisma.ProfileUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.ProfileUpdateManyWithWhereWithoutCountryInput | Prisma.ProfileUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
+}
+
+export type ProfileUncheckedUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput> | Prisma.ProfileCreateWithoutCountryInput[] | Prisma.ProfileUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutCountryInput | Prisma.ProfileCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.ProfileUpsertWithWhereUniqueWithoutCountryInput | Prisma.ProfileUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.ProfileCreateManyCountryInputEnvelope
+  set?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  disconnect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  delete?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  update?: Prisma.ProfileUpdateWithWhereUniqueWithoutCountryInput | Prisma.ProfileUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.ProfileUpdateManyWithWhereWithoutCountryInput | Prisma.ProfileUpdateManyWithWhereWithoutCountryInput[]
   deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
 }
 
@@ -1805,6 +1871,7 @@ export type ProfileCreateWithoutOwnerInput = {
   hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -1836,6 +1903,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -1924,6 +1992,7 @@ export type ProfileScalarWhereInput = {
   ownerId?: Prisma.StringFilter<"Profile"> | string
   cityId?: Prisma.StringFilter<"Profile"> | string
   districtId?: Prisma.StringNullableFilter<"Profile"> | string | null
+  countryId?: Prisma.StringFilter<"Profile"> | string
   approxLat?: Prisma.FloatNullableFilter<"Profile"> | number | null
   approxLng?: Prisma.FloatNullableFilter<"Profile"> | number | null
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
@@ -1950,6 +2019,150 @@ export type ProfileScalarWhereInput = {
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
+}
+
+export type ProfileCreateWithoutCountryInput = {
+  id?: string
+  slug: string
+  kind?: $Enums.ListingKind
+  status?: $Enums.ProfileStatus
+  displayName: string
+  description?: string
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
+  payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileCreateamenitiesInput | string[]
+  approxLat?: number | null
+  approxLng?: number | null
+  hasManualLocation?: boolean
+  fromPriceCents?: number | null
+  isFeatured?: boolean
+  isVerified?: boolean
+  lastSeenAt?: Date | string | null
+  publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
+  age?: number | null
+  heightCm?: number | null
+  weightKg?: number | null
+  languages?: Prisma.ProfileCreatelanguagesInput | string[]
+  hairColor?: $Enums.HairColor | null
+  eyeColor?: $Enums.EyeColor | null
+  breastSize?: $Enums.BreastSize | null
+  breastType?: $Enums.BreastType | null
+  bodyType?: $Enums.BodyType | null
+  pubicHair?: $Enums.PubicHair | null
+  hasPiercing?: boolean | null
+  hasTattoos?: boolean | null
+  appearanceType?: $Enums.AppearanceType | null
+  smoker?: boolean | null
+  moderationNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
+  hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
+  owner: Prisma.UserCreateNestedOneWithoutProfilesInput
+  city: Prisma.CityCreateNestedOneWithoutProfilesInput
+  district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
+  verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
+  photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
+  contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
+  reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
+  prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
+  services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
+  verification?: Prisma.VerificationCaseCreateNestedOneWithoutProfileInput
+  promoSlots?: Prisma.PromoSlotCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutCountryInput = {
+  id?: string
+  slug: string
+  kind?: $Enums.ListingKind
+  status?: $Enums.ProfileStatus
+  displayName: string
+  description?: string
+  companyId?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
+  payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileCreateamenitiesInput | string[]
+  ownerId: string
+  cityId: string
+  districtId?: string | null
+  approxLat?: number | null
+  approxLng?: number | null
+  hasManualLocation?: boolean
+  fromPriceCents?: number | null
+  isFeatured?: boolean
+  isVerified?: boolean
+  lastSeenAt?: Date | string | null
+  publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
+  age?: number | null
+  heightCm?: number | null
+  weightKg?: number | null
+  languages?: Prisma.ProfileCreatelanguagesInput | string[]
+  hairColor?: $Enums.HairColor | null
+  eyeColor?: $Enums.EyeColor | null
+  breastSize?: $Enums.BreastSize | null
+  breastType?: $Enums.BreastType | null
+  bodyType?: $Enums.BodyType | null
+  pubicHair?: $Enums.PubicHair | null
+  hasPiercing?: boolean | null
+  hasTattoos?: boolean | null
+  appearanceType?: $Enums.AppearanceType | null
+  smoker?: boolean | null
+  moderationNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
+  topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
+  verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
+  photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
+  contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
+  reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
+  prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
+  services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
+  verification?: Prisma.VerificationCaseUncheckedCreateNestedOneWithoutProfileInput
+  promoSlots?: Prisma.PromoSlotUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutCountryInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput>
+}
+
+export type ProfileCreateManyCountryInputEnvelope = {
+  data: Prisma.ProfileCreateManyCountryInput | Prisma.ProfileCreateManyCountryInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProfileUpsertWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutCountryInput, Prisma.ProfileUncheckedUpdateWithoutCountryInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutCountryInput, Prisma.ProfileUncheckedCreateWithoutCountryInput>
+}
+
+export type ProfileUpdateWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutCountryInput, Prisma.ProfileUncheckedUpdateWithoutCountryInput>
+}
+
+export type ProfileUpdateManyWithWhereWithoutCountryInput = {
+  where: Prisma.ProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateManyMutationInput, Prisma.ProfileUncheckedUpdateManyWithoutCountryInput>
 }
 
 export type ProfileCreateWithoutCityInput = {
@@ -1996,6 +2209,7 @@ export type ProfileCreateWithoutCityInput = {
   hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -2027,6 +2241,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -2138,6 +2353,7 @@ export type ProfileCreateWithoutDistrictInput = {
   hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -2169,6 +2385,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
   cityId: string
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -2281,6 +2498,7 @@ export type ProfileCreateWithoutPhotosInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
@@ -2312,6 +2530,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -2413,6 +2632,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
@@ -2444,6 +2664,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2529,6 +2750,7 @@ export type ProfileCreateWithoutReportsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -2560,6 +2782,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -2661,6 +2884,7 @@ export type ProfileUpdateWithoutReportsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -2692,6 +2916,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2777,6 +3002,7 @@ export type ProfileCreateWithoutCommentsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -2808,6 +3034,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -2909,6 +3136,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -2940,6 +3168,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3025,6 +3254,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -3056,6 +3286,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -3157,6 +3388,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -3188,6 +3420,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3272,6 +3505,7 @@ export type ProfileCreateWithoutCompanyInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -3303,6 +3537,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -3414,6 +3649,7 @@ export type ProfileCreateWithoutHoursInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -3446,6 +3682,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -3546,6 +3783,7 @@ export type ProfileUpdateWithoutHoursInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -3578,6 +3816,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3663,6 +3902,7 @@ export type ProfileCreateWithoutContactsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -3694,6 +3934,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -3795,6 +4036,7 @@ export type ProfileUpdateWithoutContactsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -3826,6 +4068,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3911,6 +4154,7 @@ export type ProfileCreateWithoutEventsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -3942,6 +4186,7 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -4043,6 +4288,7 @@ export type ProfileUpdateWithoutEventsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -4074,6 +4320,7 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4159,6 +4406,7 @@ export type ProfileCreateWithoutPricesInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -4190,6 +4438,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -4291,6 +4540,7 @@ export type ProfileUpdateWithoutPricesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -4322,6 +4572,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4407,6 +4658,7 @@ export type ProfileCreateWithoutServicesInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -4438,6 +4690,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -4539,6 +4792,7 @@ export type ProfileUpdateWithoutServicesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -4570,6 +4824,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4655,6 +4910,7 @@ export type ProfileCreateWithoutVerificationInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -4686,6 +4942,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -4787,6 +5044,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -4818,6 +5076,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -4903,6 +5162,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
@@ -4934,6 +5194,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -5035,6 +5296,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -5066,6 +5328,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5151,6 +5414,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
@@ -5182,6 +5446,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -5283,6 +5548,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
@@ -5314,6 +5580,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5399,6 +5666,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   owner: Prisma.UserCreateNestedOneWithoutProfilesInput
   city: Prisma.CityCreateNestedOneWithoutProfilesInput
   district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
@@ -5430,6 +5698,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -5531,6 +5800,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
@@ -5562,6 +5832,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5619,6 +5890,7 @@ export type ProfileCreateManyOwnerInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -5691,6 +5963,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -5722,6 +5995,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5780,6 +6054,217 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
+  approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  languages?: Prisma.ProfileUpdatelanguagesInput | string[]
+  hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
+  eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
+  breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
+  breastType?: Prisma.NullableEnumBreastTypeFieldUpdateOperationsInput | $Enums.BreastType | null
+  bodyType?: Prisma.NullableEnumBodyTypeFieldUpdateOperationsInput | $Enums.BodyType | null
+  pubicHair?: Prisma.NullableEnumPubicHairFieldUpdateOperationsInput | $Enums.PubicHair | null
+  hasPiercing?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
+  smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProfileCreateManyCountryInput = {
+  id?: string
+  slug: string
+  kind?: $Enums.ListingKind
+  status?: $Enums.ProfileStatus
+  displayName: string
+  description?: string
+  companyId?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
+  payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileCreateamenitiesInput | string[]
+  ownerId: string
+  cityId: string
+  districtId?: string | null
+  approxLat?: number | null
+  approxLng?: number | null
+  hasManualLocation?: boolean
+  fromPriceCents?: number | null
+  isFeatured?: boolean
+  isVerified?: boolean
+  lastSeenAt?: Date | string | null
+  publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
+  age?: number | null
+  heightCm?: number | null
+  weightKg?: number | null
+  languages?: Prisma.ProfileCreatelanguagesInput | string[]
+  hairColor?: $Enums.HairColor | null
+  eyeColor?: $Enums.EyeColor | null
+  breastSize?: $Enums.BreastSize | null
+  breastType?: $Enums.BreastType | null
+  bodyType?: $Enums.BodyType | null
+  pubicHair?: $Enums.PubicHair | null
+  hasPiercing?: boolean | null
+  hasTattoos?: boolean | null
+  appearanceType?: $Enums.AppearanceType | null
+  smoker?: boolean | null
+  moderationNote?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ProfileUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
+  status?: Prisma.EnumProfileStatusFieldUpdateOperationsInput | $Enums.ProfileStatus
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
+  approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  languages?: Prisma.ProfileUpdatelanguagesInput | string[]
+  hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
+  eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
+  breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
+  breastType?: Prisma.NullableEnumBreastTypeFieldUpdateOperationsInput | $Enums.BreastType | null
+  bodyType?: Prisma.NullableEnumBodyTypeFieldUpdateOperationsInput | $Enums.BodyType | null
+  pubicHair?: Prisma.NullableEnumPubicHairFieldUpdateOperationsInput | $Enums.PubicHair | null
+  hasPiercing?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
+  smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
+  hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
+  city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
+  district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
+  verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
+  photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
+  contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
+  reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
+  prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
+  services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
+  verification?: Prisma.VerificationCaseUpdateOneWithoutProfileNestedInput
+  promoSlots?: Prisma.PromoSlotUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
+  status?: Prisma.EnumProfileStatusFieldUpdateOperationsInput | $Enums.ProfileStatus
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  languages?: Prisma.ProfileUpdatelanguagesInput | string[]
+  hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
+  eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
+  breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
+  breastType?: Prisma.NullableEnumBreastTypeFieldUpdateOperationsInput | $Enums.BreastType | null
+  bodyType?: Prisma.NullableEnumBodyTypeFieldUpdateOperationsInput | $Enums.BodyType | null
+  pubicHair?: Prisma.NullableEnumPubicHairFieldUpdateOperationsInput | $Enums.PubicHair | null
+  hasPiercing?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
+  smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
+  topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
+  verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
+  photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
+  contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
+  reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
+  prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
+  services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
+  verification?: Prisma.VerificationCaseUncheckedUpdateOneWithoutProfileNestedInput
+  promoSlots?: Prisma.PromoSlotUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateManyWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
+  status?: Prisma.EnumProfileStatusFieldUpdateOperationsInput | $Enums.ProfileStatus
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5825,6 +6310,7 @@ export type ProfileCreateManyCityInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -5897,6 +6383,7 @@ export type ProfileUpdateWithoutCityInput = {
   hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -5928,6 +6415,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -5986,6 +6474,7 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6031,6 +6520,7 @@ export type ProfileCreateManyDistrictInput = {
   amenities?: Prisma.ProfileCreateamenitiesInput | string[]
   ownerId: string
   cityId: string
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -6103,6 +6593,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -6134,6 +6625,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6192,6 +6684,7 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6237,6 +6730,7 @@ export type ProfileCreateManyCompanyInput = {
   ownerId: string
   cityId: string
   districtId?: string | null
+  countryId: string
   approxLat?: number | null
   approxLng?: number | null
   hasManualLocation?: boolean
@@ -6309,6 +6803,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
   city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
   district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
@@ -6340,6 +6835,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6398,6 +6894,7 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   cityId?: Prisma.StringFieldUpdateOperationsInput | string
   districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -6565,6 +7062,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   ownerId?: boolean
   cityId?: boolean
   districtId?: boolean
+  countryId?: boolean
   approxLat?: boolean
   approxLng?: boolean
   hasManualLocation?: boolean
@@ -6596,6 +7094,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   topPlacement?: boolean | Prisma.Profile$topPlacementArgs<ExtArgs>
   verificationRequests?: boolean | Prisma.Profile$verificationRequestsArgs<ExtArgs>
   photos?: boolean | Prisma.Profile$photosArgs<ExtArgs>
@@ -6629,6 +7128,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   ownerId?: boolean
   cityId?: boolean
   districtId?: boolean
+  countryId?: boolean
   approxLat?: boolean
   approxLng?: boolean
   hasManualLocation?: boolean
@@ -6659,6 +7159,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -6679,6 +7180,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   ownerId?: boolean
   cityId?: boolean
   districtId?: boolean
+  countryId?: boolean
   approxLat?: boolean
   approxLng?: boolean
   hasManualLocation?: boolean
@@ -6709,6 +7211,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectScalar = {
@@ -6729,6 +7232,7 @@ export type ProfileSelectScalar = {
   ownerId?: boolean
   cityId?: boolean
   districtId?: boolean
+  countryId?: boolean
   approxLat?: boolean
   approxLng?: boolean
   hasManualLocation?: boolean
@@ -6757,13 +7261,14 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "countryId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   topPlacement?: boolean | Prisma.Profile$topPlacementArgs<ExtArgs>
   verificationRequests?: boolean | Prisma.Profile$verificationRequestsArgs<ExtArgs>
   photos?: boolean | Prisma.Profile$photosArgs<ExtArgs>
@@ -6783,12 +7288,14 @@ export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   city?: boolean | Prisma.CityDefaultArgs<ExtArgs>
   district?: boolean | Prisma.Profile$districtArgs<ExtArgs>
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }
 
 export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6799,6 +7306,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     owner: Prisma.$UserPayload<ExtArgs>
     city: Prisma.$CityPayload<ExtArgs>
     district: Prisma.$DistrictPayload<ExtArgs> | null
+    country: Prisma.$CountryPayload<ExtArgs>
     topPlacement: Prisma.$TopPlacementPayload<ExtArgs> | null
     verificationRequests: Prisma.$VerificationRequestPayload<ExtArgs>[]
     photos: Prisma.$PhotoPayload<ExtArgs>[]
@@ -6856,6 +7364,13 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     ownerId: string
     cityId: string
     districtId: string | null
+    /**
+     * Денормализовано из `city.countryId` ради фильтра «вся страна» на
+     * главной и в каталоге (N-43): без своей колонки такой фильтр требовал
+     * бы джойна через City на каждой странице листинга. Синхронизируется
+     * в паре с `cityId` везде, где он пишется, — своей записи у неё нет.
+     */
+    countryId: string
     /**
      * Координаты **всегда огрублены до узла сетки** (`snapLocation`, ~1 км).
      * Владелица может поставить точку сама, но точнее ячейки сетки в базу
@@ -7306,6 +7821,7 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   city<T extends Prisma.CityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CityDefaultArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   district<T extends Prisma.Profile$districtArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$districtArgs<ExtArgs>>): Prisma.Prisma__DistrictClient<runtime.Types.Result.GetResult<Prisma.$DistrictPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  country<T extends Prisma.CountryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryDefaultArgs<ExtArgs>>): Prisma.Prisma__CountryClient<runtime.Types.Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   topPlacement<T extends Prisma.Profile$topPlacementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$topPlacementArgs<ExtArgs>>): Prisma.Prisma__TopPlacementClient<runtime.Types.Result.GetResult<Prisma.$TopPlacementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   verificationRequests<T extends Prisma.Profile$verificationRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$verificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photos<T extends Prisma.Profile$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7364,6 +7880,7 @@ export interface ProfileFieldRefs {
   readonly ownerId: Prisma.FieldRef<"Profile", 'String'>
   readonly cityId: Prisma.FieldRef<"Profile", 'String'>
   readonly districtId: Prisma.FieldRef<"Profile", 'String'>
+  readonly countryId: Prisma.FieldRef<"Profile", 'String'>
   readonly approxLat: Prisma.FieldRef<"Profile", 'Float'>
   readonly approxLng: Prisma.FieldRef<"Profile", 'Float'>
   readonly hasManualLocation: Prisma.FieldRef<"Profile", 'Boolean'>

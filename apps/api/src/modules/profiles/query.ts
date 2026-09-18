@@ -29,7 +29,18 @@ export function buildProfileWhere(query: ProfileQuery): Record<string, unknown> 
     kind: query.kind,
   };
 
+  // Приоритет: конкретный город точнее нескольких, несколько — точнее
+  // всей страны. Все три одновременно не приходят — это ступени одного
+  // выбора места, а не независимые фильтры (N-42, N-43).
+  //
+  // Страну фильтруем через `Profile.country` напрямую, а не `city.country`:
+  // это денормализованная колонка ровно для того, чтобы здесь не понадобился
+  // JOIN через City — код страны сначала резолвится в id по уникальному
+  // индексу, а дальше в дело идёт составной индекс (status, kind, countryId,
+  // publishedAt), а не перебор городов страны один за другим.
   if (query.city) where.city = { slug: query.city };
+  else if (query.cities?.length) where.city = { slug: { in: query.cities } };
+  else if (query.country) where.country = { code: query.country };
   if (query.district) where.district = { slug: query.district };
   // Анкета должна оказывать все выбранные услуги, а не любую из них:
   // фильтр «ужин + выезд» без этого вернул бы и тех, кто делает только выезд.

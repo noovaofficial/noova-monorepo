@@ -34,6 +34,7 @@
     "verifiedOnly": "Только проверенные",
     "languages": "Языки",
     "city": "Город",
+    "cities": "Города",
     "district": "Район",
     "clearGroup": "Очистить",
     "empty": "Ничего не найдено",
@@ -65,6 +66,7 @@
   },
   "home": {
     "escortSection": "Анкеты — {city}",
+    "agenciesSection": "Агентства — {city}",
     "massageSection": "Массажные салоны — {city}",
     "total": "(всего {count})",
     "showAll": "Показать все →",
@@ -72,8 +74,7 @@
     "showAllStudios": "Показать все массажные салоны",
     "empty": "Пока нет анкет по этим условиям",
     "emptyHint": "Попробуйте убрать часть фильтров.",
-    "topSection": "ТОП — {city}",
-    "topCount": "(случайные {shown} из {total})"
+    "topSection": "ТОП — {city}"
   },
   "card": {
     "verified": "Проверено",
@@ -82,7 +83,8 @@
     "priceFrom": "от {price}",
     "perHour": "/час",
     "ad": "Реклама",
-    "fromAgency": "Агентство {name}"
+    "fromAgency": "Агентство {name}",
+    "profileCount": "{count, plural, one {# анкета} few {# анкеты} many {# анкет} other {# анкеты}}"
   },
   "profile": {
     "prices": "Тарифы",
@@ -918,6 +920,13 @@
     "topWeekLabel": "Неделя, GC",
     "topSlotsLabel": "Мест в ТОПе",
     "topShownLabel": "Показывать на главной",
+    "agencyTopTitle": "ТОП агентств",
+    "agencyTopText": "В ряду «Агентства» на главной приоритет у мест из ТОПа, всего мест — {slots, number}. Неделя стоит {price, number} GC.",
+    "agencyTopActiveUntil": "В ТОПе агентств до {date}",
+    "agencyTopDone": "Готово. Агентство в ТОПе до {date}.",
+    "agencyTopNoProfiles": "ТОП доступен только агентству с опубликованной анкетой.",
+    "agencyTopSection": "ТОП агентств",
+    "agencyTopHint": "Места в ТОПе агентств продаются на неделю без листа ожидания и автопродления — тот же принцип, что у ТОПа анкет, но свой пул мест. В ряду «Агентства» на главной оплаченные места идут первыми, случайно между собой; остаток добирают агентства по числу анкет.",
     "eurShort": "≈ {amount, number, ::.##} €",
     "topActiveHint": "Купить ещё одну неделю можно, когда текущая закончится.",
     "staffSection": "Права сотрудников",
@@ -1059,13 +1068,17 @@
     "districtsOptional": "Районы необязательны: анкета без района получит координату центра города.",
     "countryNotFound": "Страна не найдена",
     "cityNotFound": "Город не найден",
-    "districtCount": "{count, plural, one {# район} few {# района} many {# районов} other {# района}}"
+    "districtCount": "{count, plural, one {# район} few {# района} many {# районов} other {# района}}",
+    "isDefault": "По умолчанию",
+    "makeDefault": "Сделать страной по умолчанию"
   },
   "cityPicker": {
     "title": "Интим-свидания | Эротические свидания | Эскорт-услуги",
     "description": "Проверенные анкеты для интим-встреч и эскорта: реальные фото, верификация возраста и личности, честные цены. Выберите город, чтобы посмотреть анкеты.",
     "empty": "Городов пока нет",
-    "switchLabel": "Город"
+    "switchLabel": "Город",
+    "allCities": "Все города",
+    "countrySwitchLabel": "Страна"
   },
   "services": {
     "title": "Услуги",

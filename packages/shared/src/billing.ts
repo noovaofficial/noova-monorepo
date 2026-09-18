@@ -66,6 +66,15 @@ export const billingConfigInputSchema = z.object({
     .refine((top) => top.shown <= top.slots, {
       message: 'Показывать нельзя больше, чем мест',
     }),
+  /**
+   * ТОП агентств (§3.5, D-14): свой пул, отдельный от ТОПа анкет — неделя
+   * в GC и всего мест. Сколько показывать в ряду на главной сюда не входит:
+   * это фиксированные `AGENCY_TOP_SHOWN`, продуктовое решение, не в админке.
+   */
+  agencyTop: z.object({
+    weekGc: gcPriceSchema,
+    slots: z.number().int().min(1).max(200),
+  }),
 });
 export type BillingConfigInput = z.infer<typeof billingConfigInputSchema>;
 
@@ -159,6 +168,8 @@ export const DEFAULT_BILLING_CONFIG: BillingConfigInput = {
   agencyProfileLimit: 8,
   // Цена недели в ТОПе — заглушка до решения владельца; правится в админке.
   top: { weekGc: 300, slots: 16, shown: 8 },
+  // ТОП агентств (§3.5, D-14) — та же заглушка, отдельный пул от ТОПа анкет.
+  agencyTop: { weekGc: 300, slots: 8 },
 };
 
 /** Полный набор умолчаний, включая внутренние. Публичный `DEFAULT_BILLING_CONFIG`
@@ -365,3 +376,37 @@ export const buyTopResultSchema = z.object({
   transaction: billingTransactionSchema,
 });
 export type BuyTopResult = z.infer<typeof buyTopResultSchema>;
+
+// --- ТОП агентств (payments.md §3.5, D-14) --------------------------------------
+
+/** Сколько оплаченных мест показывать в ряду «Агентства» на главной —
+ *  фиксировано продуктовым решением, не в админке (в отличие от `top.shown`). */
+export const AGENCY_TOP_SHOWN = 4;
+
+export const agencyTopPlacementSchema = z.object({
+  companyId: z.string(),
+  status: z.enum(['active', 'expired']),
+  startsAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+});
+export type AgencyTopPlacement = z.infer<typeof agencyTopPlacementSchema>;
+
+/** Что нужно кабинету агентства, чтобы предложить покупку. */
+export const agencyTopStateSchema = z.object({
+  priceGc: z.number().int().positive(),
+  slots: z.number().int().positive(),
+  freeSlots: z.number().int().nonnegative(),
+  /** `null` — своей компании ещё нет, покупать нечего. */
+  placement: agencyTopPlacementSchema.nullable(),
+  /** Есть ли у компании хоть одна опубликованная анкета — без неё покупка
+   *  отклоняется (как и у ТОПа анкет без публикации, D-10). */
+  hasPublishedProfile: z.boolean(),
+});
+export type AgencyTopState = z.infer<typeof agencyTopStateSchema>;
+
+export const buyAgencyTopResultSchema = z.object({
+  placement: agencyTopPlacementSchema,
+  balanceGc: z.number().int().nonnegative(),
+  transaction: billingTransactionSchema,
+});
+export type BuyAgencyTopResult = z.infer<typeof buyAgencyTopResultSchema>;

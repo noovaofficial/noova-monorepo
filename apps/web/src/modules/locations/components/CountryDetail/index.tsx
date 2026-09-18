@@ -92,16 +92,18 @@ type Translate = ReturnType<typeof useTranslations<'locations'>>;
 function CountryForm({ country, run, t }: { country: Country; run: Runner; t: Translate }) {
   const [name, setName] = useState<Translated>(country.name);
   const [isActive, setIsActive] = useState(country.isActive);
+  const [isDefault, setIsDefault] = useState(country.isDefault);
 
   // Данные приходят запросом: до его завершения полей ещё нет, и без
   // синхронизации форма осталась бы с пустыми названиями.
   useEffect(() => {
     setName(country.name);
     setIsActive(country.isActive);
+    setIsDefault(country.isDefault);
   }, [country]);
 
   const save = useMutation({
-    mutationFn: () => run(() => updateCountry(country.id, { name, isActive })),
+    mutationFn: () => run(() => updateCountry(country.id, { name, isActive, isDefault })),
   });
 
   return (
@@ -126,6 +128,17 @@ function CountryForm({ country, run, t }: { country: Country; run: Runner; t: Tr
           onChange={(event) => setIsActive(event.target.checked)}
         />
         {t('active')}
+      </label>
+      <label className={styles.check}>
+        <input
+          type="checkbox"
+          checked={isDefault}
+          // Отключённая страна не может быть страной по умолчанию — сервер
+          // всё равно откажет, но снимаем чекбокс сразу, а не после ошибки.
+          disabled={!isActive}
+          onChange={(event) => setIsDefault(event.target.checked)}
+        />
+        {t('isDefault')}
       </label>
       <div className={styles.actions}>
         <Button type="submit" disabled={save.isPending}>

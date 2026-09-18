@@ -1,0 +1,57 @@
+/* Горизонтальная карточка: логотип слева, текст справа — в отличие от
+   вертикальной ProfileCard, у агентства нет портрета под всю высоту. */
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space4);
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadowLg);
+}
+
+.logo {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radiusMd);
+  overflow: hidden;
+}
+
+.body {
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  font-size: var(--textBase);
+  color: var(--primaryText);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Сжимается первым — бейдж рядом фиксированного размера и не должен
+     страдать от длинного названия. */
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.count {
+  margin-top: 4px;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}

@@ -20,6 +20,7 @@ export const MULTI_KEYS = [
   'pubicHair',
   'appearanceType',
   'languages',
+  'cities',
 ] as const;
 
 export type MultiKey = (typeof MULTI_KEYS)[number];

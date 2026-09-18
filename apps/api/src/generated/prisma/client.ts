@@ -298,6 +298,13 @@ export type TopupOrder = Prisma.TopupOrderModel
  */
 export type TopPlacement = Prisma.TopPlacementModel
 /**
+ * Model AgencyTopPlacement
+ * Место в ТОПе агентств (payments.md §3.5, D-14). Зеркало TopPlacement,
+ * только на Company — своя таблица, а не общая с анкетами: покупка одного
+ * ТОПа не должна расходовать места другого.
+ */
+export type AgencyTopPlacement = Prisma.AgencyTopPlacementModel
+/**
  * Model VerificationRequest
  * Снимки документов — данные особой категории (planning.md §5). Поэтому:
  * в базе только ключи, файлы лежат в приватном префиксе `verification/`,

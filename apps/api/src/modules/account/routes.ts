@@ -2,6 +2,7 @@ import {
   agencyPaywallInfoSchema,
   type ContactInput,
   cityOptionSchema,
+  countryOptionSchema,
   createProfileSchema,
   deleteAccountSchema,
   effectiveProfileLimit,
@@ -170,6 +171,42 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Страны для свитча страны и корневого редиректа (N-42) — тот же
+   * публичный справочник, что `/cities`, только уровнем выше.
+   */
+  fastify.get(
+    '/countries',
+    {
+      schema: {
+        tags: ['account'],
+        querystring: localeQuerySchema,
+        response: { 200: z.array(countryOptionSchema) },
+      },
+    },
+    async (request) => {
+      const { locale } = request.query;
+      const countries = await fastify.prisma.country.findMany({
+        where: { isActive: true },
+        select: {
+          code: true,
+          name: true,
+          isDefault: true,
+          translations: translationSelect(locale),
+        },
+      });
+
+      const collator = new Intl.Collator(locale);
+      return countries
+        .map((country) => ({
+          code: country.code,
+          name: localized(country.translations, country.name),
+          isDefault: country.isDefault,
+        }))
+        .sort((a, b) => collator.compare(a.name, b.name));
+    },
+  );
+
   fastify.get(
     '/services',
     {
@@ -303,7 +340,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const city = await fastify.prisma.city.findUnique({
         where: { slug: request.body.citySlug },
-        select: { id: true, slug: true },
+        select: { id: true, slug: true, countryId: true },
       });
       if (!city) throw fastify.httpErrors.badRequest('Город не найден');
 
@@ -332,6 +369,8 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           displayName: request.body.displayName,
           ownerId: userId,
           cityId: city.id,
+          // Денормализована из города (N-43) — своей записи у поля нет.
+          countryId: city.countryId,
           districtId: district?.id ?? null,
           verification: { create: { status: 'none' } },
         },
@@ -383,15 +422,18 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const body = request.body;
 
       let cityId: string | undefined;
+      let countryId: string | undefined;
       let districtId: string | null | undefined;
 
       if (body.citySlug) {
         const city = await fastify.prisma.city.findUnique({
           where: { slug: body.citySlug },
-          select: { id: true },
+          select: { id: true, countryId: true },
         });
         if (!city) throw fastify.httpErrors.badRequest('Город не найден');
         cityId = city.id;
+        // Денормализована из города (N-43) — своей записи у поля нет.
+        countryId = city.countryId;
         // Смена города обнуляет район: старый принадлежит другому городу.
         districtId = null;
       }
@@ -564,6 +606,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
             ...(body.displayName !== undefined ? { displayName: body.displayName } : {}),
             ...(body.description !== undefined ? { description: body.description } : {}),
             ...(cityId !== undefined ? { cityId } : {}),
+            ...(countryId !== undefined ? { countryId } : {}),
             ...(districtId !== undefined ? { districtId } : {}),
             // Смена города или района двигает точку, только если владелица
             // не поставила её сама.

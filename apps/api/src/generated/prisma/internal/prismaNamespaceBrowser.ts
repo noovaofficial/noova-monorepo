@@ -88,6 +88,7 @@ export const ModelName = {
   Listing: 'Listing',
   TopupOrder: 'TopupOrder',
   TopPlacement: 'TopPlacement',
+  AgencyTopPlacement: 'AgencyTopPlacement',
   VerificationRequest: 'VerificationRequest',
   Campaign: 'Campaign',
   CampaignGrant: 'CampaignGrant'
@@ -175,7 +176,8 @@ export const CountryScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
-  isActive: 'isActive'
+  isActive: 'isActive',
+  isDefault: 'isDefault'
 } as const
 
 export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
@@ -256,6 +258,7 @@ export const ProfileScalarFieldEnum = {
   ownerId: 'ownerId',
   cityId: 'cityId',
   districtId: 'districtId',
+  countryId: 'countryId',
   approxLat: 'approxLat',
   approxLng: 'approxLng',
   hasManualLocation: 'hasManualLocation',
@@ -367,6 +370,7 @@ export const CompanyScalarFieldEnum = {
   languages: 'languages',
   payments: 'payments',
   isActive: 'isActive',
+  isFeatured: 'isFeatured',
   ownerId: 'ownerId',
   tariffTierId: 'tariffTierId',
   customProfileLimit: 'customProfileLimit',
@@ -523,6 +527,8 @@ export const BillingSettingsScalarFieldEnum = {
   topWeekGc: 'topWeekGc',
   topSlots: 'topSlots',
   topShown: 'topShown',
+  agencyTopWeekGc: 'agencyTopWeekGc',
+  agencyTopSlots: 'agencyTopSlots',
   moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
@@ -639,6 +645,20 @@ export const TopPlacementScalarFieldEnum = {
 } as const
 
 export type TopPlacementScalarFieldEnum = (typeof TopPlacementScalarFieldEnum)[keyof typeof TopPlacementScalarFieldEnum]
+
+
+export const AgencyTopPlacementScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  userId: 'userId',
+  status: 'status',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AgencyTopPlacementScalarFieldEnum = (typeof AgencyTopPlacementScalarFieldEnum)[keyof typeof AgencyTopPlacementScalarFieldEnum]
 
 
 export const VerificationRequestScalarFieldEnum = {

@@ -5,12 +5,12 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CatalogResults } from '@/modules/catalog/components/CatalogResults';
 import { parseFilters } from '@/modules/filters/params';
 import { fetchProfileCount, fetchProfiles, safely } from '@/shared/api';
-import { requireCity } from '@/shared/city';
+import { requireLocation } from '@/shared/city';
 import { socialMeta } from '@/shared/metadata';
 import styles from './page.module.css';
 
 type Props = {
-  params: Promise<{ locale: Locale; city: string; kind: string }>;
+  params: Promise<{ locale: Locale; location: string; kind: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
@@ -38,6 +38,9 @@ const FILTER_KEYS = new Set([
   'onlineOnly',
   'verifiedOnly',
   'district',
+  // Несколько городов внутри страны — такой же срез, как остальные фильтры,
+  // не структурный параметр (N-43).
+  'cities',
 ]);
 
 function appliedFilterCount(search: Record<string, string | string[] | undefined>): number {
@@ -50,15 +53,20 @@ function appliedFilterCount(search: Record<string, string | string[] | undefined
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-  const { locale, city, kind } = await params;
+  const { locale, location, kind } = await params;
   const search = await searchParams;
   const t = await getTranslations({ locale, namespace: 'filters' });
   const isMassage = kind === 'massage';
-  const cityName = (await requireCity(locale, city)).name;
+  const resolved = await requireLocation(locale, location);
+  // Канонический слуг — код страны нормализуем в нижний регистр, как и на
+  // главной: иначе `/DE/catalog/escort` и `/de/catalog/escort` были бы
+  // двумя разными документами.
+  const slug = resolved.type === 'city' ? resolved.city.slug : resolved.country.code.toLowerCase();
+  const locationName = resolved.type === 'city' ? resolved.city.name : resolved.country.name;
 
-  const title = t(isMassage ? 'catalogMassage' : 'catalogEscort', { city: cityName });
+  const title = t(isMassage ? 'catalogMassage' : 'catalogEscort', { city: locationName });
   const description = t(isMassage ? 'catalogMassageDescription' : 'catalogEscortDescription', {
-    city: cityName,
+    city: locationName,
   });
 
   const filtered = appliedFilterCount(search) > 0;
@@ -69,7 +77,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     alternates: {
       // canonical всегда на базовый срез: страницы выдачи — это один и тот же
       // раздел, а не разные документы.
-      canonical: `/${locale}/${city}/catalog/${kind}`,
+      canonical: `/${locale}/${slug}/catalog/${kind}`,
     },
     // Комбинации фильтров порождают тысячи почти одинаковых страниц. Индексируем
     // только базовый срез, остальное закрываем — иначе поисковик утонет
@@ -80,7 +88,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 export default async function CatalogPage({ params, searchParams }: Props) {
-  const { locale, city, kind: rawKind } = await params;
+  const { locale, location, kind: rawKind } = await params;
   setRequestLocale(locale);
 
   const parsedKind = listingKindSchema.safeParse(rawKind);
@@ -89,10 +97,17 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   const search = await searchParams;
   const t = await getTranslations({ locale, namespace: 'filters' });
-  // Город из адреса задаёт срез каталога и не переопределяется фильтрами:
-  // иначе `/berlin/catalog/escort?city=wien` показал бы чужой город.
-  const current = await requireCity(locale, city);
-  const query = { ...parseFilters(search), kind, city };
+  // Локация из адреса задаёт срез каталога и не переопределяется фильтрами:
+  // иначе `/berlin/catalog/escort?city=wien` показал бы чужой город. Город
+  // точнее страны — если он есть в адресе, каталог городской, как и был;
+  // код страны даёт срез по всей стране (N-43), который дальше можно сузить
+  // фильтром `cities` до нескольких конкретных городов.
+  const resolved = await requireLocation(locale, location);
+  const locationName = resolved.type === 'city' ? resolved.city.name : resolved.country.name;
+  const locator =
+    resolved.type === 'city' ? { city: resolved.city.slug } : { country: resolved.country.code };
+
+  const query = { ...parseFilters(search), kind, ...locator };
   const pageNumber = query.page ?? 1;
 
   const [page, total] = await Promise.all([
@@ -106,7 +121,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   const nf = new Intl.NumberFormat(locale);
   // Строка запроса без номера страницы: он нужен ссылкам пагинации и подгрузке,
-  // но каждая из них подставляет его сама.
+  // но каждая из них подставляет его сама. Город/страна в путь не входят
+  // (он в адресе), но клиентской подгрузке и карте нужны явно — добавляем
+  // их поверх фильтров пользователя, а не вместо них.
   const queryString = new URLSearchParams(
     Object.entries(search).flatMap(([key, value]) =>
       value === undefined || key === 'page'
@@ -115,13 +132,16 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           ? value.map((item) => [key, item] as [string, string])
           : [[key, value] as [string, string]],
     ),
-  ).toString();
+  );
+  queryString.set('kind', kind);
+  if (locator.city) queryString.set('city', locator.city);
+  if (locator.country) queryString.set('country', locator.country);
 
   return (
     <div className={styles.wrap}>
       <div className={styles.head}>
         <h1 className={styles.title}>
-          {t(kind === 'massage' ? 'catalogMassage' : 'catalogEscort', { city: current.name })}
+          {t(kind === 'massage' ? 'catalogMassage' : 'catalogEscort', { city: locationName })}
           <span className={styles.count}>{t('found', { count: nf.format(total.total) })}</span>
         </h1>
       </div>
@@ -136,9 +156,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           locale={locale as never}
           initialItems={page.items}
           initialCursor={page.nextCursor}
-          query={queryString}
+          query={queryString.toString()}
           total={total.total}
-          basePath={`/catalog/${kind}`}
+          basePath={`/${location}/catalog/${kind}`}
           pageSize={PAGE_SIZE}
         />
       )}

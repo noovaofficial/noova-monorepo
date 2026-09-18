@@ -1,7 +1,11 @@
 import {
+  type AgencyCard,
+  agencyCardSchema,
   type CityOption,
+  type CountryOption,
   cityOptionSchema,
   companyDetailSchema,
+  countryOptionSchema,
   type Locale,
   type Page,
   type PriceBook,
@@ -131,9 +135,27 @@ export const BILLING_TAG = 'billing';
 /** Справочник городов/районов — должен совпадать с `CITIES_TAG` в plugins/revalidate.ts. */
 export const CITIES_TAG = 'cities';
 
+/**
+ * Срез главной: конкретный город или вся страна разом (N-42). На практике
+ * ровно одно поле задано — вызывающая сторона (`[location]/page.tsx`) сама
+ * решает, что из двух передать, — но принимаем оба опциональными: строгий
+ * дискриминированный union здесь только мешает TypeScript сузить тип по
+ * истинности `.city` в `locatorParams`.
+ */
+export type HomeLocator = { city?: string; country?: string };
+
+function locatorParams(locator: HomeLocator): string {
+  return locator.city
+    ? `city=${encodeURIComponent(locator.city)}`
+    : `country=${encodeURIComponent(locator.country ?? '')}`;
+}
+
 /** ТОП на главной: случайная выборка анкет с оплаченным местом (§3.4). */
-export function fetchTopProfiles(city: string, options?: FetchOptions): Promise<Page<ProfileCard>> {
-  return request(`/profiles/top?city=${encodeURIComponent(city)}`, pageSchema(profileCardSchema), {
+export function fetchTopProfiles(
+  locator: HomeLocator,
+  options?: FetchOptions,
+): Promise<Page<ProfileCard>> {
+  return request(`/profiles/top?${locatorParams(locator)}`, pageSchema(profileCardSchema), {
     tags: [PROFILES_TAG],
     ...options,
   });
@@ -235,8 +257,31 @@ export function fetchCompany(slug: string, options?: FetchOptions): Promise<Comp
   });
 }
 
+/**
+ * Агентства на главной, тем же срезом «город/страна», что и анкеты (N-44).
+ * `limit` по умолчанию — как на бэке; главная передаёт своё (N-44: один
+ * ряд, максимум 4).
+ */
+export function fetchAgencies(
+  locator: HomeLocator,
+  limit?: number,
+  options?: FetchOptions,
+): Promise<AgencyCard[]> {
+  const qs = `${locatorParams(locator)}${limit ? `&limit=${limit}` : ''}`;
+  return request(`/companies?${qs}`, z.array(agencyCardSchema), {
+    tags: [PROFILES_TAG],
+    ...options,
+  });
+}
+
 export function fetchCities(options?: FetchOptions): Promise<CityOption[]> {
   return request('/cities', z.array(cityOptionSchema), { tags: [CITIES_TAG], ...options });
+}
+
+/** Страны для свитча страны и корневого редиректа (N-42). Тот же тег, что у
+ *  городов: справочник географии инвалидируется из админки целиком. */
+export function fetchCountries(options?: FetchOptions): Promise<CountryOption[]> {
+  return request('/countries', z.array(countryOptionSchema), { tags: [CITIES_TAG], ...options });
 }
 
 /** Название одного города; если справочник недоступен — сам слуг. */
@@ -245,7 +290,6 @@ export async function fetchCityName(slug: string, options?: FetchOptions): Promi
   return cities.find((city) => city.slug === slug)?.name ?? slug;
 }
 
-export function fetchPromo(city?: string, options?: FetchOptions): Promise<PromoSlot[]> {
-  const qs = city ? `?city=${encodeURIComponent(city)}` : '';
-  return request(`/promo${qs}`, z.array(promoSlotSchema), options);
+export function fetchPromo(locator: HomeLocator, options?: FetchOptions): Promise<PromoSlot[]> {
+  return request(`/promo?${locatorParams(locator)}`, z.array(promoSlotSchema), options);
 }

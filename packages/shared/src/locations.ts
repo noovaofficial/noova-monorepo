@@ -55,6 +55,19 @@ export const citySlugSchema = slugSchema.refine(
   { message: 'Этот адрес занят страницей сайта — выберите другой' },
 );
 
+/**
+ * Слуг города не должен совпадать с кодом страны — с N-42 код страны в
+ * нижнем регистре тоже занимает второй сегмент адреса (`/{locale}/de`,
+ * «вся страна» на главной). Список кодов — данные, а не константа вроде
+ * `RESERVED_CITY_SLUGS`, поэтому проверка не встроена в саму `citySlugSchema`
+ * и вызывается отдельно в роуте создания/переименования города, где список
+ * активных стран уже под рукой.
+ */
+export function citySlugCollidesWithCountry(slug: string, countryCodes: string[]): boolean {
+  const lower = slug.toLowerCase();
+  return countryCodes.some((code) => code.toLowerCase() === lower);
+}
+
 export const countryInputSchema = z.object({
   /** ISO 3166-1 alpha-2, в верхнем регистре. */
   code: z
@@ -63,6 +76,9 @@ export const countryInputSchema = z.object({
     .transform((value) => value.toUpperCase()),
   name: translatedSchema,
   isActive: z.boolean().default(true),
+  /** Куда ведёт корень сайта без запомненного выбора (N-42). Ровно у одной
+   *  активной страны — сервер сам снимает флаг с прежней при установке новой. */
+  isDefault: z.boolean().default(false),
 });
 export type CountryInput = z.infer<typeof countryInputSchema>;
 
@@ -71,6 +87,7 @@ export const countrySchema = z.object({
   code: z.string(),
   name: translatedSchema,
   isActive: z.boolean(),
+  isDefault: z.boolean(),
   cityCount: z.number().int().nonnegative(),
 });
 export type Country = z.infer<typeof countrySchema>;

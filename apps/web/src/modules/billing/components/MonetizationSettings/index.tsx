@@ -58,6 +58,8 @@ type FormState = {
   topWeek: string;
   topSlots: string;
   topShown: string;
+  agencyTopWeek: string;
+  agencyTopSlots: string;
   moderatorAdjustLimit: string;
 };
 
@@ -78,6 +80,8 @@ function fromBook(book: AdminPriceBook): FormState {
     topWeek: String(book.top.weekGc),
     topSlots: String(book.top.slots),
     topShown: String(book.top.shown),
+    agencyTopWeek: String(book.agencyTop.weekGc),
+    agencyTopSlots: String(book.agencyTop.slots),
     moderatorAdjustLimit: String(book.moderatorAdjustLimitGc),
   };
 }
@@ -94,6 +98,7 @@ function toInput(form: FormState): AdminBillingConfig {
     ) as AdminBillingConfig['prices'],
     agencyProfileLimit: num(form.agencyLimit),
     top: { weekGc: num(form.topWeek), slots: num(form.topSlots), shown: num(form.topShown) },
+    agencyTop: { weekGc: num(form.agencyTopWeek), slots: num(form.agencyTopSlots) },
     moderatorAdjustLimitGc: num(form.moderatorAdjustLimit),
   };
 }
@@ -397,6 +402,46 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
               inputMode="numeric"
               value={form.topShown}
               onChange={(event) => setForm((prev) => ({ ...prev, topShown: event.target.value }))}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Отдельный пул от ТОПа анкет (payments.md §3.5, D-14): своя цена и
+          лимит мест. «Показывать на главной» здесь нет — в ряду «Агентства»
+          это зафиксированные 4 карточки, продуктовое решение, не в админке. */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>{t('agencyTopSection')}</h2>
+        <p className={styles.hint}>{t('agencyTopHint')}</p>
+
+        <div className={styles.currencyRow}>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="agency-top-week">
+              {t('topWeekLabel')}
+            </label>
+            <input
+              className={styles.input}
+              id="agency-top-week"
+              inputMode="numeric"
+              value={form.agencyTopWeek}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, agencyTopWeek: event.target.value }))
+              }
+            />
+            <span className={styles.sub}>{monthlyEurFlat(form.agencyTopWeek)}</span>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="agency-top-slots">
+              {t('topSlotsLabel')}
+            </label>
+            <input
+              className={styles.input}
+              id="agency-top-slots"
+              inputMode="numeric"
+              value={form.agencyTopSlots}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, agencyTopSlots: event.target.value }))
+              }
             />
           </div>
         </div>

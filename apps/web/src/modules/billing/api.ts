@@ -8,15 +8,19 @@ import {
   type AgencyTariffGrid,
   type AgencyTariffTier,
   type AgencyTariffTierInput,
+  type AgencyTopState,
   activateListingResultSchema,
   adjustBalanceResultSchema,
   adjustLimitSchema,
   adminPriceBookSchema,
   agencyTariffGridSchema,
   agencyTariffTierSchema,
+  agencyTopStateSchema,
   type BillingOperations,
+  type BuyAgencyTopResult,
   type BuyTopResult,
   billingOperationsSchema,
+  buyAgencyTopResultSchema,
   buyTopResultSchema,
   type CreateTopupInput,
   type CreateTopupResult,
@@ -150,6 +154,14 @@ export const buyTop = (profileId: string): Promise<BuyTopResult> =>
     method: 'POST',
     body: JSON.stringify({ profileId }),
   });
+
+/** ТОП агентств (payments.md §3.5, D-14): цена, места и своё место в нём. */
+export const fetchAgencyTopState = (): Promise<AgencyTopState> =>
+  call('/billing/agency-top', agencyTopStateSchema);
+
+/** Неделя в ТОПе для своей компании — покупка или продление. */
+export const buyAgencyTop = (): Promise<BuyAgencyTopResult> =>
+  call('/billing/agency-top', buyAgencyTopResultSchema, { method: 'POST' });
 
 // --- Тарифы агентств по числу анкет (payments.md §3.3, D-13) ---------------
 

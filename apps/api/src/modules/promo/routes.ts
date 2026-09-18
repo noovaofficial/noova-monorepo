@@ -13,6 +13,7 @@ export const promoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         querystring: z
           .object({
             city: z.string().optional(),
+            country: z.string().length(2).optional(),
             limit: z.coerce.number().int().min(1).max(12).default(6),
           })
           .and(localeQuerySchema),
@@ -29,7 +30,14 @@ export const promoRoutes: FastifyPluginAsyncZod = async (fastify) => {
           OR: [{ endsAt: null }, { endsAt: { gte: now } }],
           ...(request.query.city
             ? { profile: { city: { slug: request.query.city }, status: 'published' } }
-            : {}),
+            : request.query.country
+              ? {
+                  profile: {
+                    country: { code: request.query.country.toUpperCase() },
+                    status: 'published',
+                  },
+                }
+              : {}),
         },
         orderBy: { position: 'asc' },
         take: request.query.limit,

@@ -4,6 +4,7 @@ import { env } from '../env.js';
 import type { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
 import { pushMail } from '../modules/auth/mail-queue.js';
+import { expireAgencyTopPlacements } from '../modules/billing/agency-top.js';
 import { expireListings } from '../modules/billing/listing.js';
 import { expireTopPlacements } from '../modules/billing/top.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
@@ -32,9 +33,17 @@ export type Job = {
 export const JOBS: Job[] = [
   {
     // Истёкшие места в ТОПе освобождаются, флаг с анкет снимается (§3.4).
+    // Заодно ТОП агентств (§3.5, D-14) — своя таблица, но общее расписание:
+    // отдельного крона под него заводить незачем.
     name: 'top-expiry',
-    run: (prisma) =>
-      expireTopPlacements(prisma, { revalidate: (tags) => postRevalidate(tags, log) }),
+    run: async (prisma) => {
+      const revalidate = (tags: string[]) => postRevalidate(tags, log);
+      const [profiles, agencies] = await Promise.all([
+        expireTopPlacements(prisma, { revalidate }),
+        expireAgencyTopPlacements(prisma, { revalidate }),
+      ]);
+      return profiles + agencies;
+    },
   },
   {
     // Истечение размещений (payments.md, этап 5): активные → льготные дни →

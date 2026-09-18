@@ -34,6 +34,7 @@
     "verifiedOnly": "Solo verificados",
     "languages": "Idiomas",
     "city": "Ciudad",
+    "cities": "Ciudades",
     "district": "Distrito",
     "clearGroup": "Limpiar",
     "empty": "No se ha encontrado nada",
@@ -65,6 +66,7 @@
   },
   "home": {
     "escortSection": "Perfiles en {city}",
+    "agenciesSection": "Agencias en {city}",
     "massageSection": "Salones de masaje en {city}",
     "total": "({count} en total)",
     "showAll": "Ver todos →",
@@ -72,8 +74,7 @@
     "showAllStudios": "Ver todos los salones",
     "empty": "Ningún perfil coincide con estos filtros",
     "emptyHint": "Prueba a quitar algún filtro.",
-    "topSection": "TOP — {city}",
-    "topCount": "({shown} al azar de {total})"
+    "topSection": "TOP — {city}"
   },
   "card": {
     "verified": "Verificado",
@@ -82,7 +83,8 @@
     "priceFrom": "desde {price}",
     "perHour": "/hora",
     "ad": "Anuncio",
-    "fromAgency": "Agencia {name}"
+    "fromAgency": "Agencia {name}",
+    "profileCount": "{count, plural, one {# anuncio} other {# anuncios}}"
   },
   "profile": {
     "prices": "Tarifas",
@@ -918,6 +920,13 @@
     "topWeekLabel": "Semana, GC",
     "topSlotsLabel": "Espacios del TOP",
     "topShownLabel": "Mostrados en portada",
+    "agencyTopTitle": "TOP de agencias",
+    "agencyTopText": "En la fila «Agencias» de la portada, las plazas del TOP tienen prioridad, plazas en total — {slots, number}. Una semana cuesta {price, number} GC.",
+    "agencyTopActiveUntil": "En el TOP de agencias hasta {date}",
+    "agencyTopDone": "Listo. La agencia está en el TOP hasta {date}.",
+    "agencyTopNoProfiles": "El TOP solo está disponible para una agencia con un anuncio publicado.",
+    "agencyTopSection": "TOP de agencias",
+    "agencyTopHint": "Las plazas del TOP de agencias se venden por semanas, sin lista de espera ni renovación automática — el mismo principio que el TOP de anuncios, pero con su propio grupo de plazas. En la fila «Agencias» de la portada, las plazas pagadas van primero, sorteadas entre sí; el resto lo completan las agencias según su número de anuncios.",
     "eurShort": "≈ {amount, number, ::.##} €",
     "topActiveHint": "Podrás comprar otra semana cuando termine la actual.",
     "staffSection": "Permisos del personal",
@@ -1059,13 +1068,17 @@
     "districtsOptional": "Los distritos son opcionales: un anuncio sin distrito recibe las coordenadas del centro de la ciudad.",
     "countryNotFound": "País no encontrado",
     "cityNotFound": "Ciudad no encontrada",
-    "districtCount": "{count, plural, one {# distrito} other {# distritos}}"
+    "districtCount": "{count, plural, one {# distrito} other {# distritos}}",
+    "isDefault": "Predeterminado",
+    "makeDefault": "Establecer como predeterminado"
   },
   "cityPicker": {
     "title": "Citas íntimas | Citas eróticas | Servicios de acompañantes",
     "description": "Perfiles verificados para citas íntimas y servicios de acompañantes: fotos reales, verificación de edad e identidad, precios honestos. Elige una ciudad para ver los perfiles.",
     "empty": "Todavía no hay ciudades",
-    "switchLabel": "Ciudad"
+    "switchLabel": "Ciudad",
+    "allCities": "Todas las ciudades",
+    "countrySwitchLabel": "País"
   },
   "services": {
     "title": "Servicios",

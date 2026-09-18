@@ -29,6 +29,10 @@
 .headInfo {
   display: flex;
   flex-direction: column;
+  /* Без этого бейдж и остальные строки растягивались бы на всю ширину
+     колонки (flex-column по умолчанию тянет детей по поперечной оси) —
+     они должны занимать только место своего содержимого. */
+  align-items: flex-start;
   gap: 6px;
   min-width: 0;
 }
@@ -39,6 +43,13 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--tertiaryText);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  flex-wrap: wrap;
 }
 
 .name {

@@ -195,6 +195,7 @@ model User {
   listings            Listing[]
   topupOrders         TopupOrder[]
   topPlacements       TopPlacement[]
+  agencyTopPlacements AgencyTopPlacement[]
   clientProfile       ClientProfile?
   authTokens          AuthToken[]
   favorites           Favorite[]
@@ -282,8 +283,14 @@ model Country {
   name     String
   /// Страну не удаляем, а отключаем: на неё ссылаются города, а на них — анкеты.
   isActive Boolean @default(true)
+  /// Куда ведёт корень сайта, если у посетителя ещё нет запомненного города
+  /// или страны. Ровно у одной активной страны — проверяется в коде роута,
+  /// а не ограничением БД: сценарий редкий, требует транзакции «снять с
+  /// прежней», а не годится под partial unique index.
+  isDefault Boolean @default(false)
 
   cities       City[]
+  profiles     Profile[]
   translations CountryTranslation[]
 }
 
@@ -412,6 +419,12 @@ model Profile {
   city       City      @relation(fields: [cityId], references: [id])
   districtId String?
   district   District? @relation(fields: [districtId], references: [id])
+  /// Денормализовано из `city.countryId` ради фильтра «вся страна» на
+  /// главной и в каталоге (N-43): без своей колонки такой фильтр требовал
+  /// бы джойна через City на каждой странице листинга. Синхронизируется
+  /// в паре с `cityId` везде, где он пишется, — своей записи у неё нет.
+  countryId  String
+  country    Country   @relation(fields: [countryId], references: [id])
 
   /// Координаты **всегда огрублены до узла сетки** (`snapLocation`, ~1 км).
   /// Владелица может поставить точку сама, но точнее ячейки сетки в базу
@@ -473,6 +486,8 @@ model Profile {
 
   // Основной индекс листинга: города × тип × статус, отсортированные по свежести.
   @@index([status, kind, cityId, publishedAt])
+  // Тот же индекс уровнем выше — для среза «вся страна» без города (N-43).
+  @@index([status, kind, countryId, publishedAt])
   @@index([status, kind, fromPriceCents])
   @@index([status, isFeatured, publishedAt])
 }
@@ -659,11 +674,17 @@ model Company {
   /// Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
   isActive Boolean @default(true)
 
+  /// В ТОПе агентств на главной прямо сейчас (payments.md §3.5, D-14).
+  /// Производная от AgencyTopPlacement: ставится покупкой, снимается
+  /// задачей `top-expiry` — тем же принципом, что Profile.isFeatured.
+  isFeatured Boolean @default(false)
+
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   profiles Profile[]
   contacts CompanyContact[]
+  topPlacement AgencyTopPlacement?
 
   /// Тариф из сетки (payments.md §3.3, D-13). `null` — переходное состояние
   /// до первого чтения сетки; в норме назначается при создании компании.
@@ -946,6 +967,11 @@ model BillingSettings {
   topWeekGc              Int      @default(300)
   topSlots               Int      @default(16)
   topShown               Int      @default(8)
+  /// ТОП агентств (payments.md §3.5, D-14): свой пул мест и цена, отдельные
+  /// от ТОПа анкет. Сколько показывать в ряду на главной — не здесь: это
+  /// фиксированные 4 (продуктовое решение, не в админке), см. AGENCY_TOP_SHOWN.
+  agencyTopWeekGc        Int      @default(300)
+  agencyTopSlots         Int      @default(8)
   /// Потолок разовой корректировки баланса для модератора — по модулю, то есть
   /// и на начисление, и на списание. Нужен, потому что модератор правит баланс
   /// по обращениям в поддержку, а не распоряжается деньгами проекта: годовой
@@ -1141,6 +1167,26 @@ model TopPlacement {
   id        String  @id @default(cuid())
   profileId String  @unique
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  status    TopPlacementStatus @default(active)
+  startsAt  DateTime           @default(now())
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, expiresAt])
+}
+
+/// Место в ТОПе агентств (payments.md §3.5, D-14). Зеркало TopPlacement,
+/// только на Company — своя таблица, а не общая с анкетами: покупка одного
+/// ТОПа не должна расходовать места другого.
+model AgencyTopPlacement {
+  id        String  @id @default(cuid())
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   userId    String?
   user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 

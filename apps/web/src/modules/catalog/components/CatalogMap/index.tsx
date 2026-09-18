@@ -10,9 +10,16 @@ import { formatMoney } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './CatalogMap.module.css';
 
-type Props = { kind: ListingKind; city: string; locale: Locale };
+type Props = {
+  kind: ListingKind;
+  /** Слуг города или код страны из адреса — для ссылки «Назад к списку». */
+  location: string;
+  /** Что из этого пришло в query API: город точнее страны (N-43). */
+  locator: { city?: string; country?: string };
+  locale: Locale;
+};
 
-/** Куда смотреть, пока точек нет: центр Берлина — единственный город каталога. */
+/** Куда смотреть, пока точек нет: центр Берлина, город по умолчанию. */
 const FALLBACK = { lat: 52.52, lng: 13.405 };
 
 /**
@@ -24,7 +31,7 @@ const FALLBACK = { lat: 52.52, lng: 13.405 };
  * Фильтры общие с каталогом: карта читает те же параметры из адреса, поэтому
  * переход «список ↔ карта» ничего не сбрасывает.
  */
-export function CatalogMap({ kind, city, locale }: Props) {
+export function CatalogMap({ kind, location, locator, locale }: Props) {
   const t = useTranslations('map');
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -33,9 +40,12 @@ export function CatalogMap({ kind, city, locale }: Props) {
 
   const query = new URLSearchParams(searchParams.toString());
   query.set('kind', kind);
-  // Город берём из адреса, как и каталог: в строке запроса его нет, а без
-  // него карта показывала бы точки всех городов сразу.
-  query.set('city', city);
+  // Город или страна берём из адреса, как и каталог: в строке запроса их нет
+  // (кроме `cities` — сужения до нескольких городов внутри страны, оно уже
+  // в searchParams выше). Без этого карта показывала бы точки вообще всех
+  // стран разом, а не только выбранной (N-43).
+  if (locator.city) query.set('city', locator.city);
+  else if (locator.country) query.set('country', locator.country);
   const queryString = query.toString();
 
   const {
@@ -129,11 +139,11 @@ export function CatalogMap({ kind, city, locale }: Props) {
           <span className={styles.count}>
             {isPending ? t('loading') : t('found', { count: total })}
           </span>
-          {/* Город в пути обязателен: адрес без него уводит редиректом
-              в первый активный город, а не обратно в этот. */}
+          {/* Локация в пути обязательна: адрес без неё уводит редиректом на
+              страну по умолчанию, а не обратно на этот срез. */}
           <Link
             className={styles.link}
-            href={`/${city}/catalog/${kind}?${searchParams.toString()}`}
+            href={`/${location}/catalog/${kind}?${searchParams.toString()}`}
           >
             {t('backToList')}
           </Link>

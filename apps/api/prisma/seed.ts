@@ -205,6 +205,7 @@ async function main() {
           'Демо-описание анкеты. Реальный текст появляется после прохождения верификации.',
         ownerId: owner.id,
         cityId: berlin.id,
+        countryId: berlin.countryId,
         districtId: district.id,
         // Координаты берём из района, а не выдумываем: иначе точка на карте
         // не совпадает с подписанным районом — ровно это и было раньше.
@@ -277,6 +278,7 @@ async function main() {
         description: 'Демо-описание салона.',
         ownerId: owner.id,
         cityId: berlin.id,
+        countryId: berlin.countryId,
         districtId: district.id,
         fromPriceCents,
         isFeatured: i % 6 === 0,

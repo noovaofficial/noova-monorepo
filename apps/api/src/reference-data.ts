@@ -45,6 +45,7 @@ const countrySeedSchema = z.object({
   code: z.string().length(2),
   name: translatedSchema,
   isActive: z.boolean(),
+  isDefault: z.boolean().default(false),
 });
 
 const serviceSeedSchema = z.object({

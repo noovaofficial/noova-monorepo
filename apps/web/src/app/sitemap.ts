@@ -1,6 +1,6 @@
 import { LOCALES } from '@noova/shared';
 import type { MetadataRoute } from 'next';
-import { fetchCities, fetchProfiles, safely } from '@/shared/api';
+import { fetchCities, fetchCountries, fetchProfiles, safely } from '@/shared/api';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 
@@ -17,19 +17,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Только существующие страницы. Правовые появятся вместе с L-01, страница
   // о верификации — вместе с L-02; ссылка в sitemap на 404 хуже её отсутствия.
   //
-  // Городского префикса здесь нет: выбор города, «Компания» и контакты одни
-  // на весь каталог (N-32).
-  const staticPaths = ['', '/about', '/advertising', '/contact'];
+  // Городского префикса здесь нет: «Компания» и контакты одни на весь
+  // каталог (N-32). Корня `/{locale}` тоже нет — это чистый редирект на
+  // запомненную или дефолтную локацию, а не документ со своим содержимым;
+  // его место в индексе заняла главная страны по умолчанию, ниже.
+  const staticPaths = ['/about', '/advertising', '/contact'];
 
   const entries: MetadataRoute.Sitemap = LOCALES.flatMap((locale) =>
     staticPaths.map((path) => ({
       url: `${SITE_URL}/${locale}${path}`,
       lastModified: new Date(),
-      changeFrequency: path === '' ? ('hourly' as const) : ('monthly' as const),
-      priority: path === '' ? 1 : 0.5,
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
       alternates: alternates(path),
     })),
   );
+
+  // Главная страны целиком (N-42) и её каталог (N-43) — без выбранного
+  // города. Главная — самая высокая приоритетность: это фактическая точка
+  // входа с логотипа.
+  const countries = await safely(fetchCountries({ revalidate: 3600 }), [], 'sitemapCountries');
+  for (const country of countries) {
+    const code = country.code.toLowerCase();
+    for (const path of [`/${code}`, `/${code}/catalog/escort`, `/${code}/catalog/massage`]) {
+      entries.push(
+        ...LOCALES.map((locale) => ({
+          url: `${SITE_URL}/${locale}${path}`,
+          lastModified: new Date(),
+          changeFrequency: 'hourly' as const,
+          priority: path === `/${code}` ? 1 : 0.8,
+          alternates: alternates(path),
+        })),
+      );
+    }
+  }
 
   // Витринные страницы умножаются на города: главная города и два каталога.
   // Карта в sitemap не идёт — то же содержимое другим представлением.
