@@ -1,6 +1,7 @@
 import { isLocale, LOCALES } from '@noova/shared';
 import type { Metadata } from 'next';
 import { Inter, Sora } from 'next/font/google';
+import { headers } from 'next/headers';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import type { ReactNode } from 'react';
@@ -15,7 +16,9 @@ import { SESSION_HINT_SCRIPT } from '@/modules/auth/session-hint';
 import { FavoritesProvider } from '@/modules/favorites/components/FavoritesProvider';
 import { PUBLIC_CLIENT_NAMESPACES, pickNamespaces } from '@/shared/i18n/client-namespaces';
 import { routing } from '@/shared/i18n/routing';
+import { SubdomainProvider } from '@/shared/i18n/SubdomainContext';
 import { QueryProvider } from '@/shared/query/QueryProvider';
+import { agencySlugFromHost } from '@/shared/subdomain';
 import '@/design-system/globals.css';
 
 // Self-hosted через next/font: без запроса к Google Fonts на каждой загрузке
@@ -90,6 +93,13 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
   const messages = await getMessages({ locale });
 
+  // Поддомен агентства (N-38): весь app-шелл (шапка, футер) рендерится этим
+  // layout, а не самой страницей — узнать об этом иначе, кроме заголовка
+  // запроса, ему негде. Из-за `headers()` layout перестаёт быть статическим,
+  // но большая часть страниц под ним и так рендерится по запросу.
+  const hdrs = await headers();
+  const isAgencySubdomain = agencySlugFromHost(hdrs.get('host') ?? '') !== null;
+
   return (
     // data-theme и data-adult намеренно НЕ задаются здесь. Смена языка
     // перемонтирует этот layout, и React перезаписал бы атрибут значением
@@ -110,20 +120,22 @@ export default async function LocaleLayout({
             добавляют вложенные провайдеры в /account, /admin и /moderation.
             Иначе посетитель каталога скачивал бы подписи админки. */}
         <NextIntlClientProvider messages={pickNamespaces(messages, PUBLIC_CLIENT_NAMESPACES)}>
-          {/* Query выше сессии: провайдер сессии сам ходит в API. Публичные
-              страницы это не затрагивает — они грузятся на сервере. */}
-          <QueryProvider>
-            <SessionProvider>
-              {/* Внутри SessionProvider: избранное грузится только когда роль
-                уже известна, иначе гость получал бы 401 на каждой странице. */}
-              <FavoritesProvider>
-                <AppShell header={<Header />} footer={<Footer />}>
-                  {children}
-                </AppShell>
-                <AgeGate />
-              </FavoritesProvider>
-            </SessionProvider>
-          </QueryProvider>
+          <SubdomainProvider isAgencySubdomain={isAgencySubdomain}>
+            {/* Query выше сессии: провайдер сессии сам ходит в API. Публичные
+                страницы это не затрагивает — они грузятся на сервере. */}
+            <QueryProvider>
+              <SessionProvider>
+                {/* Внутри SessionProvider: избранное грузится только когда роль
+                  уже известна, иначе гость получал бы 401 на каждой странице. */}
+                <FavoritesProvider>
+                  <AppShell header={<Header />} footer={<Footer />}>
+                    {children}
+                  </AppShell>
+                  <AgeGate />
+                </FavoritesProvider>
+              </SessionProvider>
+            </QueryProvider>
+          </SubdomainProvider>
         </NextIntlClientProvider>
       </body>
     </html>

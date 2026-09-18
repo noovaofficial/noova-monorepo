@@ -2,42 +2,9 @@ import { DEFAULT_LOCALE, isLocale, RESERVED_CITY_SLUGS } from '@noova/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './shared/i18n/routing';
+import { agencySlugFromHost } from './shared/subdomain';
 
 const handleI18n = createMiddleware(routing);
-
-/**
- * Поддомен агентства (N-38): `{slug}.{апекс}` → `/company/{slug}` дефолтной
- * локали, в обход next-intl и редиректов по роли — весь путь заменяется
- * целиком, каким бы он ни был, у страницы компании нет вложенных маршрутов.
- *
- * Место намеренно здесь, а не рерайт в `next.config.ts`: next-intl сам
- * редиректит `/` на `/{locale}` до того, как применились бы рерайты из
- * конфига, и переписанный им путь потом коверкался повторно.
- */
-const SITE_HOST = (() => {
-  try {
-    return new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').hostname;
-  } catch {
-    return 'localhost';
-  }
-})();
-
-/**
- * Хост запроса из заголовка, а не из `request.nextUrl.hostname`: Next по
- * умолчанию не доверяет `Host` при построении `nextUrl` (защита от
- * host-header-инъекций, флаг `trustHostHeader`) и подставляет туда адрес,
- * на котором сам слушает процесс, — за прокси это `0.0.0.0`, и поддомен
- * так никогда не увидеть. Caddy — единственная точка входа снаружи
- * (docker-compose), заголовку можно доверять.
- */
-function agencySlugFromHost(request: NextRequest): string | null {
-  if (SITE_HOST === 'localhost' || SITE_HOST === '127.0.0.1') return null;
-  const host = (request.headers.get('host') ?? '').split(':')[0] ?? '';
-  const suffix = `.${SITE_HOST}`;
-  if (!host.endsWith(suffix)) return null;
-  const slug = host.slice(0, -suffix.length);
-  return slug || null;
-}
 
 /**
  * Куда отправлять вошедшего вместо каталога. Каталог — витрина для гостей;
@@ -98,7 +65,23 @@ function pathWithoutLocale(pathname: string): string {
 }
 
 export default function proxy(request: NextRequest) {
-  const agencySlug = agencySlugFromHost(request);
+  /**
+   * Поддомен агентства (N-38): `{slug}.{апекс}` → `/company/{slug}` дефолтной
+   * локали, в обход next-intl и редиректов по роли — весь путь заменяется
+   * целиком, каким бы он ни был, у страницы компании нет вложенных маршрутов.
+   *
+   * Место намеренно здесь, а не рерайт в `next.config.ts`: next-intl сам
+   * редиректит `/` на `/{locale}` до того, как применились бы рерайты из
+   * конфига, и переписанный им путь потом коверкался повторно.
+   *
+   * Хост запроса из заголовка, а не из `request.nextUrl.hostname`: Next по
+   * умолчанию не доверяет `Host` при построении `nextUrl` (защита от
+   * host-header-инъекций, флаг `trustHostHeader`) и подставляет туда адрес,
+   * на котором сам слушает процесс, — за прокси это `0.0.0.0`, и поддомен
+   * так никогда не увидеть. Caddy — единственная точка входа снаружи
+   * (docker-compose), заголовку можно доверять.
+   */
+  const agencySlug = agencySlugFromHost(request.headers.get('host') ?? '');
   if (agencySlug) {
     const url = request.nextUrl.clone();
     url.pathname = `/${DEFAULT_LOCALE}/company/${agencySlug}`;
