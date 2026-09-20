@@ -174,6 +174,15 @@ export function CompanyEditor() {
         <h1 className={styles.title}>{t('cabinetAgency')}</h1>
       </div>
 
+      {/* Блокировка — решение персонала, не поле формы: убрать её отсюда
+          нельзя, только увидеть причину (см. `Company.bannedAt`). */}
+      {query.data?.isBanned ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          <strong>{t('agencyBlocked')}</strong>
+          {query.data.banReason ? ` ${query.data.banReason}` : ''}
+        </p>
+      ) : null}
+
       <div className={styles.layout}>
         <form
           className={styles.form}

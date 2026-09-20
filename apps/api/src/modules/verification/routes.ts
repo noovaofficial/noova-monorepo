@@ -438,13 +438,33 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
               isVerified: true,
               isFeatured: true,
               city: { select: { name: true } },
+              topPlacement: { select: { status: true, expiresAt: true } },
+            },
+          },
+          company: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+              bannedAt: true,
+              banReason: true,
+              isFeatured: true,
+              topPlacement: { select: { status: true, expiresAt: true } },
             },
           },
         },
       });
       if (!user) throw fastify.httpErrors.notFound('Пользователь не найден');
 
+      // Заблокировано ли ещё выданное место в ТОПе — задача снимает его с
+      // опозданием до цикла, `expiresAt` в прошлом не значит «уже неактивно».
+      const activeTopExpiry = (placement: { status: string; expiresAt: Date } | null) =>
+        placement && placement.status === 'active' && placement.expiresAt > new Date()
+          ? placement.expiresAt.toISOString()
+          : null;
+
       const listing = user.listings[0] ?? null;
+      const primaryProfile = user.profiles[0] ?? null;
       return {
         id: user.id,
         email: user.email,
@@ -458,6 +478,27 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         glowcoinBalance: user.glowcoinBalance,
         createdAt: user.createdAt.toISOString(),
         advertiserKind: user.advertiserKind,
+        profile: primaryProfile
+          ? {
+              id: primaryProfile.id,
+              slug: primaryProfile.slug,
+              displayName: primaryProfile.displayName,
+              status: primaryProfile.status,
+              isFeatured: primaryProfile.isFeatured,
+              topExpiresAt: activeTopExpiry(primaryProfile.topPlacement),
+            }
+          : null,
+        company: user.company
+          ? {
+              id: user.company.id,
+              slug: user.company.slug,
+              name: user.company.name,
+              isBanned: user.company.bannedAt !== null,
+              banReason: user.company.banReason,
+              isFeatured: user.company.isFeatured,
+              topExpiresAt: activeTopExpiry(user.company.topPlacement),
+            }
+          : null,
         locale: user.locale,
         lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
         deletionRequestedAt: user.deletionRequestedAt?.toISOString() ?? null,

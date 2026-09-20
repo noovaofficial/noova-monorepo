@@ -155,7 +155,8 @@ export const ModerationSubject = {
   verification: 'verification',
   identity: 'identity',
   comment: 'comment',
-  user: 'user'
+  user: 'user',
+  company: 'company'
 } as const
 
 export type ModerationSubject = (typeof ModerationSubject)[keyof typeof ModerationSubject]

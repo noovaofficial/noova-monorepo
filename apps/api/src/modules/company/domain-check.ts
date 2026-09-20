@@ -43,9 +43,11 @@ export const domainCheckRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const company = await fastify.prisma.company.findUnique({
         where: { slug },
-        select: { isActive: true },
+        select: { isActive: true, bannedAt: true },
       });
-      if (!company?.isActive) throw fastify.httpErrors.notFound('Компания не найдена');
+      if (!company?.isActive || company.bannedAt !== null) {
+        throw fastify.httpErrors.notFound('Компания не найдена');
+      }
 
       return { ok: true as const };
     },

@@ -16,13 +16,15 @@ export type StaffSection = {
   key:
     | 'moderation'
     | 'staff'
+    | 'agencies'
+    | 'individuals'
+    | 'massageSalons'
     | 'allUsers'
     | 'log'
     | 'locations'
     | 'serviceCatalog'
     | 'monetization'
     | 'agencyTariffs'
-    | 'agencies'
     | 'billingOps'
     | 'campaigns'
     | 'mailAdmin'
@@ -49,6 +51,12 @@ export const STAFF_SECTIONS: StaffSection[] = [
   { key: 'log', href: '/moderation/log', group: 'moderation' },
   { key: 'billingOps', href: '/admin/billing', adminOnly: true, group: 'moderation' },
   { key: 'staff', href: '/admin', adminOnly: true, group: 'people' },
+  // Список агентств по типу рекламодателя — карточка агентства (тариф,
+  // бан, ТОП, монеты) сама решает по роли, какие действия показать
+  // (деньги — только админу), список открыт и модератору.
+  { key: 'agencies', href: '/admin/companies', group: 'people' },
+  { key: 'individuals', href: '/moderation/users/individuals', group: 'people' },
+  { key: 'massageSalons', href: '/moderation/users/salons', group: 'people' },
   { key: 'allUsers', href: '/moderation/users', group: 'people' },
   { key: 'locations', href: '/admin/locations', adminOnly: true, group: 'reference' },
   { key: 'serviceCatalog', href: '/admin/services', adminOnly: true, group: 'reference' },
@@ -59,8 +67,6 @@ export const STAFF_SECTIONS: StaffSection[] = [
   // продукта о деньгах, только своя страница: тарифов несколько, и правка
   // одной строкой в форме монетизации не поместилась бы.
   { key: 'agencyTariffs', href: '/admin/agency-tariffs', adminOnly: true, group: 'reference' },
-  // Индивидуальный override тарифа/лимита для конкретного агентства.
-  { key: 'agencies', href: '/admin/companies', adminOnly: true, group: 'reference' },
   // Акции раздают размещения и монеты — то же решение владельца продукта,
   // что и цены, и той же ролью.
   { key: 'campaigns', href: '/admin/campaigns', adminOnly: true, group: 'reference' },

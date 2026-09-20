@@ -172,6 +172,67 @@ export function buyAgencyTop(
   });
 }
 
+export type AgencyTopGrant = {
+  companyId: string;
+  slots: number;
+  now?: Date;
+};
+
+/**
+ * Выдача места агентству админом (без оплаты) — та же схема, что у покупки,
+ * без `applyMovement`. Место засчитывается на владельца компании.
+ */
+export function grantAgencyTop(
+  prisma: PrismaClient,
+  grant: AgencyTopGrant,
+): Promise<{ placement: AgencyTopPlacement }> {
+  const now = grant.now ?? new Date();
+
+  return prisma.$transaction(async (tx) => {
+    await tx.$queryRaw`SELECT "id" FROM "BillingSettings" WHERE "id" = 'default' FOR UPDATE`;
+
+    const company = await tx.company.findUnique({
+      where: { id: grant.companyId },
+      select: {
+        id: true,
+        ownerId: true,
+        topPlacement: true,
+        profiles: { where: { status: 'published' }, select: { id: true }, take: 1 },
+      },
+    });
+    if (!company) throw new AgencyTopNoCompanyError();
+    if (company.profiles.length === 0) throw new AgencyTopNoProfilesError();
+
+    const current = company.topPlacement;
+    if (current !== null && current.status === 'active' && current.expiresAt > now) {
+      throw new AgencyTopAlreadyActiveError(current.expiresAt);
+    }
+
+    const taken = await tx.agencyTopPlacement.count({ where: activeWhere(now) });
+    if (taken >= grant.slots) throw new AgencyTopFullError(grant.slots);
+
+    const expiresAt = new Date(now.getTime() + WEEK_MS);
+    const placement = current
+      ? await tx.agencyTopPlacement.update({
+          where: { companyId: company.id },
+          data: { userId: company.ownerId, status: 'active', startsAt: now, expiresAt },
+        })
+      : await tx.agencyTopPlacement.create({
+          data: {
+            companyId: company.id,
+            userId: company.ownerId,
+            status: 'active',
+            startsAt: now,
+            expiresAt,
+          },
+        });
+
+    await tx.company.update({ where: { id: company.id }, data: { isFeatured: true } });
+
+    return { placement: toAgencyTopPlacement(placement) };
+  });
+}
+
 /** Задача цикла — расширяет `top-expiry`, а не заводит вторую: истёкшие
  *  места освобождаются, флаг с компаний снимается. */
 export async function expireAgencyTopPlacements(

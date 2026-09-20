@@ -1,5 +1,6 @@
 import {
   createStaffSchema,
+  grantTopResultSchema,
   moderationLogEntrySchema,
   moderationLogQuerySchema,
   type moderationSubjectRefSchema,
@@ -9,8 +10,16 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { hashPassword } from '../auth/passwords.js';
+import { loadBillingConfig } from '../billing/config.js';
+import {
+  grantTop,
+  TopAlreadyActiveError,
+  TopFullError,
+  TopNotPublishedError,
+} from '../billing/top.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
 
 /**
@@ -146,6 +155,22 @@ async function resolveSubjects(
       found.set(key('user', user.id), {
         title: user.email,
         accountEmail: user.email,
+        profileId: null,
+        cityName: null,
+      });
+    }
+  }
+
+  const companyIds = byType.get('company') ?? [];
+  if (companyIds.length > 0) {
+    const companies = await fastify.prisma.company.findMany({
+      where: { id: { in: companyIds } },
+      select: { id: true, name: true, owner: { select: { email: true } } },
+    });
+    for (const company of companies) {
+      found.set(key('company', company.id), {
+        title: company.name,
+        accountEmail: company.owner.email,
         profileId: null,
         cityName: null,
       });
@@ -416,6 +441,65 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         nextCursor: hasMore ? encodeCursor(rows[rows.length - 1]?.id ?? '') : null,
         total: await fastify.prisma.moderationAction.count({ where }),
       };
+    },
+  );
+
+  /**
+   * Выдача ТОПа анкете без оплаты (payments.md §3.4, D-10) — тот же лимит
+   * мест и те же проверки, что у покупки, только бесплатно. Только админ:
+   * это обход оплаты, как и остальные денежные решения в этом файле.
+   */
+  fastify.post(
+    '/admin/profiles/:id/top',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: grantTopResultSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const config = await loadBillingConfig(fastify.prisma);
+
+      try {
+        const result = await grantTop(fastify.prisma, {
+          profileId: request.params.id,
+          slots: config.top.slots,
+        });
+
+        await fastify.prisma.moderationAction.create({
+          data: {
+            moderatorId: userId,
+            subjectType: 'profile',
+            subjectId: request.params.id,
+            decision: 'approved',
+            reason: 'ТОП выдан администратором',
+          },
+        });
+
+        const profile = await fastify.prisma.profile.findUnique({
+          where: { id: request.params.id },
+          select: { slug: true },
+        });
+        if (profile) fastify.revalidate([PROFILES_TAG, profileTag(profile.slug)]);
+
+        return result;
+      } catch (error) {
+        if (error instanceof TopAlreadyActiveError) {
+          throw fastify.httpErrors.conflict(
+            `Анкета уже в ТОПе до ${error.expiresAt.toISOString()}`,
+          );
+        }
+        if (error instanceof TopFullError) {
+          throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
+        }
+        if (error instanceof TopNotPublishedError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        throw error;
+      }
     },
   );
 };

@@ -44,9 +44,9 @@ export const cardSelect = (locale: Locale) =>
       },
     },
     district: { select: { name: true, translations: translationSelect(locale) } },
-    // Отключённую компанию не показываем: она снята с витрины целиком.
+    // Отключённую или забаненную компанию не показываем: она снята с витрины целиком.
     company: {
-      where: { isActive: true },
+      where: { isActive: true, bannedAt: null },
       select: { slug: true, kind: true, name: true },
     },
     services: {
@@ -177,6 +177,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: {
           kind: 'agency',
           isActive: true,
+          bannedAt: null,
           isFeatured: true,
           profiles: { some: asPublished },
         },
@@ -196,6 +197,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
               where: {
                 kind: 'agency',
                 isActive: true,
+                bannedAt: null,
                 isFeatured: false,
                 profiles: { some: asPublished },
               },
@@ -253,7 +255,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { locale } = request.query;
       const row = await fastify.prisma.company.findFirst({
-        where: { slug: request.params.slug, isActive: true },
+        where: { slug: request.params.slug, isActive: true, bannedAt: null },
         select: {
           id: true,
           slug: true,

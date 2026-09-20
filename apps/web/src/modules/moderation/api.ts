@@ -1,7 +1,10 @@
 import {
+  type AdvertiserKind,
   type BlockedProfile,
   blockedProfileSchema,
   type CreateStaffInput,
+  type GrantTopResult,
+  grantTopResultSchema,
   type ManagedUser,
   type ManagedUserDetail,
   type ModeratedProfile,
@@ -157,6 +160,7 @@ export function fetchUsers(
   blockedOnly = false,
   role?: UserRole,
   cursor: string | null = null,
+  advertiserKind?: AdvertiserKind,
 ): Promise<Page<ManagedUser>> {
   const params = new URLSearchParams();
   if (cursor) params.set('cursor', cursor);
@@ -164,11 +168,18 @@ export function fetchUsers(
   // Тип учётной записи: в разделе «Все пользователи» их четыре вида, и без
   // фильтра список превращается в ленту, по которой ищут глазами.
   if (role) params.set('role', role);
+  // Раздел People по типу рекламодателя: Agencies/Individuals/Massage salons.
+  if (advertiserKind) params.set('advertiserKind', advertiserKind);
   // Заблокированные — отдельная таблица, а не фильтр в поиске: найти
   // конкретного человека и понять, кого заблокировали, — разные задачи.
   if (blockedOnly) params.set('blocked', 'true');
   const qs = params.toString();
   return call(`/moderation/users${qs ? `?${qs}` : ''}`, pageSchema(managedUserSchema));
+}
+
+/** Выдача ТОПа анкете без оплаты — только админ. */
+export function grantProfileTop(id: string): Promise<GrantTopResult> {
+  return call(`/admin/profiles/${id}/top`, grantTopResultSchema, { method: 'POST' });
 }
 
 /** Мгновенное удаление учётки — только админ. 204 без тела. */

@@ -86,6 +86,10 @@ export const companySchema = z.object({
   languages: z.array(z.string()),
   payments: z.array(paymentMethodSchema),
   isActive: z.boolean(),
+  /** Заблокировано модератором/админом — независимо от `isActive`, которым
+   *  распоряжается сам владелец. Разблокировать может только персонал. */
+  isBanned: z.boolean(),
+  banReason: z.string().nullable(),
   profileCount: z.number().int().nonnegative(),
 });
 export type Company = z.infer<typeof companySchema>;

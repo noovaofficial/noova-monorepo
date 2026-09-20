@@ -1,0 +1,86 @@
+/* Сетка карточек-действий: один и тот же порядок и вид для карточки анкеты
+   и карточки агентства — вместо кнопок вразнобой, каждая своим способом. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space3);
+  margin-bottom: var(--space5);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  padding: var(--space4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+/* Разворачивается на всю ширину сетки, когда открыта форма (причина,
+   сумма) — узкая колонка под текстовое поле выглядела бы тесной. */
+.card.expanded {
+  grid-column: 1 / -1;
+}
+
+.card.danger {
+  border-color: var(--danger);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radiusMd);
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+}
+
+.card.danger .icon {
+  background: var(--dangerSubtle);
+  color: var(--danger);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+  font-size: var(--textSm);
+}
+
+.status {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space2);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space1);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space2);
+  flex-wrap: wrap;
+}

@@ -57,6 +57,8 @@ export type CompanyMinAggregateOutputType = {
   website: string | null
   logoStorageKey: string | null
   isActive: boolean | null
+  bannedAt: Date | null
+  banReason: string | null
   isFeatured: boolean | null
   ownerId: string | null
   tariffTierId: string | null
@@ -77,6 +79,8 @@ export type CompanyMaxAggregateOutputType = {
   website: string | null
   logoStorageKey: string | null
   isActive: boolean | null
+  bannedAt: Date | null
+  banReason: string | null
   isFeatured: boolean | null
   ownerId: string | null
   tariffTierId: string | null
@@ -99,6 +103,8 @@ export type CompanyCountAggregateOutputType = {
   languages: number
   payments: number
   isActive: number
+  bannedAt: number
+  banReason: number
   isFeatured: number
   ownerId: number
   tariffTierId: number
@@ -135,6 +141,8 @@ export type CompanyMinAggregateInputType = {
   website?: true
   logoStorageKey?: true
   isActive?: true
+  bannedAt?: true
+  banReason?: true
   isFeatured?: true
   ownerId?: true
   tariffTierId?: true
@@ -155,6 +163,8 @@ export type CompanyMaxAggregateInputType = {
   website?: true
   logoStorageKey?: true
   isActive?: true
+  bannedAt?: true
+  banReason?: true
   isFeatured?: true
   ownerId?: true
   tariffTierId?: true
@@ -177,6 +187,8 @@ export type CompanyCountAggregateInputType = {
   languages?: true
   payments?: true
   isActive?: true
+  bannedAt?: true
+  banReason?: true
   isFeatured?: true
   ownerId?: true
   tariffTierId?: true
@@ -286,6 +298,8 @@ export type CompanyGroupByOutputType = {
   languages: string[]
   payments: $Enums.PaymentMethod[]
   isActive: boolean
+  bannedAt: Date | null
+  banReason: string | null
   isFeatured: boolean
   ownerId: string
   tariffTierId: string | null
@@ -331,6 +345,8 @@ export type CompanyWhereInput = {
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
+  bannedAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
+  banReason?: Prisma.StringNullableFilter<"Company"> | string | null
   isFeatured?: Prisma.BoolFilter<"Company"> | boolean
   ownerId?: Prisma.StringFilter<"Company"> | string
   tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
@@ -358,6 +374,8 @@ export type CompanyOrderByWithRelationInput = {
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -389,6 +407,8 @@ export type CompanyWhereUniqueInput = Prisma.AtLeast<{
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
+  bannedAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
+  banReason?: Prisma.StringNullableFilter<"Company"> | string | null
   isFeatured?: Prisma.BoolFilter<"Company"> | boolean
   tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
   customProfileLimit?: Prisma.IntNullableFilter<"Company"> | number | null
@@ -415,6 +435,8 @@ export type CompanyOrderByWithAggregationInput = {
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  banReason?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -445,6 +467,8 @@ export type CompanyScalarWhereWithAggregatesInput = {
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
+  bannedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Company"> | Date | string | null
+  banReason?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Company"> | boolean
   ownerId?: Prisma.StringWithAggregatesFilter<"Company"> | string
   tariffTierId?: Prisma.StringNullableWithAggregatesFilter<"Company"> | string | null
@@ -467,6 +491,8 @@ export type CompanyCreateInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -492,6 +518,8 @@ export type CompanyUncheckedCreateInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   tariffTierId?: string | null
@@ -517,6 +545,8 @@ export type CompanyUpdateInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -542,6 +572,8 @@ export type CompanyUncheckedUpdateInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -567,6 +599,8 @@ export type CompanyCreateManyInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   tariffTierId?: string | null
@@ -589,6 +623,8 @@ export type CompanyUpdateManyMutationInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -609,6 +645,8 @@ export type CompanyUncheckedUpdateManyInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -636,6 +674,8 @@ export type CompanyCountOrderByAggregateInput = {
   languages?: Prisma.SortOrder
   payments?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedAt?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrder
@@ -663,6 +703,8 @@ export type CompanyMaxOrderByAggregateInput = {
   website?: Prisma.SortOrder
   logoStorageKey?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedAt?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrder
@@ -683,6 +725,8 @@ export type CompanyMinOrderByAggregateInput = {
   website?: Prisma.SortOrder
   logoStorageKey?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  bannedAt?: Prisma.SortOrder
+  banReason?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   tariffTierId?: Prisma.SortOrder
@@ -867,6 +911,8 @@ export type CompanyCreateWithoutOwnerInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -891,6 +937,8 @@ export type CompanyUncheckedCreateWithoutOwnerInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   tariffTierId?: string | null
   customProfileLimit?: number | null
@@ -931,6 +979,8 @@ export type CompanyUpdateWithoutOwnerInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -955,6 +1005,8 @@ export type CompanyUncheckedUpdateWithoutOwnerInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -979,6 +1031,8 @@ export type CompanyCreateWithoutProfilesInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -1003,6 +1057,8 @@ export type CompanyUncheckedCreateWithoutProfilesInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   tariffTierId?: string | null
@@ -1043,6 +1099,8 @@ export type CompanyUpdateWithoutProfilesInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1067,6 +1125,8 @@ export type CompanyUncheckedUpdateWithoutProfilesInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1091,6 +1151,8 @@ export type CompanyCreateWithoutContactsInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -1115,6 +1177,8 @@ export type CompanyUncheckedCreateWithoutContactsInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   tariffTierId?: string | null
@@ -1155,6 +1219,8 @@ export type CompanyUpdateWithoutContactsInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1179,6 +1245,8 @@ export type CompanyUncheckedUpdateWithoutContactsInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1203,6 +1271,8 @@ export type CompanyCreateWithoutTariffTierInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -1227,6 +1297,8 @@ export type CompanyUncheckedCreateWithoutTariffTierInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   customProfileLimit?: number | null
@@ -1280,6 +1352,8 @@ export type CompanyScalarWhereInput = {
   languages?: Prisma.StringNullableListFilter<"Company">
   payments?: Prisma.EnumPaymentMethodNullableListFilter<"Company">
   isActive?: Prisma.BoolFilter<"Company"> | boolean
+  bannedAt?: Prisma.DateTimeNullableFilter<"Company"> | Date | string | null
+  banReason?: Prisma.StringNullableFilter<"Company"> | string | null
   isFeatured?: Prisma.BoolFilter<"Company"> | boolean
   ownerId?: Prisma.StringFilter<"Company"> | string
   tariffTierId?: Prisma.StringNullableFilter<"Company"> | string | null
@@ -1302,6 +1376,8 @@ export type CompanyCreateWithoutTopPlacementInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   customProfileLimit?: number | null
   customPriceM1Gc?: number | null
@@ -1326,6 +1402,8 @@ export type CompanyUncheckedCreateWithoutTopPlacementInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   tariffTierId?: string | null
@@ -1366,6 +1444,8 @@ export type CompanyUpdateWithoutTopPlacementInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1390,6 +1470,8 @@ export type CompanyUncheckedUpdateWithoutTopPlacementInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   tariffTierId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1414,6 +1496,8 @@ export type CompanyCreateManyTariffTierInput = {
   languages?: Prisma.CompanyCreatelanguagesInput | string[]
   payments?: Prisma.CompanyCreatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: boolean
+  bannedAt?: Date | string | null
+  banReason?: string | null
   isFeatured?: boolean
   ownerId: string
   customProfileLimit?: number | null
@@ -1435,6 +1519,8 @@ export type CompanyUpdateWithoutTariffTierInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customPriceM1Gc?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1459,6 +1545,8 @@ export type CompanyUncheckedUpdateWithoutTariffTierInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1483,6 +1571,8 @@ export type CompanyUncheckedUpdateManyWithoutTariffTierInput = {
   languages?: Prisma.CompanyUpdatelanguagesInput | string[]
   payments?: Prisma.CompanyUpdatepaymentsInput | $Enums.PaymentMethod[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   customProfileLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1544,6 +1634,8 @@ export type CompanySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   languages?: boolean
   payments?: boolean
   isActive?: boolean
+  bannedAt?: boolean
+  banReason?: boolean
   isFeatured?: boolean
   ownerId?: boolean
   tariffTierId?: boolean
@@ -1572,6 +1664,8 @@ export type CompanySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   languages?: boolean
   payments?: boolean
   isActive?: boolean
+  bannedAt?: boolean
+  banReason?: boolean
   isFeatured?: boolean
   ownerId?: boolean
   tariffTierId?: boolean
@@ -1596,6 +1690,8 @@ export type CompanySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   languages?: boolean
   payments?: boolean
   isActive?: boolean
+  bannedAt?: boolean
+  banReason?: boolean
   isFeatured?: boolean
   ownerId?: boolean
   tariffTierId?: boolean
@@ -1620,6 +1716,8 @@ export type CompanySelectScalar = {
   languages?: boolean
   payments?: boolean
   isActive?: boolean
+  bannedAt?: boolean
+  banReason?: boolean
   isFeatured?: boolean
   ownerId?: boolean
   tariffTierId?: boolean
@@ -1631,7 +1729,7 @@ export type CompanySelectScalar = {
   updatedAt?: boolean
 }
 
-export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "website" | "logoStorageKey" | "languages" | "payments" | "isActive" | "isFeatured" | "ownerId" | "tariffTierId" | "customProfileLimit" | "customPriceM1Gc" | "customPriceM6Gc" | "customPriceM12Gc" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+export type CompanyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "name" | "description" | "website" | "logoStorageKey" | "languages" | "payments" | "isActive" | "bannedAt" | "banReason" | "isFeatured" | "ownerId" | "tariffTierId" | "customProfileLimit" | "customPriceM1Gc" | "customPriceM6Gc" | "customPriceM12Gc" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
 export type CompanyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   profiles?: boolean | Prisma.Company$profilesArgs<ExtArgs>
@@ -1692,6 +1790,13 @@ export type $CompanyPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      * Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
      */
     isActive: boolean
+    /**
+     * Блокировка модератором/админом — независимо от `isActive`, которым
+     * распоряжается сам владелец через `PUT /me/company` (иначе он же снял
+     * бы бан своим следующим сохранением). Каскадом банит анкеты компании.
+     */
+    bannedAt: Date | null
+    banReason: string | null
     /**
      * В ТОПе агентств на главной прямо сейчас (payments.md §3.5, D-14).
      * Производная от AgencyTopPlacement: ставится покупкой, снимается
@@ -2158,6 +2263,8 @@ export interface CompanyFieldRefs {
   readonly languages: Prisma.FieldRef<"Company", 'String[]'>
   readonly payments: Prisma.FieldRef<"Company", 'PaymentMethod[]'>
   readonly isActive: Prisma.FieldRef<"Company", 'Boolean'>
+  readonly bannedAt: Prisma.FieldRef<"Company", 'DateTime'>
+  readonly banReason: Prisma.FieldRef<"Company", 'String'>
   readonly isFeatured: Prisma.FieldRef<"Company", 'Boolean'>
   readonly ownerId: Prisma.FieldRef<"Company", 'String'>
   readonly tariffTierId: Prisma.FieldRef<"Company", 'String'>

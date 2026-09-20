@@ -1,13 +1,25 @@
 'use client';
 
+import { adjustBalanceInputSchema, isAdjustWithinLimit } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { blockProfile, fetchModeratedProfile, unblockProfile } from '@/modules/moderation/api';
+import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
+import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
+import {
+  blockProfile,
+  deleteUser,
+  fetchModeratedProfile,
+  grantProfileTop,
+  unblockProfile,
+} from '@/modules/moderation/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
+import { ActionCard } from '../ActionCard';
+import cardStyles from '../ActionCard/ActionCard.module.css';
+import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon } from '../icons';
 import styles from '../Moderation.module.css';
 import { PhotoViewer } from '../PhotoViewer';
 
@@ -19,11 +31,25 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const router = useRouter();
 
   const isStaff = user?.role === 'moderator' || user?.role === 'admin';
+  const isAdmin = user?.role === 'admin';
 
   const queryClient = useQueryClient();
   const [blocking, setBlocking] = useState(false);
   const [reason, setReason] = useState('');
   const [viewing, setViewing] = useState<number | null>(null);
+  const [adjusting, setAdjusting] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [note, setNote] = useState('');
+  const [adjustedBalance, setAdjustedBalance] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const adjustLimit = useQuery({
+    queryKey: queryKeys.adjustLimit(),
+    queryFn: fetchAdjustLimit,
+    enabled: isStaff,
+    staleTime: 5 * 60 * 1000,
+  });
+  const limitGc = adjustLimit.data?.limitGc ?? null;
 
   const review = useQuery({
     queryKey: queryKeys.moderatedProfile(profileId),
@@ -52,9 +78,50 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     onSuccess: refresh,
   });
 
+  const grantTop = useMutation({
+    mutationFn: () => grantProfileTop(profileId),
+    onSuccess: refresh,
+  });
+
+  const adjustInput = (ownerId: string) =>
+    adjustBalanceInputSchema.safeParse({
+      userId: ownerId,
+      gcAmount: Number(amount),
+      note: note.trim(),
+    });
+
+  const canSubmitAdjust = (ownerId: string) =>
+    adjustInput(ownerId).success && isAdjustWithinLimit(Number(amount), limitGc);
+
+  const adjust = useMutation({
+    mutationFn: (ownerId: string) => {
+      const parsed = adjustInput(ownerId);
+      if (!parsed.success) throw new Error('invalid');
+      return adjustBalance(parsed.data);
+    },
+    onSuccess: async (result) => {
+      setAdjusting(false);
+      setAmount('');
+      setNote('');
+      setAdjustedBalance(result.balanceGc);
+      await refresh();
+    },
+  });
+
+  const remove = useMutation({
+    mutationFn: (ownerId: string) => deleteUser(ownerId),
+    onSuccess: () => router.replace('/moderation/users/individuals'),
+  });
+
   const profile = review.data ?? null;
   const error = review.isError ? 'notFound' : null;
-  const busy = block.isPending || unblock.isPending;
+  const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
+  const busy =
+    block.isPending ||
+    unblock.isPending ||
+    grantTop.isPending ||
+    adjust.isPending ||
+    remove.isPending;
 
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
@@ -89,44 +156,204 @@ export function ProfileReview({ profileId }: { profileId: string }) {
         </Link>
       </div>
 
-      {/* Блокировка анкеты — основная мера модератора: показ прекращается,
-          но владелица видит причину, правит и отправляет на проверку заново.
-          Учётная запись при этом не трогается, иначе исправить было бы нечем. */}
-      {profile.status === 'banned' ? (
-        <div className={`${styles.notice} ${styles.noticeError}`}>
-          <p>{t('profileBlocked')}</p>
-          <div className={styles.cardActions} style={{ padding: 0 }}>
-            <Button variant="secondary" disabled={busy} onClick={() => unblock.mutate()}>
-              {t('unblockProfile')}
-            </Button>
-          </div>
-        </div>
-      ) : blocking ? (
-        <div className={styles.reasonBox}>
-          <textarea
-            className={styles.textarea}
-            value={reason}
-            onChange={(event) => setReason(event.target.value)}
-            placeholder={t('blockProfileReason')}
-            minLength={5}
-          />
-          <span className={styles.hint}>{t('blockProfileHint')}</span>
-          <div className={styles.cardActions} style={{ padding: 0 }}>
-            <Button disabled={busy || reason.trim().length < 5} onClick={() => block.mutate()}>
-              {t('blockProfile')}
-            </Button>
-            <Button variant="secondary" disabled={busy} onClick={() => setBlocking(false)}>
-              {t('cancel')}
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className={styles.cardActions} style={{ padding: 0, marginBottom: 'var(--space5)' }}>
-          <Button variant="secondary" disabled={busy} onClick={() => setBlocking(true)}>
-            {t('blockProfile')}
-          </Button>
-        </div>
-      )}
+      <div className={cardStyles.grid}>
+        {/* Блокировка анкеты — основная мера модератора: показ прекращается,
+            но владелица видит причину, правит и отправляет на проверку заново.
+            Учётная запись при этом не трогается, иначе исправить было бы нечем. */}
+        <ActionCard
+          icon={profile.status === 'banned' ? <UnblockIcon /> : <BlockIcon />}
+          title={t('blockProfile')}
+          status={profile.status === 'banned' ? t('profileBlocked') : undefined}
+          tone={profile.status === 'banned' ? 'danger' : 'default'}
+          expanded={blocking}
+        >
+          {profile.status === 'banned' ? (
+            <div className={cardStyles.actions}>
+              <Button variant="secondary" disabled={busy} onClick={() => unblock.mutate()}>
+                <UnblockIcon />
+                {t('unblockProfile')}
+              </Button>
+            </div>
+          ) : blocking ? (
+            <>
+              <textarea
+                className={styles.textarea}
+                value={reason}
+                onChange={(event) => setReason(event.target.value)}
+                placeholder={t('blockProfileReason')}
+                minLength={5}
+              />
+              <span className={styles.hint}>{t('blockProfileHint')}</span>
+              <div className={cardStyles.actions}>
+                <Button disabled={busy || reason.trim().length < 5} onClick={() => block.mutate()}>
+                  <BlockIcon />
+                  {t('blockProfile')}
+                </Button>
+                <Button variant="secondary" disabled={busy} onClick={() => setBlocking(false)}>
+                  {t('cancel')}
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className={cardStyles.actions}>
+              <Button variant="secondary" disabled={busy} onClick={() => setBlocking(true)}>
+                <BlockIcon />
+                {t('blockProfile')}
+              </Button>
+            </div>
+          )}
+        </ActionCard>
+
+        {/* Выдача ТОПа без оплаты (payments.md §3.4/D-10) — обход платежа,
+            только админ, как и прочие денежные решения. Кнопка видна всегда:
+            когда выдать нельзя, она задизейблена, а причина — в подсказке
+            при наведении, а не молчаливо скрытая кнопка. */}
+        {isAdmin ? (
+          <ActionCard
+            icon={<TopIcon />}
+            title={t('topSection')}
+            status={
+              profile.isFeatured && profile.topExpiresAt
+                ? t('topActiveUntil', { date: new Date(profile.topExpiresAt).toLocaleDateString() })
+                : t('topInactive')
+            }
+          >
+            <div className={cardStyles.actions}>
+              <Button
+                variant="secondary"
+                disabled={busy || profile.isFeatured || profile.status !== 'published'}
+                title={
+                  profile.isFeatured
+                    ? t('topDisabledActive')
+                    : profile.status !== 'published'
+                      ? t('topDisabledNotPublished')
+                      : undefined
+                }
+                onClick={() => grantTop.mutate()}
+              >
+                <TopIcon />
+                {t('grantTop')}
+              </Button>
+            </div>
+            {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}
+          </ActionCard>
+        ) : null}
+
+        {/* Монеты — staff, потолок для модератора проверяется и на сервере. */}
+        {isStaff ? (
+          <ActionCard
+            icon={<GlowCoinIcon size={18} />}
+            title={t('adjustGc')}
+            status={t('balanceGc', { balance: profile.owner.glowcoinBalance })}
+            expanded={adjusting}
+          >
+            {adjusting ? (
+              <>
+                <div className={cardStyles.field}>
+                  <label className={styles.label} htmlFor="adjust-amount">
+                    {t('adjustAmount')}
+                  </label>
+                  <input
+                    className={styles.input}
+                    id="adjust-amount"
+                    inputMode="numeric"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    placeholder="+100"
+                  />
+                  <span className={styles.hint}>
+                    {t('adjustAmountHint')}
+                    {limitGc === null ? null : ` ${t('adjustLimitHint', { limit: limitGc })}`}
+                  </span>
+                </div>
+                <div className={cardStyles.field}>
+                  <label className={styles.label} htmlFor="adjust-note">
+                    {t('adjustNote')}
+                  </label>
+                  <textarea
+                    className={styles.textarea}
+                    id="adjust-note"
+                    value={note}
+                    onChange={(event) => setNote(event.target.value)}
+                    minLength={3}
+                  />
+                  <span className={styles.hint}>{t('adjustNoteHint')}</span>
+                </div>
+                {adjustStatus === 409 ? (
+                  <span className={styles.hint}>{t('adjustInsufficient')}</span>
+                ) : adjustStatus === 403 ? (
+                  <span className={styles.hint}>{t('adjustOverLimit')}</span>
+                ) : null}
+                <div className={cardStyles.actions}>
+                  <Button
+                    disabled={busy || !canSubmitAdjust(profile.owner.id)}
+                    onClick={() => adjust.mutate(profile.owner.id)}
+                  >
+                    <GlowCoinIcon size={16} />
+                    {t('adjustSubmit')}
+                  </Button>
+                  <Button variant="secondary" disabled={busy} onClick={() => setAdjusting(false)}>
+                    {t('cancel')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={cardStyles.actions}>
+                <Button variant="secondary" disabled={busy} onClick={() => setAdjusting(true)}>
+                  <GlowCoinIcon size={16} />
+                  {t('adjustGc')}
+                </Button>
+                {adjustedBalance !== null ? (
+                  <span className={styles.hint}>
+                    {t('adjustDone', { balance: adjustedBalance })}
+                  </span>
+                ) : null}
+              </div>
+            )}
+          </ActionCard>
+        ) : null}
+
+        {/* Удалить учётку — только для индивидуалки/салона: их анкета и
+            аккаунт — одно и то же. Для анкеты агентства (companyId задан)
+            удаление аккаунта снесло бы весь его каталог разом — кнопка
+            видна, но задизейблена с подсказкой: это действие только с
+            карточки самого агентства, где видно, что удаляется целиком. */}
+        {isAdmin ? (
+          <ActionCard
+            icon={<DeleteIcon />}
+            title={t('deleteUser')}
+            tone="danger"
+            expanded={deleting}
+          >
+            {deleting ? (
+              <>
+                <span className={styles.hint}>{t('deleteUserHint')}</span>
+                <div className={cardStyles.actions}>
+                  <Button disabled={busy} onClick={() => remove.mutate(profile.owner.id)}>
+                    <DeleteIcon />
+                    {t('deleteUserConfirm')}
+                  </Button>
+                  <Button variant="secondary" disabled={busy} onClick={() => setDeleting(false)}>
+                    {t('cancel')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={cardStyles.actions}>
+                <Button
+                  variant="secondary"
+                  disabled={busy || profile.companyId !== null}
+                  title={profile.companyId !== null ? t('deleteDisabledAgencyOwned') : undefined}
+                  onClick={() => setDeleting(true)}
+                >
+                  <DeleteIcon />
+                  {t('deleteUser')}
+                </Button>
+              </div>
+            )}
+          </ActionCard>
+        ) : null}
+      </div>
 
       {viewing !== null ? (
         <PhotoViewer

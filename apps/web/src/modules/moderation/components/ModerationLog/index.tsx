@@ -18,6 +18,7 @@ const SUBJECT_LABEL: Record<string, string> = {
   profile: 'subjectProfile',
   comment: 'subjectComment',
   user: 'subjectUser',
+  company: 'subjectCompany',
 };
 
 export function ModerationLog() {

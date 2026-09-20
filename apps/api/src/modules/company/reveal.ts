@@ -27,9 +27,9 @@ export const companyRevealRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request) => {
       const company = await fastify.prisma.company.findFirst({
-        // Отключённая компания недоступна целиком — раскрытие не должно
-        // быть обходным путём к ней.
-        where: { slug: request.params.slug, isActive: true },
+        // Отключённая или забаненная компания недоступна целиком —
+        // раскрытие не должно быть обходным путём к ней.
+        where: { slug: request.params.slug, isActive: true, bannedAt: null },
         select: {
           contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
         },

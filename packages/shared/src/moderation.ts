@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { advertiserKindSchema } from './account';
 import { userRoleSchema } from './auth';
 import { commentQueueItemSchema } from './comment';
 import { slugSchema } from './common';
@@ -12,6 +13,7 @@ export const moderationSubjectSchema = z.enum([
   'identity',
   'comment',
   'user',
+  'company',
 ]);
 export type ModerationSubject = z.infer<typeof moderationSubjectSchema>;
 
@@ -150,12 +152,46 @@ export const moderatedProfileSchema = z.object({
     }),
   ),
   verificationStatus: verificationStatusSchema,
-  owner: z.object({ email: z.string(), advertiserKind: z.string().nullable() }),
+  owner: z.object({
+    id: z.string(),
+    email: z.string(),
+    advertiserKind: z.string().nullable(),
+    glowcoinBalance: z.number().int().nonnegative(),
+  }),
+  /** Анкета агентства — принадлежит аккаунту агентства целиком (N-31): его
+   *  нельзя удалять с этой страницы, не увидев, что у него есть другие анкеты. */
+  companyId: z.string().nullable(),
+  /** Оплаченное или выданное место в ТОПе прямо сейчас (payments.md §3.4). */
+  isFeatured: z.boolean(),
+  topExpiresAt: z.string().datetime().nullable(),
   createdAt: z.string().datetime(),
 });
 export type ModeratedProfile = z.infer<typeof moderatedProfileSchema>;
 
 // ---------- Пользователи ----------
+
+/** Единственная анкета индивидуалки/салона — под быстрые действия из списка
+ *  (payments.md §3.4). `null`, если её ещё нет или тип рекламодателя другой. */
+const managedUserProfileSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  displayName: z.string(),
+  status: z.string(),
+  isFeatured: z.boolean(),
+  topExpiresAt: z.string().datetime().nullable(),
+});
+
+/** Компания агентства — под быстрые действия из списка. `null`, если её ещё
+ *  нет или тип рекламодателя другой. */
+const managedUserCompanySchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  name: z.string(),
+  isBanned: z.boolean(),
+  banReason: z.string().nullable(),
+  isFeatured: z.boolean(),
+  topExpiresAt: z.string().datetime().nullable(),
+});
 
 export const managedUserSchema = z.object({
   id: z.string(),
@@ -171,6 +207,10 @@ export const managedUserSchema = z.object({
   /** Баланс GlowCoin — админ видит его перед корректировкой. У клиента и персонала ноль. */
   glowcoinBalance: z.number().int().nonnegative(),
   createdAt: z.string().datetime(),
+  /** Заполнено только для `role: 'advertiser'`. */
+  advertiserKind: advertiserKindSchema.nullable(),
+  profile: managedUserProfileSchema.nullable(),
+  company: managedUserCompanySchema.nullable(),
 });
 export type ManagedUser = z.infer<typeof managedUserSchema>;
 
@@ -180,6 +220,8 @@ export const userSearchSchema = z.object({
   blocked: z.enum(['true']).optional(),
   /** Тип учётной записи. Пусто — все: у раздела «Все пользователи» это норма. */
   role: userRoleSchema.optional(),
+  /** Раздел People по типу рекламодателя: Agencies/Individuals/Massage salons. */
+  advertiserKind: advertiserKindSchema.optional(),
   limit: z.coerce.number().int().min(1).max(50).default(25),
   cursor: z.string().optional(),
 });
@@ -317,11 +359,27 @@ export const verificationRequestDetailSchema = verificationRequestSchema.extend(
 export type VerificationRequestDetail = z.infer<typeof verificationRequestDetailSchema>;
 
 /**
+ * Анкета строкой в списке на карточке владельца — пользователя или агентства
+ * (`ManagedUserDetail`/`CompanyTariffState`). Одна форма на оба места:
+ * список анкет читается и выглядит одинаково, к какой бы сущности ни принадлежал
+ * владелец.
+ */
+export const profileSummarySchema = z.object({
+  id: z.string(),
+  slug: slugSchema,
+  displayName: z.string(),
+  status: z.string(),
+  cityName: z.string(),
+  isVerified: z.boolean(),
+  isFeatured: z.boolean(),
+});
+export type ProfileSummary = z.infer<typeof profileSummarySchema>;
+
+/**
  * Пользователь целиком — для страницы в модерации. К списочным полям
  * добавлены тип размещения, подписка и анкеты: за этим на страницу и идут.
  */
 export const managedUserDetailSchema = managedUserSchema.extend({
-  advertiserKind: z.enum(['individual', 'agency', 'salon']).nullable(),
   locale: z.string(),
   lastLoginAt: z.string().datetime().nullable(),
   deletionRequestedAt: z.string().datetime().nullable(),
@@ -334,16 +392,6 @@ export const managedUserDetailSchema = managedUserSchema.extend({
       expiresAt: z.string().datetime(),
     })
     .nullable(),
-  profiles: z.array(
-    z.object({
-      id: z.string(),
-      slug: slugSchema,
-      displayName: z.string(),
-      status: z.string(),
-      cityName: z.string(),
-      isVerified: z.boolean(),
-      isFeatured: z.boolean(),
-    }),
-  ),
+  profiles: z.array(profileSummarySchema),
 });
 export type ManagedUserDetail = z.infer<typeof managedUserDetailSchema>;

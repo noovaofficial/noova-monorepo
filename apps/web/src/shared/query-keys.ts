@@ -29,8 +29,14 @@ export const queryKeys = {
   verification: (id: string) => ['verification', id] as const,
   ownVerification: (profileId: string) => ['own-verification', profileId] as const,
   blockedProfiles: () => ['blocked-profiles'] as const,
-  users: (query: string, blockedOnly = false, role?: string) =>
-    ['moderation-users', query, blockedOnly ? 'blocked' : 'all', role ?? 'any'] as const,
+  users: (query: string, blockedOnly = false, role?: string, advertiserKind?: string) =>
+    [
+      'moderation-users',
+      query,
+      blockedOnly ? 'blocked' : 'all',
+      role ?? 'any',
+      advertiserKind ?? 'any',
+    ] as const,
   staff: () => ['staff'] as const,
   adminCountries: () => ['admin-countries'] as const,
   adminCities: (countryId?: string) => ['admin-cities', countryId ?? 'all'] as const,
@@ -39,8 +45,8 @@ export const queryKeys = {
   campaigns: (locale: string) => ['campaigns', locale] as const,
   billingConfig: () => ['billing-config'] as const,
   agencyTariffGrid: () => ['agency-tariff-grid'] as const,
-  companies: (query: string) => ['companies', query] as const,
   companyTariff: (id: string) => ['company-tariff', id] as const,
+  companyTop: (id: string) => ['company-top', id] as const,
   /** Свой предел корректировки баланса. Зависит от роли, но роль на сессии одна. */
   adjustLimit: () => ['adjust-limit'] as const,
 

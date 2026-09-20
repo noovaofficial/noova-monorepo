@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  type AdvertiserKind,
   adjustBalanceInputSchema,
   isAdjustWithinLimit,
   type ManagedUser,
@@ -10,28 +11,94 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { blockCompany, grantCompanyTop, unblockCompany } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
+import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import {
+  blockProfile,
   blockUser,
   deleteUser,
   fetchUsers,
+  grantProfileTop,
+  unblockProfile,
   unblockUser,
   verifyUserEmail,
 } from '@/modules/moderation/api';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
+import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon, VerifyIcon } from '../icons';
 import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
 
 const ROLES: UserRole[] = ['client', 'advertiser', 'moderator', 'admin'];
 
+/**
+ * Что именно банит «заблокировать» в списке: аккаунт (All users/Staff-поиск)
+ * или сущность вкладки — анкета (Individuals/Massage salons) либо компания
+ * (Agencies). Тексты и цель действия берутся отсюда, а не выводятся заново
+ * в каждом месте разметки — иначе один пропущенный случай тихо забанил бы
+ * не то, что показывает кнопка.
+ */
+const BLOCK_LABELS = {
+  account: {
+    block: 'blockUser',
+    unblock: 'unblockUser',
+    reason: 'blockReason',
+    hint: 'blockReasonHint',
+    blockedBadge: 'userBlocked',
+  },
+  profile: {
+    block: 'blockProfile',
+    unblock: 'unblockProfile',
+    reason: 'blockProfileReason',
+    hint: 'blockProfileHint',
+    blockedBadge: 'profileBlocked',
+  },
+  agency: {
+    block: 'blockAgency',
+    unblock: 'unblockAgency',
+    reason: 'blockAgencyReason',
+    hint: 'blockAgencyHint',
+    blockedBadge: 'agencyBlocked',
+  },
+} as const;
+
+function blockModeFor(advertiserKind?: AdvertiserKind): keyof typeof BLOCK_LABELS {
+  if (advertiserKind === 'individual' || advertiserKind === 'salon') return 'profile';
+  if (advertiserKind === 'agency') return 'agency';
+  return 'account';
+}
+
+/** Цель «Дать ТОП» по строке — анкета или компания, независимо от вкладки:
+ *  действие смотрит на тип самого рекламодателя в строке, а не на фильтр
+ *  списка (нужно и на «Все пользователи»). */
+function topTargetFor(
+  user: ManagedUser,
+): { kind: 'profile' | 'company'; id: string; isFeatured: boolean } | null {
+  if (user.advertiserKind === 'individual' || user.advertiserKind === 'salon') {
+    return user.profile
+      ? { kind: 'profile', id: user.profile.id, isFeatured: user.profile.isFeatured }
+      : null;
+  }
+  if (user.advertiserKind === 'agency') {
+    return user.company
+      ? { kind: 'company', id: user.company.id, isFeatured: user.company.isFeatured }
+      : null;
+  }
+  return null;
+}
+
 export function UserList({
   blockedOnly = false,
   withRoleFilter = false,
+  advertiserKind,
 }: {
   blockedOnly?: boolean;
   withRoleFilter?: boolean;
+  /** Раздел People по типу рекламодателя — Agencies/Individuals/Massage
+   *  salons. Не задан на «Все пользователи»: там блокировка — аккаунт. */
+  advertiserKind?: AdvertiserKind;
 } = {}) {
   const t = useTranslations('moderation');
   const { user: me } = useSession();
@@ -43,6 +110,8 @@ export function UserList({
    */
   const isStaffActor = me?.role === 'admin' || me?.role === 'moderator';
   const isAdmin = me?.role === 'admin';
+  const blockMode = blockModeFor(advertiserKind);
+  const labels = BLOCK_LABELS[blockMode];
   const [query, setQuery] = useState('');
   // Пусто — все типы. В разделе «Все пользователи» это и есть исходное
   // состояние: сначала показать всех, потом дать сузить.
@@ -83,9 +152,9 @@ export function UserList({
   const [deleting, setDeleting] = useState<string | null>(null);
 
   const list = useInfiniteQuery({
-    queryKey: queryKeys.users(debounced, blockedOnly, role || undefined),
+    queryKey: queryKeys.users(debounced, blockedOnly, role || undefined, advertiserKind),
     queryFn: ({ pageParam }) =>
-      fetchUsers(debounced || undefined, blockedOnly, role || undefined, pageParam),
+      fetchUsers(debounced || undefined, blockedOnly, role || undefined, pageParam, advertiserKind),
     initialPageParam: null as string | null,
     getNextPageParam: (last) => last.nextCursor,
   });
@@ -105,7 +174,17 @@ export function UserList({
   });
 
   const block = useMutation({
-    mutationFn: (user: ManagedUser) => blockUser(user.id, reason.trim()),
+    mutationFn: async (user: ManagedUser): Promise<void> => {
+      if (blockMode === 'profile') {
+        await blockProfile(user.profile?.id ?? '', reason.trim());
+        return;
+      }
+      if (blockMode === 'agency') {
+        await blockCompany(user.company?.id ?? '', reason.trim());
+        return;
+      }
+      await blockUser(user.id, reason.trim());
+    },
     onSuccess: async () => {
       setBlocking(null);
       setReason('');
@@ -114,7 +193,27 @@ export function UserList({
   });
 
   const unblock = useMutation({
-    mutationFn: (user: ManagedUser) => unblockUser(user.id),
+    mutationFn: async (user: ManagedUser): Promise<void> => {
+      if (blockMode === 'profile') {
+        await unblockProfile(user.profile?.id ?? '');
+        return;
+      }
+      if (blockMode === 'agency') {
+        await unblockCompany(user.company?.id ?? '');
+        return;
+      }
+      await unblockUser(user.id);
+    },
+    onSuccess: invalidate,
+  });
+
+  const grantTop = useMutation({
+    mutationFn: async (user: ManagedUser): Promise<void> => {
+      const target = topTargetFor(user);
+      if (!target) throw new Error('no top target');
+      if (target.kind === 'profile') await grantProfileTop(target.id);
+      else await grantCompanyTop(target.id);
+    },
     onSuccess: invalidate,
   });
 
@@ -160,7 +259,8 @@ export function UserList({
     block.isPending ||
     unblock.isPending ||
     adjust.isPending ||
-    remove.isPending;
+    remove.isPending ||
+    grantTop.isPending;
   const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
   const error =
     adjustStatus === 409
@@ -169,7 +269,12 @@ export function UserList({
         // потолка»: сам маршрут модератору открыт.
         adjustStatus === 403
         ? 'adjustOverLimit'
-        : verify.isError || block.isError || unblock.isError || adjust.isError || remove.isError
+        : verify.isError ||
+            block.isError ||
+            unblock.isError ||
+            adjust.isError ||
+            remove.isError ||
+            grantTop.isError
           ? 'actionFailed'
           : list.isError
             ? 'loadFailed'
@@ -225,12 +330,39 @@ export function UserList({
         <div className={styles.staffList}>
           {users.map((user) => {
             const isStaff = user.role === 'moderator' || user.role === 'admin';
+            const entityBlocked =
+              blockMode === 'profile'
+                ? user.profile?.status === 'banned'
+                : blockMode === 'agency'
+                  ? (user.company?.isBanned ?? false)
+                  : user.isBlocked;
+            const canBlockRow =
+              blockMode === 'profile'
+                ? user.profile !== null
+                : blockMode === 'agency'
+                  ? user.company !== null
+                  : true;
+            const rowHref =
+              blockMode === 'profile' && user.profile
+                ? `/moderation/profiles/${user.profile.id}`
+                : blockMode === 'agency' && user.company
+                  ? `/admin/companies/${user.company.id}`
+                  : `/moderation/users/${user.id}`;
+            const topTarget = topTargetFor(user);
+            // Быстрые действия остались только на «Все пользователи»: там
+            // страница строки — просмотр без действий (см. `UserDetail`).
+            // На Agencies/Individuals/Massage salons действия — только на
+            // карточке самой сущности (ProfileReview/AgencyTariffDetail),
+            // сюда попадают по ссылке ниже.
+            const isSpecializedView = advertiserKind !== undefined;
             return (
               <div className={styles.staffRow} key={user.id}>
                 <div className={styles.staffMain}>
                   {/* Почта — ссылка: страница отвечает на «что у него»,
-                      список отвечает на «кто это». */}
-                  <Link className={styles.staffEmail} href={`/moderation/users/${user.id}`}>
+                      список отвечает на «кто это». Для Agencies/Individuals/
+                      Massage salons ведёт прямо на карточку сущности вкладки —
+                      там те же действия, что и здесь. */}
+                  <Link className={styles.staffEmail} href={rowHref}>
                     {user.email}
                   </Link>
                   <span className={styles.staffMeta}>
@@ -246,14 +378,22 @@ export function UserList({
                   {user.banReason ? (
                     <span className={styles.reportBody}>{user.banReason}</span>
                   ) : null}
+                  {blockMode === 'agency' && user.company?.banReason ? (
+                    <span className={styles.reportBody}>{user.company.banReason}</span>
+                  ) : null}
+                  {blockMode !== 'account' && !canBlockRow ? (
+                    <span className={styles.hint}>
+                      {t(blockMode === 'profile' ? 'userNoProfiles' : 'agencyNotSetUp')}
+                    </span>
+                  ) : null}
 
-                  {adjusted?.userId === user.id ? (
+                  {!isSpecializedView && adjusted?.userId === user.id ? (
                     <span className={styles.hint}>
                       {t('adjustDone', { balance: adjusted.balanceGc })}
                     </span>
                   ) : null}
 
-                  {adjusting === user.id ? (
+                  {!isSpecializedView && adjusting === user.id ? (
                     <div className={styles.reasonBox}>
                       <label className={styles.label} htmlFor={`adjust-amount-${user.id}`}>
                         {t('adjustAmount')}
@@ -286,6 +426,7 @@ export function UserList({
                           disabled={busy || !canSubmitAdjust(user)}
                           onClick={() => adjust.mutate(user)}
                         >
+                          <GlowCoinIcon size={16} />
                           {t('adjustSubmit')}
                         </Button>
                         <Button
@@ -299,11 +440,12 @@ export function UserList({
                     </div>
                   ) : null}
 
-                  {deleting === user.id ? (
+                  {!isSpecializedView && deleting === user.id ? (
                     <div className={styles.reasonBox}>
                       <span className={styles.hint}>{t('deleteUserHint')}</span>
                       <div className={styles.cardActions} style={{ padding: 0 }}>
                         <Button disabled={busy} onClick={() => remove.mutate(user)}>
+                          <DeleteIcon />
                           {t('deleteUserConfirm')}
                         </Button>
                         <Button
@@ -317,22 +459,23 @@ export function UserList({
                     </div>
                   ) : null}
 
-                  {blocking === user.id ? (
+                  {!isSpecializedView && blocking === user.id ? (
                     <div className={styles.reasonBox}>
                       <textarea
                         className={styles.textarea}
                         value={reason}
                         onChange={(event) => setReason(event.target.value)}
-                        placeholder={t('blockReason')}
+                        placeholder={t(labels.reason)}
                         minLength={5}
                       />
-                      <span className={styles.hint}>{t('blockReasonHint')}</span>
+                      <span className={styles.hint}>{t(labels.hint)}</span>
                       <div className={styles.cardActions} style={{ padding: 0 }}>
                         <Button
                           disabled={busy || reason.trim().length < 5}
                           onClick={() => block.mutate(user)}
                         >
-                          {t('blockUser')}
+                          <BlockIcon />
+                          {t(labels.block)}
                         </Button>
                         <Button
                           variant="secondary"
@@ -346,82 +489,107 @@ export function UserList({
                   ) : null}
                 </div>
 
+                {/* Agencies/Individuals/Massage salons: только статус, без
+                    кнопок — действия только на карточке самой сущности. */}
                 <div className={styles.cardActions} style={{ padding: 0 }}>
-                  {user.isBlocked ? (
-                    <>
-                      <span className={`${styles.badge} ${styles.badgeBlocked}`}>
-                        {t('userBlocked')}
-                      </span>
-                      <Button
-                        variant="secondary"
-                        disabled={busy}
-                        onClick={() => unblock.mutate(user)}
-                      >
-                        {t('unblockUser')}
-                      </Button>
-                    </>
+                  {entityBlocked ? (
+                    <span className={`${styles.badge} ${styles.badgeBlocked}`}>
+                      {t(labels.blockedBadge)}
+                    </span>
+                  ) : null}
+                  {!isSpecializedView && entityBlocked ? (
+                    <Button
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => unblock.mutate(user)}
+                    >
+                      <UnblockIcon />
+                      {t(labels.unblock)}
+                    </Button>
                   ) : null}
 
                   {!user.isEmailVerified ? (
-                    <>
-                      <span className={`${styles.badge} ${styles.badgeBlocked}`}>
-                        {t('emailNotVerified')}
-                      </span>
-                      <Button
-                        variant="secondary"
-                        disabled={busy}
-                        onClick={() => verify.mutate(user)}
-                      >
-                        {t('verifyEmail')}
-                      </Button>
-                    </>
+                    <span className={`${styles.badge} ${styles.badgeBlocked}`}>
+                      {t('emailNotVerified')}
+                    </span>
                   ) : (
                     <span className={styles.badge}>{t('emailVerified')}</span>
                   )}
-
-                  {isStaffActor && user.role === 'advertiser' && adjusting !== user.id ? (
-                    <Button
-                      variant="secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        setAdjusting(user.id);
-                        setAdjusted(null);
-                        setAmount('');
-                        setNote('');
-                      }}
-                    >
-                      {t('adjustGc')}
+                  {!isSpecializedView && !user.isEmailVerified ? (
+                    <Button variant="secondary" disabled={busy} onClick={() => verify.mutate(user)}>
+                      <VerifyIcon />
+                      {t('verifyEmail')}
                     </Button>
                   ) : null}
 
-                  {isAdmin && !isStaff && deleting !== user.id ? (
-                    <Button
-                      variant="secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        setDeleting(user.id);
-                        setBlocking(null);
-                        setAdjusting(null);
-                      }}
-                    >
-                      {t('deleteUser')}
-                    </Button>
+                  {topTarget?.isFeatured ? (
+                    <span className={styles.badge}>{t('userInTop')}</span>
                   ) : null}
 
-                  {/* Сотрудниками распоряжается админ через /admin/staff:
-                      коллеги — не предмет модерации. */}
-                  {!user.isBlocked && !isStaff && blocking !== user.id ? (
-                    <Button
-                      variant="secondary"
-                      disabled={busy}
-                      onClick={() => {
-                        setBlocking(user.id);
-                        setReason('');
-                      }}
-                    >
-                      {t('blockUser')}
-                    </Button>
-                  ) : null}
+                  {isSpecializedView ? null : (
+                    <>
+                      {isStaffActor && user.role === 'advertiser' && adjusting !== user.id ? (
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => {
+                            setAdjusting(user.id);
+                            setAdjusted(null);
+                            setAmount('');
+                            setNote('');
+                          }}
+                        >
+                          <GlowCoinIcon size={16} />
+                          {t('adjustGc')}
+                        </Button>
+                      ) : null}
+
+                      {isAdmin && !isStaff && deleting !== user.id ? (
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => {
+                            setDeleting(user.id);
+                            setBlocking(null);
+                            setAdjusting(null);
+                          }}
+                        >
+                          <DeleteIcon />
+                          {t('deleteUser')}
+                        </Button>
+                      ) : null}
+
+                      {/* Сотрудниками распоряжается админ через /admin/staff:
+                          коллеги — не предмет модерации. */}
+                      {!entityBlocked && !isStaff && canBlockRow && blocking !== user.id ? (
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => {
+                            setBlocking(user.id);
+                            setReason('');
+                          }}
+                        >
+                          <BlockIcon />
+                          {t(labels.block)}
+                        </Button>
+                      ) : null}
+
+                      {/* Выдача ТОПа без оплаты — обход платежа, только
+                          админ, как и прочие денежные решения
+                          (payments.md §3.4/D-10). */}
+                      {isAdmin && topTarget && !topTarget.isFeatured ? (
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => grantTop.mutate(user)}
+                        >
+                          <TopIcon />
+                          {t('grantTop')}
+                        </Button>
+                      ) : null}
+                    </>
+                  )}
                 </div>
               </div>
             );

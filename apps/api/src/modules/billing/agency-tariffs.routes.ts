@@ -1,15 +1,16 @@
 import {
-  adminCompanySummarySchema,
   agencyTariffGridSchema,
   agencyTariffTierInputSchema,
   agencyTariffTierSchema,
+  agencyTopStateSchema,
   companyTariffOverrideInputSchema,
   companyTariffStateSchema,
-  effectiveProfileLimit,
+  grantAgencyTopResultSchema,
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { BILLING_TAG } from '../../plugins/revalidate.js';
+import { BILLING_TAG, PROFILES_TAG } from '../../plugins/revalidate.js';
+import { requireSession } from '../../plugins/session.js';
 import {
   companyTariffSelect,
   createAgencyTariffTier,
@@ -18,17 +19,28 @@ import {
   presentCompanyTariffState,
   TariffTierInUseError,
   TariffTierNotFoundError,
-  tariffOf,
   updateAgencyTariffTier,
 } from './agency-tariffs.js';
+import {
+  AgencyTopAlreadyActiveError,
+  AgencyTopFullError,
+  AgencyTopNoCompanyError,
+  AgencyTopNoProfilesError,
+  agencyTopState,
+  grantAgencyTop,
+} from './agency-top.js';
+import { loadBillingConfig } from './config.js';
 
 /**
- * Сетка тарифов агентств (payments.md §3.3, D-13) и ручной override для
- * конкретного агентства — обе стороны монетизации по числу анкет, доступные
- * только администратору.
+ * Сетка тарифов агентств (payments.md §3.3, D-13), индивидуальный override
+ * и ТОП конкретного агентства (D-14) — денежные решения, доступные только
+ * администратору. Просмотр карточки агентства (тариф, бан, ТОП) — персоналу
+ * целиком: объединённая карточка в модерации открыта и модератору, деньгами
+ * там распоряжается только админ (см. `staffGuard`/`guard` по маршрутам).
  */
 export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
   const guard = fastify.requireRole('admin');
+  const staffGuard = fastify.requireRole('moderator', 'admin');
 
   // --- Общая сетка тарифов -------------------------------------------------
 
@@ -118,65 +130,14 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
-  // --- Список агентств и индивидуальный override ---------------------------
-
-  fastify.get(
-    '/admin/companies',
-    {
-      onRequest: guard,
-      schema: {
-        tags: ['admin'],
-        querystring: z.object({
-          query: z.string().trim().max(200).optional(),
-          limit: z.coerce.number().int().min(1).max(200).default(50),
-        }),
-        response: { 200: z.array(adminCompanySummarySchema) },
-      },
-    },
-    async (request) => {
-      const { query, limit } = request.query;
-      const rows = await fastify.prisma.company.findMany({
-        where: {
-          kind: 'agency',
-          ...(query
-            ? {
-                OR: [
-                  { name: { contains: query, mode: 'insensitive' as const } },
-                  { slug: { contains: query, mode: 'insensitive' as const } },
-                ],
-              }
-            : {}),
-        },
-        orderBy: { name: 'asc' },
-        take: limit,
-        select: { ...companyTariffSelect, slug: true, _count: { select: { profiles: true } } },
-      });
-
-      const fallback = (
-        await fastify.prisma.billingSettings.findUnique({
-          where: { id: 'default' },
-        })
-      )?.agencyProfileLimit;
-
-      return rows.map((row) => ({
-        id: row.id,
-        slug: row.slug,
-        name: row.name,
-        profileCount: row._count.profiles,
-        tariffName: tariffOf(row)?.name ?? null,
-        effectiveLimit: effectiveProfileLimit(
-          row.tariffTier,
-          row.customProfileLimit,
-          fallback ?? 8,
-        ),
-      }));
-    },
-  );
+  // --- Карточка конкретного агентства: тариф, override, бан, ТОП -----------
+  // Список агентств для навигации — общий `/moderation/users?advertiserKind=agency`
+  // (People → Agencies), отдельного списка компаний больше нет.
 
   fastify.get(
     '/admin/companies/:id/tariff',
     {
-      onRequest: guard,
+      onRequest: staffGuard,
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -190,10 +151,33 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       if (!row) throw fastify.httpErrors.notFound('Компания не найдена');
 
-      const profileCount = await fastify.prisma.profile.count({
+      const profiles = await fastify.prisma.profile.findMany({
         where: { companyId: row.id },
+        orderBy: [{ createdAt: 'desc' }],
+        select: {
+          id: true,
+          slug: true,
+          displayName: true,
+          status: true,
+          isVerified: true,
+          isFeatured: true,
+          city: { select: { name: true } },
+        },
       });
-      return presentCompanyTariffState(fastify.prisma, row, profileCount);
+
+      const state = await presentCompanyTariffState(fastify.prisma, row, profiles.length);
+      return {
+        ...state,
+        profiles: profiles.map((profile) => ({
+          id: profile.id,
+          slug: profile.slug,
+          displayName: profile.displayName,
+          status: profile.status,
+          cityName: profile.city.name,
+          isVerified: profile.isVerified,
+          isFeatured: profile.isFeatured,
+        })),
+      };
     },
   );
 
@@ -243,6 +227,83 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { companyId: updated.id },
       });
       return presentCompanyTariffState(fastify.prisma, updated, profileCount);
+    },
+  );
+
+  // --- ТОП конкретного агентства (payments.md §3.5, D-14) -------------------
+
+  fastify.get(
+    '/admin/companies/:id/top',
+    {
+      onRequest: staffGuard,
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: agencyTopStateSchema },
+      },
+    },
+    async (request) => {
+      const company = await fastify.prisma.company.findUnique({
+        where: { id: request.params.id },
+        select: { ownerId: true },
+      });
+      if (!company) throw fastify.httpErrors.notFound('Компания не найдена');
+
+      const config = await loadBillingConfig(fastify.prisma);
+      return agencyTopState(fastify.prisma, company.ownerId, config.agencyTop);
+    },
+  );
+
+  /**
+   * Выдача ТОПа агентству без оплаты — обход платежа, только админ (как и
+   * прочие денежные решения в этом файле).
+   */
+  fastify.post(
+    '/admin/companies/:id/top',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: grantAgencyTopResultSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const config = await loadBillingConfig(fastify.prisma);
+
+      try {
+        const result = await grantAgencyTop(fastify.prisma, {
+          companyId: request.params.id,
+          slots: config.agencyTop.slots,
+        });
+
+        await fastify.prisma.moderationAction.create({
+          data: {
+            moderatorId: userId,
+            subjectType: 'company',
+            subjectId: request.params.id,
+            decision: 'approved',
+            reason: 'ТОП агентства выдан администратором',
+          },
+        });
+
+        fastify.revalidate([PROFILES_TAG]);
+        return result;
+      } catch (error) {
+        if (error instanceof AgencyTopAlreadyActiveError) {
+          throw fastify.httpErrors.conflict(
+            `Агентство уже в ТОПе до ${error.expiresAt.toISOString()}`,
+          );
+        }
+        if (error instanceof AgencyTopFullError) {
+          throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
+        }
+        if (error instanceof AgencyTopNoCompanyError || error instanceof AgencyTopNoProfilesError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        throw error;
+      }
     },
   );
 };

@@ -377,6 +377,11 @@ export const buyTopResultSchema = z.object({
 });
 export type BuyTopResult = z.infer<typeof buyTopResultSchema>;
 
+/** Выдача места админом — бесплатная, баланс не трогается: `spend` в
+ *  результате покупки здесь не нужен. */
+export const grantTopResultSchema = z.object({ placement: topPlacementSchema });
+export type GrantTopResult = z.infer<typeof grantTopResultSchema>;
+
 // --- ТОП агентств (payments.md §3.5, D-14) --------------------------------------
 
 /** Сколько оплаченных мест показывать в ряду «Агентства» на главной —
@@ -410,3 +415,7 @@ export const buyAgencyTopResultSchema = z.object({
   transaction: billingTransactionSchema,
 });
 export type BuyAgencyTopResult = z.infer<typeof buyAgencyTopResultSchema>;
+
+/** Выдача места агентству админом — бесплатная, без движения по кошельку. */
+export const grantAgencyTopResultSchema = z.object({ placement: agencyTopPlacementSchema });
+export type GrantAgencyTopResult = z.infer<typeof grantAgencyTopResultSchema>;

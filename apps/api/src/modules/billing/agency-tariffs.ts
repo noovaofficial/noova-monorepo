@@ -204,6 +204,14 @@ export const companyTariffSelect = {
   customPriceM6Gc: true,
   customPriceM12Gc: true,
   tariffTier: { include: { prices: true } },
+  // Ниже — для объединённой карточки агентства в модерации, не для тарифа
+  // как такового (владелец их же видит в собственном `/me/company/tariff`,
+  // просто отражением своих же данных).
+  owner: { select: { email: true, emailVerifiedAt: true } },
+  bannedAt: true,
+  banReason: true,
+  isFeatured: true,
+  topPlacement: { select: { status: true, expiresAt: true } },
 } satisfies Prisma.CompanySelect;
 
 export type CompanyTariffRow = Prisma.CompanyGetPayload<{ select: typeof companyTariffSelect }>;
@@ -227,6 +235,10 @@ export async function presentCompanyTariffState(
     existingCount: profileCount,
   });
 
+  const placement = row.topPlacement;
+  const topActive =
+    placement !== null && placement.status === 'active' && placement.expiresAt > new Date();
+
   return {
     companyId: row.id,
     companyName: row.name,
@@ -241,6 +253,14 @@ export async function presentCompanyTariffState(
       await fallbackAgencyProfileLimit(prisma),
     ),
     candidateTiers,
+    ownerId: row.ownerId,
+    ownerEmail: row.owner.email,
+    ownerEmailVerified: row.owner.emailVerifiedAt !== null,
+    isBanned: row.bannedAt !== null,
+    banReason: row.banReason,
+    bannedAt: row.bannedAt?.toISOString() ?? null,
+    isFeatured: row.isFeatured,
+    topExpiresAt: topActive ? placement.expiresAt.toISOString() : null,
   };
 }
 

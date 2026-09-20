@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { gcPriceSchema, type PlanTerm, planTermSchema } from './billing';
+import { profileSummarySchema } from './moderation';
 
 /**
  * Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет плоский
@@ -77,6 +78,20 @@ export const companyTariffStateSchema = z.object({
    *  то же самое, что видно в пейволе, только доступно и до того, как лимит
    *  реально упёрся: кабинет может предложить апгрейд заранее. */
   candidateTiers: z.array(agencyTariffCandidateSchema),
+  /** Ниже — только для объединённой карточки агентства в модерации
+   *  (`/admin/companies/:id`): бан, ТОП, владелец под быстрые действия. */
+  ownerId: z.string(),
+  ownerEmail: z.string().nullable(),
+  ownerEmailVerified: z.boolean(),
+  isBanned: z.boolean(),
+  banReason: z.string().nullable(),
+  bannedAt: z.string().datetime().nullable(),
+  isFeatured: z.boolean(),
+  topExpiresAt: z.string().datetime().nullable(),
+  /** Анкеты компании — только в объединённой карточке в модерации
+   *  (`GET /admin/companies/:id/tariff`). Владельцу тот же список уже виден
+   *  в собственном кабинете, здесь его не считаем. */
+  profiles: z.array(profileSummarySchema).optional(),
 });
 export type CompanyTariffState = z.infer<typeof companyTariffStateSchema>;
 
@@ -97,18 +112,6 @@ export const agencyTariffUpgradeInputSchema = z.object({
   term: planTermSchema,
 });
 export type AgencyTariffUpgradeInput = z.infer<typeof agencyTariffUpgradeInputSchema>;
-
-/** Строка списка агентств в админке — только то, что нужно, чтобы найти
- *  компанию и увидеть её текущий тариф, не открывая карточку. */
-export const adminCompanySummarySchema = z.object({
-  id: z.string(),
-  slug: z.string(),
-  name: z.string(),
-  profileCount: z.number().int().nonnegative(),
-  tariffName: z.string().nullable(),
-  effectiveLimit: z.number().int(),
-});
-export type AdminCompanySummary = z.infer<typeof adminCompanySummarySchema>;
 
 /**
  * Действующий предел анкет: индивидуальный override сильнее тарифа, тариф

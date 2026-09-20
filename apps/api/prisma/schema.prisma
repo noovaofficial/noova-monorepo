@@ -138,6 +138,7 @@ enum ModerationSubject {
   identity
   comment
   user
+  company
 }
 
 enum ModerationDecision {
@@ -673,6 +674,12 @@ model Company {
 
   /// Компанию не удаляем, а отключаем: на неё ссылаются анкеты.
   isActive Boolean @default(true)
+
+  /// Блокировка модератором/админом — независимо от `isActive`, которым
+  /// распоряжается сам владелец через `PUT /me/company` (иначе он же снял
+  /// бы бан своим следующим сохранением). Каскадом банит анкеты компании.
+  bannedAt  DateTime?
+  banReason String?
 
   /// В ТОПе агентств на главной прямо сейчас (payments.md §3.5, D-14).
   /// Производная от AgencyTopPlacement: ставится покупкой, снимается

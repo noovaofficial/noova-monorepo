@@ -48,6 +48,8 @@ const companySelect = {
   languages: true,
   payments: true,
   isActive: true,
+  bannedAt: true,
+  banReason: true,
   contacts: { orderBy: { position: 'asc' as const }, select: { type: true, value: true } },
   _count: { select: { profiles: true } },
 };
@@ -61,6 +63,8 @@ type CompanyRow = {
   website: string | null;
   logoStorageKey: string | null;
   isActive: boolean;
+  bannedAt: Date | null;
+  banReason: string | null;
   contacts: { type: string; value: string }[];
   languages: string[];
   payments: ('cash' | 'card' | 'transfer')[];
@@ -76,6 +80,8 @@ const present = (row: CompanyRow) => ({
   website: row.website,
   logoUrl: row.logoStorageKey ? publicUrl(row.logoStorageKey) : null,
   isActive: row.isActive,
+  isBanned: row.bannedAt !== null,
+  banReason: row.banReason,
   contacts: row.contacts as { type: CompanyInput['contacts'][number]['type']; value: string }[],
   languages: row.languages,
   payments: row.payments,
@@ -356,6 +362,10 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // можно заводить и без неё. Тарифа тоже пока нет — действует
       // аварийный fallback, а не отказ загрузки.
       if (!company) {
+        const owner = await fastify.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: { emailVerifiedAt: true },
+        });
         return {
           companyId: '',
           companyName: '',
@@ -368,6 +378,16 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           // Апгрейд требует компанию (см. ниже) — без неё показывать тарифы
           // на выбор нечем: подсказка «заполните данные» уже ведёт куда надо.
           candidateTiers: [],
+          // Поля объединённой карточки агентства в модерации — компании нет,
+          // банить и выдавать ТОП нечему; сам себя видит владелец.
+          ownerId: userId,
+          ownerEmail: null,
+          ownerEmailVerified: owner.emailVerifiedAt !== null,
+          isBanned: false,
+          banReason: null,
+          bannedAt: null,
+          isFeatured: false,
+          topExpiresAt: null,
         };
       }
 

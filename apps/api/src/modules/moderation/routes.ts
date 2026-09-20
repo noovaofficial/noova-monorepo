@@ -53,7 +53,7 @@ function refuseSelfModeration(fastify: FastifyInstance, ownerId: string, moderat
 async function writeAction(
   fastify: FastifyInstance,
   moderatorId: string,
-  subjectType: 'photo' | 'verification' | 'identity' | 'user' | 'comment' | 'profile',
+  subjectType: 'photo' | 'verification' | 'identity' | 'user' | 'comment' | 'profile' | 'company',
   subjectId: string,
   decision: 'approved' | 'rejected',
   reason?: string,
@@ -61,6 +61,13 @@ async function writeAction(
   await fastify.prisma.moderationAction.create({
     data: { moderatorId, subjectType, subjectId, decision, ...(reason ? { reason } : {}) },
   });
+}
+
+/** Место в ТОПе на строке — только если оно ещё активно (задача снимает его
+ *  с опозданием до цикла, `expiresAt` в прошлом не значит «уже неактивно»). */
+function activeTopExpiry(placement: { status: string; expiresAt: Date } | null): string | null {
+  if (placement?.status !== 'active' || placement.expiresAt <= new Date()) return null;
+  return placement.expiresAt.toISOString();
 }
 
 /** Поля пользователя для представления модератора. Один набор на четыре маршрута. */
@@ -73,8 +80,34 @@ const managedUserSelect = {
   banReason: true,
   createdAt: true,
   glowcoinBalance: true,
+  advertiserKind: true,
   clientProfile: { select: { nickname: true } },
   _count: { select: { profiles: true } },
+  // Единственная анкета индивидуалки/салона — под быстрые действия строки.
+  profiles: {
+    take: 1,
+    orderBy: { createdAt: 'asc' as const },
+    select: {
+      id: true,
+      slug: true,
+      displayName: true,
+      status: true,
+      isFeatured: true,
+      topPlacement: { select: { status: true, expiresAt: true } },
+    },
+  },
+  // Компания агентства — под быстрые действия строки.
+  company: {
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      bannedAt: true,
+      banReason: true,
+      isFeatured: true,
+      topPlacement: { select: { status: true, expiresAt: true } },
+    },
+  },
 } as const;
 
 type ManagedUserRow = {
@@ -88,9 +121,28 @@ type ManagedUserRow = {
   clientProfile: { nickname: string } | null;
   _count: { profiles: number };
   glowcoinBalance: number;
+  advertiserKind: 'individual' | 'agency' | 'salon' | null;
+  profiles: {
+    id: string;
+    slug: string;
+    displayName: string;
+    status: string;
+    isFeatured: boolean;
+    topPlacement: { status: string; expiresAt: Date } | null;
+  }[];
+  company: {
+    id: string;
+    slug: string;
+    name: string;
+    bannedAt: Date | null;
+    banReason: string | null;
+    isFeatured: boolean;
+    topPlacement: { status: string; expiresAt: Date } | null;
+  } | null;
 };
 
 function toManagedUser(row: ManagedUserRow) {
+  const profile = row.profiles[0] ?? null;
   return {
     id: row.id,
     email: row.email,
@@ -103,6 +155,28 @@ function toManagedUser(row: ManagedUserRow) {
     profileCount: row._count.profiles,
     glowcoinBalance: row.glowcoinBalance,
     createdAt: row.createdAt.toISOString(),
+    advertiserKind: row.advertiserKind,
+    profile: profile
+      ? {
+          id: profile.id,
+          slug: profile.slug,
+          displayName: profile.displayName,
+          status: profile.status,
+          isFeatured: profile.isFeatured,
+          topExpiresAt: activeTopExpiry(profile.topPlacement),
+        }
+      : null,
+    company: row.company
+      ? {
+          id: row.company.id,
+          slug: row.company.slug,
+          name: row.company.name,
+          isBanned: row.company.bannedAt !== null,
+          banReason: row.company.banReason,
+          isFeatured: row.company.isFeatured,
+          topExpiresAt: activeTopExpiry(row.company.topPlacement),
+        }
+      : null,
   };
 }
 
@@ -1040,6 +1114,113 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  // ---------- Агентства ----------
+
+  /**
+   * Блокировка агентства — независимо от `isActive`, которым распоряжается
+   * сам владелец (иначе он же снял бы бан следующим сохранением в кабинете).
+   * Каскадом банит анкеты компании — как бан учётной записи банит её
+   * анкеты: агентство, которое забанили, не должно продолжать рекламировать
+   * своих моделей в каталоге под тем же решением.
+   */
+  fastify.post(
+    '/moderation/companies/:id/block',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        body: blockSchema,
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const company = await fastify.prisma.company.findUnique({
+        where: { id: request.params.id },
+        select: { id: true },
+      });
+      if (!company) throw fastify.httpErrors.notFound('Компания не найдена');
+
+      await fastify.prisma.company.update({
+        where: { id: company.id },
+        data: { bannedAt: new Date(), banReason: request.body.reason },
+      });
+
+      const profilesToBan = await fastify.prisma.profile.findMany({
+        where: { companyId: company.id, status: { not: 'banned' } },
+        select: { id: true, slug: true },
+      });
+
+      if (profilesToBan.length > 0) {
+        const profileIds = profilesToBan.map((p) => p.id);
+        await fastify.prisma.$transaction([
+          fastify.prisma.profile.updateMany({
+            where: { id: { in: profileIds } },
+            data: { status: 'banned', moderationNote: request.body.reason },
+          }),
+          fastify.prisma.profileReport.updateMany({
+            where: { profileId: { in: profileIds }, resolvedAt: null },
+            data: { resolvedAt: new Date() },
+          }),
+        ]);
+
+        for (const profile of profilesToBan) {
+          await writeAction(
+            fastify,
+            userId,
+            'profile',
+            profile.id,
+            'rejected',
+            request.body.reason,
+          );
+        }
+
+        fastify.revalidate([PROFILES_TAG, ...profilesToBan.map((p) => profileTag(p.slug))]);
+      } else {
+        fastify.revalidate([PROFILES_TAG]);
+      }
+
+      await writeAction(fastify, userId, 'company', company.id, 'rejected', request.body.reason);
+      return { ok: true as const };
+    },
+  );
+
+  /**
+   * Снятие блокировки агентства не возвращает каскадом забаненные анкеты —
+   * решение по каждой отдельное, через `/moderation/profiles/:id/unblock`,
+   * тем же принципом, что и у снятия бана с учётной записи.
+   */
+  fastify.post(
+    '/moderation/companies/:id/unblock',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const company = await fastify.prisma.company.findUnique({
+        where: { id: request.params.id },
+        select: { id: true, bannedAt: true },
+      });
+      if (!company) throw fastify.httpErrors.notFound('Компания не найдена');
+      if (!company.bannedAt) throw fastify.httpErrors.conflict('Агентство не заблокировано');
+
+      await fastify.prisma.company.update({
+        where: { id: company.id },
+        data: { bannedAt: null, banReason: null },
+      });
+
+      await writeAction(fastify, userId, 'company', company.id, 'approved', 'Блокировка снята');
+      fastify.revalidate([PROFILES_TAG]);
+      return { ok: true as const };
+    },
+  );
+
   /**
    * Заблокированные анкеты списком. Не фильтр в очереди: очередь — это то,
    * что ждёт решения, а здесь решения уже приняты, и смотрят сюда с другой
@@ -1140,6 +1321,8 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         ...(query ? { email: { contains: query, mode: 'insensitive' as const } } : {}),
         ...(request.query.blocked === 'true' ? { bannedAt: { not: null } } : {}),
         ...(request.query.role ? { role: request.query.role } : {}),
+        // Раздел People по типу рекламодателя: Agencies/Individuals/Massage salons.
+        ...(request.query.advertiserKind ? { advertiserKind: request.query.advertiserKind } : {}),
       };
 
       const fetched = await fastify.prisma.user.findMany({
@@ -1153,37 +1336,14 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
             : [{ createdAt: 'desc' }, { id: 'desc' }],
         take: limit + 1,
         ...(cursorId ? { cursor: { id: cursorId }, skip: 1 } : {}),
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          emailVerifiedAt: true,
-          bannedAt: true,
-          banReason: true,
-          createdAt: true,
-          glowcoinBalance: true,
-          clientProfile: { select: { nickname: true } },
-          _count: { select: { profiles: true } },
-        },
+        select: managedUserSelect,
       });
 
       const hasMore = fetched.length > limit;
       const rows = fetched.slice(0, limit);
 
       return {
-        items: rows.map((row) => ({
-          id: row.id,
-          email: row.email,
-          role: row.role,
-          isEmailVerified: row.emailVerifiedAt !== null,
-          isBlocked: row.bannedAt !== null,
-          banReason: row.banReason,
-          bannedAt: row.bannedAt?.toISOString() ?? null,
-          nickname: row.clientProfile?.nickname ?? null,
-          profileCount: row._count.profiles,
-          glowcoinBalance: row.glowcoinBalance,
-          createdAt: row.createdAt.toISOString(),
-        })),
+        items: rows.map((row) => toManagedUser(row as ManagedUserRow)),
         nextCursor: hasMore ? encodeCursor(rows[rows.length - 1]?.id ?? '') : null,
         total: await fastify.prisma.user.count({ where }),
       };
@@ -1266,18 +1426,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const updated = await fastify.prisma.user.update({
         where: { id: target.id },
         data: { emailVerifiedAt: new Date() },
-        select: {
-          id: true,
-          email: true,
-          role: true,
-          emailVerifiedAt: true,
-          bannedAt: true,
-          banReason: true,
-          createdAt: true,
-          glowcoinBalance: true,
-          clientProfile: { select: { nickname: true } },
-          _count: { select: { profiles: true } },
-        },
+        select: managedUserSelect,
       });
 
       // Ручное подтверждение обходит доказательство владения адресом: сотрудник
@@ -1292,19 +1441,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         'Подтверждение адреса вручную',
       );
 
-      return {
-        id: updated.id,
-        email: updated.email,
-        role: updated.role,
-        isEmailVerified: updated.emailVerifiedAt !== null,
-        isBlocked: updated.bannedAt !== null,
-        banReason: updated.banReason,
-        bannedAt: updated.bannedAt?.toISOString() ?? null,
-        nickname: updated.clientProfile?.nickname ?? null,
-        profileCount: updated._count.profiles,
-        glowcoinBalance: updated.glowcoinBalance,
-        createdAt: updated.createdAt.toISOString(),
-      };
+      return toManagedUser(updated);
     },
   );
 
@@ -1340,7 +1477,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           createdAt: true,
           city: { select: { name: true } },
           district: { select: { name: true } },
-          owner: { select: { email: true, advertiserKind: true } },
+          owner: {
+            select: { id: true, email: true, advertiserKind: true, glowcoinBalance: true },
+          },
+          companyId: true,
+          isFeatured: true,
+          topPlacement: { select: { status: true, expiresAt: true } },
           prices: {
             orderBy: { durationMinutes: 'asc' },
             select: { durationMinutes: true, incallCents: true, outcallCents: true },
@@ -1401,9 +1543,14 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         ),
         verificationStatus: profile.verification?.status ?? 'none',
         owner: {
+          id: profile.owner.id,
           email: profile.owner.email,
           advertiserKind: profile.owner.advertiserKind,
+          glowcoinBalance: profile.owner.glowcoinBalance,
         },
+        companyId: profile.companyId,
+        isFeatured: profile.isFeatured,
+        topExpiresAt: activeTopExpiry(profile.topPlacement),
         createdAt: profile.createdAt.toISOString(),
       };
     },

@@ -3790,6 +3790,8 @@ export const CompanyScalarFieldEnum = {
   languages: 'languages',
   payments: 'payments',
   isActive: 'isActive',
+  bannedAt: 'bannedAt',
+  banReason: 'banReason',
   isFeatured: 'isFeatured',
   ownerId: 'ownerId',
   tariffTierId: 'tariffTierId',
