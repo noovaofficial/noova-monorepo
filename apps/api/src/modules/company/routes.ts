@@ -364,7 +364,14 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (!company) {
         const owner = await fastify.prisma.user.findUniqueOrThrow({
           where: { id: userId },
-          select: { emailVerifiedAt: true },
+          select: {
+            emailVerifiedAt: true,
+            role: true,
+            glowcoinBalance: true,
+            createdAt: true,
+            lastLoginAt: true,
+            locale: true,
+          },
         });
         return {
           companyId: '',
@@ -383,6 +390,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ownerId: userId,
           ownerEmail: null,
           ownerEmailVerified: owner.emailVerifiedAt !== null,
+          ownerRole: owner.role,
+          ownerGlowcoinBalance: owner.glowcoinBalance,
+          ownerCreatedAt: owner.createdAt.toISOString(),
+          ownerLastLoginAt: owner.lastLoginAt?.toISOString() ?? null,
+          ownerLocale: owner.locale,
           isBanned: false,
           banReason: null,
           bannedAt: null,

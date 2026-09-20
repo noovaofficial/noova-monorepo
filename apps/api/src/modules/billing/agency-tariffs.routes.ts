@@ -25,7 +25,6 @@ import {
   AgencyTopAlreadyActiveError,
   AgencyTopFullError,
   AgencyTopNoCompanyError,
-  AgencyTopNoProfilesError,
   agencyTopState,
   grantAgencyTop,
 } from './agency-top.js';
@@ -299,7 +298,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
         if (error instanceof AgencyTopFullError) {
           throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
         }
-        if (error instanceof AgencyTopNoCompanyError || error instanceof AgencyTopNoProfilesError) {
+        if (error instanceof AgencyTopNoCompanyError) {
           throw fastify.httpErrors.conflict(error.message);
         }
         throw error;

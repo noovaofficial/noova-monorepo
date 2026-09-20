@@ -181,6 +181,12 @@ export type AgencyTopGrant = {
 /**
  * Выдача места агентству админом (без оплаты) — та же схема, что у покупки,
  * без `applyMovement`. Место засчитывается на владельца компании.
+ *
+ * В отличие от платной покупки (`buyAgencyTop`), не требует опубликованной
+ * анкеты: там условие защищает от траты GC на место, которое нигде не
+ * отобразится (D-10), но выдача бесплатна — тратить нечего, а агентство
+ * может обоснованно получить ТОП ещё до публикации анкет (например, по
+ * договорённости).
  */
 export function grantAgencyTop(
   prisma: PrismaClient,
@@ -193,15 +199,9 @@ export function grantAgencyTop(
 
     const company = await tx.company.findUnique({
       where: { id: grant.companyId },
-      select: {
-        id: true,
-        ownerId: true,
-        topPlacement: true,
-        profiles: { where: { status: 'published' }, select: { id: true }, take: 1 },
-      },
+      select: { id: true, ownerId: true, topPlacement: true },
     });
     if (!company) throw new AgencyTopNoCompanyError();
-    if (company.profiles.length === 0) throw new AgencyTopNoProfilesError();
 
     const current = company.topPlacement;
     if (current !== null && current.status === 'active' && current.expiresAt > now) {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { userRoleSchema } from './auth';
 import { gcPriceSchema, type PlanTerm, planTermSchema } from './billing';
 import { profileSummarySchema } from './moderation';
 
@@ -83,6 +84,14 @@ export const companyTariffStateSchema = z.object({
   ownerId: z.string(),
   ownerEmail: z.string().nullable(),
   ownerEmailVerified: z.boolean(),
+  /** Те же детали аккаунта, что видны на карточке пользователя
+   *  (`ManagedUserDetail`) — чтобы объединённая карточка агентства не
+   *  отправляла за ролью/балансом/датами на отдельную страницу. */
+  ownerRole: userRoleSchema,
+  ownerGlowcoinBalance: z.number().int().nonnegative(),
+  ownerCreatedAt: z.string().datetime(),
+  ownerLastLoginAt: z.string().datetime().nullable(),
+  ownerLocale: z.string(),
   isBanned: z.boolean(),
   banReason: z.string().nullable(),
   bannedAt: z.string().datetime().nullable(),

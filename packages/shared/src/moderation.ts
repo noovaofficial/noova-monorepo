@@ -157,6 +157,14 @@ export const moderatedProfileSchema = z.object({
     email: z.string(),
     advertiserKind: z.string().nullable(),
     glowcoinBalance: z.number().int().nonnegative(),
+    /** Ниже — для объединённой карточки анкеты в модерации: те же детали
+     *  аккаунта, что и на карточке пользователя (`ManagedUserDetail`), чтобы
+     *  не уходить на отдельную страницу за ролью/почтой/датами. */
+    role: userRoleSchema,
+    isEmailVerified: z.boolean(),
+    createdAt: z.string().datetime(),
+    lastLoginAt: z.string().datetime().nullable(),
+    locale: z.string(),
   }),
   /** Анкета агентства — принадлежит аккаунту агентства целиком (N-31): его
    *  нельзя удалять с этой страницы, не увидев, что у него есть другие анкеты. */

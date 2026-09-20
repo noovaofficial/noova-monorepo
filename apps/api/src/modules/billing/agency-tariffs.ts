@@ -207,7 +207,17 @@ export const companyTariffSelect = {
   // Ниже — для объединённой карточки агентства в модерации, не для тарифа
   // как такового (владелец их же видит в собственном `/me/company/tariff`,
   // просто отражением своих же данных).
-  owner: { select: { email: true, emailVerifiedAt: true } },
+  owner: {
+    select: {
+      email: true,
+      emailVerifiedAt: true,
+      role: true,
+      glowcoinBalance: true,
+      createdAt: true,
+      lastLoginAt: true,
+      locale: true,
+    },
+  },
   bannedAt: true,
   banReason: true,
   isFeatured: true,
@@ -256,6 +266,11 @@ export async function presentCompanyTariffState(
     ownerId: row.ownerId,
     ownerEmail: row.owner.email,
     ownerEmailVerified: row.owner.emailVerifiedAt !== null,
+    ownerRole: row.owner.role,
+    ownerGlowcoinBalance: row.owner.glowcoinBalance,
+    ownerCreatedAt: row.owner.createdAt.toISOString(),
+    ownerLastLoginAt: row.owner.lastLoginAt?.toISOString() ?? null,
+    ownerLocale: row.owner.locale,
     isBanned: row.bannedAt !== null,
     banReason: row.banReason,
     bannedAt: row.bannedAt?.toISOString() ?? null,

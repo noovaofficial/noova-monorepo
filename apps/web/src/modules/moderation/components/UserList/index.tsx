@@ -342,10 +342,15 @@ export function UserList({
                 : blockMode === 'agency'
                   ? user.company !== null
                   : true;
+            // Ссылка строки смотрит на тип самого рекламодателя в строке, а не
+            // на фильтр вкладки (нужно и на «Все пользователи»): иначе клик по
+            // агентству из общего списка вёл бы на голую карточку аккаунта
+            // вместо объединённой карточки агентства с тарифом и анкетами.
             const rowHref =
-              blockMode === 'profile' && user.profile
+              (user.advertiserKind === 'individual' || user.advertiserKind === 'salon') &&
+              user.profile
                 ? `/moderation/profiles/${user.profile.id}`
-                : blockMode === 'agency' && user.company
+                : user.advertiserKind === 'agency' && user.company
                   ? `/admin/companies/${user.company.id}`
                   : `/moderation/users/${user.id}`;
             const topTarget = topTargetFor(user);

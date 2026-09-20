@@ -2,7 +2,7 @@
 
 import { adjustBalanceInputSchema, isAdjustWithinLimit } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
@@ -27,6 +27,7 @@ const euro = (cents: number | null) => (cents === null ? '—' : `${Math.round(c
 
 export function ProfileReview({ profileId }: { profileId: string }) {
   const t = useTranslations('moderation');
+  const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -143,6 +144,26 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     ...(profile.languages.length
       ? ([['lang', profile.languages.join(', ')]] as [string, string][])
       : []),
+  ];
+
+  const when = (iso: string | null) =>
+    iso === null
+      ? '—'
+      : format.dateTime(new Date(iso), { dateStyle: 'medium', timeStyle: 'short' });
+
+  // Детали аккаунта владелицы — те же, что на карточке пользователя
+  // (`UserDetail`): объединённая карточка анкеты не должна отправлять за
+  // ролью/почтой/датами на отдельную страницу.
+  const accountRows: { label: string; value: string }[] = [
+    { label: t('userRole'), value: t(`role_${profile.owner.role}`) },
+    { label: t('userBalance'), value: t('balanceGc', { balance: profile.owner.glowcoinBalance }) },
+    {
+      label: t('userEmailState'),
+      value: t(profile.owner.isEmailVerified ? 'emailVerified' : 'emailNotVerified'),
+    },
+    { label: t('userRegistered'), value: when(profile.owner.createdAt) },
+    { label: t('userLastLogin'), value: when(profile.owner.lastLoginAt) },
+    { label: t('userLocale'), value: profile.owner.locale.toUpperCase() },
   ];
 
   return (
@@ -354,6 +375,15 @@ export function ProfileReview({ profileId }: { profileId: string }) {
           </ActionCard>
         ) : null}
       </div>
+
+      <dl className={styles.userRows}>
+        {accountRows.map((row) => (
+          <div className={styles.userRow} key={row.label}>
+            <dt className={styles.userLabel}>{row.label}</dt>
+            <dd className={styles.userValue}>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
 
       {viewing !== null ? (
         <PhotoViewer

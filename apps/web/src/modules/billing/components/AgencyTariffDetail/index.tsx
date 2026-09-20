@@ -7,7 +7,7 @@ import {
   type PlanTerm,
 } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import {
@@ -36,6 +36,7 @@ import {
   UnblockIcon,
   VerifyIcon,
 } from '@/modules/moderation/components/icons';
+import moderationStyles from '@/modules/moderation/components/Moderation.module.css';
 import { ProfileSummaryList } from '@/modules/moderation/components/ProfileSummaryList';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
@@ -57,6 +58,7 @@ const NO_TIER = '';
  */
 export function AgencyTariffDetail({ companyId }: { companyId: string }) {
   const t = useTranslations('billing');
+  const format = useFormatter();
   const { user } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -204,6 +206,26 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
     remove.isPending;
   const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
 
+  const when = (iso: string | null) =>
+    iso === null
+      ? '—'
+      : format.dateTime(new Date(iso), { dateStyle: 'medium', timeStyle: 'short' });
+
+  // Детали аккаунта владельца — те же, что на карточке пользователя
+  // (`UserDetail`): объединённая карточка агентства не должна отправлять за
+  // ролью/почтой/датами на отдельную страницу.
+  const accountRows: { label: string; value: string }[] = [
+    { label: t('userRole'), value: t(`role_${data.ownerRole}`) },
+    { label: t('userBalance'), value: t('balanceGc', { balance: data.ownerGlowcoinBalance }) },
+    {
+      label: t('userEmailState'),
+      value: t(data.ownerEmailVerified ? 'emailVerified' : 'emailNotVerified'),
+    },
+    { label: t('userRegistered'), value: when(data.ownerCreatedAt) },
+    { label: t('userLastLogin'), value: when(data.ownerLastLoginAt) },
+    { label: t('userLocale'), value: data.ownerLocale.toUpperCase() },
+  ];
+
   return (
     <div className={sharedStyles.wrap}>
       <div className={sharedStyles.head}>
@@ -288,9 +310,11 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
         ) : null}
 
         {/* ТОП агентства без оплаты — обход платежа, только админ. Кнопка
-            видна всегда: когда выдать нельзя (уже в ТОПе, нет опубликованной
-            анкеты, нет свободных мест), она задизейблена с подсказкой при
-            наведении, а не молчаливо скрытая кнопка. */}
+            видна всегда: когда выдать нельзя (уже в ТОПе, нет свободных мест),
+            она задизейблена с подсказкой при наведении, а не молчаливо
+            скрытая кнопка. В отличие от платной покупки (`AgencyTopCard`),
+            публикация анкеты не требуется — бесплатной выдаче нечего
+            защищать от траты впустую. */}
         {isAdmin && top.data ? (
           <ActionCard
             icon={<TopIcon />}
@@ -306,20 +330,13 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
             <div className={cardStyles.actions}>
               <Button
                 variant="secondary"
-                disabled={
-                  busy ||
-                  Boolean(top.data.placement) ||
-                  !top.data.hasPublishedProfile ||
-                  top.data.freeSlots <= 0
-                }
+                disabled={busy || Boolean(top.data.placement) || top.data.freeSlots <= 0}
                 title={
                   top.data.placement
                     ? t('topDisabledActive')
-                    : !top.data.hasPublishedProfile
-                      ? t('topDisabledNotPublished')
-                      : top.data.freeSlots <= 0
-                        ? t('topDisabledNoSlots')
-                        : undefined
+                    : top.data.freeSlots <= 0
+                      ? t('topDisabledNoSlots')
+                      : undefined
                 }
                 onClick={() => grantTop.mutate()}
               >
@@ -436,6 +453,15 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
           </ActionCard>
         ) : null}
       </div>
+
+      <dl className={moderationStyles.userRows}>
+        {accountRows.map((row) => (
+          <div className={moderationStyles.userRow} key={row.label}>
+            <dt className={moderationStyles.userLabel}>{row.label}</dt>
+            <dd className={moderationStyles.userValue}>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
 
       {data.profiles ? (
         <ProfileSummaryList
