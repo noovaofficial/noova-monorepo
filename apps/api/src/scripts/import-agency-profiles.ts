@@ -181,6 +181,22 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
     const serviceKeys = draft.services.map((s) => s.key).filter((k): k is string => Boolean(k));
     const serviceIdByKey = await resolveServiceIds(serviceKeys);
 
+    // Разные подписи на сайте иногда мапятся на один и тот же ключ каталога
+    // (напр. "Дрочит" и "Хэндджоб" — оба на handjob) — без дедупа тут падает
+    // уникальный индекс (profileId, serviceId). Оставляем первое вхождение;
+    // если хоть одно из дублей помечено "за доплату" — считаем isExtra.
+    const serviceCreates = (() => {
+      const byServiceId = new Map<string, { serviceId: string; isExtra: boolean }>();
+      for (const s of draft.services) {
+        if (!s.key) continue;
+        const serviceId = serviceIdByKey.get(s.key);
+        if (!serviceId) continue;
+        const prev = byServiceId.get(serviceId);
+        byServiceId.set(serviceId, { serviceId, isExtra: (prev?.isExtra ?? false) || s.extra });
+      }
+      return [...byServiceId.values()];
+    })();
+
     const created = await prisma.profile.create({
       data: {
         slug: profileSlug,
@@ -209,11 +225,7 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
         appearanceType: p.appearanceType,
         smoker: p.smoker,
         verification: { create: { status: 'pending', submittedAt: new Date() } },
-        services: {
-          create: draft.services
-            .filter((s) => s.key && serviceIdByKey.has(s.key))
-            .map((s) => ({ serviceId: serviceIdByKey.get(s.key!)!, isExtra: s.extra })),
-        },
+        services: { create: serviceCreates },
         contacts: {
           create: CONTACTS.map((c, i) => {
             const norm = normalizeContact(c.type, c.value);
