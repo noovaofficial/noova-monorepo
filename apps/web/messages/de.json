@@ -679,7 +679,10 @@
     "tr": "Türkisch",
     "es": "Spanisch",
     "fr": "Französisch",
-    "it": "Italienisch"
+    "it": "Italienisch",
+    "ar": "Arabisch",
+    "nl": "Niederländisch",
+    "pt": "Portugiesisch"
   },
   "contacts": {
     "phone": "Telefon",

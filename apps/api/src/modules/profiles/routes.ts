@@ -173,13 +173,22 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ? { status: 'published' as const, country: { code: country.toUpperCase() } }
           : { status: 'published' as const };
 
+      // У компании нет своего города/страны — локация есть только через
+      // анкеты. На срезе по конкретному городу агентство без подходящей
+      // анкеты определить некуда, поэтому там фильтр остаётся строгим. На
+      // срезе «вся страна» (city не выбран — ближайший к глобальной главной
+      // режим, N-42) такого ограничения нет: сюда попадает и агентство без
+      // единой анкеты (например, ТОП выдан администратором вперёд публикации,
+      // см. `grantAgencyTop`) — иначе выданный ТОП был бы нигде не виден.
+      const requireProfile = city ? { profiles: { some: asPublished } } : {};
+
       const featuredRows = await fastify.prisma.company.findMany({
         where: {
           kind: 'agency',
           isActive: true,
           bannedAt: null,
           isFeatured: true,
-          profiles: { some: asPublished },
+          ...requireProfile,
         },
         select: {
           slug: true,
@@ -199,7 +208,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
                 isActive: true,
                 bannedAt: null,
                 isFeatured: false,
-                profiles: { some: asPublished },
+                ...requireProfile,
               },
               // Потолок перед сортировкой в приложении: число опубликованных
               // анкет в срезе не выражается прямым `orderBy` на фильтрованном

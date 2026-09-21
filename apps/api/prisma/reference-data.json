@@ -3532,6 +3532,142 @@
         "fr": "Fétichisme des pieds",
         "ru": "Фут-фетишизм"
       }
+    },
+    {
+      "id": "clxk9p60apfcz5lqzalfd2pyj",
+      "key": "casual_photos",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 8,
+      "isActive": true,
+      "name": {
+        "en": "Photos during the date",
+        "de": "Fotos während des Treffens",
+        "es": "Fotos durante la cita",
+        "fr": "Photos pendant le rendez-vous",
+        "ru": "Обычные фотографии"
+      }
+    },
+    {
+      "id": "c4ka9s3ptiqd73dw601xiefkj",
+      "key": "erotic_photos",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 9,
+      "isActive": true,
+      "name": {
+        "en": "Erotic photos",
+        "de": "Erotische Fotos",
+        "es": "Fotos eróticas",
+        "fr": "Photos érotiques",
+        "ru": "Эротические фотографии"
+      }
+    },
+    {
+      "id": "cod6p8v5aak6jodv1vxwq6xn4",
+      "key": "extraball",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 10,
+      "isActive": true,
+      "name": {
+        "en": "Extra round",
+        "de": "Zusatzrunde",
+        "es": "Ronda extra",
+        "fr": "Tour supplémentaire",
+        "ru": "Экстрабол"
+      }
+    },
+    {
+      "id": "cx6xjp7bts50qs6g67xd91tx7",
+      "key": "pse",
+      "group": "companionship",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 11,
+      "isActive": true,
+      "name": {
+        "en": "Porn star experience (PSE)",
+        "de": "Pornostar-Erlebnis (PSE)",
+        "es": "Experiencia porno (PSE)",
+        "fr": "Expérience actrice porno (PSE)",
+        "ru": "Порнозвезда на час (PSE)"
+      }
+    },
+    {
+      "id": "ct2n4gig7sgm7mvogbi4bnbwm",
+      "key": "dirty_talk",
+      "group": "sex",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 128,
+      "isActive": true,
+      "name": {
+        "en": "Dirty talk",
+        "de": "Dirty Talk",
+        "es": "Conversación subida de tono",
+        "fr": "Paroles coquines",
+        "ru": "Грязный разговор"
+      }
+    },
+    {
+      "id": "c88acqoumcd8eafppvwn5moc5",
+      "key": "watersports_give",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 444,
+      "isActive": true,
+      "name": {
+        "en": "Golden shower (giving)",
+        "de": "Golden Shower (geben)",
+        "es": "Lluvia dorada (dar)",
+        "fr": "Douche dorée (donner)",
+        "ru": "Золотой дождь давать"
+      }
+    },
+    {
+      "id": "ct9z7812e5f1kkbnyptn0v4si",
+      "key": "watersports_receive",
+      "group": "extreme",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 445,
+      "isActive": true,
+      "name": {
+        "en": "Golden shower (receiving)",
+        "de": "Golden Shower (empfangen)",
+        "es": "Lluvia dorada (recibir)",
+        "fr": "Douche dorée (recevoir)",
+        "ru": "Золотой дождь получить"
+      }
+    },
+    {
+      "id": "cqwr9xbcqy81ytcjusclbewes",
+      "key": "findom",
+      "group": "bdsm",
+      "appliesTo": [
+        "escort"
+      ],
+      "position": 556,
+      "isActive": true,
+      "name": {
+        "en": "Financial domination (findom)",
+        "de": "Finanzielle Dominanz (Findom)",
+        "es": "Dominación financiera (findom)",
+        "fr": "Domination financière (findom)",
+        "ru": "Финансовое доминирование (Findom)"
+      }
     }
   ]
 }

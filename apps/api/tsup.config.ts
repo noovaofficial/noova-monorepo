@@ -13,6 +13,7 @@ export default defineConfig({
     'src/scripts/seed-reference.ts',
     'src/scripts/export-reference.ts',
     'src/scripts/grant-launch-listings.ts',
+    'src/scripts/import-agency-profiles.ts',
   ],
   outDir: 'dist',
   format: ['esm'],

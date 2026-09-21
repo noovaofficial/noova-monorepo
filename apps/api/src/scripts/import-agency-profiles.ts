@@ -1,0 +1,272 @@
+/**
+ * Разовый импорт анкет агентства Escort Lady Luck из тем же способом, что
+ * `seed-reference.ts` заводит справочники, — напрямую в БД и хранилище, а
+ * не через публичный API.
+ *
+ * Через API (`POST /me/profiles/:id/photos`) это упёрлось бы в лимит 40
+ * фото/час — на ~400 фото это 10+ часов. Тот лимит защищает от живого
+ * пользователя, а не от админского переноса, и здесь ему делать нечего:
+ * пишем в БД и объектное хранилище теми же функциями (`processImage`,
+ * `putObject`), что использует сама ручка загрузки, — просто без rate-limit
+ * плагина Fastify вокруг них.
+ *
+ * Идемпотентно: у кого анкета с таким slug уже существует — пропускается.
+ * Повторный запуск (после сбоя на середине) продолжит с недостающих.
+ *
+ * Запуск:
+ *   на сервере: docker compose exec api node dist/scripts/import-agency-profiles.js
+ *   (INPUT_DIR должен указывать на скопированную на сервер tmp_scrap_res —
+ *   см. документацию в чате/задаче, где расписан весь перенос)
+ *
+ *   AGENCY_EMAIL=agency@example.com \
+ *   INPUT_DIR=/app/tmp_scrap_res \
+ *   node dist/scripts/import-agency-profiles.js
+ */
+import 'dotenv/config';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { normalizeContact } from '@noova/shared';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client.js';
+import type {
+  AppearanceType,
+  BodyType,
+  BreastSize,
+  BreastType,
+  EyeColor,
+  HairColor,
+  PubicHair,
+} from '../generated/prisma/enums.js';
+import { buildUniqueSlug } from '../modules/account/slug.js';
+import { processImage } from '../modules/photos/images.js';
+import { PENDING_PREFIX, putObject } from '../modules/photos/storage.js';
+
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error('DATABASE_URL не задан.');
+  process.exit(1);
+}
+
+const AGENCY_EMAIL = process.env.AGENCY_EMAIL;
+const INPUT_DIR = process.env.INPUT_DIR;
+if (!AGENCY_EMAIL || !INPUT_DIR) {
+  console.error('Нужны переменные окружения: AGENCY_EMAIL, INPUT_DIR');
+  process.exit(1);
+}
+
+const CITY_SLUG = 'frankfurt';
+const CONTACTS: Array<{ type: 'telegram' | 'whatsapp'; value: string }> = [
+  { type: 'telegram', value: '@Escortladyluck' },
+  { type: 'whatsapp', value: '+4915739794828' },
+];
+
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+
+type Draft = {
+  name: string;
+  bio: string | null;
+  params: {
+    age: number | null;
+    heightCm: number | null;
+    weightKg: number | null;
+    languages: string[];
+    hairColor: HairColor | null;
+    eyeColor: EyeColor | null;
+    breastSize: BreastSize | null;
+    breastType: BreastType | null;
+    bodyType: BodyType | null;
+    pubicHair: PubicHair | null;
+    hasPiercing: boolean | null;
+    hasTattoos: boolean | null;
+    appearanceType: AppearanceType | null;
+    smoker: boolean | null;
+  };
+  services: Array<{ key: string | null; extra: boolean }>;
+};
+
+async function findAgency() {
+  const user = await prisma.user.findUnique({
+    where: { email: AGENCY_EMAIL },
+    select: { id: true, advertiserKind: true, company: { select: { id: true } } },
+  });
+  if (!user) throw new Error(`Аккаунт ${AGENCY_EMAIL} не найден`);
+  if (user.advertiserKind !== 'agency' || !user.company) {
+    throw new Error(`${AGENCY_EMAIL} не является агентством (advertiserKind/company)`);
+  }
+  return { userId: user.id, companyId: user.company.id };
+}
+
+async function findCity() {
+  const city = await prisma.city.findUnique({
+    where: { slug: CITY_SLUG },
+    select: { id: true, countryId: true, lat: true, lng: true },
+  });
+  if (!city) throw new Error(`Город ${CITY_SLUG} не найден в справочнике`);
+  return city;
+}
+
+async function resolveServiceIds(keys: string[]) {
+  if (keys.length === 0) return new Map<string, string>();
+  const found = await prisma.service.findMany({
+    where: { key: { in: keys } },
+    select: { id: true, key: true },
+  });
+  const missing = keys.filter((k) => !found.some((s) => s.key === k));
+  if (missing.length) console.warn(`    услуги не найдены в каталоге, пропущены: ${missing.join(', ')}`);
+  return new Map(found.map((s) => [s.key, s.id]));
+}
+
+async function uploadPhoto(profileId: string, filePath: string, position: number) {
+  const buffer = await readFile(filePath);
+  const processed = await processImage(buffer);
+
+  const photo = await prisma.photo.create({
+    data: {
+      profileId,
+      storageKey: '',
+      width: processed.width,
+      height: processed.height,
+      blurDataUrl: processed.blurDataUrl,
+      position,
+      mimeType: 'image/webp',
+      bytes: buffer.byteLength,
+      isApproved: false,
+    },
+    select: { id: true },
+  });
+
+  const storageKey = `${PENDING_PREFIX}/${profileId}/${photo.id}`;
+  await Promise.all(
+    Object.entries(processed.variants).map(([name, variant]) =>
+      putObject(`${storageKey}/${name}.webp`, variant.buffer, 'image/webp'),
+    ),
+  );
+
+  await prisma.photo.update({
+    where: { id: photo.id },
+    data: {
+      storageKey,
+      variants: Object.fromEntries(
+        Object.entries(processed.variants).map(([name, v]) => [name, { width: v.width, height: v.height }]),
+      ),
+    },
+  });
+}
+
+async function importOne(slug: string, agency: { userId: string; companyId: string }, city: Awaited<ReturnType<typeof findCity>>) {
+  const dir = path.join(INPUT_DIR!, slug);
+  const draft: Draft = JSON.parse(await readFile(path.join(dir, 'draft.json'), 'utf8'));
+
+  const profileSlug = await buildUniqueSlug(prisma, draft.name, CITY_SLUG);
+  // Проверяем по displayName+ownerId, не по сгенерированному slug: у него
+  // при повторном запуске мог бы отрасти числовой суффикс на пустом месте.
+  const existing = await prisma.profile.findFirst({
+    where: { ownerId: agency.userId, displayName: draft.name },
+    select: { id: true, _count: { select: { photos: true } } },
+  });
+
+  let profileId: string;
+  if (existing) {
+    profileId = existing.id;
+    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos})`);
+  } else {
+    const p = draft.params;
+    const serviceKeys = draft.services.map((s) => s.key).filter((k): k is string => Boolean(k));
+    const serviceIdByKey = await resolveServiceIds(serviceKeys);
+
+    const created = await prisma.profile.create({
+      data: {
+        slug: profileSlug,
+        kind: 'escort',
+        status: 'pending_verification',
+        displayName: draft.name,
+        description: draft.bio ?? '',
+        ownerId: agency.userId,
+        companyId: agency.companyId,
+        cityId: city.id,
+        countryId: city.countryId,
+        approxLat: city.lat,
+        approxLng: city.lng,
+        age: p.age,
+        heightCm: p.heightCm,
+        weightKg: p.weightKg,
+        languages: p.languages,
+        hairColor: p.hairColor,
+        eyeColor: p.eyeColor,
+        breastSize: p.breastSize,
+        breastType: p.breastType,
+        bodyType: p.bodyType,
+        pubicHair: p.pubicHair,
+        hasPiercing: p.hasPiercing,
+        hasTattoos: p.hasTattoos,
+        appearanceType: p.appearanceType,
+        smoker: p.smoker,
+        verification: { create: { status: 'pending', submittedAt: new Date() } },
+        services: {
+          create: draft.services
+            .filter((s) => s.key && serviceIdByKey.has(s.key))
+            .map((s) => ({ serviceId: serviceIdByKey.get(s.key!)!, isExtra: s.extra })),
+        },
+        contacts: {
+          create: CONTACTS.map((c, i) => {
+            const norm = normalizeContact(c.type, c.value);
+            if (!norm.ok) throw new Error(`Контакт не прошёл нормализацию: ${c.type} ${c.value}`);
+            return { type: c.type, value: norm.value, position: i };
+          }),
+        },
+      },
+      select: { id: true },
+    });
+    profileId = created.id;
+    console.log(`  [${slug}] анкета создана: ${profileId} (${profileSlug})`);
+  }
+
+  const already = existing?._count.photos ?? 0;
+  const photoFiles = (await readdir(path.join(dir, 'photos'))).sort();
+  for (let i = already; i < photoFiles.length; i += 1) {
+    await uploadPhoto(profileId, path.join(dir, 'photos', photoFiles[i]!), i);
+  }
+  if (photoFiles.length > already) {
+    console.log(`  [${slug}] фото загружены: ${photoFiles.length - already} новых, всего ${photoFiles.length}`);
+  }
+}
+
+async function main() {
+  const agency = await findAgency();
+  const city = await findCity();
+
+  const allSlugs = (await readdir(INPUT_DIR!, { withFileTypes: true }))
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name)
+    .sort();
+
+  // LIMIT — прогнать на первых N анкетах перед полным пакетом: скрипт ни
+  // разу не запускался на настоящей проде, разумно сначала проверить на
+  // 1-2 анкетах глазами (в кабинете агентства и в очереди модерации), а не
+  // сразу на всех 67.
+  const limit = process.env.LIMIT ? Number(process.env.LIMIT) : undefined;
+  const slugs = limit ? allSlugs.slice(0, limit) : allSlugs;
+
+  console.log(`Агентство: ${AGENCY_EMAIL} (${agency.userId})`);
+  console.log(`Анкет к импорту: ${slugs.length}${limit ? ` (LIMIT=${limit} из ${allSlugs.length})` : ''}`);
+
+  let done = 0;
+  for (const slug of slugs) {
+    console.log(`\n=== ${slug} ===`);
+    try {
+      await importOne(slug, agency, city);
+      done += 1;
+    } catch (err) {
+      console.error(`  ОШИБКА [${slug}]:`, err instanceof Error ? err.message : err);
+    }
+  }
+
+  console.log(`\nГотово: ${done}/${slugs.length}. Все — в статусе pending_verification, ждут модерации.`);
+}
+
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(() => prisma.$disconnect());

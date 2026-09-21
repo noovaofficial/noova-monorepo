@@ -19,6 +19,7 @@
     "db:create-admin": "tsx src/scripts/create-admin.ts",
     "db:seed:dev-users": "tsx prisma/seed-dev-users.ts",
     "billing:grant-launch": "tsx src/scripts/grant-launch-listings.ts",
+    "import:agency-profiles": "tsx src/scripts/import-agency-profiles.ts",
     "jobs": "node dist/jobs/runner.js",
     "jobs:dev": "tsx src/jobs/runner.ts"
   },
