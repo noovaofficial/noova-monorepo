@@ -168,7 +168,14 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
   let profileId: string;
   if (existing) {
     profileId = existing.id;
-    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos})`);
+    // Фото не трогаем (ниже они и так пропустятся — already === photoFiles.length),
+    // но текстовые поля могли поменяться после создания (напр. description
+    // убрали 2026-09-21) — обновляем их дешёвым UPDATE без пересоздания анкеты.
+    await prisma.profile.update({
+      where: { id: existing.id },
+      data: { description: draft.bio ?? '' },
+    });
+    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание обновлено`);
   } else {
     const p = draft.params;
     const serviceKeys = draft.services.map((s) => s.key).filter((k): k is string => Boolean(k));
