@@ -60,6 +60,27 @@ const CONTACTS: Array<{ type: 'telegram' | 'whatsapp'; value: string }> = [
   { type: 'whatsapp', value: '+4915739794828' },
 ];
 
+/**
+ * Единые тарифы на весь пакет анкет (решение от 2026-09-21) — не берутся из
+ * draft.json, задаются один раз здесь. Инкол и ауткол одинаковы по решению
+ * пользователя.
+ */
+const PRICES: Array<{ durationMinutes: number; cents: number }> = [
+  { durationMinutes: 60, cents: 20_000 }, // 1ч — 200€
+  { durationMinutes: 120, cents: 38_000 }, // 2ч — 380€
+  { durationMinutes: 180, cents: 56_000 }, // 3ч — 560€
+  { durationMinutes: 240, cents: 74_000 }, // 4ч — 740€
+  { durationMinutes: 360, cents: 100_000 }, // 6ч — 1000€
+  { durationMinutes: 720, cents: 150_000 }, // 12ч — 1500€
+  { durationMinutes: 1440, cents: 200_000 }, // 24ч — 2000€
+];
+const PRICE_SLOTS = PRICES.map((p) => ({
+  durationMinutes: p.durationMinutes,
+  incallCents: p.cents,
+  outcallCents: p.cents,
+}));
+const LOWEST_PRICE_CENTS = Math.min(...PRICES.map((p) => p.cents));
+
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 type Draft = {
@@ -173,9 +194,15 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
     // убрали 2026-09-21) — обновляем их дешёвым UPDATE без пересоздания анкеты.
     await prisma.profile.update({
       where: { id: existing.id },
-      data: { description: draft.bio ?? '' },
+      data: { description: draft.bio ?? '', fromPriceCents: LOWEST_PRICE_CENTS },
     });
-    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание обновлено`);
+    // Тарифы — тоже delete+createMany, как в PATCH /me/profiles/:id: тарифы
+    // одни на всю пачку и до этого момента у уже созданных анкет не стояли.
+    await prisma.priceSlot.deleteMany({ where: { profileId: existing.id } });
+    await prisma.priceSlot.createMany({
+      data: PRICE_SLOTS.map((s) => ({ ...s, profileId: existing.id })),
+    });
+    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание и тарифы обновлены`);
   } else {
     const p = draft.params;
     const serviceKeys = draft.services.map((s) => s.key).filter((k): k is string => Boolean(k));
@@ -204,6 +231,7 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
         status: 'pending_verification',
         displayName: draft.name,
         description: draft.bio ?? '',
+        fromPriceCents: LOWEST_PRICE_CENTS,
         ownerId: agency.userId,
         companyId: agency.companyId,
         cityId: city.id,
@@ -226,6 +254,7 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
         smoker: p.smoker,
         verification: { create: { status: 'pending', submittedAt: new Date() } },
         services: { create: serviceCreates },
+        prices: { create: PRICE_SLOTS },
         contacts: {
           create: CONTACTS.map((c, i) => {
             const norm = normalizeContact(c.type, c.value);
