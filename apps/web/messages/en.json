@@ -498,7 +498,6 @@
     "topDisabledActive": "Already in TOP.",
     "topDisabledNotPublished": "Can't grant TOP: the profile isn't published.",
     "topDurationLabel": "Days (default 7)",
-    "deleteDisabledAgencyOwned": "This profile belongs to an agency account — delete it from the agency's own card.",
     "reportNoViolation": "No violation",
     "tabBlockedProfiles": "Blocked profiles",
     "blockedProfilesNote": "Profiles taken down by a moderator. The owner sees the reason and can resubmit a corrected profile.",

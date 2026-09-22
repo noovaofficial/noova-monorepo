@@ -498,7 +498,6 @@
     "topDisabledActive": "Ya está en TOP.",
     "topDisabledNotPublished": "No se puede conceder el TOP: el perfil no está publicado.",
     "topDurationLabel": "Días (7 por defecto)",
-    "deleteDisabledAgencyOwned": "Este perfil pertenece a una cuenta de agencia — elimínelo desde la propia ficha de la agencia.",
     "reportNoViolation": "Sin infracción",
     "tabBlockedProfiles": "Perfiles bloqueados",
     "blockedProfilesNote": "Perfiles retirados por un moderador. El propietario ve el motivo y puede volver a enviarlo corregido.",
