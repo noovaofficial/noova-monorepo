@@ -14,6 +14,7 @@ export default defineConfig({
     'src/scripts/export-reference.ts',
     'src/scripts/grant-launch-listings.ts',
     'src/scripts/import-agency-profiles.ts',
+    'src/scripts/diagnose-sharp.ts',
   ],
   outDir: 'dist',
   format: ['esm'],
