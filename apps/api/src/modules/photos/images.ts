@@ -16,8 +16,12 @@ export const MAX_PHOTOS_PER_PROFILE = 20;
  * меньше целевых размеров. Замыленная картинка хуже маленькой.
  */
 
-/** Ширины производных. Карточка берёт мелкую, галерея — крупную. */
-export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: 1280 } as const;
+/** Ширины производных. Карточка берёт мелкую, галерея — крупную.
+ *  `full` открывается на весь экран (`sizes="100vw"` в лайтбоксе) — 1280
+ *  было мало даже для обычного full-HD монитора, не говоря про retina:
+ *  Next.js умеет только уменьшать, апскейлить нечего, и снимок выглядел
+ *  мыльным. 1920 — компромисс между резкостью и весом файла. */
+export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: 1920 } as const;
 export type VariantName = keyof typeof VARIANT_WIDTHS;
 
 /** Лэйаут знака: тот же контур, что у `design-system/components/Logo`,
@@ -132,7 +136,7 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
     const mark = cornerWatermark(resized.info.width, resized.info.height);
     const { data, info } = await sharp(resized.data)
       .composite([{ input: mark.input, left: mark.left, top: mark.top }])
-      .webp({ quality: 82 })
+      .webp({ quality: 90 })
       .toBuffer({ resolveWithObject: true });
     variants[name as VariantName] = { buffer: data, width: info.width, height: info.height };
   }

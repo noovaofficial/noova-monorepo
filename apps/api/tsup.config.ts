@@ -14,6 +14,8 @@ export default defineConfig({
     'src/scripts/export-reference.ts',
     'src/scripts/grant-launch-listings.ts',
     'src/scripts/import-agency-profiles.ts',
+    'src/scripts/remove-agency-logo-photos.ts',
+    'src/scripts/remove-photos-by-position.ts',
     'src/scripts/diagnose-sharp.ts',
   ],
   outDir: 'dist',

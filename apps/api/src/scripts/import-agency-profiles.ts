@@ -12,8 +12,14 @@
  * `putObject`), что использует сама ручка загрузки, — просто без rate-limit
  * плагина Fastify вокруг них.
  *
- * Идемпотентно: у кого анкета с таким slug уже существует — пропускается.
- * Повторный запуск (после сбоя на середине) продолжит с недостающих.
+ * Идемпотентность — через манифест INPUT_DIR/.import-manifest.json
+ * (slug источника -> id анкеты в БД), а не по displayName: у реальных
+ * людей на сайте-источнике имена повторяются (у Airport Escort Frankfurt
+ * нашлись две разные "Anna" под разными URL), и поиск по displayName+
+ * ownerId на повторном прогоне схлопнул их в одну анкету — вторая
+ * молча потеряла свои фото и параметры. Манифест пишется после каждой
+ * успешно обработанной анкеты, так что повторный запуск (после сбоя на
+ * середине) продолжит с недостающих без риска склейки разных людей.
  *
  * draft.json ожидается в ПЛОСКОМ виде (params.age, params.hairColor и т.д. —
  * готовые значения, не {value,raw,needsReview}) — так его оставляет merge.mjs
@@ -33,7 +39,7 @@
  * PRICES — "минуты:центы" через запятую, столько слотов, сколько нужно.
  */
 import 'dotenv/config';
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { normalizeContact } from '@noova/shared';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -92,6 +98,20 @@ const PRICE_SLOTS = PRICES_RAW.split(',').map((pair) => {
 const LOWEST_PRICE_CENTS = Math.min(...PRICE_SLOTS.map((p) => p.incallCents));
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+
+const MANIFEST_PATH = path.join(INPUT_DIR, '.import-manifest.json');
+
+async function loadManifest(): Promise<Record<string, string>> {
+  try {
+    return JSON.parse(await readFile(MANIFEST_PATH, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+async function saveManifest(manifest: Record<string, string>) {
+  await writeFile(MANIFEST_PATH, JSON.stringify(manifest, null, 2), 'utf8');
+}
 
 type Draft = {
   name: string;
@@ -184,17 +204,22 @@ async function uploadPhoto(profileId: string, filePath: string, position: number
   });
 }
 
-async function importOne(slug: string, agency: { userId: string; companyId: string }, city: Awaited<ReturnType<typeof findCity>>) {
+async function importOne(
+  slug: string,
+  agency: { userId: string; companyId: string },
+  city: Awaited<ReturnType<typeof findCity>>,
+  manifest: Record<string, string>,
+) {
   const dir = path.join(INPUT_DIR!, slug);
   const draft: Draft = JSON.parse(await readFile(path.join(dir, 'draft.json'), 'utf8'));
 
-  const profileSlug = await buildUniqueSlug(prisma, draft.name, CITY_SLUG);
-  // Проверяем по displayName+ownerId, не по сгенерированному slug: у него
-  // при повторном запуске мог бы отрасти числовой суффикс на пустом месте.
-  const existing = await prisma.profile.findFirst({
-    where: { ownerId: agency.userId, displayName: draft.name },
-    select: { id: true, _count: { select: { photos: true } } },
-  });
+  const existingId = manifest[slug];
+  const existing = existingId
+    ? await prisma.profile.findUnique({
+        where: { id: existingId },
+        select: { id: true, _count: { select: { photos: true } } },
+      })
+    : null;
 
   let profileId: string;
   if (existing) {
@@ -214,6 +239,7 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
     });
     console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание и тарифы обновлены`);
   } else {
+    const profileSlug = await buildUniqueSlug(prisma, draft.name, CITY_SLUG);
     const p = draft.params;
     const serviceKeys = draft.services.map((s) => s.key).filter((k): k is string => Boolean(k));
     const serviceIdByKey = await resolveServiceIds(serviceKeys);
@@ -276,6 +302,8 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
       select: { id: true },
     });
     profileId = created.id;
+    manifest[slug] = profileId;
+    await saveManifest(manifest);
     console.log(`  [${slug}] анкета создана: ${profileId} (${profileSlug})`);
   }
 
@@ -314,11 +342,13 @@ async function main() {
   console.log(`Агентство: ${AGENCY_EMAIL} (${agency.userId})`);
   console.log(`Анкет к импорту: ${slugs.length}${limit ? ` (LIMIT=${limit} из ${allSlugs.length})` : ''}`);
 
+  const manifest = await loadManifest();
+
   let done = 0;
   for (const slug of slugs) {
     console.log(`\n=== ${slug} ===`);
     try {
-      await importOne(slug, agency, city);
+      await importOne(slug, agency, city, manifest);
       done += 1;
     } catch (err) {
       console.error(`  ОШИБКА [${slug}]:`, err instanceof Error ? err.message : err);

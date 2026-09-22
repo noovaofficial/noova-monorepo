@@ -79,11 +79,13 @@ describe('обработка фотографий', () => {
   });
 
   it('готовит три размера и превью-заглушку', async () => {
-    const processed = await processImage(await photoWithGps(1600, 2000));
+    // Шире нового full (1920), иначе withoutEnlargement не даст ресайзу
+    // сработать и тест проверит просто исходный размер, а не логику.
+    const processed = await processImage(await photoWithGps(2400, 3000));
 
     expect(processed.variants.thumb.width).toBe(320);
     expect(processed.variants.card.width).toBe(640);
-    expect(processed.variants.full.width).toBe(1280);
+    expect(processed.variants.full.width).toBe(1920);
     expect(processed.blurDataUrl.startsWith('data:image/webp;base64,')).toBe(true);
   });
 
