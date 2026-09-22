@@ -9,10 +9,13 @@ import { useSession } from '@/modules/auth/components/SessionProvider';
 import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import {
+  approvePhoto,
   blockProfile,
+  deleteModeratedProfile,
   deleteUser,
   fetchModeratedProfile,
   grantProfileTop,
+  rejectPhoto,
   unblockProfile,
 } from '@/modules/moderation/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
@@ -43,6 +46,10 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const [note, setNote] = useState('');
   const [adjustedBalance, setAdjustedBalance] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [deletingProfile, setDeletingProfile] = useState(false);
+  const [topDays, setTopDays] = useState('');
+  const [rejectingPhotoId, setRejectingPhotoId] = useState<string | null>(null);
+  const [photoReason, setPhotoReason] = useState('');
 
   const adjustLimit = useQuery({
     queryKey: queryKeys.adjustLimit(),
@@ -80,8 +87,22 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   });
 
   const grantTop = useMutation({
-    mutationFn: () => grantProfileTop(profileId),
+    mutationFn: (days?: number) => grantProfileTop(profileId, days),
     onSuccess: refresh,
+  });
+
+  const approvePhotoM = useMutation({
+    mutationFn: (photoId: string) => approvePhoto(photoId),
+    onSuccess: refresh,
+  });
+
+  const rejectPhotoM = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => rejectPhoto(id, reason),
+    onSuccess: async () => {
+      setRejectingPhotoId(null);
+      setPhotoReason('');
+      await refresh();
+    },
   });
 
   const adjustInput = (ownerId: string) =>
@@ -114,6 +135,11 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     onSuccess: () => router.replace('/moderation/users/individuals'),
   });
 
+  const removeProfile = useMutation({
+    mutationFn: () => deleteModeratedProfile(profileId),
+    onSuccess: () => router.replace('/moderation'),
+  });
+
   const profile = review.data ?? null;
   const error = review.isError ? 'notFound' : null;
   const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
@@ -122,7 +148,10 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     unblock.isPending ||
     grantTop.isPending ||
     adjust.isPending ||
-    remove.isPending;
+    remove.isPending ||
+    removeProfile.isPending ||
+    approvePhotoM.isPending ||
+    rejectPhotoM.isPending;
 
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
@@ -239,10 +268,28 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                 : t('topInactive')
             }
           >
+            <div className={cardStyles.field}>
+              <label className={styles.label} htmlFor="top-days">
+                {t('topDurationLabel')}
+              </label>
+              <input
+                className={styles.input}
+                id="top-days"
+                inputMode="numeric"
+                value={topDays}
+                onChange={(event) => setTopDays(event.target.value)}
+                placeholder="7"
+              />
+            </div>
             <div className={cardStyles.actions}>
               <Button
                 variant="secondary"
-                disabled={busy || profile.isFeatured || profile.status !== 'published'}
+                disabled={
+                  busy ||
+                  profile.isFeatured ||
+                  profile.status !== 'published' ||
+                  (topDays.trim() !== '' && (!/^\d+$/.test(topDays.trim()) || Number(topDays) < 1))
+                }
                 title={
                   profile.isFeatured
                     ? t('topDisabledActive')
@@ -250,7 +297,9 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                       ? t('topDisabledNotPublished')
                       : undefined
                 }
-                onClick={() => grantTop.mutate()}
+                onClick={() =>
+                  grantTop.mutate(topDays.trim() === '' ? undefined : Number(topDays.trim()))
+                }
               >
                 <TopIcon />
                 {t('grantTop')}
@@ -260,8 +309,11 @@ export function ProfileReview({ profileId }: { profileId: string }) {
           </ActionCard>
         ) : null}
 
-        {/* Монеты — staff, потолок для модератора проверяется и на сервере. */}
-        {isStaff ? (
+        {/* Монеты — staff, потолок для модератора проверяется и на сервере.
+            Анкете агентства коины не выдаём: баланс общий на всю учётку
+            агентства, а не привязан к конкретной анкете — здесь легко
+            перепутать «пополнить анкету» с «пополнить агентство целиком». */}
+        {isStaff && profile.companyId === null ? (
           <ActionCard
             icon={<GlowCoinIcon size={18} />}
             title={t('adjustGc')}
@@ -374,6 +426,49 @@ export function ProfileReview({ profileId }: { profileId: string }) {
             )}
           </ActionCard>
         ) : null}
+
+        {/* Удалить анкету — в отличие от удаления учётки выше, работает и
+            для анкеты агентства: агентский каталог состоит из многих анкет
+            на одной учётке, и убрать одну, не трогая остальные, — обычное
+            дело, которого раньше не было (только целиком аккаунт). */}
+        {isStaff ? (
+          <ActionCard
+            icon={<DeleteIcon />}
+            title={t('deleteProfile')}
+            tone="danger"
+            expanded={deletingProfile}
+          >
+            {deletingProfile ? (
+              <>
+                <span className={styles.hint}>{t('deleteProfileHint')}</span>
+                <div className={cardStyles.actions}>
+                  <Button disabled={busy} onClick={() => removeProfile.mutate()}>
+                    <DeleteIcon />
+                    {t('deleteProfileConfirm')}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => setDeletingProfile(false)}
+                  >
+                    {t('cancel')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={cardStyles.actions}>
+                <Button
+                  variant="secondary"
+                  disabled={busy}
+                  onClick={() => setDeletingProfile(true)}
+                >
+                  <DeleteIcon />
+                  {t('deleteProfile')}
+                </Button>
+              </div>
+            )}
+          </ActionCard>
+        ) : null}
       </div>
 
       <dl className={styles.userRows}>
@@ -419,11 +514,63 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                   <img src={photo.url} alt="" loading="lazy" />
                 </button>
                 {!photo.isApproved ? (
-                  <span className={`${styles.badge} ${styles.badgeBlocked}`}>
+                  <span
+                    className={`${styles.badge} ${styles.badgeBlocked}`}
+                    title={photo.rejectedReason ?? undefined}
+                  >
                     {t('photoPendingBadge')}
                   </span>
                 ) : null}
               </div>
+              {/* Апрув фото прямо здесь — раньше только из отдельной очереди,
+                  и модератор терял контекст анкеты между решениями по фото. */}
+              {!photo.isApproved ? (
+                rejectingPhotoId === photo.id ? (
+                  <div className={styles.reasonBox}>
+                    <textarea
+                      className={styles.textarea}
+                      value={photoReason}
+                      onChange={(event) => setPhotoReason(event.target.value)}
+                      placeholder={t('reason')}
+                      minLength={5}
+                    />
+                    <span className={styles.hint}>{t('reasonHint')}</span>
+                    <div className={styles.cardActions} style={{ padding: 0 }}>
+                      <Button
+                        disabled={busy || photoReason.trim().length < 5}
+                        onClick={() =>
+                          rejectPhotoM.mutate({ id: photo.id, reason: photoReason.trim() })
+                        }
+                      >
+                        {t('reject')}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => setRejectingPhotoId(null)}
+                      >
+                        {t('cancel')}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.cardActions}>
+                    <Button disabled={busy} onClick={() => approvePhotoM.mutate(photo.id)}>
+                      {t('approve')}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => {
+                        setRejectingPhotoId(photo.id);
+                        setPhotoReason('');
+                      }}
+                    >
+                      {t('reject')}
+                    </Button>
+                  </div>
+                )
+              ) : null}
             </div>
           ))}
         </div>

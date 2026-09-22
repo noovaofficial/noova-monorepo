@@ -177,14 +177,33 @@ export function fetchUsers(
   return call(`/moderation/users${qs ? `?${qs}` : ''}`, pageSchema(managedUserSchema));
 }
 
-/** Выдача ТОПа анкете без оплаты — только админ. */
-export function grantProfileTop(id: string): Promise<GrantTopResult> {
-  return call(`/admin/profiles/${id}/top`, grantTopResultSchema, { method: 'POST' });
+/** Выдача ТОПа анкете без оплаты — только админ. Без `days` — стандартная неделя. */
+export function grantProfileTop(id: string, days?: number): Promise<GrantTopResult> {
+  return call(`/admin/profiles/${id}/top`, grantTopResultSchema, {
+    method: 'POST',
+    body: JSON.stringify(days === undefined ? {} : { days }),
+  });
 }
 
 /** Мгновенное удаление учётки — только админ. 204 без тела. */
 export async function deleteUser(id: string): Promise<void> {
   const response = await fetch(`${BASE}/api/v1/moderation/users/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body) => String(body?.message ?? ''))
+      .catch(() => '');
+    throw new ModerationError(message || 'Не удалось удалить', response.status);
+  }
+}
+
+/** Удаление одной анкеты — работает и для анкеты агентства. 204 без тела. */
+export async function deleteModeratedProfile(id: string): Promise<void> {
+  const response = await fetch(`${BASE}/api/v1/moderation/profiles/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     cache: 'no-store',

@@ -181,6 +181,8 @@ export type TopGrant = {
   profileId: string;
   slots: number;
   now?: Date;
+  /** Кастомный срок в днях — только для ручной выдачи админом. Без него — неделя. */
+  durationDays?: number;
 };
 
 /**
@@ -194,6 +196,7 @@ export function grantTop(
   grant: TopGrant,
 ): Promise<{ placement: TopPlacement }> {
   const now = grant.now ?? new Date();
+  const durationMs = (grant.durationDays ?? TOP_WEEK_DAYS) * 24 * 60 * 60 * 1000;
 
   return prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT "id" FROM "BillingSettings" WHERE "id" = 'default' FOR UPDATE`;
@@ -213,7 +216,7 @@ export function grantTop(
     const taken = await tx.topPlacement.count({ where: activeWhere(now) });
     if (taken >= grant.slots) throw new TopFullError(grant.slots);
 
-    const expiresAt = new Date(now.getTime() + WEEK_MS);
+    const expiresAt = new Date(now.getTime() + durationMs);
     const placement = current
       ? await tx.topPlacement.update({
           where: { profileId: profile.id },

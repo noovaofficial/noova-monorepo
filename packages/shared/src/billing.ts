@@ -382,6 +382,12 @@ export type BuyTopResult = z.infer<typeof buyTopResultSchema>;
 export const grantTopResultSchema = z.object({ placement: topPlacementSchema });
 export type GrantTopResult = z.infer<typeof grantTopResultSchema>;
 
+/** Кастомный срок выдачи ТОПа админом. Без поля — стандартная неделя. */
+export const grantTopInputSchema = z.object({
+  days: z.number().int().min(1).max(365).optional(),
+});
+export type GrantTopInput = z.infer<typeof grantTopInputSchema>;
+
 // --- ТОП агентств (payments.md §3.5, D-14) --------------------------------------
 
 /** Сколько оплаченных мест показывать в ряду «Агентства» на главной —

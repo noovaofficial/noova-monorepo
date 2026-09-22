@@ -1,5 +1,6 @@
 import {
   createStaffSchema,
+  grantTopInputSchema,
   grantTopResultSchema,
   moderationLogEntrySchema,
   moderationLogQuerySchema,
@@ -456,6 +457,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
+        body: grantTopInputSchema,
         response: { 200: grantTopResultSchema },
       },
     },
@@ -467,6 +469,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         const result = await grantTop(fastify.prisma, {
           profileId: request.params.id,
           slots: config.top.slots,
+          durationDays: request.body.days,
         });
 
         await fastify.prisma.moderationAction.create({

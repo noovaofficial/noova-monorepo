@@ -109,7 +109,11 @@ export function buildProfileWhere(query: ProfileQuery): Record<string, unknown> 
 }
 
 /** Во всех вариантах последним идёт `id`, иначе курсорная пагинация
- *  разъезжается на записях с одинаковым значением ключа сортировки. */
+ *  разъезжается на записях с одинаковым значением ключа сортировки.
+ *
+ *  Используется как есть для `newest`/`price_*`, и как запасной вариант
+ *  «релевантности» там, где курсорное перемешивание не годится (страница по
+ *  номеру для ботов, срез «только ТОП») — см. `RELEVANCE_TOP_PERIOD` ниже. */
 export function orderByFor(sort: ProfileSort): Record<string, 'asc' | 'desc'>[] {
   switch (sort) {
     case 'newest':
@@ -121,5 +125,57 @@ export function orderByFor(sort: ProfileSort): Record<string, 'asc' | 'desc'>[] 
     default:
       // «Релевантность» = промо наверху, дальше свежие.
       return [{ isFeatured: 'desc' }, { publishedAt: 'desc' }, { id: 'desc' }];
+  }
+}
+
+/**
+ * Каждая RELEVANCE_TOP_PERIOD-я позиция ленты «по умолчанию» отдаётся ТОПу,
+ * остальные — органике по свежести. Раньше `isFeatured` было первым ключом
+ * сортировки, и все ТОП-анкеты вставали единым блоком в начало — купивший
+ * или получивший ТОП занимал всю первую страницу каталога. Теперь ТОП
+ * рассыпан по ленте, а не выключен: место просто не монопольное.
+ */
+export const RELEVANCE_TOP_PERIOD = 5;
+
+/** 0-индексная позиция в общей ленте зарезервирована под ТОП. */
+export function isTopSlot(position: number): boolean {
+  return position % RELEVANCE_TOP_PERIOD === RELEVANCE_TOP_PERIOD - 1;
+}
+
+/** Состояние перемешивания курсора «релевантности»: сколько позиций уже
+ *  отдано и на чём остановился каждый из двух источников (ТОП/органика). */
+export type RelevanceCursor = {
+  pos: number;
+  featuredId: string | null;
+  organicId: string | null;
+};
+
+export function encodeRelevanceCursor(state: RelevanceCursor): string {
+  return Buffer.from(JSON.stringify(state), 'utf8').toString('base64url');
+}
+
+const emptyRelevanceCursor: RelevanceCursor = { pos: 0, featuredId: null, organicId: null };
+
+export function decodeRelevanceCursor(cursor: string | undefined): RelevanceCursor {
+  if (!cursor) return emptyRelevanceCursor;
+  try {
+    const decoded: unknown = JSON.parse(Buffer.from(cursor, 'base64url').toString('utf8'));
+    if (
+      typeof decoded === 'object' &&
+      decoded !== null &&
+      'pos' in decoded &&
+      typeof decoded.pos === 'number' &&
+      Number.isInteger(decoded.pos) &&
+      decoded.pos >= 0 &&
+      'featuredId' in decoded &&
+      (decoded.featuredId === null || typeof decoded.featuredId === 'string') &&
+      'organicId' in decoded &&
+      (decoded.organicId === null || typeof decoded.organicId === 'string')
+    ) {
+      return decoded as RelevanceCursor;
+    }
+    return emptyRelevanceCursor;
+  } catch {
+    return emptyRelevanceCursor;
   }
 }

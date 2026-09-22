@@ -4,6 +4,9 @@ import {
   type Locale,
   MAP_CLUSTER_SAMPLE,
   mapClusterSchema,
+  type Page,
+  type ProfileCard,
+  type ProfileQuery,
   pageSchema,
   profileCardSchema,
   profileDetailSchema,
@@ -12,12 +15,21 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import type { PrismaClient } from '../../generated/prisma/client.js';
 import { localeQuerySchema, translationSelect } from '../../i18n.js';
 import { isOnline, toMoney, toProfileCard, toProfileDetail } from '../../mappers.js';
 import { loadBillingConfig } from '../billing/config.js';
 import { shuffle } from '../billing/top.js';
 import { publicUrl } from '../photos/storage.js';
-import { buildProfileWhere, decodeCursor, encodeCursor, orderByFor } from './query.js';
+import {
+  buildProfileWhere,
+  decodeCursor,
+  decodeRelevanceCursor,
+  encodeCursor,
+  encodeRelevanceCursor,
+  isTopSlot,
+  orderByFor,
+} from './query.js';
 
 /**
  * Поля карточки листинга. Экспортируется: избранное показывает те же карточки,
@@ -72,6 +84,85 @@ export const cardSelect = (locale: Locale) =>
     },
   }) as const;
 
+/**
+ * Лента «по умолчанию»: каждая `RELEVANCE_TOP_PERIOD`-я позиция — ТОП,
+ * остальные — органика по свежести (query.ts). Источники читаются двумя
+ * отдельными запросами и сплетаются по позиции: если у назначенного
+ * позиции источника кончились строки (в городе может быть один ТОП или ни
+ * одного), слот забирает другой источник — реестр не должен останавливаться
+ * раньше времени только из-за пустого «зарезервированного» места.
+ */
+async function relevancePage(
+  prisma: PrismaClient,
+  where: Record<string, unknown>,
+  query: ProfileQuery & { locale: Locale },
+): Promise<Page<ProfileCard>> {
+  const cursorState = decodeRelevanceCursor(query.cursor);
+  const select = cardSelect(query.locale);
+  const subOrder = orderByFor('newest');
+
+  let featuredNeeded = 0;
+  for (let i = 0; i < query.limit; i += 1) {
+    if (isTopSlot(cursorState.pos + i)) featuredNeeded += 1;
+  }
+  const organicNeeded = query.limit - featuredNeeded;
+  // Небольшой запас с каждой стороны: дешевле взять на несколько строк
+  // больше, чем высчитывать точно, чей «лишний» слот попадёт за границу
+  // страницы — именно этот запас и даёт знать, есть ли ещё страница дальше.
+  const buffer = 3;
+
+  const [featuredRows, organicRows] = await Promise.all([
+    prisma.profile.findMany({
+      where: { ...where, isFeatured: true },
+      orderBy: subOrder,
+      take: featuredNeeded + buffer,
+      ...(cursorState.featuredId ? { cursor: { id: cursorState.featuredId }, skip: 1 } : {}),
+      select,
+    }),
+    prisma.profile.findMany({
+      where: { ...where, isFeatured: false },
+      orderBy: subOrder,
+      take: organicNeeded + buffer,
+      ...(cursorState.organicId ? { cursor: { id: cursorState.organicId }, skip: 1 } : {}),
+      select,
+    }),
+  ]);
+
+  const items: typeof featuredRows = [];
+  let fi = 0;
+  let oi = 0;
+  let pos = cursorState.pos;
+  while (items.length < query.limit) {
+    const wantFeatured = isTopSlot(pos);
+    const primary = wantFeatured ? featuredRows : organicRows;
+    const secondary = wantFeatured ? organicRows : featuredRows;
+    if ((wantFeatured ? fi : oi) < primary.length) {
+      items.push(primary[wantFeatured ? fi : oi] as (typeof primary)[number]);
+      if (wantFeatured) fi += 1;
+      else oi += 1;
+    } else if ((wantFeatured ? oi : fi) < secondary.length) {
+      items.push(secondary[wantFeatured ? oi : fi] as (typeof secondary)[number]);
+      if (wantFeatured) oi += 1;
+      else fi += 1;
+    } else {
+      break; // оба источника исчерпаны — дальше листать нечего.
+    }
+    pos += 1;
+  }
+
+  const hasMore = fi < featuredRows.length || oi < organicRows.length;
+  const lastFeaturedId = fi > 0 ? (featuredRows[fi - 1]?.id ?? null) : cursorState.featuredId;
+  const lastOrganicId = oi > 0 ? (organicRows[oi - 1]?.id ?? null) : cursorState.organicId;
+
+  return {
+    items: items.map(toProfileCard),
+    nextCursor: hasMore
+      ? encodeRelevanceCursor({ pos, featuredId: lastFeaturedId, organicId: lastOrganicId })
+      : null,
+    total: null,
+  };
+}
+
 export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.get(
     '/profiles',
@@ -85,11 +176,31 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const query = request.query;
       const where = buildProfileWhere(query);
-      const cursor = decodeCursor(query.cursor);
 
       // Страница и курсор взаимоисключающи: страница даёт постоянный адрес
       // для обхода ботом, курсор — устойчивую подгрузку для человека.
       const offset = query.page ? (query.page - 1) * query.limit : undefined;
+
+      /**
+       * «Релевантность» на первой странице (без номера или `page=1` — так
+       * каталог грузится и на сервере при первом заходе, и через «показать
+       * ещё» дальше) и без среза «только ТОП» — единственный режим, где ТОП
+       * не идёт монолитным блоком наверх: каждая `RELEVANCE_TOP_PERIOD`-я
+       * позиция ленты отдаётся ему, а остальные — органике по свежести (см.
+       * query.ts). Прыжок сразу на вторую страницу и дальше (`page=2+`,
+       * обход ботом) этой перетасовки не получает — там нужен предсказуемый
+       * прыжок по номеру, а не история курсора, которую при таком прыжке
+       * взять неоткуда.
+       */
+      if (
+        query.sort === 'relevance' &&
+        (offset === undefined || offset === 0) &&
+        !query.featuredOnly
+      ) {
+        return relevancePage(fastify.prisma, where, query);
+      }
+
+      const cursor = decodeCursor(query.cursor);
 
       // Берём на одну запись больше запрошенного, чтобы узнать, есть ли следующая страница.
       const rows = await fastify.prisma.profile.findMany({

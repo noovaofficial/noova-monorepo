@@ -29,6 +29,7 @@ import {
   publicUrl,
 } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
+import { deleteVerificationPhotos } from '../verification/service.js';
 
 const profileSelect = {
   id: true,
@@ -277,7 +278,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         blockedProfiles,
         blockedUsers,
       ] = await Promise.all([
-        fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
+        // Отклонённое фото — уже принятое решение, а не работа в очереди:
+        // без `rejectedReason: null` оно застревало бы здесь навсегда,
+        // раз `isApproved` у него так и остаётся false.
+        fastify.prisma.photo.count({
+          where: { isApproved: false, deletedAt: null, rejectedReason: null },
+        }),
         fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
         // Заявки на верификацию личности — тоже незакрытая работа (D-12).
         fastify.prisma.verificationRequest.count({ where: { status: 'pending' } }),
@@ -378,7 +384,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     photo: async (afterId, take) => {
       const photos = await fastify.prisma.photo.findMany({
-        where: { isApproved: false, deletedAt: null },
+        where: { isApproved: false, deletedAt: null, rejectedReason: null },
         orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
         take,
         ...after(afterId),
@@ -518,7 +524,10 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
    */
   const queueCounters: Record<QueueSource, () => Promise<number>> = {
     verification: () => fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
-    photo: () => fastify.prisma.photo.count({ where: { isApproved: false, deletedAt: null } }),
+    photo: () =>
+      fastify.prisma.photo.count({
+        where: { isApproved: false, deletedAt: null, rejectedReason: null },
+      }),
     comment: () =>
       fastify.prisma.profileComment.count({
         where: {
@@ -733,6 +742,9 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/photos/:id/approve',
     {
       onRequest: guard,
+      // Апрув — основная рабочая нагрузка персонала: общий лимит рвёт им
+      // работу при разборе очереди, а роль здесь и так уже фильтр.
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -760,6 +772,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/photos/:id/reject',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -788,6 +801,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/verifications/:id/approve',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -864,6 +878,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/verifications/:id/reject',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1397,6 +1412,60 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       // Опубликованные анкеты исчезли — витрина должна узнать об этом сразу.
       fastify.revalidate([PROFILES_TAG]);
+      return reply.status(204).send(null);
+    },
+  );
+
+  /**
+   * Удаление одной анкеты персоналом — в отличие от удаления учётки выше,
+   * работает и для анкеты агентства (`companyId` задан): агентский каталог
+   * состоит из многих анкет на одной учётке, и снести его целиком ради
+   * одной анкеты нельзя. Здесь удаляется только сама анкета.
+   */
+  fastify.delete(
+    '/moderation/profiles/:id',
+    {
+      onRequest: guard,
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 204: z.null() },
+      },
+    },
+    async (request, reply) => {
+      const { userId } = requireSession(request);
+      const profile = await fastify.prisma.profile.findUnique({
+        where: { id: request.params.id },
+        select: { id: true, slug: true, ownerId: true },
+      });
+      if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
+      refuseSelfModeration(fastify, profile.ownerId, userId);
+
+      const photos = await fastify.prisma.photo.findMany({
+        where: { profileId: profile.id },
+        select: { storageKey: true },
+      });
+      for (const photo of photos) {
+        await deletePhotoFiles(photo.storageKey);
+      }
+
+      const requests = await fastify.prisma.verificationRequest.findMany({
+        where: { profileId: profile.id },
+        select: { id: true },
+      });
+      for (const item of requests) await deleteVerificationPhotos(item.id);
+
+      await writeAction(
+        fastify,
+        userId,
+        'profile',
+        profile.id,
+        'rejected',
+        'Анкета удалена модератором/администратором',
+      );
+      await fastify.prisma.profile.delete({ where: { id: profile.id } });
+
+      fastify.revalidate([PROFILES_TAG, profileTag(profile.slug)]);
       return reply.status(204).send(null);
     },
   );

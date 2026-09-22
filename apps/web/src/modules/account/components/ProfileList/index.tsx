@@ -2,7 +2,7 @@
 
 import { type AgencyPaywallInfo, type Locale, PROFILE_LIMIT_BY_ADVERTISER } from '@noova/shared';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
@@ -12,6 +12,7 @@ import {
   fetchCities,
   fetchOwnProfiles,
   ProfilePaywall,
+  publishProfile,
 } from '@/modules/account/api';
 import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
@@ -26,6 +27,7 @@ export function ProfileList() {
   const t = useTranslations('account');
   const { user, status: sessionStatus } = useSession();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const [showForm, setShowForm] = useState(false);
   // Пустая строка — «город ещё не выбран»: до загрузки справочника берём первый.
@@ -56,6 +58,13 @@ export function ProfileList() {
     // Инвалидировать список незачем: сразу уходим на страницу новой анкеты,
     // и к моменту возврата он всё равно устареет по времени.
     onSuccess: (created) => router.push(`/account/profiles/${created.id}`),
+  });
+
+  // Публикация прямо из списка — без захода в редактор, если анкета уже
+  // прошла проверку и её нужно лишь включить.
+  const publish = useMutation({
+    mutationFn: publishProfile,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.ownProfiles() }),
   });
 
   const profiles = list.data ?? null;
@@ -251,12 +260,28 @@ export function ProfileList() {
                 <Link href={`/account/profiles/${profile.id}`}>
                   <Button variant="secondary">{t('edit')}</Button>
                 </Link>
+                {/* Публикация без захода в редактор — та же проверка, что и
+                    там (`canPublish`): анкета проверена и ещё не опубликована. */}
+                {profile.verificationStatus === 'verified' &&
+                profile.status !== 'published' &&
+                profile.status !== 'banned' ? (
+                  <Button
+                    variant="secondary"
+                    disabled={publish.isPending && publish.variables === profile.id}
+                    onClick={() => publish.mutate(profile.id)}
+                  >
+                    {t('publish')}
+                  </Button>
+                ) : null}
                 {profile.status === 'published' ? (
                   <Link href={`/profile/${profile.slug}`}>
                     <Button variant="secondary">{t('view')}</Button>
                   </Link>
                 ) : null}
               </div>
+              {publish.isError && publish.variables === profile.id ? (
+                <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
+              ) : null}
             </div>
           ))}
         </div>

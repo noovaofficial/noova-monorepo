@@ -1,6 +1,15 @@
 import type { ProfileQuery } from '@noova/shared';
 import { describe, expect, it } from 'vitest';
-import { buildProfileWhere, decodeCursor, encodeCursor, orderByFor } from './query';
+import {
+  buildProfileWhere,
+  decodeCursor,
+  decodeRelevanceCursor,
+  encodeCursor,
+  encodeRelevanceCursor,
+  isTopSlot,
+  orderByFor,
+  RELEVANCE_TOP_PERIOD,
+} from './query';
 
 const query = (extra: Partial<ProfileQuery> = {}): ProfileQuery =>
   ({ kind: 'escort', limit: 20, sort: 'relevance', ...extra }) as ProfileQuery;
@@ -113,5 +122,39 @@ describe('сортировка', () => {
 
   it('релевантность поднимает промо наверх', () => {
     expect(orderByFor('relevance')[0]).toEqual({ isFeatured: 'desc' });
+  });
+});
+
+describe('перемешивание ТОПа в ленте «по умолчанию»', () => {
+  /**
+   * Раньше `isFeatured` было первым ключом сортировки, и все ТОП-анкеты
+   * вставали единым блоком наверх (`orderByFor('relevance')`, выше). Курсор
+   * `/profiles` при сортировке «релевантность» его больше не использует —
+   * вместо этого позиции распределяются через `isTopSlot`.
+   */
+  it('резервирует ровно каждую period-ю позицию', () => {
+    const reserved: number[] = [];
+    for (let i = 0; i < RELEVANCE_TOP_PERIOD * 4; i += 1) {
+      if (isTopSlot(i)) reserved.push(i);
+    }
+    expect(reserved).toEqual([
+      RELEVANCE_TOP_PERIOD - 1,
+      RELEVANCE_TOP_PERIOD * 2 - 1,
+      RELEVANCE_TOP_PERIOD * 3 - 1,
+      RELEVANCE_TOP_PERIOD * 4 - 1,
+    ]);
+  });
+
+  it('курсор перемешивания переживает кодирование и обратно', () => {
+    const state = { pos: 42, featuredId: 'feat1', organicId: 'org1' };
+    expect(decodeRelevanceCursor(encodeRelevanceCursor(state))).toEqual(state);
+  });
+
+  it('пустой или битый курсор — позиция ноль без источников', () => {
+    const zero = { pos: 0, featuredId: null, organicId: null };
+    expect(decodeRelevanceCursor(undefined)).toEqual(zero);
+    expect(decodeRelevanceCursor('!!!не-base64!!!')).toEqual(zero);
+    // Курсор простой сортировки (голый id) — другой формат, не должен падать.
+    expect(decodeRelevanceCursor(encodeCursor('cmt19tfre0001z7b0jevq7fcj'))).toEqual(zero);
   });
 });
