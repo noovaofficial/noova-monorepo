@@ -45,7 +45,11 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
   fastify.get(
     '/admin/agency-tariffs',
-    { onRequest: guard, schema: { tags: ['admin'], response: { 200: agencyTariffGridSchema } } },
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: { tags: ['admin'], response: { 200: agencyTariffGridSchema } },
+    },
     async () => loadAgencyTariffGrid(fastify.prisma),
   );
 
@@ -53,6 +57,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/agency-tariffs',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: agencyTariffTierInputSchema,
@@ -70,6 +75,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/agency-tariffs/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -104,6 +110,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/agency-tariffs/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -137,6 +144,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/companies/:id/tariff',
     {
       onRequest: staffGuard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -188,6 +196,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/companies/:id/tariff',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -235,6 +244,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/companies/:id/top',
     {
       onRequest: staffGuard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -261,6 +271,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/companies/:id/top',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),

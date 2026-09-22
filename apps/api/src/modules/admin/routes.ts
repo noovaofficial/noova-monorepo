@@ -241,6 +241,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/staff',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['admin'], response: { 200: z.array(staffMemberSchema) } },
     },
     async () => {
@@ -257,6 +258,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/staff',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: createStaffSchema,
@@ -301,6 +303,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/staff/:id/block',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -347,6 +350,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/staff/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -386,6 +390,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // он существует как надзор за сотрудниками, а не как их общая лента.
       // Ограничение ниже, по сессии, — параметр запроса тут не указ.
       onRequest: fastify.requireRole('moderator', 'admin'),
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: moderationLogQuerySchema,
@@ -454,6 +459,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/profiles/:id/top',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),

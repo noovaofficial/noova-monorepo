@@ -87,6 +87,7 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/campaigns',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: localeQuerySchema,
@@ -107,6 +108,7 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/campaigns',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: localeQuerySchema,
@@ -153,6 +155,7 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/campaigns/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),
@@ -207,6 +210,7 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/campaigns/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),

@@ -96,6 +96,7 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/services',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['admin'], response: { 200: z.array(adminServiceGroupSchema) } },
     },
     async () => present(),
@@ -105,6 +106,7 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/service-groups',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: serviceGroupInputSchema,
@@ -132,6 +134,7 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/service-groups/:key',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ key: z.string().min(1) }),
@@ -157,6 +160,7 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/services',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: serviceInputSchema,
@@ -194,6 +198,7 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/services/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: z.object({ id: z.string().min(1) }),

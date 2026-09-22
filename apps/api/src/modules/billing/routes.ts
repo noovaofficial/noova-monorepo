@@ -93,6 +93,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/billing/config',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         response: { 200: adminPriceBookSchema },
@@ -108,6 +109,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/billing/config',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: adminBillingConfigSchema,
@@ -500,6 +502,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/billing/operations',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: z.object({
@@ -560,6 +563,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/billing/transactions.csv',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: z.object({
@@ -644,6 +648,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/billing/adjust-limit',
     {
       onRequest: fastify.requireRole('admin', 'moderator'),
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         response: { 200: adjustLimitSchema },
@@ -670,6 +675,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/billing/adjust',
     {
       onRequest: fastify.requireRole('admin', 'moderator'),
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         body: adjustBalanceInputSchema,

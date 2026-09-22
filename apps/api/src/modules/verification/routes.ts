@@ -199,6 +199,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/identity',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         querystring: z.object({
@@ -238,6 +239,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/identity/:id',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -262,6 +264,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/identity/:id/photo/:kind',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1), kind: verificationPhotoKindSchema }),
@@ -296,6 +299,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/identity/:id/approve',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -346,6 +350,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/identity/:id/reject',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -398,6 +403,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users/:id',
     {
       onRequest: staff,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),

@@ -388,10 +388,11 @@ export function ProfileReview({ profileId }: { profileId: string }) {
 
         {/* Удалить учётку — только для индивидуалки/салона: их анкета и
             аккаунт — одно и то же. Для анкеты агентства (companyId задан)
-            удаление аккаунта снесло бы весь его каталог разом — кнопка
-            видна, но задизейблена с подсказкой: это действие только с
-            карточки самого агентства, где видно, что удаляется целиком. */}
-        {isAdmin ? (
+            удаление аккаунта снесло бы весь его каталог разом, а с появлением
+            отдельного удаления анкеты (карточка ниже) держать здесь ещё и
+            задизейбленную кнопку — только путать: это действие теперь только
+            с карточки самого агентства, где видно, что удаляется целиком. */}
+        {isAdmin && profile.companyId === null ? (
           <ActionCard
             icon={<DeleteIcon />}
             title={t('deleteUser')}
@@ -413,12 +414,7 @@ export function ProfileReview({ profileId }: { profileId: string }) {
               </>
             ) : (
               <div className={cardStyles.actions}>
-                <Button
-                  variant="secondary"
-                  disabled={busy || profile.companyId !== null}
-                  title={profile.companyId !== null ? t('deleteDisabledAgencyOwned') : undefined}
-                  onClick={() => setDeleting(true)}
-                >
+                <Button variant="secondary" disabled={busy} onClick={() => setDeleting(true)}>
                   <DeleteIcon />
                   {t('deleteUser')}
                 </Button>

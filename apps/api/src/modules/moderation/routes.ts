@@ -230,6 +230,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/photos/:id/file',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -264,6 +265,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/queue/count',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['moderation'], response: { 200: queueCountSchema } },
     },
     async () => {
@@ -556,6 +558,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/queue',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         querystring: queueQuerySchema,
@@ -617,6 +620,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/reports/:id/resolve',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -658,6 +662,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/comments/:id/approve',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -700,6 +705,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/comments/:id/reject',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -930,6 +936,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/profiles/:id/block',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -976,6 +983,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/profiles/:id/unblock',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1021,6 +1029,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users/:id/block',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1103,6 +1112,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users/:id/unblock',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1142,6 +1152,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/companies/:id/block',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1210,6 +1221,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/companies/:id/unblock',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1248,6 +1260,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/blocked-profiles',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         querystring: blockedProfilesQuerySchema,
@@ -1323,6 +1336,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         querystring: userSearchSchema,
@@ -1378,6 +1392,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users/:id',
     {
       onRequest: fastify.requireRole('admin'),
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1426,6 +1441,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/profiles/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1474,6 +1490,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/users/:id/verify-email',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),
@@ -1518,6 +1535,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/moderation/profiles/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['moderation'],
         params: z.object({ id: z.string().min(1) }),

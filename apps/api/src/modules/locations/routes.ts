@@ -43,6 +43,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/countries',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['admin'], response: { 200: z.array(countrySchema) } },
     },
     async () => {
@@ -73,6 +74,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/countries',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['admin'], body: countryInputSchema, response: { 201: countrySchema } },
     },
     async (request, reply) => {
@@ -110,6 +112,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/countries/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: idParams,
@@ -247,6 +250,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/cities',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         querystring: z.object({ countryId: z.string().min(1).optional() }),
@@ -267,6 +271,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/cities',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: { tags: ['admin'], body: cityInputSchema, response: { 201: citySchemaAdmin } },
     },
     async (request, reply) => {
@@ -322,6 +327,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/cities/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: idParams,
@@ -354,6 +360,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/cities/:id/districts',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: idParams,
@@ -395,6 +402,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/admin/districts/:id',
     {
       onRequest: guard,
+      config: { rateLimit: false },
       schema: {
         tags: ['admin'],
         params: idParams,
