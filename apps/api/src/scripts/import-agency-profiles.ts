@@ -280,7 +280,13 @@ async function importOne(slug: string, agency: { userId: string; companyId: stri
   }
 
   const already = existing?._count.photos ?? 0;
-  const photoFiles = (await readdir(path.join(dir, 'photos'))).sort();
+  // Файлы вида "._1.jpg" — мусор AppleDouble, который macOS-тар кладёт в
+  // архив даже без видимых файлов на диске (com.apple.quarantine и т.п.
+  // атрибуты). readdir отсортирует их ПЕРЕД настоящими (точка < цифры),
+  // и первая же "фотография" окажется 163-байтным огрызком.
+  const photoFiles = (await readdir(path.join(dir, 'photos')))
+    .filter((f) => !f.startsWith('.'))
+    .sort();
   for (let i = already; i < photoFiles.length; i += 1) {
     await uploadPhoto(profileId, path.join(dir, 'photos', photoFiles[i]!), i);
   }
