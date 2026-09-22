@@ -1,7 +1,9 @@
 /**
- * Разовый импорт анкет агентства Escort Lady Luck из тем же способом, что
- * `seed-reference.ts` заводит справочники, — напрямую в БД и хранилище, а
- * не через публичный API.
+ * Разовый импорт анкет агентства из тем же способом, что `seed-reference.ts`
+ * заводит справочники, — напрямую в БД и хранилище, а не через публичный API.
+ * Общий на все агентства (первым был Escort Lady Luck, вторым — Frankfurt
+ * Babes) — то, чем они отличаются (email, тарифы, контакты), задаётся
+ * переменными окружения, а не копированием файла под каждое агентство.
  *
  * Через API (`POST /me/profiles/:id/photos`) это упёрлось бы в лимит 40
  * фото/час — на ~400 фото это 10+ часов. Тот лимит защищает от живого
@@ -13,14 +15,22 @@
  * Идемпотентно: у кого анкета с таким slug уже существует — пропускается.
  * Повторный запуск (после сбоя на середине) продолжит с недостающих.
  *
- * Запуск:
- *   на сервере: docker compose exec api node dist/scripts/import-agency-profiles.js
- *   (INPUT_DIR должен указывать на скопированную на сервер tmp_scrap_res —
- *   см. документацию в чате/задаче, где расписан весь перенос)
+ * draft.json ожидается в ПЛОСКОМ виде (params.age, params.hairColor и т.д. —
+ * готовые значения, не {value,raw,needsReview}) — так его оставляет merge.mjs
+ * у Lady Luck; для агентств, чей парсер кладёт params под mapped.*.value
+ * (как у Frankfurt Babes), сначала прогнать flatten.mjs.
  *
- *   AGENCY_EMAIL=agency@example.com \
- *   INPUT_DIR=/app/tmp_scrap_res \
- *   node dist/scripts/import-agency-profiles.js
+ * Запуск:
+ *   на сервере: docker compose exec api sh -c '
+ *     AGENCY_EMAIL=agency@example.com \
+ *     INPUT_DIR=/app/tmp_scrap_res \
+ *     CITY_SLUG=frankfurt \
+ *     TELEGRAM_HANDLE=@Handle \
+ *     WHATSAPP_NUMBER=+49... \
+ *     PRICES="60:20000,120:38000,180:56000,240:74000,360:100000,720:150000,1440:200000" \
+ *     node dist/scripts/import-agency-profiles.js'
+ *
+ * PRICES — "минуты:центы" через запятую, столько слотов, сколько нужно.
  */
 import 'dotenv/config';
 import { readFile, readdir } from 'node:fs/promises';
@@ -49,37 +59,37 @@ if (!connectionString) {
 
 const AGENCY_EMAIL = process.env.AGENCY_EMAIL;
 const INPUT_DIR = process.env.INPUT_DIR;
-if (!AGENCY_EMAIL || !INPUT_DIR) {
-  console.error('Нужны переменные окружения: AGENCY_EMAIL, INPUT_DIR');
+const PRICES_RAW = process.env.PRICES;
+if (!AGENCY_EMAIL || !INPUT_DIR || !PRICES_RAW) {
+  console.error(
+    'Нужны переменные окружения: AGENCY_EMAIL, INPUT_DIR, PRICES ("минуты:центы,минуты:центы,...")',
+  );
+  process.exit(1);
+}
+if (!process.env.TELEGRAM_HANDLE && !process.env.WHATSAPP_NUMBER) {
+  console.error('Нужен хотя бы один контакт: TELEGRAM_HANDLE или WHATSAPP_NUMBER.');
   process.exit(1);
 }
 
-const CITY_SLUG = 'frankfurt';
+const CITY_SLUG = process.env.CITY_SLUG ?? 'frankfurt';
+
 const CONTACTS: Array<{ type: 'telegram' | 'whatsapp'; value: string }> = [
-  { type: 'telegram', value: '@Escortladyluck' },
-  { type: 'whatsapp', value: '+4915739794828' },
+  ...(process.env.TELEGRAM_HANDLE ? [{ type: 'telegram' as const, value: process.env.TELEGRAM_HANDLE }] : []),
+  ...(process.env.WHATSAPP_NUMBER ? [{ type: 'whatsapp' as const, value: process.env.WHATSAPP_NUMBER }] : []),
 ];
 
-/**
- * Единые тарифы на весь пакет анкет (решение от 2026-09-21) — не берутся из
- * draft.json, задаются один раз здесь. Инкол и ауткол одинаковы по решению
- * пользователя.
- */
-const PRICES: Array<{ durationMinutes: number; cents: number }> = [
-  { durationMinutes: 60, cents: 20_000 }, // 1ч — 200€
-  { durationMinutes: 120, cents: 38_000 }, // 2ч — 380€
-  { durationMinutes: 180, cents: 56_000 }, // 3ч — 560€
-  { durationMinutes: 240, cents: 74_000 }, // 4ч — 740€
-  { durationMinutes: 360, cents: 100_000 }, // 6ч — 1000€
-  { durationMinutes: 720, cents: 150_000 }, // 12ч — 1500€
-  { durationMinutes: 1440, cents: 200_000 }, // 24ч — 2000€
-];
-const PRICE_SLOTS = PRICES.map((p) => ({
-  durationMinutes: p.durationMinutes,
-  incallCents: p.cents,
-  outcallCents: p.cents,
-}));
-const LOWEST_PRICE_CENTS = Math.min(...PRICES.map((p) => p.cents));
+/** Единые тарифы на весь пакет анкет — приходят через PRICES, не из draft.json.
+ *  Инкол и ауткол одинаковы (решение от 2026-09-21, подтверждено для обоих агентств). */
+const PRICE_SLOTS = PRICES_RAW.split(',').map((pair) => {
+  const [minutesRaw, centsRaw] = pair.split(':');
+  const durationMinutes = Number(minutesRaw);
+  const cents = Number(centsRaw);
+  if (!durationMinutes || !cents) {
+    throw new Error(`PRICES: не разобрать "${pair}" — ожидается "минуты:центы"`);
+  }
+  return { durationMinutes, incallCents: cents, outcallCents: cents };
+});
+const LOWEST_PRICE_CENTS = Math.min(...PRICE_SLOTS.map((p) => p.incallCents));
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
