@@ -22,7 +22,6 @@ import {
   updateAgencyTariffTier,
 } from './agency-tariffs.js';
 import {
-  AgencyTopAlreadyActiveError,
   AgencyTopFullError,
   AgencyTopNoCompanyError,
   agencyTopState,
@@ -294,18 +293,15 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
             subjectType: 'company',
             subjectId: request.params.id,
             decision: 'approved',
-            reason: 'ТОП агентства выдан администратором',
+            reason: result.extended
+              ? 'ТОП агентства продлён администратором'
+              : 'ТОП агентства выдан администратором',
           },
         });
 
         fastify.revalidate([PROFILES_TAG]);
-        return result;
+        return { placement: result.placement };
       } catch (error) {
-        if (error instanceof AgencyTopAlreadyActiveError) {
-          throw fastify.httpErrors.conflict(
-            `Агентство уже в ТОПе до ${error.expiresAt.toISOString()}`,
-          );
-        }
         if (error instanceof AgencyTopFullError) {
           throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
         }

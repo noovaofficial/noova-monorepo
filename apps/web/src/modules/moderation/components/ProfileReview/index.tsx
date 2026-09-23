@@ -290,23 +290,16 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                 variant="secondary"
                 disabled={
                   busy ||
-                  profile.isFeatured ||
                   profile.status !== 'published' ||
                   (topDays.trim() !== '' && (!/^\d+$/.test(topDays.trim()) || Number(topDays) < 1))
                 }
-                title={
-                  profile.isFeatured
-                    ? t('topDisabledActive')
-                    : profile.status !== 'published'
-                      ? t('topDisabledNotPublished')
-                      : undefined
-                }
+                title={profile.status !== 'published' ? t('topDisabledNotPublished') : undefined}
                 onClick={() =>
                   grantTop.mutate(topDays.trim() === '' ? undefined : Number(topDays.trim()))
                 }
               >
                 <TopIcon />
-                {t('grantTop')}
+                {t(profile.isFeatured ? 'extendTop' : 'grantTop')}
               </Button>
             </div>
             {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}

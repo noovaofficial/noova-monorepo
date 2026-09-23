@@ -6,6 +6,7 @@ import {
 } from '@noova/shared';
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import { PROFILES_TAG } from '../../plugins/revalidate.js';
+import { expiryAfterGrant } from './top.js';
 import { applyMovement } from './wallet.js';
 
 /**
@@ -191,7 +192,7 @@ export type AgencyTopGrant = {
 export function grantAgencyTop(
   prisma: PrismaClient,
   grant: AgencyTopGrant,
-): Promise<{ placement: AgencyTopPlacement }> {
+): Promise<{ placement: AgencyTopPlacement; extended: boolean }> {
   const now = grant.now ?? new Date();
 
   return prisma.$transaction(async (tx) => {
@@ -204,18 +205,20 @@ export function grantAgencyTop(
     if (!company) throw new AgencyTopNoCompanyError();
 
     const current = company.topPlacement;
-    if (current !== null && current.status === 'active' && current.expiresAt > now) {
-      throw new AgencyTopAlreadyActiveError(current.expiresAt);
+    const { expiresAt, extended } = expiryAfterGrant(current, now, WEEK_MS);
+
+    // Продление места, которое уже занято, свободного слота не требует.
+    if (!extended) {
+      const taken = await tx.agencyTopPlacement.count({ where: activeWhere(now) });
+      if (taken >= grant.slots) throw new AgencyTopFullError(grant.slots);
     }
 
-    const taken = await tx.agencyTopPlacement.count({ where: activeWhere(now) });
-    if (taken >= grant.slots) throw new AgencyTopFullError(grant.slots);
-
-    const expiresAt = new Date(now.getTime() + WEEK_MS);
     const placement = current
       ? await tx.agencyTopPlacement.update({
           where: { companyId: company.id },
-          data: { userId: company.ownerId, status: 'active', startsAt: now, expiresAt },
+          data: extended
+            ? { userId: company.ownerId, expiresAt }
+            : { userId: company.ownerId, status: 'active', startsAt: now, expiresAt },
         })
       : await tx.agencyTopPlacement.create({
           data: {
@@ -229,7 +232,7 @@ export function grantAgencyTop(
 
     await tx.company.update({ where: { id: company.id }, data: { isFeatured: true } });
 
-    return { placement: toAgencyTopPlacement(placement) };
+    return { placement: toAgencyTopPlacement(placement), extended };
   });
 }
 

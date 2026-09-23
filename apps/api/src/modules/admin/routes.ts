@@ -25,12 +25,7 @@ import { loadOverview } from '../analytics/overview.js';
 import { loadAnalytics } from '../analytics/query.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
-import {
-  grantTop,
-  TopAlreadyActiveError,
-  TopFullError,
-  TopNotPublishedError,
-} from '../billing/top.js';
+import { grantTop, TopFullError, TopNotPublishedError } from '../billing/top.js';
 import { toTransaction } from '../billing/wallet.js';
 import { publicUrl } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
@@ -677,7 +672,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
             subjectType: 'profile',
             subjectId: request.params.id,
             decision: 'approved',
-            reason: 'ТОП выдан администратором',
+            reason: result.extended ? 'ТОП продлён администратором' : 'ТОП выдан администратором',
           },
         });
 
@@ -687,13 +682,8 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         });
         if (profile) fastify.revalidate([PROFILES_TAG, profileTag(profile.slug)]);
 
-        return result;
+        return { placement: result.placement };
       } catch (error) {
-        if (error instanceof TopAlreadyActiveError) {
-          throw fastify.httpErrors.conflict(
-            `Анкета уже в ТОПе до ${error.expiresAt.toISOString()}`,
-          );
-        }
         if (error instanceof TopFullError) {
           throw fastify.httpErrors.conflict(`Все ${error.slots} мест в ТОПе заняты`);
         }

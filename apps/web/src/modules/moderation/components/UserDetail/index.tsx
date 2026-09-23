@@ -198,13 +198,12 @@ export function UserDetail({ userId }: { userId: string }) {
             }
           : null
         : null;
+  // Уже в ТОПе — не запрет: кнопка продлевает место.
   const topDisabledReason = !topTarget
     ? t('topDisabledNotPublished')
-    : topTarget.isFeatured
-      ? t('topDisabledActive')
-      : topTarget.notPublished
-        ? t('topDisabledNotPublished')
-        : undefined;
+    : topTarget.notPublished
+      ? t('topDisabledNotPublished')
+      : undefined;
 
   const when = (iso: string | null) =>
     iso === null
@@ -354,7 +353,7 @@ export function UserDetail({ userId }: { userId: string }) {
                   onClick={() => grantTop.mutate(topTarget)}
                 >
                   <TopIcon />
-                  {t('grantTop')}
+                  {t(topTarget?.isFeatured ? 'extendTop' : 'grantTop')}
                 </Button>
               </div>
               {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}

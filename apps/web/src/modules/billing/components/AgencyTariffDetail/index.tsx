@@ -332,18 +332,17 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
             <div className={cardStyles.actions}>
               <Button
                 variant="secondary"
-                disabled={busy || Boolean(top.data.placement) || top.data.freeSlots <= 0}
+                // Уже в ТОПе — кнопка продлевает место и свободного слота не требует.
+                disabled={busy || (!top.data.placement && top.data.freeSlots <= 0)}
                 title={
-                  top.data.placement
-                    ? t('topDisabledActive')
-                    : top.data.freeSlots <= 0
-                      ? t('topDisabledNoSlots')
-                      : undefined
+                  !top.data.placement && top.data.freeSlots <= 0
+                    ? t('topDisabledNoSlots')
+                    : undefined
                 }
                 onClick={() => grantTop.mutate()}
               >
                 <TopIcon />
-                {t('grantTop')}
+                {t(top.data.placement ? 'extendTop' : 'grantTop')}
               </Button>
             </div>
             {grantTop.isError ? (

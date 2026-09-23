@@ -605,14 +605,14 @@ export function UserList({
                       {/* Выдача ТОПа без оплаты — обход платежа, только
                           админ, как и прочие денежные решения
                           (payments.md §3.4/D-10). */}
-                      {isAdmin && topTarget && !topTarget.isFeatured ? (
+                      {isAdmin && topTarget ? (
                         <Button
                           variant="secondary"
                           disabled={busy}
                           onClick={() => grantTop.mutate(user)}
                         >
                           <TopIcon />
-                          {t('grantTop')}
+                          {t(topTarget.isFeatured ? 'extendTop' : 'grantTop')}
                         </Button>
                       ) : null}
                     </>

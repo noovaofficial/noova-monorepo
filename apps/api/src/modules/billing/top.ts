@@ -177,6 +177,23 @@ export async function expireTopPlacements(
   return expired.length;
 }
 
+/**
+ * Срок места после выдачи админом. Место ещё действует — продлеваем от его
+ * конца, а не от «сейчас»: иначе выданная неделя съела бы остаток оплаченного
+ * срока. Места нет или оно истекло — обычные `now + срок`.
+ */
+export function expiryAfterGrant(
+  current: { status: 'active' | 'expired'; expiresAt: Date } | null,
+  now: Date,
+  durationMs: number,
+): { expiresAt: Date; extended: boolean } {
+  const active = current !== null && current.status === 'active' && current.expiresAt > now;
+  return {
+    expiresAt: new Date((active ? current.expiresAt : now).getTime() + durationMs),
+    extended: active,
+  };
+}
+
 export type TopGrant = {
   profileId: string;
   slots: number;
@@ -188,13 +205,13 @@ export type TopGrant = {
 /**
  * Выдача места админом (без оплаты) — то же место, тот же лимит и те же
  * проверки, что у покупки, только без списания GlowCoin: `applyMovement`
- * не вызывается. Место засчитывается на владельца анкеты, чтобы попасть в
+ * не вызывается. Если место уже действует, оно продлевается (`extended`). Место засчитывается на владельца анкеты, чтобы попасть в
  * его собственный `GET /billing/top` наравне с купленными.
  */
 export function grantTop(
   prisma: PrismaClient,
   grant: TopGrant,
-): Promise<{ placement: TopPlacement }> {
+): Promise<{ placement: TopPlacement; extended: boolean }> {
   const now = grant.now ?? new Date();
   const durationMs = (grant.durationDays ?? TOP_WEEK_DAYS) * 24 * 60 * 60 * 1000;
 
@@ -209,18 +226,20 @@ export function grantTop(
     if (profile.status !== 'published') throw new TopNotPublishedError();
 
     const current = profile.topPlacement;
-    if (current !== null && current.status === 'active' && current.expiresAt > now) {
-      throw new TopAlreadyActiveError(current.expiresAt);
+    const { expiresAt, extended } = expiryAfterGrant(current, now, durationMs);
+
+    // Продление места, которое уже занято, свободного слота не требует.
+    if (!extended) {
+      const taken = await tx.topPlacement.count({ where: activeWhere(now) });
+      if (taken >= grant.slots) throw new TopFullError(grant.slots);
     }
 
-    const taken = await tx.topPlacement.count({ where: activeWhere(now) });
-    if (taken >= grant.slots) throw new TopFullError(grant.slots);
-
-    const expiresAt = new Date(now.getTime() + durationMs);
     const placement = current
       ? await tx.topPlacement.update({
           where: { profileId: profile.id },
-          data: { userId: profile.ownerId, status: 'active', startsAt: now, expiresAt },
+          data: extended
+            ? { userId: profile.ownerId, expiresAt }
+            : { userId: profile.ownerId, status: 'active', startsAt: now, expiresAt },
         })
       : await tx.topPlacement.create({
           data: {
@@ -234,7 +253,7 @@ export function grantTop(
 
     await tx.profile.update({ where: { id: profile.id }, data: { isFeatured: true } });
 
-    return { placement: toTopPlacement(placement) };
+    return { placement: toTopPlacement(placement), extended };
   });
 }
 
