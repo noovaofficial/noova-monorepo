@@ -382,6 +382,41 @@ export type BuyTopResult = z.infer<typeof buyTopResultSchema>;
 export const grantTopResultSchema = z.object({ placement: topPlacementSchema });
 export type GrantTopResult = z.infer<typeof grantTopResultSchema>;
 
+/**
+ * Кто сейчас в ТОПе — для админа (страница «Сейчас в ТОПе»). Только активные и
+ * ещё не истёкшие размещения: задача снимает истёкшие с опозданием до цикла.
+ */
+export const topNowProfileSchema = z.object({
+  profileId: z.string(),
+  slug: z.string(),
+  displayName: z.string(),
+  /** Кто владелец: индивидуалка, агентство или салон — для метки на карточке. */
+  ownerKind: z.enum(['individual', 'agency', 'salon']),
+  companyName: z.string().nullable(),
+  city: z.string(),
+  coverUrl: z.string().nullable(),
+  startsAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+});
+export type TopNowProfile = z.infer<typeof topNowProfileSchema>;
+
+export const topNowAgencySchema = z.object({
+  companyId: z.string(),
+  slug: z.string(),
+  name: z.string(),
+  logoUrl: z.string().nullable(),
+  profileCount: z.number().int().nonnegative(),
+  startsAt: z.string().datetime(),
+  expiresAt: z.string().datetime(),
+});
+export type TopNowAgency = z.infer<typeof topNowAgencySchema>;
+
+export const topNowSchema = z.object({
+  profiles: z.array(topNowProfileSchema),
+  agencies: z.array(topNowAgencySchema),
+});
+export type TopNow = z.infer<typeof topNowSchema>;
+
 /** Кастомный срок выдачи ТОПа админом. Без поля — стандартная неделя. */
 export const grantTopInputSchema = z.object({
   days: z.number().int().min(1).max(365).optional(),

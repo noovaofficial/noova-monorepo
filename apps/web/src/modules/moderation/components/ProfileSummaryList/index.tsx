@@ -32,9 +32,9 @@ export function ProfileSummaryList({
       <h2 className={styles.userSection}>{title}</h2>
 
       {profiles.length === 0 ? (
-        <p className={styles.empty}>{emptyText}</p>
+        <p className={`${styles.empty} ${styles.summaryList}`}>{emptyText}</p>
       ) : (
-        <div className={styles.staffList}>
+        <div className={`${styles.staffList} ${styles.summaryList}`}>
           {profiles.map((profile) => (
             <div className={styles.staffRow} key={profile.id}>
               <div className={styles.staffMain}>

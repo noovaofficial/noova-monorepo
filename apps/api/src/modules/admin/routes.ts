@@ -7,10 +7,12 @@ import {
   type moderationSubjectRefSchema,
   pageSchema,
   staffMemberSchema,
+  topNowSchema,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { photoUrl } from '../../mappers.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { hashPassword } from '../auth/passwords.js';
@@ -21,6 +23,7 @@ import {
   TopFullError,
   TopNotPublishedError,
 } from '../billing/top.js';
+import { publicUrl } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
 
 /**
@@ -251,6 +254,90 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: staffSelect,
       });
       return rows.map((row) => toStaffMember(row as StaffRow));
+    },
+  );
+
+  /**
+   * Кто сейчас в ТОПе: активные и не истёкшие размещения анкет (включая
+   * салоны) и агентств. Ближайшие к окончанию — первыми: их и надо замечать.
+   */
+  fastify.get(
+    '/admin/top-now',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: { tags: ['admin'], response: { 200: topNowSchema } },
+    },
+    async () => {
+      const now = new Date();
+      const active = { status: 'active' as const, expiresAt: { gt: now } };
+
+      const [placements, agencyPlacements] = await Promise.all([
+        fastify.prisma.topPlacement.findMany({
+          where: active,
+          orderBy: { expiresAt: 'asc' },
+          select: {
+            startsAt: true,
+            expiresAt: true,
+            profile: {
+              select: {
+                id: true,
+                slug: true,
+                displayName: true,
+                city: { select: { name: true } },
+                owner: { select: { advertiserKind: true } },
+                company: { select: { name: true } },
+                photos: {
+                  where: { isApproved: true },
+                  orderBy: { position: 'asc' },
+                  take: 1,
+                  select: { storageKey: true },
+                },
+              },
+            },
+          },
+        }),
+        fastify.prisma.agencyTopPlacement.findMany({
+          where: active,
+          orderBy: { expiresAt: 'asc' },
+          select: {
+            startsAt: true,
+            expiresAt: true,
+            company: {
+              select: {
+                id: true,
+                slug: true,
+                name: true,
+                logoStorageKey: true,
+                _count: { select: { profiles: { where: { status: 'published' } } } },
+              },
+            },
+          },
+        }),
+      ]);
+
+      return {
+        profiles: placements.map((row) => ({
+          profileId: row.profile.id,
+          slug: row.profile.slug,
+          displayName: row.profile.displayName,
+          ownerKind: row.profile.owner.advertiserKind ?? 'individual',
+          companyName: row.profile.company?.name ?? null,
+          city: row.profile.city.name,
+          coverUrl: row.profile.photos[0] ? photoUrl(row.profile.photos[0].storageKey) : null,
+          startsAt: row.startsAt.toISOString(),
+          expiresAt: row.expiresAt.toISOString(),
+        })),
+        agencies: agencyPlacements.map((row) => ({
+          companyId: row.company.id,
+          slug: row.company.slug,
+          name: row.company.name,
+          logoUrl: row.company.logoStorageKey ? publicUrl(row.company.logoStorageKey) : null,
+          profileCount: row.company._count.profiles,
+          startsAt: row.startsAt.toISOString(),
+          expiresAt: row.expiresAt.toISOString(),
+        })),
+      };
     },
   );
 

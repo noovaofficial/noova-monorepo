@@ -1,0 +1,141 @@
+.wrap {
+  padding: var(--space6) 0 var(--space12);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.lead {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin: var(--space2) 0 var(--space6);
+  max-width: 640px;
+}
+
+.section {
+  margin-bottom: var(--space8);
+}
+
+.sectionTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space3);
+}
+
+.count {
+  color: var(--tertiaryText);
+  font-weight: 500;
+  margin-left: var(--space1);
+}
+
+/* Карточки не растягиваются на всю ширину: колонки фиксированной ширины
+   180px (столько же, как у карточек в «Моих анкетах»), лишнее место остаётся
+   пустым справа. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 180px);
+  gap: var(--space3);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--primary);
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--surfaceMuted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbLogo {
+  aspect-ratio: 1 / 1;
+}
+
+.thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbLogo img {
+  object-fit: contain;
+  padding: var(--space3);
+}
+
+.noPhoto {
+  color: var(--tertiaryText);
+  font-size: var(--textSm);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space3);
+  min-width: 0;
+}
+
+.name {
+  font-family: var(--fontDisplay);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  color: var(--tertiaryText);
+  font-size: var(--textSm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expiry,
+.expirySoon {
+  margin-top: var(--space1);
+  font-size: var(--textSm);
+  font-weight: 600;
+}
+
+.expiry {
+  color: var(--secondaryText);
+}
+
+/* Скоро кончается — заметнее, это то, что админ и хочет отловить. */
+.expirySoon {
+  color: var(--accentHover);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.emptyInline {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}

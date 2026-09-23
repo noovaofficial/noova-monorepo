@@ -21,6 +21,7 @@ export type StaffSection = {
     | 'massageSalons'
     | 'allUsers'
     | 'log'
+    | 'topNow'
     | 'locations'
     | 'serviceCatalog'
     | 'monetization'
@@ -50,6 +51,8 @@ export const STAFF_SECTIONS: StaffSection[] = [
   { key: 'moderation', href: '/moderation', group: 'moderation' },
   { key: 'log', href: '/moderation/log', group: 'moderation' },
   { key: 'billingOps', href: '/admin/billing', adminOnly: true, group: 'moderation' },
+  // Кто занимает места в ТОПе прямо сейчас — обзор для владельца продукта.
+  { key: 'topNow', href: '/admin/top', adminOnly: true, group: 'moderation' },
   { key: 'staff', href: '/admin', adminOnly: true, group: 'people' },
   // Список агентств по типу рекламодателя — карточка агентства (тариф,
   // бан, ТОП, монеты) сама решает по роли, какие действия показать

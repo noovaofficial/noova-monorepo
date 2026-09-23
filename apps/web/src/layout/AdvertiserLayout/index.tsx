@@ -30,16 +30,28 @@ export function AdvertiserLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [promoOpen, setPromoOpen] = useState(false);
 
+  const isIndividual = user?.advertiserKind === 'individual';
   const isItemActive = (href: string) => pathname === href;
   const itemClass = (href: string) =>
     `${styles.item} ${isItemActive(href) ? styles.itemActive : ''}`;
 
   const nav = (
     <nav className={styles.nav} aria-label={ta('accountMenu')}>
-      <Link href="/account/profiles" className={itemClass('/account/profiles')}>
-        <MenuIcon name="myProfiles" className={styles.itemIcon} />
-        {ta('myProfiles')}
-      </Link>
+      {/* У индивидуалки анкета одна: вместо списка — сразу в её редактор. */}
+      {isIndividual ? (
+        <Link
+          href="/account/profile"
+          className={`${styles.item} ${pathname.startsWith('/account/profiles') ? styles.itemActive : ''}`}
+        >
+          <MenuIcon name="myProfiles" className={styles.itemIcon} />
+          {ta('myProfile')}
+        </Link>
+      ) : (
+        <Link href="/account/profiles" className={itemClass('/account/profiles')}>
+          <MenuIcon name="myProfiles" className={styles.itemIcon} />
+          {ta('myProfiles')}
+        </Link>
+      )}
 
       {user?.advertiserKind === 'agency' ? (
         <Link href="/account/company" className={itemClass('/account/company')}>

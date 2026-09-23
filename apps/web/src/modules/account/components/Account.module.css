@@ -440,6 +440,12 @@
   .sidebar > .dangerCard {
     order: 1;
   }
+
+  /* Список анкет агентства: сводка и массовые действия — над анкетами, а не
+     под ними (обе карточки панели уходят выше сетки карточек). */
+  .profileGrid {
+    order: 1;
+  }
 }
 
 /* Карточка удаления анкеты. Рамка опасности — чтобы единственное необратимое
@@ -513,9 +519,12 @@
    липкая панель со сводкой и массовыми действиями (`.sidebar`). */
 .profileGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  /* Колонки фиксированной ширины — карточки не растягиваются на весь экран,
+     как и на странице «Сейчас в ТОПе» у админа. */
+  grid-template-columns: repeat(auto-fill, 180px);
   gap: var(--space3);
   min-width: 0;
+  align-content: start;
 }
 
 .profileCard {

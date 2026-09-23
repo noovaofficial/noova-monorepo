@@ -21,6 +21,8 @@ import {
   queueItemSchema,
   type StaffMember,
   staffMemberSchema,
+  type TopNow,
+  topNowSchema,
   type UserRole,
   type VerificationRequestDetail,
   type VerificationRequestItem,
@@ -219,6 +221,11 @@ export async function deleteModeratedProfile(id: string): Promise<void> {
 
 export function verifyUserEmail(id: string): Promise<ManagedUser> {
   return call(`/moderation/users/${id}/verify-email`, managedUserSchema, { method: 'POST' });
+}
+
+/** Кто сейчас в ТОПе: анкеты и агентства (только админ). */
+export function fetchTopNow(): Promise<TopNow> {
+  return call('/admin/top-now', topNowSchema);
 }
 
 export function fetchStaff(): Promise<StaffMember[]> {

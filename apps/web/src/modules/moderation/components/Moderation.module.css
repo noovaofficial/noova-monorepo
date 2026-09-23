@@ -194,6 +194,12 @@
   gap: var(--space3);
 }
 
+.summaryList {
+  /* Блок анкет в карточке пользователя/агентства: за ним идут другие блоки
+     (например, тариф), и без отступа они прилипали к последней строке. */
+  margin-bottom: var(--space6);
+}
+
 .staffRow {
   display: flex;
   align-items: center;

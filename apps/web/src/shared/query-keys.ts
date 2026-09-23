@@ -23,6 +23,7 @@ export const queryKeys = {
   /** Модерация и админка. */
   queue: (kind?: string) => ['moderation-queue', kind ?? 'all'] as const,
   queueCount: () => ['moderation-queue-count'] as const,
+  topNow: () => ['admin-top-now'] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,
   managedUser: (id: string) => ['managed-user', id] as const,
   verifications: (status: string) => ['verifications', status] as const,

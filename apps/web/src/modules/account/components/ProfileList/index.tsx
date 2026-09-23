@@ -31,7 +31,7 @@ import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 import { AgencyPaywallNotice } from '../AgencyPaywallNotice';
-import { ProfileStageBadge, ProfileStatusBadge } from '../ProfileStatusBadge';
+import { ProfileStageBadge } from '../ProfileStatusBadge';
 
 export function ProfileList() {
   const locale = useLocale() as Locale;
@@ -251,6 +251,59 @@ export function ProfileList() {
   const selectedCitySlug = citySlug || cities[0]?.slug || '';
   const selectedCity = cities.find((city) => city.slug === selectedCitySlug);
 
+  const profileCards = profiles?.map((profile) => {
+    const cover = profile.photos[0];
+    return (
+      <div key={profile.id} className={styles.profileCard}>
+        <div className={styles.profileThumb}>
+          {cover ? (
+            // Ссылка на неодобренное фото подписанная и живёт минуты,
+            // поэтому next/image с его оптимизацией здесь не подходит.
+            // biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую
+            <img src={cover.url} alt="" loading="lazy" />
+          ) : (
+            <span className={styles.profileThumbEmpty}>{t('noPhoto')}</span>
+          )}
+          <span className={styles.profileThumbStatus}>
+            <ProfileStageBadge stage={stageOf(profile)} />
+          </span>
+        </div>
+        <div className={styles.profileBody}>
+          <span className={styles.cardName}>{profile.displayName}</span>
+          <span className={styles.cardMeta}>
+            {profile.city.name}
+            {profile.district ? ` · ${profile.district.name}` : ''}
+          </span>
+          {missingHint(profile) ? (
+            <span className={styles.missing}>{missingHint(profile)}</span>
+          ) : null}
+        </div>
+        <div className={styles.profileActions}>
+          <Link href={`/account/profiles/${profile.id}`}>
+            <Button variant="secondary">{t('edit')}</Button>
+          </Link>
+          {canPublish(profile) ? (
+            <Button
+              variant="secondary"
+              disabled={publish.isPending && publish.variables === profile.id}
+              onClick={() => publish.mutate(profile.id)}
+            >
+              {t('publish')}
+            </Button>
+          ) : null}
+          {profile.status === 'published' ? (
+            <Link href={`/profile/${profile.slug}`}>
+              <Button variant="secondary">{t('view')}</Button>
+            </Link>
+          ) : null}
+        </div>
+        {publish.isError && publish.variables === profile.id ? (
+          <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
+        ) : null}
+      </div>
+    );
+  });
+
   return (
     <div className={styles.wrap}>
       <div className={styles.head}>
@@ -349,60 +402,7 @@ export function ProfileList() {
         </div>
       ) : isAgency ? (
         <div className={styles.layout}>
-          <div className={styles.profileGrid}>
-            {profiles.map((profile) => {
-              const cover = profile.photos[0];
-              return (
-                <div key={profile.id} className={styles.profileCard}>
-                  <div className={styles.profileThumb}>
-                    {cover ? (
-                      // Ссылка на неодобренное фото подписанная и живёт минуты,
-                      // поэтому next/image с его оптимизацией здесь не подходит.
-                      // biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую
-                      <img src={cover.url} alt="" loading="lazy" />
-                    ) : (
-                      <span className={styles.profileThumbEmpty}>{t('noPhoto')}</span>
-                    )}
-                    <span className={styles.profileThumbStatus}>
-                      <ProfileStageBadge stage={stageOf(profile)} />
-                    </span>
-                  </div>
-                  <div className={styles.profileBody}>
-                    <span className={styles.cardName}>{profile.displayName}</span>
-                    <span className={styles.cardMeta}>
-                      {profile.city.name}
-                      {profile.district ? ` · ${profile.district.name}` : ''}
-                    </span>
-                    {missingHint(profile) ? (
-                      <span className={styles.missing}>{missingHint(profile)}</span>
-                    ) : null}
-                  </div>
-                  <div className={styles.profileActions}>
-                    <Link href={`/account/profiles/${profile.id}`}>
-                      <Button variant="secondary">{t('edit')}</Button>
-                    </Link>
-                    {canPublish(profile) ? (
-                      <Button
-                        variant="secondary"
-                        disabled={publish.isPending && publish.variables === profile.id}
-                        onClick={() => publish.mutate(profile.id)}
-                      >
-                        {t('publish')}
-                      </Button>
-                    ) : null}
-                    {profile.status === 'published' ? (
-                      <Link href={`/profile/${profile.slug}`}>
-                        <Button variant="secondary">{t('view')}</Button>
-                      </Link>
-                    ) : null}
-                  </div>
-                  {publish.isError && publish.variables === profile.id ? (
-                    <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
+          <div className={styles.profileGrid}>{profileCards}</div>
 
           <aside className={styles.sidebar}>
             <div className={styles.sidebarCard}>
@@ -506,46 +506,7 @@ export function ProfileList() {
           </aside>
         </div>
       ) : (
-        <div className={styles.list}>
-          {profiles.map((profile) => (
-            <div key={profile.id} className={styles.card}>
-              <div className={styles.cardMain}>
-                <span className={styles.cardName}>{profile.displayName}</span>
-                <span className={styles.cardMeta}>
-                  {profile.city.name}
-                  {profile.district ? ` · ${profile.district.name}` : ''}
-                </span>
-              </div>
-              <div className={styles.cardActions}>
-                <ProfileStatusBadge status={profile.status} />
-                <Link href={`/account/profiles/${profile.id}`}>
-                  <Button variant="secondary">{t('edit')}</Button>
-                </Link>
-                {/* Публикация без захода в редактор — та же проверка, что и
-                    там (`canPublish`): анкета проверена и ещё не опубликована. */}
-                {profile.verificationStatus === 'verified' &&
-                profile.status !== 'published' &&
-                profile.status !== 'banned' ? (
-                  <Button
-                    variant="secondary"
-                    disabled={publish.isPending && publish.variables === profile.id}
-                    onClick={() => publish.mutate(profile.id)}
-                  >
-                    {t('publish')}
-                  </Button>
-                ) : null}
-                {profile.status === 'published' ? (
-                  <Link href={`/profile/${profile.slug}`}>
-                    <Button variant="secondary">{t('view')}</Button>
-                  </Link>
-                ) : null}
-              </div>
-              {publish.isError && publish.variables === profile.id ? (
-                <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
-              ) : null}
-            </div>
-          ))}
-        </div>
+        <div className={styles.profileGrid}>{profileCards}</div>
       )}
     </div>
   );
