@@ -17,6 +17,7 @@ import {
   companyInputSchema,
   companySchema,
   companyTariffStateSchema,
+  normalizeContact,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
@@ -51,6 +52,10 @@ const companySelect = {
   bannedAt: true,
   banReason: true,
   contacts: { orderBy: { position: 'asc' as const }, select: { type: true, value: true } },
+  prices: {
+    orderBy: { durationMinutes: 'asc' as const },
+    select: { durationMinutes: true, incallCents: true, outcallCents: true },
+  },
   _count: { select: { profiles: true } },
 };
 
@@ -66,6 +71,7 @@ type CompanyRow = {
   bannedAt: Date | null;
   banReason: string | null;
   contacts: { type: string; value: string }[];
+  prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
   languages: string[];
   payments: ('cash' | 'card' | 'transfer')[];
   _count: { profiles: number };
@@ -83,6 +89,7 @@ const present = (row: CompanyRow) => ({
   isBanned: row.bannedAt !== null,
   banReason: row.banReason,
   contacts: row.contacts as { type: CompanyInput['contacts'][number]['type']; value: string }[],
+  prices: row.prices,
   languages: row.languages,
   payments: row.payments,
   profileCount: row._count.profiles,
@@ -140,7 +147,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const advertiserKind = await companyOwnerOr403(fastify, userId);
 
-      const { slug, kind, name, description, website, contacts, languages, payments, isActive } =
+      const { slug, kind, name, description, website, languages, payments, isActive, prices } =
         request.body;
 
       if (kind !== advertiserKind) {
@@ -155,6 +162,28 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       if (clash && clash.ownerId !== userId) {
         throw fastify.httpErrors.conflict('Этот адрес уже занят другой компанией');
+      }
+
+      // Контакты нормализуем на сервере, как у анкеты: они копируются в новые
+      // анкеты, а там значение обязано быть в каноническом виде (E.164 для
+      // номеров, «@ник» для Telegram), иначе @@unique не поймает дубли.
+      const seenContacts = new Set<string>();
+      const contacts: { type: CompanyInput['contacts'][number]['type']; value: string }[] = [];
+      for (const raw of request.body.contacts) {
+        const result = normalizeContact(raw.type, raw.value);
+        if (!result.ok) {
+          throw fastify.httpErrors.badRequest(
+            `Некорректный контакт (${raw.type}): ${raw.value} — ${result.reason}`,
+          );
+        }
+        const key = `${raw.type}:${result.value}`;
+        if (seenContacts.has(key)) continue;
+        seenContacts.add(key);
+        contacts.push({ type: raw.type, value: result.value });
+      }
+
+      if (new Set(prices.map((p) => p.durationMinutes)).size !== prices.length) {
+        throw fastify.httpErrors.badRequest('Длительность в прайсе не должна повторяться');
       }
 
       const fields = {
@@ -180,6 +209,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ownerId: userId,
           tariffTierId: defaultTariffTierId,
           contacts: { create: contacts.map((c, position) => ({ ...c, position })) },
+          prices: { create: prices },
         },
         update: {
           ...fields,
@@ -189,6 +219,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
             deleteMany: {},
             create: contacts.map((c, position) => ({ ...c, position })),
           },
+          prices: { deleteMany: {}, create: prices },
         },
         select: companySelect,
       });

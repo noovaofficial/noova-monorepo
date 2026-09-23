@@ -50,18 +50,12 @@ import styles from '../Account.module.css';
 import { ContactPicker } from '../ContactPicker';
 import { LocationPicker } from '../LocationPicker';
 import { PhotoManager } from '../PhotoManager';
+import { PriceSlotsEditor } from '../PriceSlotsEditor';
 import { ProfileStatusBadge } from '../ProfileStatusBadge';
 import { ServicePicker } from '../ServicePicker';
 import { VerificationCard } from '../VerificationCard';
 
 type Notice = { kind: 'ok' | 'error' | 'warn'; key: string } | null;
-
-/** Цены в форме — в евро, в контракте — в центах. Конвертируем на границе. */
-const toEuro = (cents: number | null) => (cents === null ? '' : String(cents / 100));
-const toCents = (euro: string) => {
-  const value = Number(euro.replace(',', '.'));
-  return Number.isFinite(value) && value > 0 ? Math.round(value * 100) : null;
-};
 
 /**
  * Выпадающий список по перечислению. Значения приходят из контракта,
@@ -885,79 +879,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>{t('prices')}</h2>
 
-            {prices.map((price, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: строки тарифов не переупорядочиваются
-              <div className={styles.priceRow} key={index}>
-                <div className={styles.field}>
-                  <span className={styles.label}>{t('duration')}</span>
-                  <input
-                    className={styles.input}
-                    type="number"
-                    min={15}
-                    max={1440}
-                    value={price.durationMinutes}
-                    onChange={(e) =>
-                      setPrices((rows) =>
-                        rows.map((row, i) =>
-                          i === index ? { ...row, durationMinutes: Number(e.target.value) } : row,
-                        ),
-                      )
-                    }
-                  />
-                </div>
-                <div className={styles.field}>
-                  <span className={styles.label}>{t('incall')}</span>
-                  <input
-                    className={styles.input}
-                    inputMode="decimal"
-                    value={toEuro(price.incallCents)}
-                    onChange={(e) =>
-                      setPrices((rows) =>
-                        rows.map((row, i) =>
-                          i === index ? { ...row, incallCents: toCents(e.target.value) } : row,
-                        ),
-                      )
-                    }
-                  />
-                </div>
-                <div className={styles.field}>
-                  <span className={styles.label}>{t('outcall')}</span>
-                  <input
-                    className={styles.input}
-                    inputMode="decimal"
-                    value={toEuro(price.outcallCents)}
-                    onChange={(e) =>
-                      setPrices((rows) =>
-                        rows.map((row, i) =>
-                          i === index ? { ...row, outcallCents: toCents(e.target.value) } : row,
-                        ),
-                      )
-                    }
-                  />
-                </div>
-                <button
-                  type="button"
-                  className={styles.remove}
-                  onClick={() => setPrices((rows) => rows.filter((_, i) => i !== index))}
-                >
-                  {t('removePrice')}
-                </button>
-              </div>
-            ))}
-
-            {prices.length < 8 ? (
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  setPrices((rows) => [
-                    ...rows,
-                    { durationMinutes: 60, incallCents: null, outcallCents: null },
-                  ])
-                }
-              >
-                {t('addPrice')}
-              </Button>
-            ) : null}
+            <PriceSlotsEditor prices={prices} onChange={setPrices} />
           </div>
 
           {/* Карта после адреса: сначала город и район, потом уточнение

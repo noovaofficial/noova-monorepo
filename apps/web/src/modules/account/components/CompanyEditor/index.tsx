@@ -1,6 +1,12 @@
 'use client';
 
-import type { Company, CompanyInput, ContactInput, PaymentMethod } from '@noova/shared';
+import type {
+  Company,
+  CompanyInput,
+  ContactInput,
+  PaymentMethod,
+  PriceSlotInput,
+} from '@noova/shared';
 import { companyInputSchema, SPOKEN_LANGUAGES } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
@@ -19,6 +25,7 @@ import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 import { ContactPicker } from '../ContactPicker';
+import { PriceSlotsEditor } from '../PriceSlotsEditor';
 import linkStyles from './CompanyEditor.module.css';
 
 const PAYMENTS: PaymentMethod[] = ['cash', 'card', 'transfer'];
@@ -60,6 +67,7 @@ type Notice = { kind: 'ok' | 'error'; text: string } | null;
  */
 export function CompanyEditor() {
   const t = useTranslations('company');
+  const tAccount = useTranslations('account');
   const tLang = useTranslations('languageNames');
   const locale = useLocale();
   const { user, status } = useSession();
@@ -80,6 +88,7 @@ export function CompanyEditor() {
   const [languages, setLanguages] = useState<string[]>([]);
   const [payments, setPayments] = useState<PaymentMethod[]>([]);
   const [contacts, setContacts] = useState<ContactInput[]>([]);
+  const [prices, setPrices] = useState<PriceSlotInput[]>([]);
   const [notice, setNotice] = useState<Notice>(null);
   const [copied, setCopied] = useState(false);
 
@@ -95,6 +104,7 @@ export function CompanyEditor() {
     setLanguages(company.languages);
     setPayments(company.payments);
     setContacts(company.contacts);
+    setPrices(company.prices);
   }, [query.data]);
 
   const save = useMutation({
@@ -108,6 +118,7 @@ export function CompanyEditor() {
         languages,
         payments,
         contacts: contacts.filter((c) => c.value.trim() !== ''),
+        prices: prices.filter((p) => p.incallCents !== null || p.outcallCents !== null),
         isActive: true,
       });
       return saveOwnCompany(input);
@@ -366,6 +377,12 @@ export function CompanyEditor() {
           </div>
 
           <ContactPicker contacts={contacts} onChange={setContacts} />
+
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>{tAccount('prices')}</h2>
+            <p className={styles.hint}>{t('pricesDefaultsHint')}</p>
+            <PriceSlotsEditor prices={prices} onChange={setPrices} />
+          </div>
         </form>
 
         <aside className={styles.sidebar}>

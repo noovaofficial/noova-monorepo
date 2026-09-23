@@ -1253,6 +1253,7 @@
     "directionsHint": "Repères depuis l'arrêt, entrée, étage, sonnette",
     "minSessionHint": "En minutes. Les réservations plus courtes ne sont pas acceptées",
     "pricesHint": "Service, durée et prix en euros",
+    "pricesDefaultsHint": "Les tarifs et contacts de l'agence sont copiés dans chaque nouveau profil à sa création. Les profils existants ne changent pas : modifiez-les séparément.",
     "allDay": "Ouvert 24 h/24",
     "allDayHint": "Sept jours sur sept, sans fermeture. Les horaires se remplissent automatiquement.",
     "aroundTheClock": "24 h/24",

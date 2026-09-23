@@ -1253,6 +1253,7 @@
     "directionsHint": "Referencias desde la parada, entrada, planta, timbre",
     "minSessionHint": "En minutos. No se aceptan reservas más cortas",
     "pricesHint": "Servicio, duración y precio en euros",
+    "pricesDefaultsHint": "La tarifa y los contactos de la agencia se copian en cada perfil nuevo al crearlo. Los perfiles existentes no cambian: se editan por separado.",
     "allDay": "Abierto las 24 horas",
     "allDayHint": "Los siete días, sin cierre. El horario se rellena automáticamente.",
     "aroundTheClock": "24 horas",

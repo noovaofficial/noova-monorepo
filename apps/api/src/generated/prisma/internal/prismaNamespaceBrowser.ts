@@ -70,6 +70,7 @@ export const ModelName = {
   Company: 'Company',
   ProfileHours: 'ProfileHours',
   CompanyContact: 'CompanyContact',
+  CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
   PriceSlot: 'PriceSlot',
@@ -407,6 +408,17 @@ export const CompanyContactScalarFieldEnum = {
 } as const
 
 export type CompanyContactScalarFieldEnum = (typeof CompanyContactScalarFieldEnum)[keyof typeof CompanyContactScalarFieldEnum]
+
+
+export const CompanyPriceSlotScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  durationMinutes: 'durationMinutes',
+  incallCents: 'incallCents',
+  outcallCents: 'outcallCents'
+} as const
+
+export type CompanyPriceSlotScalarFieldEnum = (typeof CompanyPriceSlotScalarFieldEnum)[keyof typeof CompanyPriceSlotScalarFieldEnum]
 
 
 export const ProfileContactScalarFieldEnum = {

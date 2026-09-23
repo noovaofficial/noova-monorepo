@@ -119,3 +119,12 @@ export const citySchema = z.object({
   countryCode: z.string().length(2),
 });
 export type City = z.infer<typeof citySchema>;
+
+/** Тариф в форме и в теле запроса — общий у анкеты и у компании (прайс агентства
+ *  копируется в новые анкеты, поэтому форма у них одна). */
+export const priceSlotInputSchema = z.object({
+  durationMinutes: z.number().int().positive().max(1440),
+  incallCents: z.number().int().nonnegative().max(10_000_00).nullable(),
+  outcallCents: z.number().int().nonnegative().max(10_000_00).nullable(),
+});
+export type PriceSlotInput = z.infer<typeof priceSlotInputSchema>;

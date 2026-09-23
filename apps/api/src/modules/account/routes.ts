@@ -48,6 +48,7 @@ function tagsFor(slug: string): string[] {
   return [profileTag(slug), PROFILES_TAG];
 }
 
+import { inheritContacts } from './company-defaults.js';
 import { buildUniqueSlug } from './slug.js';
 
 /**
@@ -355,6 +356,24 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const center = await centerFor(fastify, city.id, district?.id ?? null);
 
+      // Прайс и контакты агентства подставляются в новую анкету копией: у
+      // анкеты они свои и правятся отдельно, а правки компании на уже
+      // созданные анкеты не влияют.
+      const defaults = company
+        ? await fastify.prisma.company.findUnique({
+            where: { id: company.id },
+            select: {
+              contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
+              prices: {
+                orderBy: { durationMinutes: 'asc' },
+                select: { durationMinutes: true, incallCents: true, outcallCents: true },
+              },
+            },
+          })
+        : null;
+      const inheritedContacts = inheritContacts(defaults?.contacts ?? []);
+      const inheritedPrices = defaults?.prices ?? [];
+
       const created = await fastify.prisma.profile.create({
         data: {
           slug,
@@ -373,6 +392,13 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           countryId: city.countryId,
           districtId: district?.id ?? null,
           verification: { create: { status: 'none' } },
+          ...(inheritedContacts.length > 0 ? { contacts: { create: inheritedContacts } } : {}),
+          ...(inheritedPrices.length > 0
+            ? {
+                prices: { create: inheritedPrices },
+                fromPriceCents: lowestPriceCents(inheritedPrices),
+              }
+            : {}),
         },
         select: ownProfileSelect,
       });

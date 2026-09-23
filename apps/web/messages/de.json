@@ -1253,6 +1253,7 @@
     "directionsHint": "Orientierung ab Haltestelle, Eingang, Etage, Klingel",
     "minSessionHint": "In Minuten. Kürzere Termine werden nicht angenommen",
     "pricesHint": "Leistung, Dauer und Preis in Euro",
+    "pricesDefaultsHint": "Preisliste und Kontakte der Agentur werden beim Anlegen in jedes neue Profil übernommen. Bestehende Profile bleiben unverändert – sie lassen sich einzeln bearbeiten.",
     "allDay": "Rund um die Uhr geöffnet",
     "allDayHint": "Alle sieben Tage, ohne Ruhetag. Die Zeiten werden automatisch gesetzt.",
     "aroundTheClock": "Rund um die Uhr",

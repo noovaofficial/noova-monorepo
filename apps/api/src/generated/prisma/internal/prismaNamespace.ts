@@ -416,6 +416,7 @@ export const ModelName = {
   Company: 'Company',
   ProfileHours: 'ProfileHours',
   CompanyContact: 'CompanyContact',
+  CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
   PriceSlot: 'PriceSlot',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1860,6 +1861,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CompanyContactCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CompanyContactCountAggregateOutputType> | number
+        }
+      }
+    }
+    CompanyPriceSlot: {
+      payload: Prisma.$CompanyPriceSlotPayload<ExtArgs>
+      fields: Prisma.CompanyPriceSlotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanyPriceSlotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanyPriceSlotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanyPriceSlotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanyPriceSlotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        findMany: {
+          args: Prisma.CompanyPriceSlotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>[]
+        }
+        create: {
+          args: Prisma.CompanyPriceSlotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        createMany: {
+          args: Prisma.CompanyPriceSlotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanyPriceSlotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanyPriceSlotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        update: {
+          args: Prisma.CompanyPriceSlotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanyPriceSlotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanyPriceSlotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanyPriceSlotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanyPriceSlotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanyPriceSlotPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanyPriceSlotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanyPriceSlot>
+        }
+        groupBy: {
+          args: Prisma.CompanyPriceSlotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyPriceSlotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanyPriceSlotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanyPriceSlotCountAggregateOutputType> | number
         }
       }
     }
@@ -3829,6 +3904,17 @@ export const CompanyContactScalarFieldEnum = {
 export type CompanyContactScalarFieldEnum = (typeof CompanyContactScalarFieldEnum)[keyof typeof CompanyContactScalarFieldEnum]
 
 
+export const CompanyPriceSlotScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  durationMinutes: 'durationMinutes',
+  incallCents: 'incallCents',
+  outcallCents: 'outcallCents'
+} as const
+
+export type CompanyPriceSlotScalarFieldEnum = (typeof CompanyPriceSlotScalarFieldEnum)[keyof typeof CompanyPriceSlotScalarFieldEnum]
+
+
 export const ProfileContactScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
@@ -4846,6 +4932,7 @@ export type GlobalOmitConfig = {
   company?: Prisma.CompanyOmit
   profileHours?: Prisma.ProfileHoursOmit
   companyContact?: Prisma.CompanyContactOmit
+  companyPriceSlot?: Prisma.CompanyPriceSlotOmit
   profileContact?: Prisma.ProfileContactOmit
   profileEvent?: Prisma.ProfileEventOmit
   priceSlot?: Prisma.PriceSlotOmit

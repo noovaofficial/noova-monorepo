@@ -152,6 +152,13 @@ export type ProfileHours = Prisma.ProfileHoursModel
  */
 export type CompanyContact = Prisma.CompanyContactModel
 /**
+ * Model CompanyPriceSlot
+ * Прайс агентства. Не показывается посетителям сам по себе: при создании
+ * анкеты копируется в её собственные PriceSlot, после чего анкета живёт
+ * своим прайсом и правки компании на уже созданные анкеты не влияют.
+ */
+export type CompanyPriceSlot = Prisma.CompanyPriceSlotModel
+/**
  * Model ProfileContact
  * Контакты анкеты. Наружу отдаются только по явному раскрытию отдельным
  * маршрутом: в публичном представлении анкеты их нет вовсе.

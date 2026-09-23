@@ -1253,6 +1253,7 @@
     "directionsHint": "Landmarks from the stop, entrance, floor, doorbell",
     "minSessionHint": "In minutes. Shorter bookings are not accepted",
     "pricesHint": "Service, duration and price in euros",
+    "pricesDefaultsHint": "The agency price list and contacts are copied into every new profile at creation. Existing profiles are not changed — edit them separately.",
     "allDay": "Open around the clock",
     "allDayHint": "All seven days, no days off. Hours are filled in automatically.",
     "aroundTheClock": "Around the clock",

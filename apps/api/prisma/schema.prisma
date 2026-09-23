@@ -691,6 +691,7 @@ model Company {
 
   profiles Profile[]
   contacts CompanyContact[]
+  prices   CompanyPriceSlot[]
   topPlacement AgencyTopPlacement?
 
   /// Тариф из сетки (payments.md §3.3, D-13). `null` — переходное состояние
@@ -768,6 +769,20 @@ model CompanyContact {
 
   @@unique([companyId, type, value])
   @@index([companyId, position])
+}
+
+/// Прайс агентства. Не показывается посетителям сам по себе: при создании
+/// анкеты копируется в её собственные PriceSlot, после чего анкета живёт
+/// своим прайсом и правки компании на уже созданные анкеты не влияют.
+model CompanyPriceSlot {
+  id              String  @id @default(cuid())
+  companyId       String
+  company         Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  durationMinutes Int
+  incallCents     Int?
+  outcallCents    Int?
+
+  @@unique([companyId, durationMinutes])
 }
 
 /// Контакты анкеты. Наружу отдаются только по явному раскрытию отдельным

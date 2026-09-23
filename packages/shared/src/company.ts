@@ -10,7 +10,7 @@
  * человека» была бы выдуманной сущностью ради единообразия.
  */
 import { z } from 'zod';
-import { slugSchema, websiteSchema } from './common';
+import { priceSlotInputSchema, slugSchema, websiteSchema } from './common';
 import { contactTypeSchema } from './contact';
 
 /** Компания есть только у агентства: салон — это анкета (N-34). */
@@ -64,6 +64,8 @@ export const companyInputSchema = z.object({
   description: z.string().trim().max(4000).optional(),
   website: websiteSchema.optional(),
   contacts: z.array(companyContactSchema).max(8).default([]),
+  /** Прайс агентства: подставляется в каждую новую анкету при создании. */
+  prices: z.array(priceSlotInputSchema).max(8).default([]),
   /** Языки персонала: коды из SPOKEN_LANGUAGES. */
   languages: z.array(z.string().length(2)).max(8).default([]),
   payments: z.array(paymentMethodSchema).max(3).default([]),
@@ -83,6 +85,7 @@ export const companySchema = z.object({
   website: z.string().nullable(),
   logoUrl: z.string().nullable(),
   contacts: z.array(companyContactSchema),
+  prices: z.array(priceSlotInputSchema),
   languages: z.array(z.string()),
   payments: z.array(paymentMethodSchema),
   isActive: z.boolean(),

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { moneySchema, slugSchema, websiteSchema } from './common';
+import { moneySchema, priceSlotInputSchema, slugSchema, websiteSchema } from './common';
 import { paymentMethodSchema } from './company';
 import { contactInputSchema, MAX_CONTACTS_PER_PROFILE, profileContactSchema } from './contact';
 import {
@@ -48,13 +48,6 @@ export const PROFILE_LIMIT_BY_ADVERTISER: Record<AdvertiserKind, number> = {
   // остаётся только как клиентская заглушка до загрузки настоящего тарифа.
   agency: 8,
 };
-
-export const priceSlotInputSchema = z.object({
-  durationMinutes: z.number().int().positive().max(1440),
-  incallCents: z.number().int().nonnegative().max(10_000_00).nullable(),
-  outcallCents: z.number().int().nonnegative().max(10_000_00).nullable(),
-});
-export type PriceSlotInput = z.infer<typeof priceSlotInputSchema>;
 
 /** См. комментарий у `services` в `updateProfileSchema`. */
 export const MAX_SERVICES_PER_PROFILE = 300;
