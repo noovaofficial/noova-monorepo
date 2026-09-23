@@ -29,6 +29,7 @@ import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import { deleteUser, verifyUserEmail } from '@/modules/moderation/api';
 import { ActionCard } from '@/modules/moderation/components/ActionCard';
 import cardStyles from '@/modules/moderation/components/ActionCard/ActionCard.module.css';
+import { AdvertiserAnalyticsLink } from '@/modules/moderation/components/AdvertiserAnalytics';
 import {
   BlockIcon,
   DeleteIcon,
@@ -230,6 +231,7 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
     <div className={sharedStyles.wrap}>
       <div className={sharedStyles.head}>
         <h1 className={sharedStyles.title}>{data.companyName}</h1>
+        {isAdmin ? <AdvertiserAnalyticsLink userId={data.ownerId} /> : null}
       </div>
 
       <p className={sharedStyles.hint}>

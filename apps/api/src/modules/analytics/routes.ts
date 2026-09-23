@@ -1,6 +1,8 @@
 import {
+  ANALYTICS_PERIOD_DAYS,
   analyticsPeriodSchema,
   analyticsSchema,
+  ownMoneyAnalyticsSchema,
   slugSchema,
   trackClickSchema,
 } from '@noova/shared';
@@ -8,6 +10,7 @@ import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireSession } from '../../plugins/session.js';
+import { loadMoney, toOwnMoney } from './admin-money.js';
 import { recordProfileEvent } from './events.js';
 import { loadAnalytics } from './query.js';
 
@@ -120,6 +123,56 @@ export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       return loadAnalytics(fastify.prisma, { profiles, ownerId: userId }, request.query.period);
+    },
+  );
+
+  /**
+   * Деньги самого рекламодателя: внесено, коины, траты, баланс и срок
+   * размещения. Урезанный вид админского отчёта (`toOwnMoney`): разбивка
+   * подарков по источнику и тариф агентства остаются только админу. Свой
+   * `userId` берём из сессии — чужой запросить нельзя.
+   */
+  fastify.get(
+    '/me/analytics/money',
+    {
+      onRequest: fastify.requireRole('advertiser'),
+      schema: {
+        tags: ['analytics'],
+        querystring: z.object({ period: analyticsPeriodSchema.default('d30') }),
+        response: { 200: ownMoneyAnalyticsSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const since = new Date(
+        Date.now() - ANALYTICS_PERIOD_DAYS[request.query.period] * 24 * 60 * 60 * 1000,
+      );
+
+      const [money, user, listing] = await Promise.all([
+        loadMoney(fastify.prisma, userId, since),
+        fastify.prisma.user.findUniqueOrThrow({
+          where: { id: userId },
+          select: { glowcoinBalance: true },
+        }),
+        fastify.prisma.listing.findFirst({
+          where: { userId },
+          orderBy: { expiresAt: 'desc' },
+          select: { status: true, term: true, expiresAt: true },
+        }),
+      ]);
+
+      return {
+        balanceGc: user.glowcoinBalance,
+        listing: listing
+          ? {
+              status: listing.status,
+              term: listing.term,
+              expiresAt: listing.expiresAt.toISOString(),
+            }
+          : null,
+        period: toOwnMoney(money.period),
+        allTime: toOwnMoney(money.allTime),
+      };
     },
   );
 };

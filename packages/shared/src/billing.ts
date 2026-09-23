@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { type AdvertiserKind, advertiserKindSchema } from './account';
+import { analyticsSchema } from './analytics';
 import { LOCALES } from './locales';
 
 /**
@@ -460,3 +461,90 @@ export type BuyAgencyTopResult = z.infer<typeof buyAgencyTopResultSchema>;
 /** Выдача места агентству админом — бесплатная, без движения по кошельку. */
 export const grantAgencyTopResultSchema = z.object({ placement: agencyTopPlacementSchema });
 export type GrantAgencyTopResult = z.infer<typeof grantAgencyTopResultSchema>;
+
+/**
+ * Деньги рекламодателя за срез журнала — для админской аналитики. Все суммы
+ * неотрицательны: направление задано названием поля, а не знаком.
+ *
+ * `purchasedGc` — всё, что пришло с оплаченных пополнений (вместе с бонусом),
+ * `bonusGc` — его бонусная часть. «Подарено» разложено по источнику: админ,
+ * акции (`CampaignGrant`), прочее системное (например, стартовая выдача).
+ */
+export const advertiserMoneyTotalsSchema = z.object({
+  paidEurCents: z.number().int().nonnegative(),
+  topupCount: z.number().int().nonnegative(),
+  purchasedGc: z.number().int().nonnegative(),
+  bonusGc: z.number().int().nonnegative(),
+  giftedAdminGc: z.number().int().nonnegative(),
+  giftedCampaignGc: z.number().int().nonnegative(),
+  giftedOtherGc: z.number().int().nonnegative(),
+  /** Списано админом корректировкой (отрицательные ADJUSTMENT). */
+  deductedAdminGc: z.number().int().nonnegative(),
+  spentListingGc: z.number().int().nonnegative(),
+  spentTopGc: z.number().int().nonnegative(),
+});
+export type AdvertiserMoneyTotals = z.infer<typeof advertiserMoneyTotalsSchema>;
+
+/** Аналитика одного рекламодателя глазами админа: обычная статистика
+ *  трафика плюс деньги и размещение. */
+export const adminAdvertiserAnalyticsSchema = z.object({
+  advertiser: z.object({
+    userId: z.string(),
+    email: z.string(),
+    advertiserKind: advertiserKindSchema.nullable(),
+    /** Название компании или имя анкеты — что выводим рядом с почтой. */
+    name: z.string().nullable(),
+  }),
+  balanceGc: z.number().int().nonnegative(),
+  listing: z
+    .object({
+      status: listingStatusSchema,
+      term: planTermSchema.nullable(),
+      expiresAt: z.string().datetime(),
+    })
+    .nullable(),
+  /** Название тарифа агентства; у остальных `null`. */
+  tariffTier: z.string().nullable(),
+  traffic: analyticsSchema,
+  money: z.object({
+    /** За выбранный период. */
+    period: advertiserMoneyTotalsSchema,
+    /** За всё время. */
+    allTime: advertiserMoneyTotalsSchema,
+  }),
+  /** Последние операции журнала за выбранный период. */
+  transactions: z.array(billingTransactionSchema),
+});
+export type AdminAdvertiserAnalytics = z.infer<typeof adminAdvertiserAnalyticsSchema>;
+
+/**
+ * Деньги рекламодателя глазами самого рекламодателя. Урезанный вид
+ * `advertiserMoneyTotalsSchema`: подарки сведены в одну строку без разбивки
+ * по источнику (админ, акции, система), а списание админом называется просто
+ * корректировкой. Разбивка и тариф агентства — внутреннее, только админу.
+ */
+export const ownMoneyTotalsSchema = z.object({
+  paidEurCents: z.number().int().nonnegative(),
+  topupCount: z.number().int().nonnegative(),
+  purchasedGc: z.number().int().nonnegative(),
+  bonusGc: z.number().int().nonnegative(),
+  giftedGc: z.number().int().nonnegative(),
+  adjustedGc: z.number().int().nonnegative(),
+  spentListingGc: z.number().int().nonnegative(),
+  spentTopGc: z.number().int().nonnegative(),
+});
+export type OwnMoneyTotals = z.infer<typeof ownMoneyTotalsSchema>;
+
+export const ownMoneyAnalyticsSchema = z.object({
+  balanceGc: z.number().int().nonnegative(),
+  listing: z
+    .object({
+      status: listingStatusSchema,
+      term: planTermSchema.nullable(),
+      expiresAt: z.string().datetime(),
+    })
+    .nullable(),
+  period: ownMoneyTotalsSchema,
+  allTime: ownMoneyTotalsSchema,
+});
+export type OwnMoneyAnalytics = z.infer<typeof ownMoneyAnalyticsSchema>;

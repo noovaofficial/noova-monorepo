@@ -24,6 +24,8 @@ export const queryKeys = {
   queue: (kind?: string) => ['moderation-queue', kind ?? 'all'] as const,
   queueCount: () => ['moderation-queue-count'] as const,
   topNow: () => ['admin-top-now'] as const,
+  advertiserAnalytics: (userId: string, period: string) =>
+    ['admin-advertiser-analytics', userId, period] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,
   managedUser: (id: string) => ['managed-user', id] as const,
   verifications: (status: string) => ['verifications', status] as const,
@@ -61,6 +63,7 @@ export const queryKeys = {
   billingOperations: (query: string) => ['billing-operations', query] as const,
   /** Период — часть ключа: иначе переключение отдавало бы прежний отчёт. */
   analytics: (period: string) => ['analytics', period] as const,
+  ownMoney: (period: string) => ['own-money', period] as const,
   /** Все фильтры входят в ключ: иначе ответ на прежний запрос ляжет поверх нового. */
   moderationLog: (filters: Record<string, string | undefined> = {}) =>
     [

@@ -22,6 +22,7 @@ import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { ActionCard } from '../ActionCard';
 import cardStyles from '../ActionCard/ActionCard.module.css';
+import { AdvertiserAnalyticsLink } from '../AdvertiserAnalytics';
 import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon } from '../icons';
 import styles from '../Moderation.module.css';
 import { PhotoViewer } from '../PhotoViewer';
@@ -201,9 +202,12 @@ export function ProfileReview({ profileId }: { profileId: string }) {
         <h1 className={styles.title}>
           {t('profileTitle')}: {profile.displayName}
         </h1>
-        <Link className={styles.link} href="/moderation">
-          ← {t('back')}
-        </Link>
+        <div className={styles.headActions}>
+          {isAdmin ? <AdvertiserAnalyticsLink userId={profile.owner.id} /> : null}
+          <Link className={styles.link} href="/moderation">
+            ← {t('back')}
+          </Link>
+        </div>
       </div>
 
       <div className={cardStyles.grid}>

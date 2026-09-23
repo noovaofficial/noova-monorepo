@@ -10,25 +10,21 @@ import {
 } from '@noova/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
-import { useState } from 'react';
-import { fetchAnalytics } from '@/modules/analytics/api';
+import { type ReactNode, useState } from 'react';
+import { fetchAnalytics, fetchOwnMoney } from '@/modules/analytics/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { DailyChart } from '../DailyChart';
+import { OwnMoney } from '../OwnMoney';
 import styles from './Analytics.module.css';
 
 export function AnalyticsPanel() {
   const t = useTranslations('analytics');
-  const tc = useTranslations('contacts');
-  const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
 
   const [period, setPeriod] = useState<AnalyticsPeriod>('d30');
-  // Метрика графика выбирается той же карточкой, что показывает её итог:
-  // отдельный список под карточками дублировал бы их подписи.
-  const [metric, setMetric] = useState<AnalyticsMetric>('views');
 
   const isAdvertiser = user?.role === 'advertiser';
   const analytics = useQuery({
@@ -37,6 +33,15 @@ export function AnalyticsPanel() {
     enabled: isAdvertiser,
     // Отчёт меняется медленно, а переключение периодов туда-обратно —
     // самое частое движение на этой странице.
+    staleTime: 60 * 1000,
+  });
+
+  // Деньги — отдельным запросом: если он упал, отчёт по трафику всё равно
+  // показывается, а блок денег просто не выводится.
+  const money = useQuery({
+    queryKey: queryKeys.ownMoney(period),
+    queryFn: () => fetchOwnMoney(period),
+    enabled: isAdvertiser,
     staleTime: 60 * 1000,
   });
 
@@ -49,12 +54,56 @@ export function AnalyticsPanel() {
 
   if (!isAdvertiser) return <p className={styles.empty}>{t('onlyAdvertisers')}</p>;
 
-  const data = analytics.data ?? null;
+  return (
+    <AnalyticsReport
+      title={t('title')}
+      period={period}
+      onPeriodChange={setPeriod}
+      data={analytics.data ?? null}
+      isPending={analytics.isPending}
+      isError={analytics.isError}
+      extra={money.data ? <OwnMoney data={money.data} /> : null}
+    />
+  );
+}
+
+type ReportProps = {
+  title: ReactNode;
+  period: AnalyticsPeriod;
+  onPeriodChange: (period: AnalyticsPeriod) => void;
+  data: Analytics | null;
+  isPending: boolean;
+  isError: boolean;
+  /** Дополнительные блоки над карточками трафика (у админа — деньги). */
+  extra?: ReactNode;
+};
+
+/**
+ * Отчёт по трафику: заголовок, переключатель периода, карточки, график,
+ * каналы, таблица по анкетам. Общий у рекламодателя (`AnalyticsPanel`) и
+ * у админа, который смотрит чужого рекламодателя.
+ */
+export function AnalyticsReport({
+  title,
+  period,
+  onPeriodChange,
+  data,
+  isPending,
+  isError,
+  extra,
+}: ReportProps) {
+  const t = useTranslations('analytics');
+  const tc = useTranslations('contacts');
+  const format = useFormatter();
+
+  // Метрика графика выбирается той же карточкой, что показывает её итог:
+  // отдельный список под карточками дублировал бы их подписи.
+  const [metric, setMetric] = useState<AnalyticsMetric>('views');
 
   return (
     <div className={styles.wrap}>
       <div className={styles.head}>
-        <h1 className={styles.title}>{t('title')}</h1>
+        <h1 className={styles.title}>{title}</h1>
 
         {/* biome-ignore lint/a11y/useSemanticElements: группа переключателей, а не поля формы — <fieldset> принёс бы сюда рамку и семантику ввода */}
         <div className={styles.periods} role="group" aria-label={t('periodLabel')}>
@@ -64,7 +113,7 @@ export function AnalyticsPanel() {
               key={option}
               className={`${styles.period} ${period === option ? styles.periodSelected : ''}`}
               aria-pressed={period === option}
-              onClick={() => setPeriod(option)}
+              onClick={() => onPeriodChange(option)}
             >
               {t(`period_${option}`)}
             </button>
@@ -72,8 +121,10 @@ export function AnalyticsPanel() {
         </div>
       </div>
 
-      {analytics.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {analytics.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
+      {isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+
+      {extra}
 
       {data ? (
         <>

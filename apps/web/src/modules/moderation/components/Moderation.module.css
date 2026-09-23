@@ -194,6 +194,13 @@
   gap: var(--space3);
 }
 
+.headActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space4);
+  flex-wrap: wrap;
+}
+
 .summaryList {
   /* Блок анкет в карточке пользователя/агентства: за ним идут другие блоки
      (например, тариф), и без отступа они прилипали к последней строке. */
@@ -221,6 +228,11 @@
 
 .staffEmail {
   font-weight: 600;
+}
+
+/* Почта рядом с именем: тот же шрифт и размер, но чуть серее. */
+.staffEmailDim {
+  color: var(--secondaryText);
 }
 
 .staffMeta {

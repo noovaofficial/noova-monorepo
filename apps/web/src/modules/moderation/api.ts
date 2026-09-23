@@ -1,5 +1,8 @@
 import {
+  type AdminAdvertiserAnalytics,
   type AdvertiserKind,
+  type AnalyticsPeriod,
+  adminAdvertiserAnalyticsSchema,
   type BlockedProfile,
   blockedProfileSchema,
   type CreateStaffInput,
@@ -221,6 +224,17 @@ export async function deleteModeratedProfile(id: string): Promise<void> {
 
 export function verifyUserEmail(id: string): Promise<ManagedUser> {
   return call(`/moderation/users/${id}/verify-email`, managedUserSchema, { method: 'POST' });
+}
+
+/** Аналитика рекламодателя для админа: трафик и деньги. */
+export function fetchAdvertiserAnalytics(
+  userId: string,
+  period: AnalyticsPeriod,
+): Promise<AdminAdvertiserAnalytics> {
+  return call(
+    `/admin/advertisers/${encodeURIComponent(userId)}/analytics?period=${period}`,
+    adminAdvertiserAnalyticsSchema,
+  );
 }
 
 /** Кто сейчас в ТОПе: анкеты и агентства (только админ). */

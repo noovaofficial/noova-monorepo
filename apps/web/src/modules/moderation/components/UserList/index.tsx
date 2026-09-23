@@ -27,6 +27,7 @@ import {
 } from '@/modules/moderation/api';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
+import { AdvertiserAnalyticsLink } from '../AdvertiserAnalytics';
 import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon, VerifyIcon } from '../icons';
 import { LoadMore } from '../LoadMore';
 import styles from '../Moderation.module.css';
@@ -68,6 +69,16 @@ function blockModeFor(advertiserKind?: AdvertiserKind): keyof typeof BLOCK_LABEL
   if (advertiserKind === 'individual' || advertiserKind === 'salon') return 'profile';
   if (advertiserKind === 'agency') return 'agency';
   return 'account';
+}
+
+/** Имя в строке: у индивидуалки и салона — имя анкеты, у агентства — название
+ *  компании, у клиента — ник. `null`, если имени нет. */
+function rowName(user: ManagedUser): string | null {
+  if (user.advertiserKind === 'individual' || user.advertiserKind === 'salon') {
+    return user.profile?.displayName ?? null;
+  }
+  if (user.advertiserKind === 'agency') return user.company?.name ?? null;
+  return user.nickname;
 }
 
 /** Цель «Дать ТОП» по строке — анкета или компания, независимо от вкладки:
@@ -368,7 +379,14 @@ export function UserList({
                       Massage salons ведёт прямо на карточку сущности вкладки —
                       там те же действия, что и здесь. */}
                   <Link className={styles.staffEmail} href={rowHref}>
-                    {user.email}
+                    {rowName(user) ? (
+                      <>
+                        {rowName(user)}
+                        <span className={styles.staffEmailDim}> | {user.email}</span>
+                      </>
+                    ) : (
+                      user.email
+                    )}
                   </Link>
                   <span className={styles.staffMeta}>
                     {user.nickname ? `${user.nickname} · ` : ''}
@@ -525,6 +543,10 @@ export function UserList({
                       <VerifyIcon />
                       {t('verifyEmail')}
                     </Button>
+                  ) : null}
+
+                  {isAdmin && user.role === 'advertiser' ? (
+                    <AdvertiserAnalyticsLink userId={user.id} />
                   ) : null}
 
                   {topTarget?.isFeatured ? (

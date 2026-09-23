@@ -1347,7 +1347,22 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { query, limit } = request.query;
       const cursorId = decodeCursor(request.query.cursor);
       const where = {
-        ...(query ? { email: { contains: query, mode: 'insensitive' as const } } : {}),
+        // Ищем и по почте, и по имени: ник клиента, имя анкеты (индивидуалка,
+        // салон, анкеты агентства) и название компании агентства.
+        ...(query
+          ? {
+              OR: [
+                { email: { contains: query, mode: 'insensitive' as const } },
+                { clientProfile: { nickname: { contains: query, mode: 'insensitive' as const } } },
+                {
+                  profiles: {
+                    some: { displayName: { contains: query, mode: 'insensitive' as const } },
+                  },
+                },
+                { company: { name: { contains: query, mode: 'insensitive' as const } } },
+              ],
+            }
+          : {}),
         ...(request.query.blocked === 'true' ? { bannedAt: { not: null } } : {}),
         ...(request.query.role ? { role: request.query.role } : {}),
         // Раздел People по типу рекламодателя: Agencies/Individuals/Massage salons.

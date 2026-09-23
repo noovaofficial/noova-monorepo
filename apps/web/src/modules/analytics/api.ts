@@ -3,6 +3,8 @@ import {
   type AnalyticsPeriod,
   analyticsSchema,
   type ContactType,
+  type OwnMoneyAnalytics,
+  ownMoneyAnalyticsSchema,
 } from '@noova/shared';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
@@ -21,6 +23,19 @@ export async function fetchAnalytics(period: AnalyticsPeriod): Promise<Analytics
   if (!response.ok) throw new Error(`Статистика ответила ${response.status}`);
 
   return analyticsSchema.parse(await response.json());
+}
+
+/** Деньги рекламодателя за период и за всё время — блок над отчётом. */
+export async function fetchOwnMoney(period: AnalyticsPeriod): Promise<OwnMoneyAnalytics> {
+  const response = await fetch(`${BASE}/api/v1/me/analytics/money?period=${period}`, {
+    headers: { accept: 'application/json' },
+    credentials: 'include',
+    cache: 'no-store',
+  });
+
+  if (!response.ok) throw new Error(`Деньги ответили ${response.status}`);
+
+  return ownMoneyAnalyticsSchema.parse(await response.json());
 }
 
 /**

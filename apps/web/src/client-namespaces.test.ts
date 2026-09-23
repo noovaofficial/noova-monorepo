@@ -65,7 +65,7 @@ describe('разделы словаря для браузера', () => {
   it('приватные разделы используются только в своих модулях', () => {
     const allowed: Record<string, RegExp> = {
       account: /^modules\/account\//,
-      analytics: /^modules\/analytics\//,
+      analytics: /^modules\/(analytics|moderation)\//,
       settings: /^modules\/account\//,
       billing: /^modules\/billing\//,
       campaigns: /^modules\/(campaigns|billing)\//,

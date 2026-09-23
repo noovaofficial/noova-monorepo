@@ -1,0 +1,46 @@
+.block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space5);
+  margin-bottom: var(--space5);
+}
+
+.blockTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space3);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space3);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space3);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+}
+
+.statLabel {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.statValue {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.statHint {
+  font-size: var(--textXs);
+  color: var(--secondaryText);
+}

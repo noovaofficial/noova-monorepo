@@ -1,4 +1,7 @@
 import {
+  ANALYTICS_PERIOD_DAYS,
+  adminAdvertiserAnalyticsSchema,
+  analyticsPeriodSchema,
   createStaffSchema,
   grantTopInputSchema,
   grantTopResultSchema,
@@ -15,6 +18,8 @@ import { z } from 'zod';
 import { photoUrl } from '../../mappers.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { loadMoney } from '../analytics/admin-money.js';
+import { loadAnalytics } from '../analytics/query.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
 import {
@@ -23,6 +28,7 @@ import {
   TopFullError,
   TopNotPublishedError,
 } from '../billing/top.js';
+import { toTransaction } from '../billing/wallet.js';
 import { publicUrl } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
 
@@ -337,6 +343,84 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
           startsAt: row.startsAt.toISOString(),
           expiresAt: row.expiresAt.toISOString(),
         })),
+      };
+    },
+  );
+
+  /**
+   * Аналитика одного рекламодателя для админа: тот же отчёт по трафику, что
+   * видит сам рекламодатель, плюс деньги (пополнения, коины, подарки, траты),
+   * размещение и последние операции. Деньги — за выбранный период и за всё
+   * время сразу: «за всё время» отдельным периодом трафик не имеет смысла.
+   */
+  fastify.get(
+    '/admin/advertisers/:userId/analytics',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: z.object({ userId: z.string().min(1) }),
+        querystring: z.object({ period: analyticsPeriodSchema.default('d30') }),
+        response: { 200: adminAdvertiserAnalyticsSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = request.params;
+      const { period } = request.query;
+
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          advertiserKind: true,
+          glowcoinBalance: true,
+          company: { select: { name: true, tariffTier: { select: { name: true } } } },
+        },
+      });
+      if (user?.role !== 'advertiser') {
+        throw fastify.httpErrors.notFound('Рекламодатель не найден');
+      }
+
+      const profiles = await fastify.prisma.profile.findMany({
+        where: { ownerId: userId },
+        select: { id: true, displayName: true, slug: true },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      const since = new Date(Date.now() - ANALYTICS_PERIOD_DAYS[period] * 24 * 60 * 60 * 1000);
+
+      const [traffic, money, listing] = await Promise.all([
+        loadAnalytics(fastify.prisma, { profiles, ownerId: userId }, period),
+        loadMoney(fastify.prisma, userId, since),
+        fastify.prisma.listing.findFirst({
+          where: { userId },
+          orderBy: { expiresAt: 'desc' },
+          select: { status: true, term: true, expiresAt: true },
+        }),
+      ]);
+
+      return {
+        advertiser: {
+          userId: user.id,
+          email: user.email,
+          advertiserKind: user.advertiserKind,
+          name: user.company?.name ?? profiles[0]?.displayName ?? null,
+        },
+        balanceGc: user.glowcoinBalance,
+        listing: listing
+          ? {
+              status: listing.status,
+              term: listing.term,
+              expiresAt: listing.expiresAt.toISOString(),
+            }
+          : null,
+        tariffTier: user.company?.tariffTier?.name ?? null,
+        traffic,
+        money: { period: money.period, allTime: money.allTime },
+        transactions: money.periodTx.slice(0, 100).map(toTransaction),
       };
     },
   );
