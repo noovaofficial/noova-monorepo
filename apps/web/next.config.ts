@@ -35,6 +35,8 @@ const nextConfig: NextConfig = {
   agentRules: false,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Next разрешает только перечисленные quality; 75 — значение по умолчанию.
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: mediaUrl.protocol.replace(':', '') as 'http' | 'https',
