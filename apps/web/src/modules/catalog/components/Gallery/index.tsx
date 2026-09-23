@@ -78,7 +78,7 @@ export function Gallery({ photos, alt, seed }: Props) {
             alt={alt}
             fill
             sizes="(max-width: 980px) 100vw, 600px"
-            quality={90}
+            quality={100}
             priority
             placeholder={active.blurDataUrl ? 'blur' : 'empty'}
             blurDataURL={active.blurDataUrl ?? undefined}

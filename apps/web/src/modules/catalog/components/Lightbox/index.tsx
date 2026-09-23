@@ -81,7 +81,7 @@ export function Lightbox({ photos, index, alt, onClose, onStep }: Props) {
             alt={alt}
             fill
             sizes="100vw"
-            quality={90}
+            quality={100}
             priority
             placeholder={photo.blurDataUrl ? 'blur' : 'empty'}
             blurDataURL={photo.blurDataUrl ?? undefined}

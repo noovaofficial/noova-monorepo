@@ -1,6 +1,6 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
-import { hasMetadata, ImageError, processImage } from './images';
+import { FULL_MAX_BYTES, hasMetadata, ImageError, processImage } from './images';
 
 /** Снимок с EXIF, включая GPS-координаты — то, что несёт любое фото с телефона. */
 async function photoWithGps(width = 800, height = 1000): Promise<Buffer> {
@@ -79,15 +79,26 @@ describe('обработка фотографий', () => {
   });
 
   it('готовит три размера и превью-заглушку', async () => {
-    // Шире нового full (1920), иначе withoutEnlargement не даст ресайзу
-    // сработать и тест проверит просто исходный размер, а не логику.
     const processed = await processImage(await photoWithGps(2400, 3000));
 
     expect(processed.variants.thumb.width).toBe(320);
     expect(processed.variants.card.width).toBe(640);
-    expect(processed.variants.full.width).toBe(1920);
+    expect(processed.variants.full.width).toBe(2400);
     expect(processed.blurDataUrl.startsWith('data:image/webp;base64,')).toBe(true);
   });
+
+  it('full не тяжелее потолка и сохраняет разрешение, пока хватает качества', async () => {
+    const raw = Buffer.alloc(2000 * 2000 * 3);
+    for (let i = 0; i < raw.length; i += 1) raw[i] = Math.floor(Math.random() * 256);
+    const noise = await sharp(raw, { raw: { width: 2000, height: 2000, channels: 3 } })
+      .jpeg({ quality: 95 })
+      .toBuffer();
+
+    const processed = await processImage(noise);
+
+    expect(processed.variants.full.buffer.byteLength).toBeLessThanOrEqual(FULL_MAX_BYTES);
+    expect(processed.variants.full.width).toBeLessThanOrEqual(2000);
+  }, 60_000);
 
   it('клеит вотермарку на каждый вариант ещё до модерации', async () => {
     // Ровный цвет без вотермарки после ресайза и перекодирования в webp

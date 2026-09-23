@@ -17,11 +17,10 @@ export const MAX_PHOTOS_PER_PROFILE = 20;
  */
 
 /** Ширины производных. Карточка берёт мелкую, галерея — крупную.
- *  `full` открывается на весь экран (`sizes="100vw"` в лайтбоксе) — 1280
- *  было мало даже для обычного full-HD монитора, не говоря про retina:
- *  Next.js умеет только уменьшать, апскейлить нечего, и снимок выглядел
- *  мыльным. 1920 — компромисс между резкостью и весом файла. */
-export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: 1920 } as const;
+ *  `full` (null) — в исходном разрешении, без ресайза: это режим просмотра,
+ *  там нужен максимум, который есть в оригинале. Вес ограничивает не
+ *  размер кадра, а потолок в FULL_MAX_BYTES (см. encodeFull). */
+export const VARIANT_WIDTHS = { thumb: 320, card: 640, full: null } as const;
 export type VariantName = keyof typeof VARIANT_WIDTHS;
 
 /** Лэйаут знака: тот же контур, что у `design-system/components/Logo`,
@@ -81,6 +80,66 @@ export class ImageError extends Error {
   }
 }
 
+/** Потолок веса `full`: больше — режем качество, меньше — не трогаем. */
+export const FULL_MAX_BYTES = 1024 * 1024;
+
+/**
+ * Кодирует `full` в максимальном качестве, но не тяжелее FULL_MAX_BYTES:
+ * сначала q=100; если не влезло — бинарный поиск наибольшего качества,
+ * которое влезает; если не влезает даже q=40 — уменьшаем кадр на 15% и
+ * повторяем. Разрешение оригинала при этом сохраняется, пока хватает
+ * качества.
+ */
+async function encodeFull(
+  input: Buffer,
+): Promise<{ data: Buffer; width: number; height: number }> {
+  const oriented = await sharp(input, { failOn: 'error' })
+    .rotate()
+    .png()
+    .toBuffer({ resolveWithObject: true });
+  let scale = 1;
+  for (;;) {
+    const base =
+      scale === 1
+        ? oriented
+        : await sharp(oriented.data)
+            .resize({ width: Math.max(1, Math.round(oriented.info.width * scale)) })
+            .png()
+            .toBuffer({ resolveWithObject: true });
+    const mark = cornerWatermark(base.info.width, base.info.height);
+    const encode = (quality: number) =>
+      sharp(base.data)
+        .composite([{ input: mark.input, left: mark.left, top: mark.top }])
+        .webp({ quality })
+        .toBuffer({ resolveWithObject: true });
+
+    const best = await encode(100);
+    if (best.data.byteLength <= FULL_MAX_BYTES) {
+      return { data: best.data, width: best.info.width, height: best.info.height };
+    }
+
+    const MIN_QUALITY = 40;
+    const atMin = await encode(MIN_QUALITY);
+    if (atMin.data.byteLength <= FULL_MAX_BYTES) {
+      let lo = MIN_QUALITY;
+      let hi = 99;
+      let found = atMin;
+      while (lo <= hi) {
+        const mid = Math.floor((lo + hi) / 2);
+        const trial = await encode(mid);
+        if (trial.data.byteLength <= FULL_MAX_BYTES) {
+          found = trial;
+          lo = mid + 1;
+        } else {
+          hi = mid - 1;
+        }
+      }
+      return { data: found.data, width: found.info.width, height: found.info.height };
+    }
+    scale *= 0.85;
+  }
+}
+
 export type ProcessedImage = {
   width: number;
   height: number;
@@ -121,6 +180,11 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
   const variants = {} as ProcessedImage['variants'];
 
   for (const [name, targetWidth] of Object.entries(VARIANT_WIDTHS)) {
+    if (targetWidth === null) {
+      const full = await encodeFull(input);
+      variants[name as VariantName] = { buffer: full.data, width: full.width, height: full.height };
+      continue;
+    }
     // Ресайз — отдельным шагом в png (без потерь), потому что размер и
     // положение знака зависят от итоговых ширины и высоты кадра, а они
     // известны только после withoutEnlargement. Кодируем в webp один раз,
