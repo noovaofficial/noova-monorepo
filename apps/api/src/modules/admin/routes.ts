@@ -8,6 +8,8 @@ import {
   moderationLogEntrySchema,
   moderationLogQuerySchema,
   type moderationSubjectRefSchema,
+  overviewQuerySchema,
+  overviewSchema,
   pageSchema,
   staffMemberSchema,
   topNowSchema,
@@ -19,6 +21,7 @@ import { photoUrl } from '../../mappers.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { loadMoney } from '../analytics/admin-money.js';
+import { loadOverview } from '../analytics/overview.js';
 import { loadAnalytics } from '../analytics/query.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
@@ -423,6 +426,25 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         transactions: money.periodTx.slice(0, 100).map(toTransaction),
       };
     },
+  );
+
+  /**
+   * Обзор рекламодателей для админа: кто самый ценный (по оплаченным €),
+   * сводка по типам, динамика, таблица с сортировкой. События идут из
+   * суточных агрегатов, результат кэшируется (см. `loadOverview`).
+   */
+  fastify.get(
+    '/admin/overview',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        querystring: overviewQuerySchema,
+        response: { 200: overviewSchema },
+      },
+    },
+    async (request) => loadOverview(fastify.prisma, request.query),
   );
 
   fastify.post(

@@ -548,3 +548,98 @@ export const ownMoneyAnalyticsSchema = z.object({
   allTime: ownMoneyTotalsSchema,
 });
 export type OwnMoneyAnalytics = z.infer<typeof ownMoneyAnalyticsSchema>;
+
+/* --- Обзор рекламодателей (только админ) ------------------------------------ */
+
+export const OVERVIEW_PERIODS = ['d7', 'd30', 'd90', 'all'] as const;
+export const overviewPeriodSchema = z.enum(OVERVIEW_PERIODS);
+export type OverviewPeriod = z.infer<typeof overviewPeriodSchema>;
+
+export const OVERVIEW_SORTS = [
+  'paid',
+  'profiles',
+  'views',
+  'clicks',
+  'eurPerProfile',
+  'eurPerClick',
+] as const;
+export const overviewSortSchema = z.enum(OVERVIEW_SORTS);
+export type OverviewSort = z.infer<typeof overviewSortSchema>;
+
+export const overviewQuerySchema = z.object({
+  period: overviewPeriodSchema.default('d30'),
+  /** Фильтр таблицы по типу; сводка сверху и по типам от него не зависит. */
+  kind: advertiserKindSchema.optional(),
+  sort: overviewSortSchema.default('paid'),
+  dir: z.enum(['asc', 'desc']).default('desc'),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0),
+});
+export type OverviewQuery = z.infer<typeof overviewQuerySchema>;
+
+const overviewSplitSchema = z.object({
+  registered: z.number().int().nonnegative(),
+  anonymous: z.number().int().nonnegative(),
+});
+
+/** Деньги — только оплаченные € (`TOPUP.eurPaidCents`): без бонуса пополнения,
+ *  подарков и корректировок. Отношения `null`, когда делить не на что. */
+export const overviewKindStatsSchema = z.object({
+  kind: advertiserKindSchema,
+  advertisers: z.number().int().nonnegative(),
+  payingAdvertisers: z.number().int().nonnegative(),
+  profiles: z.number().int().nonnegative(),
+  publishedProfiles: z.number().int().nonnegative(),
+  paidEurCents: z.number().int().nonnegative(),
+  /** Доля типа в выручке периода, 0–100. */
+  sharePct: z.number().nonnegative(),
+  eurPerAdvertiserCents: z.number().int().nullable(),
+  eurPerPublishedCents: z.number().int().nullable(),
+  views: overviewSplitSchema,
+  contactClicks: overviewSplitSchema,
+});
+export type OverviewKindStats = z.infer<typeof overviewKindStatsSchema>;
+
+export const overviewRowSchema = z.object({
+  userId: z.string(),
+  email: z.string(),
+  name: z.string().nullable(),
+  kind: advertiserKindSchema,
+  profiles: z.number().int().nonnegative(),
+  publishedProfiles: z.number().int().nonnegative(),
+  paidEurCents: z.number().int().nonnegative(),
+  topupCount: z.number().int().nonnegative(),
+  views: z.number().int().nonnegative(),
+  contactClicks: z.number().int().nonnegative(),
+  eurPerPublishedCents: z.number().int().nullable(),
+  eurPerClickCents: z.number().int().nullable(),
+  /** Справочно: подарено GC (положительные корректировки). */
+  giftedGc: z.number().int().nonnegative(),
+});
+export type OverviewRow = z.infer<typeof overviewRowSchema>;
+
+export const overviewSchema = z.object({
+  period: overviewPeriodSchema,
+  /** Первый день периода (берлинская дата); `null` у «за всё время». */
+  from: z.string().nullable(),
+  to: z.string(),
+  totals: z.object({
+    paidEurCents: z.number().int().nonnegative(),
+    topupCount: z.number().int().nonnegative(),
+    payingAdvertisers: z.number().int().nonnegative(),
+    avgCheckCents: z.number().int().nullable(),
+    /** Предыдущий период такой же длины; `null` у «за всё время». */
+    previousPaidEurCents: z.number().int().nonnegative().nullable(),
+    /** Изменение к предыдущему периоду, %; `null`, если сравнить не с чем. */
+    changePct: z.number().nullable(),
+  }),
+  byKind: z.array(overviewKindStatsSchema),
+  chart: z.object({
+    /** У «за всё время» точки помесячные (`YYYY-MM`), у остальных — по дням. */
+    bucket: z.enum(['day', 'month']),
+    points: z.array(z.object({ date: z.string(), paidEurCents: z.number().int().nonnegative() })),
+  }),
+  rows: z.array(overviewRowSchema),
+  total: z.number().int().nonnegative(),
+});
+export type Overview = z.infer<typeof overviewSchema>;

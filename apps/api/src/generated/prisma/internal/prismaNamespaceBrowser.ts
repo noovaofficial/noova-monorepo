@@ -73,6 +73,7 @@ export const ModelName = {
   CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
+  ProfileEventDaily: 'ProfileEventDaily',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -444,6 +445,17 @@ export const ProfileEventScalarFieldEnum = {
 } as const
 
 export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
+
+
+export const ProfileEventDailyScalarFieldEnum = {
+  profileId: 'profileId',
+  day: 'day',
+  kind: 'kind',
+  registered: 'registered',
+  anonymous: 'anonymous'
+} as const
+
+export type ProfileEventDailyScalarFieldEnum = (typeof ProfileEventDailyScalarFieldEnum)[keyof typeof ProfileEventDailyScalarFieldEnum]
 
 
 export const PriceSlotScalarFieldEnum = {

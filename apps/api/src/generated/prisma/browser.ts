@@ -171,6 +171,17 @@ export type ProfileContact = Prisma.ProfileContactModel
  */
 export type ProfileEvent = Prisma.ProfileEventModel
 /**
+ * Model ProfileEventDaily
+ * Суточные счётчики событий анкеты для админского обзора рекламодателей.
+ * Сырые `ProfileEvent` — десятки миллионов строк в месяц и живут 12 месяцев:
+ * считать по ним за 90 дней и «всё время» на лету нельзя. Сутки — берлинские,
+ * как и везде в статистике; собственные обращения владельца уже исключены.
+ * Заполняется задачей `event-rollup` (пересчёт последних суток каждый цикл
+ * и разовое заполнение задним числом), а не при записи события: так запись
+ * на горячем пути остаётся одной вставкой.
+ */
+export type ProfileEventDaily = Prisma.ProfileEventDailyModel
+/**
  * Model PriceSlot
  * 
  */

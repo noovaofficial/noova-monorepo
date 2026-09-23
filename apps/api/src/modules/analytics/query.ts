@@ -34,7 +34,7 @@ export function berlinDate(at: Date): string {
  * а не арифметикой над моментом времени: перевод часов сделал бы «минус
  * сутки» то 23, то 25 часами, и ряд в марте потерял бы день.
  */
-function shiftDate(date: string, days: number): string {
+export function shiftDate(date: string, days: number): string {
   const at = new Date(`${date}T00:00:00Z`);
   at.setUTCDate(at.getUTCDate() + days);
   return at.toISOString().slice(0, 10);

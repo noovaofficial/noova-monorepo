@@ -24,6 +24,7 @@ export const queryKeys = {
   queue: (kind?: string) => ['moderation-queue', kind ?? 'all'] as const,
   queueCount: () => ['moderation-queue-count'] as const,
   topNow: () => ['admin-top-now'] as const,
+  overview: (query: object) => ['admin-overview', query] as const,
   advertiserAnalytics: (userId: string, period: string) =>
     ['admin-advertiser-analytics', userId, period] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,

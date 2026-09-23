@@ -479,6 +479,7 @@ model Profile {
   comments     ProfileComment[]
   contacts     ProfileContact[]
   events       ProfileEvent[]
+  eventsDaily  ProfileEventDaily[]
   reports      ProfileReport[]
   prices       PriceSlot[]
   services     ProfileService[]
@@ -846,6 +847,25 @@ model ProfileEvent {
   @@index([profileId, kind, createdAt])
   // Чистка по сроку идёт по всей таблице разом, без разбора анкет.
   @@index([createdAt])
+}
+
+/// Суточные счётчики событий анкеты для админского обзора рекламодателей.
+/// Сырые `ProfileEvent` — десятки миллионов строк в месяц и живут 12 месяцев:
+/// считать по ним за 90 дней и «всё время» на лету нельзя. Сутки — берлинские,
+/// как и везде в статистике; собственные обращения владельца уже исключены.
+/// Заполняется задачей `event-rollup` (пересчёт последних суток каждый цикл
+/// и разовое заполнение задним числом), а не при записи события: так запись
+/// на горячем пути остаётся одной вставкой.
+model ProfileEventDaily {
+  profileId  String
+  profile    Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  day        DateTime         @db.Date
+  kind       ProfileEventKind
+  registered Int              @default(0)
+  anonymous  Int              @default(0)
+
+  @@id([profileId, day, kind])
+  @@index([day])
 }
 
 model PriceSlot {

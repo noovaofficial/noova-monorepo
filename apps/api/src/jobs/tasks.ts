@@ -3,6 +3,7 @@ import { pino } from 'pino';
 import { env } from '../env.js';
 import type { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
+import { runEventRollup } from '../modules/analytics/rollup.js';
 import { pushMail } from '../modules/auth/mail-queue.js';
 import { expireAgencyTopPlacements } from '../modules/billing/agency-top.js';
 import { expireListings } from '../modules/billing/listing.js';
@@ -31,6 +32,13 @@ export type Job = {
  * хранению персональных данных, и менять их должно быть можно без выката.
  */
 export const JOBS: Job[] = [
+  {
+    // Суточные счётчики событий для админского обзора рекламодателей: последние
+    // сутки пересчитываются каждый цикл, при первом запуске заполняется вся
+    // история. Число — сколько строк записано.
+    name: 'event-rollup',
+    run: (prisma) => runEventRollup(prisma),
+  },
   {
     // Истёкшие места в ТОПе освобождаются, флаг с анкет снимается (§3.4).
     // Заодно ТОП агентств (§3.5, D-14) — своя таблица, но общее расписание:

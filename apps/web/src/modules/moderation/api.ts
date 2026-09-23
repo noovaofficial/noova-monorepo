@@ -16,6 +16,9 @@ import {
   managedUserSchema,
   moderatedProfileSchema,
   moderationLogEntrySchema,
+  type Overview,
+  type OverviewQuery,
+  overviewSchema,
   type Page,
   pageSchema,
   type QueueCount,
@@ -235,6 +238,19 @@ export function fetchAdvertiserAnalytics(
     `/admin/advertisers/${encodeURIComponent(userId)}/analytics?period=${period}`,
     adminAdvertiserAnalyticsSchema,
   );
+}
+
+/** Обзор рекламодателей: деньги, типы, таблица (только админ). */
+export function fetchOverview(query: OverviewQuery): Promise<Overview> {
+  const params = new URLSearchParams({
+    period: query.period,
+    sort: query.sort,
+    dir: query.dir,
+    limit: String(query.limit),
+    offset: String(query.offset),
+  });
+  if (query.kind) params.set('kind', query.kind);
+  return call(`/admin/overview?${params.toString()}`, overviewSchema);
 }
 
 /** Кто сейчас в ТОПе: анкеты и агентства (только админ). */

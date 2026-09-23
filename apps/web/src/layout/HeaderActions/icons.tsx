@@ -19,6 +19,7 @@ export type MenuIconName =
   | 'massageSalons'
   | 'log'
   | 'topNow'
+  | 'overview'
   | 'locations'
   | 'serviceCatalog'
   | 'monetization'
@@ -102,6 +103,8 @@ const PATHS: Record<MenuIconName, string[]> = {
     'M8 7.5h1.5M8 11h1.5M8 14.5h1.5M11.5 7.5H13M11.5 11H13M11.5 14.5H13',
     'M9 20.5v-3h2v3',
   ],
+  // Столбики растущей высоты — обзор рекламодателей: сравнение по деньгам.
+  overview: ['M5 20V13', 'M12 20V5', 'M19 20V9'],
   // Звезда — ТОП: то, что сейчас на верхних местах.
   topNow: ['M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9L3.5 9.7l5.9-.8L12 3.5Z'],
   // Чек с зубчатым краем — операции: журнал денег, а не настройка.

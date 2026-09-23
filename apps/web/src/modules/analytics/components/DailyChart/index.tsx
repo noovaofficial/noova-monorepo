@@ -8,6 +8,10 @@ type Props = {
   points: { date: string; value: number }[];
   /** Что именно показано — уходит в подпись графика для чтения с экрана. */
   label: string;
+  /** Шаг ряда: сутки (`YYYY-MM-DD`) или месяц (`YYYY-MM`). По умолчанию сутки. */
+  unit?: 'day' | 'month';
+  /** Как показать значение в подсказке и на засечке; по умолчанию число. */
+  formatValue?: (value: number) => string;
 };
 
 /** Столбики рисуются в этой системе координат и растягиваются по месту. */
@@ -25,8 +29,9 @@ const VIEW_HEIGHT = 120;
  * Одна метрика за раз: у просмотров и кликов разница на порядок, и на общей
  * шкале клики превратились бы в ровную линию по нулю.
  */
-export function DailyChart({ points, label }: Props) {
+export function DailyChart({ points, label, unit = 'day', formatValue }: Props) {
   const format = useFormatter();
+  const valueLabel = formatValue ?? ((value: number) => format.number(value));
 
   // Пустой ряд невозможен — период всегда хотя бы неделя, — но рисовать
   // «график ни из чего» всё равно нечем, и `points[0]` ниже без этого лжёт.
@@ -41,14 +46,16 @@ export function DailyChart({ points, label }: Props) {
   const gap = Math.min(step * 0.25, 0.6);
 
   const dayLabel = (date: string) =>
-    format.dateTime(new Date(`${date}T12:00:00Z`), { day: 'numeric', month: 'short' });
+    unit === 'month'
+      ? format.dateTime(new Date(`${date}-01T12:00:00Z`), { month: 'short', year: 'numeric' })
+      : format.dateTime(new Date(`${date}T12:00:00Z`), { day: 'numeric', month: 'short' });
 
   return (
     <figure className={styles.wrap}>
       <div className={styles.plot}>
         {/* Верхняя засечка — максимум ряда: без неё высота столбика ничего
             не говорит, а полноценные оси на семи днях только шумят. */}
-        <span className={styles.axisMax}>{format.number(max)}</span>
+        <span className={styles.axisMax}>{valueLabel(max)}</span>
 
         <svg
           className={styles.svg}
@@ -72,7 +79,7 @@ export function DailyChart({ points, label }: Props) {
                 rx={0.4}
                 className={point.value === 0 ? styles.barEmpty : styles.bar}
               >
-                <title>{`${dayLabel(point.date)}: ${format.number(point.value)}`}</title>
+                <title>{`${dayLabel(point.date)}: ${valueLabel(point.value)}`}</title>
               </rect>
             );
           })}

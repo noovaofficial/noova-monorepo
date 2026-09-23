@@ -419,6 +419,7 @@ export const ModelName = {
   CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
+  ProfileEventDaily: 'ProfileEventDaily',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -454,7 +455,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "profileEventDaily" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2083,6 +2084,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProfileEventCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProfileEventCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProfileEventDaily: {
+      payload: Prisma.$ProfileEventDailyPayload<ExtArgs>
+      fields: Prisma.ProfileEventDailyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProfileEventDailyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProfileEventDailyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        findFirst: {
+          args: Prisma.ProfileEventDailyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProfileEventDailyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        findMany: {
+          args: Prisma.ProfileEventDailyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>[]
+        }
+        create: {
+          args: Prisma.ProfileEventDailyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        createMany: {
+          args: Prisma.ProfileEventDailyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProfileEventDailyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>[]
+        }
+        delete: {
+          args: Prisma.ProfileEventDailyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        update: {
+          args: Prisma.ProfileEventDailyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProfileEventDailyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProfileEventDailyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProfileEventDailyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProfileEventDailyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileEventDailyPayload>
+        }
+        aggregate: {
+          args: Prisma.ProfileEventDailyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProfileEventDaily>
+        }
+        groupBy: {
+          args: Prisma.ProfileEventDailyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileEventDailyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProfileEventDailyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileEventDailyCountAggregateOutputType> | number
         }
       }
     }
@@ -3940,6 +4015,17 @@ export const ProfileEventScalarFieldEnum = {
 export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
 
 
+export const ProfileEventDailyScalarFieldEnum = {
+  profileId: 'profileId',
+  day: 'day',
+  kind: 'kind',
+  registered: 'registered',
+  anonymous: 'anonymous'
+} as const
+
+export type ProfileEventDailyScalarFieldEnum = (typeof ProfileEventDailyScalarFieldEnum)[keyof typeof ProfileEventDailyScalarFieldEnum]
+
+
 export const PriceSlotScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
@@ -4935,6 +5021,7 @@ export type GlobalOmitConfig = {
   companyPriceSlot?: Prisma.CompanyPriceSlotOmit
   profileContact?: Prisma.ProfileContactOmit
   profileEvent?: Prisma.ProfileEventOmit
+  profileEventDaily?: Prisma.ProfileEventDailyOmit
   priceSlot?: Prisma.PriceSlotOmit
   service?: Prisma.ServiceOmit
   serviceTranslation?: Prisma.ServiceTranslationOmit
