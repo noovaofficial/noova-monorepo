@@ -13,10 +13,12 @@ import {
   eyeColorSchema,
   hairColorSchema,
   listingKindSchema,
+  type ProfileStatus,
   profileStatusSchema,
   pubicHairSchema,
   salonHoursSchema,
   salonWeekSchema,
+  type VerificationStatus,
   verificationStatusSchema,
 } from './profile';
 
@@ -212,6 +214,84 @@ export const ownProfileSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 export type OwnProfile = z.infer<typeof ownProfileSchema>;
+
+/**
+ * Минимум, без которого анкету рано отправлять на проверку: хотя бы одно фото,
+ * возраст, один тариф и один контакт. Описание и услуги не требуем — их нет
+ * у переносимых анкет, а отправке на проверку это не мешает.
+ */
+export type ProfileCompleteness = {
+  /** Салон (`massage`) под правило не подпадает: у него нет возраста, а прайс и
+   *  контакты устроены иначе. Не указан — считаем анкетой эскорта. */
+  kind?: 'escort' | 'massage';
+  age: number | null;
+  photosCount: number;
+  pricesCount: number;
+  contactsCount: number;
+};
+
+export function isProfileComplete(p: ProfileCompleteness): boolean {
+  return missingForReview(p).length === 0;
+}
+
+/** Чего не хватает до отправки на проверку — для подсказки владельцу. */
+export type MissingField = 'age' | 'photo' | 'price' | 'contact';
+
+export function missingForReview(p: ProfileCompleteness): MissingField[] {
+  const missing: MissingField[] = [];
+  if (p.kind === 'massage') return missing;
+  if (p.age === null) missing.push('age');
+  if (p.photosCount === 0) missing.push('photo');
+  if (p.pricesCount === 0) missing.push('price');
+  if (p.contactsCount === 0) missing.push('contact');
+  return missing;
+}
+
+/**
+ * Можно ли отправить анкету на проверку (в том числе массово): статус
+ * «черновик» или «отклонена», проверка ещё не пройдена и анкета заполнена.
+ * Заблокированные сюда не входят — их повторная отправка идёт вручную.
+ */
+export function isReadyToSubmit(
+  p: ProfileCompleteness & { status: ProfileStatus; verificationStatus: VerificationStatus },
+): boolean {
+  return (
+    (p.status === 'draft' || p.status === 'rejected') &&
+    p.verificationStatus !== 'verified' &&
+    isProfileComplete(p)
+  );
+}
+
+/** Стадия анкеты для владельца: то, что за статусом и проверкой стоит на деле. */
+export type ProfileStage =
+  | 'draft'
+  | 'ready_for_review'
+  | 'in_review'
+  | 'ready_for_publication'
+  | 'published'
+  | 'paused'
+  | 'rejected'
+  | 'banned';
+
+export function profileStage(
+  p: ProfileCompleteness & { status: ProfileStatus; verificationStatus: VerificationStatus },
+): ProfileStage {
+  if (p.status === 'banned') return 'banned';
+  if (p.status === 'published') return 'published';
+  if (p.status === 'paused') return 'paused';
+  if (p.verificationStatus === 'verified') return 'ready_for_publication';
+  if (p.status === 'pending_verification') return 'in_review';
+  if (p.status === 'rejected') return 'rejected';
+  return isProfileComplete(p) ? 'ready_for_review' : 'draft';
+}
+
+/** Итог массового действия над анкетами: сколько изменилось, сколько пропущено
+ *  (нечего менять либо анкета не подходит — не проверена, заблокирована). */
+export const bulkProfileResultSchema = z.object({
+  changed: z.number().int().nonnegative(),
+  skipped: z.number().int().nonnegative(),
+});
+export type BulkProfileResult = z.infer<typeof bulkProfileResultSchema>;
 
 /** Справочник городов и районов для форм. */
 export const cityOptionSchema = z.object({

@@ -1,6 +1,8 @@
 import {
   type AgencyPaywallInfo,
   agencyPaywallInfoSchema,
+  type BulkProfileResult,
+  bulkProfileResultSchema,
   type CityOption,
   type Company,
   type CompanyInput,
@@ -276,4 +278,19 @@ export function publishProfile(id: string): Promise<OwnProfile> {
 
 export function pauseProfile(id: string): Promise<OwnProfile> {
   return call(`/me/profiles/${id}/pause`, ownProfileSchema, { method: 'POST' });
+}
+
+/** Отправляет на проверку все заполненные черновики и отклонённые анкеты разом. */
+export function submitAllProfiles(): Promise<BulkProfileResult> {
+  return call('/me/profiles/submit-all', bulkProfileResultSchema, { method: 'POST' });
+}
+
+/** Публикует все проверенные, ещё не опубликованные анкеты разом. */
+export function publishAllProfiles(): Promise<BulkProfileResult> {
+  return call('/me/profiles/publish-all', bulkProfileResultSchema, { method: 'POST' });
+}
+
+/** Снимает с публикации все опубликованные анкеты разом. */
+export function pauseAllProfiles(): Promise<BulkProfileResult> {
+  return call('/me/profiles/pause-all', bulkProfileResultSchema, { method: 'POST' });
 }

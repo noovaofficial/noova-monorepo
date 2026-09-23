@@ -22,6 +22,7 @@ import {
   eyeColorSchema,
   hairColorSchema,
   type Locale,
+  missingForReview,
   type PaymentMethod,
   pubicHairSchema,
   SPOKEN_LANGUAGES,
@@ -411,6 +412,16 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
   const runAction = (action: (id: string) => Promise<OwnProfile>) => act.mutate(action);
 
   const canPublish = profile.verificationStatus === 'verified';
+  // Тот же минимум, что проверяет сервер при отправке и публикации; считаем
+  // по сохранённой анкете, а не по несохранённым правкам формы.
+  const missing = missingForReview({
+    kind: profile.kind,
+    age: profile.age,
+    photosCount: profile.photos.length,
+    pricesCount: profile.prices.length,
+    contactsCount: profile.contacts.length,
+  });
+  const incomplete = missing.length > 0;
 
   return (
     <div className={styles.wrap}>
@@ -967,6 +978,12 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
               </p>
             ) : null}
 
+            {incomplete && profile.status !== 'published' ? (
+              <p className={styles.missing}>
+                {t('missingLabel', { fields: missing.map((m) => t(`missing_${m}`)).join(', ') })}
+              </p>
+            ) : null}
+
             <div className={styles.sidebarActions}>
               <Button type="submit" form={FORM_ID} disabled={pending}>
                 {t('save')}
@@ -983,7 +1000,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
               (!canPublish && (profile.status === 'draft' || profile.status === 'rejected')) ? (
                 <Button
                   variant="secondary"
-                  disabled={pending}
+                  disabled={pending || incomplete}
                   onClick={() => runAction(submitProfile)}
                 >
                   {t('submit')}
@@ -993,7 +1010,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
               {canPublish && profile.status !== 'published' && profile.status !== 'banned' ? (
                 <Button
                   variant="secondary"
-                  disabled={pending}
+                  disabled={pending || incomplete}
                   onClick={() => runAction(publishProfile)}
                 >
                   {t('publish')}

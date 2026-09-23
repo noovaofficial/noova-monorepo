@@ -1,12 +1,17 @@
 import {
   agencyPaywallInfoSchema,
+  bulkProfileResultSchema,
   type ContactInput,
   cityOptionSchema,
   countryOptionSchema,
   createProfileSchema,
   deleteAccountSchema,
   effectiveProfileLimit,
+  isProfileComplete,
+  isReadyToSubmit,
   LISTING_KIND_BY_ADVERTISER,
+  type MissingField,
+  missingForReview,
   normalizeContact,
   ownProfileSchema,
   PROFILE_LIMIT_BY_ADVERTISER,
@@ -38,6 +43,40 @@ import { ownProfileSelect, toOwnProfile } from './mappers.js';
 async function present(row: Parameters<typeof toOwnProfile>[0]) {
   const photos = await Promise.all(row.photos.map(toOwnPhoto));
   return toOwnProfile(row, photos);
+}
+
+const MISSING_LABEL: Record<MissingField, string> = {
+  age: 'возраст',
+  photo: 'фото',
+  price: 'тариф',
+  contact: 'контакт',
+};
+
+/**
+ * Не пускаем незаполненную анкету ни к модератору, ни в выдачу: и поодиночке,
+ * и массово действует один и тот же минимум (`missingForReview` в shared).
+ */
+async function assertComplete(fastify: FastifyInstance, profileId: string): Promise<void> {
+  const p = await fastify.prisma.profile.findUniqueOrThrow({
+    where: { id: profileId },
+    select: {
+      kind: true,
+      age: true,
+      _count: { select: { photos: true, prices: true, contacts: true } },
+    },
+  });
+  const missing = missingForReview({
+    kind: p.kind,
+    age: p.age,
+    photosCount: p._count.photos,
+    pricesCount: p._count.prices,
+    contactsCount: p._count.contacts,
+  });
+  if (missing.length > 0) {
+    throw fastify.httpErrors.badRequest(
+      `Заполните анкету: не хватает — ${missing.map((m) => MISSING_LABEL[m]).join(', ')}`,
+    );
+  }
 }
 
 /**
@@ -693,6 +732,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         throw fastify.httpErrors.forbidden('Сначала подтвердите адрес электронной почты');
       }
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
+      await assertComplete(fastify, owned.id);
 
       const verification = await fastify.prisma.verificationCase.findUnique({
         where: { profileId: owned.id },
@@ -748,6 +788,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId } = requireSession(request);
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
+      await assertComplete(fastify, owned.id);
 
       const verification = await fastify.prisma.verificationCase.findUnique({
         where: { profileId: request.params.id },
@@ -776,6 +817,167 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       fastify.revalidate(tagsFor(owned.slug));
       return present(updated);
+    },
+  );
+
+  /**
+   * Массовая отправка на проверку: все анкеты, которые можно отправить
+   * поодиночке (`/submit`) и которые заполнены (`isReadyToSubmit`). Остальные
+   * пропускаем и сообщаем сколько — пустые анкеты в очередь модератора
+   * отправлять незачем.
+   */
+  fastify.post(
+    '/me/profiles/submit-all',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 20, timeWindow: '1 hour' } },
+      schema: { tags: ['account'], response: { 200: bulkProfileResultSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const { isEmailVerified } = await advertiserOr403(fastify, userId);
+      if (!isEmailVerified) {
+        throw fastify.httpErrors.forbidden('Сначала подтвердите адрес электронной почты');
+      }
+
+      const all = await fastify.prisma.profile.findMany({
+        where: { ownerId: userId },
+        select: {
+          id: true,
+          slug: true,
+          status: true,
+          kind: true,
+          age: true,
+          verification: { select: { status: true } },
+          _count: { select: { photos: true, prices: true, contacts: true } },
+        },
+      });
+      const eligible = all.filter((p) =>
+        isReadyToSubmit({
+          kind: p.kind,
+          status: p.status,
+          verificationStatus: p.verification?.status ?? 'none',
+          age: p.age,
+          photosCount: p._count.photos,
+          pricesCount: p._count.prices,
+          contactsCount: p._count.contacts,
+        }),
+      );
+
+      if (eligible.length > 0) {
+        const now = new Date();
+        await fastify.prisma.$transaction(
+          eligible.map((p) =>
+            fastify.prisma.profile.update({
+              where: { id: p.id },
+              data: {
+                status: 'pending_verification',
+                moderationNote: null,
+                verification: {
+                  upsert: {
+                    create: { status: 'pending', submittedAt: now },
+                    update: { status: 'pending', submittedAt: now, rejectionReason: null },
+                  },
+                },
+              },
+              select: { id: true },
+            }),
+          ),
+        );
+        fastify.revalidate([...eligible.map((p) => profileTag(p.slug)), PROFILES_TAG]);
+      }
+
+      return { changed: eligible.length, skipped: all.length - eligible.length };
+    },
+  );
+
+  /**
+   * Массовая публикация: включает все анкеты, которые можно опубликовать
+   * поодиночке (`/publish`) — проверенные модератором, не опубликованные и
+   * не заблокированные. Остальные пропускает, а не роняет запрос: агентство
+   * с сотней анкет не должно разбираться, какая из них мешает.
+   */
+  fastify.post(
+    '/me/profiles/publish-all',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 20, timeWindow: '1 hour' } },
+      schema: { tags: ['account'], response: { 200: bulkProfileResultSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await advertiserOr403(fastify, userId);
+
+      const all = await fastify.prisma.profile.findMany({
+        where: { ownerId: userId },
+        select: {
+          id: true,
+          slug: true,
+          status: true,
+          kind: true,
+          age: true,
+          verification: { select: { status: true } },
+          _count: { select: { photos: true, prices: true, contacts: true } },
+        },
+      });
+      const eligible = all.filter(
+        (p) =>
+          p.verification?.status === 'verified' &&
+          p.status !== 'published' &&
+          p.status !== 'banned' &&
+          isProfileComplete({
+            kind: p.kind,
+            age: p.age,
+            photosCount: p._count.photos,
+            pricesCount: p._count.prices,
+            contactsCount: p._count.contacts,
+          }),
+      );
+
+      if (eligible.length > 0) {
+        // Тот же пейвол, что и у одиночной публикации, но проверяем раз на всех.
+        if (env.PAYWALL_ENABLED && !(await hasVisibleListing(fastify.prisma, userId))) {
+          throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
+        }
+        await fastify.prisma.profile.updateMany({
+          where: { id: { in: eligible.map((p) => p.id) } },
+          data: { status: 'published', publishedAt: new Date() },
+        });
+        fastify.revalidate([...eligible.map((p) => profileTag(p.slug)), PROFILES_TAG]);
+      }
+
+      return { changed: eligible.length, skipped: all.length - eligible.length };
+    },
+  );
+
+  /** Массовое снятие с публикации: все опубликованные анкеты уходят на паузу,
+   *  как и по одиночной `/pause`. Заблокированные и черновики не трогаем. */
+  fastify.post(
+    '/me/profiles/pause-all',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 20, timeWindow: '1 hour' } },
+      schema: { tags: ['account'], response: { 200: bulkProfileResultSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await advertiserOr403(fastify, userId);
+
+      const all = await fastify.prisma.profile.findMany({
+        where: { ownerId: userId },
+        select: { id: true, slug: true, status: true },
+      });
+      const published = all.filter((p) => p.status === 'published');
+
+      if (published.length > 0) {
+        await fastify.prisma.profile.updateMany({
+          where: { id: { in: published.map((p) => p.id) } },
+          data: { status: 'paused' },
+        });
+        fastify.revalidate([...published.map((p) => profileTag(p.slug)), PROFILES_TAG]);
+      }
+
+      return { changed: published.length, skipped: all.length - published.length };
     },
   );
 

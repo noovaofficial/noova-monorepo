@@ -1,6 +1,14 @@
 'use client';
 
-import { type AgencyPaywallInfo, type Locale, PROFILE_LIMIT_BY_ADVERTISER } from '@noova/shared';
+import {
+  type AgencyPaywallInfo,
+  isReadyToSubmit,
+  type Locale,
+  missingForReview,
+  type OwnProfile,
+  PROFILE_LIMIT_BY_ADVERTISER,
+  profileStage,
+} from '@noova/shared';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
@@ -12,7 +20,10 @@ import {
   fetchCities,
   fetchOwnProfiles,
   ProfilePaywall,
+  pauseAllProfiles,
+  publishAllProfiles,
   publishProfile,
+  submitAllProfiles,
 } from '@/modules/account/api';
 import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
@@ -20,7 +31,7 @@ import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 import { AgencyPaywallNotice } from '../AgencyPaywallNotice';
-import { ProfileStatusBadge } from '../ProfileStatusBadge';
+import { ProfileStageBadge, ProfileStatusBadge } from '../ProfileStatusBadge';
 
 export function ProfileList() {
   const locale = useLocale() as Locale;
@@ -30,6 +41,8 @@ export function ProfileList() {
   const queryClient = useQueryClient();
 
   const [showForm, setShowForm] = useState(false);
+  const [confirmPause, setConfirmPause] = useState(false);
+  const [bulkNotice, setBulkNotice] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
   // Пустая строка — «город ещё не выбран»: до загрузки справочника берём первый.
   const [citySlug, setCitySlug] = useState('');
 
@@ -65,6 +78,54 @@ export function ProfileList() {
   const publish = useMutation({
     mutationFn: publishProfile,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.ownProfiles() }),
+  });
+
+  const refreshProfiles = () =>
+    queryClient.invalidateQueries({ queryKey: queryKeys.ownProfiles() });
+
+  // Массовые действия агентства — на сервере одним запросом: по одной анкете
+  // с клиента у сотни анкет упёрлось бы в лимиты запросов.
+  const publishAll = useMutation({
+    mutationFn: publishAllProfiles,
+    onSuccess: ({ changed, skipped }) => {
+      setBulkNotice({ kind: 'ok', text: t('bulkPublished', { changed, skipped }) });
+      void refreshProfiles();
+    },
+    onError: (cause: unknown) =>
+      setBulkNotice({
+        kind: 'error',
+        text:
+          cause instanceof AccountError && cause.status === 402
+            ? t('bulkNeedsPayment')
+            : t('bulkFailed'),
+      }),
+  });
+  const submitAll = useMutation({
+    mutationFn: submitAllProfiles,
+    onSuccess: ({ changed, skipped }) => {
+      setBulkNotice({ kind: 'ok', text: t('bulkSubmitted', { changed, skipped }) });
+      void refreshProfiles();
+    },
+    onError: (cause: unknown) =>
+      setBulkNotice({
+        kind: 'error',
+        text:
+          cause instanceof AccountError && cause.status === 403
+            ? t('verifyEmailFirst')
+            : t('bulkFailed'),
+      }),
+  });
+  const pauseAll = useMutation({
+    mutationFn: pauseAllProfiles,
+    onSuccess: ({ changed }) => {
+      setConfirmPause(false);
+      setBulkNotice({ kind: 'ok', text: t('bulkPaused', { count: changed }) });
+      void refreshProfiles();
+    },
+    onError: () => {
+      setConfirmPause(false);
+      setBulkNotice({ kind: 'error', text: t('bulkFailed') });
+    },
   });
 
   const profiles = list.data ?? null;
@@ -126,6 +187,48 @@ export function ProfileList() {
         ? (tariff.data?.effectiveLimit ?? PROFILE_LIMIT_BY_ADVERTISER.agency)
         : PROFILE_LIMIT_BY_ADVERTISER[user.advertiserKind];
   const limitReached = profiles !== null && limit !== null && profiles.length >= limit;
+
+  const completeness = (p: OwnProfile) => ({
+    kind: p.kind,
+    age: p.age,
+    photosCount: p.photos.length,
+    pricesCount: p.prices.length,
+    contactsCount: p.contacts.length,
+  });
+  const stageOf = (p: OwnProfile) =>
+    profileStage({
+      ...completeness(p),
+      status: p.status,
+      verificationStatus: p.verificationStatus,
+    });
+  // Подсказка для черновиков и отклонённых: чего не хватает, чтобы анкету
+  // можно было отправить на проверку.
+  const missingHint = (p: OwnProfile): string | null => {
+    if (p.status !== 'draft' && p.status !== 'rejected') return null;
+    if (p.verificationStatus === 'verified') return null;
+    const missing = missingForReview(completeness(p));
+    return missing.length === 0
+      ? null
+      : t('missingLabel', { fields: missing.map((m) => t(`missing_${m}`)).join(', ') });
+  };
+  const incompleteDraftCount = profiles?.filter((p) => missingHint(p) !== null).length ?? 0;
+  const submittableCount =
+    profiles?.filter((p) =>
+      isReadyToSubmit({
+        ...completeness(p),
+        status: p.status,
+        verificationStatus: p.verificationStatus,
+      }),
+    ).length ?? 0;
+  const canPublish = (p: OwnProfile) =>
+    p.verificationStatus === 'verified' &&
+    p.status !== 'published' &&
+    p.status !== 'banned' &&
+    missingForReview(completeness(p)).length === 0;
+  const publishedCount = profiles?.filter((p) => p.status === 'published').length ?? 0;
+  const blockedCount = profiles?.filter((p) => p.status === 'banned').length ?? 0;
+  const publishableCount = profiles?.filter(canPublish).length ?? 0;
+  const bulkPending = publishAll.isPending || pauseAll.isPending || submitAll.isPending;
 
   // Салон — это анкета, но называть её так в его кабинете значит путать:
   // владелец салона заводит салон, а не «анкету» (N-34).
@@ -243,6 +346,164 @@ export function ProfileList() {
         <div className={styles.empty}>
           <p>{t(isSalon ? 'salonEmpty' : 'empty')}</p>
           <p className={styles.hint}>{t(isSalon ? 'salonEmptyHint' : 'emptyHint')}</p>
+        </div>
+      ) : isAgency ? (
+        <div className={styles.layout}>
+          <div className={styles.profileGrid}>
+            {profiles.map((profile) => {
+              const cover = profile.photos[0];
+              return (
+                <div key={profile.id} className={styles.profileCard}>
+                  <div className={styles.profileThumb}>
+                    {cover ? (
+                      // Ссылка на неодобренное фото подписанная и живёт минуты,
+                      // поэтому next/image с его оптимизацией здесь не подходит.
+                      // biome-ignore lint/performance/noImgElement: подписанная ссылка живёт минуты, оптимизатор Next закэшировал бы её и отдавал битую
+                      <img src={cover.url} alt="" loading="lazy" />
+                    ) : (
+                      <span className={styles.profileThumbEmpty}>{t('noPhoto')}</span>
+                    )}
+                    <span className={styles.profileThumbStatus}>
+                      <ProfileStageBadge stage={stageOf(profile)} />
+                    </span>
+                  </div>
+                  <div className={styles.profileBody}>
+                    <span className={styles.cardName}>{profile.displayName}</span>
+                    <span className={styles.cardMeta}>
+                      {profile.city.name}
+                      {profile.district ? ` · ${profile.district.name}` : ''}
+                    </span>
+                    {missingHint(profile) ? (
+                      <span className={styles.missing}>{missingHint(profile)}</span>
+                    ) : null}
+                  </div>
+                  <div className={styles.profileActions}>
+                    <Link href={`/account/profiles/${profile.id}`}>
+                      <Button variant="secondary">{t('edit')}</Button>
+                    </Link>
+                    {canPublish(profile) ? (
+                      <Button
+                        variant="secondary"
+                        disabled={publish.isPending && publish.variables === profile.id}
+                        onClick={() => publish.mutate(profile.id)}
+                      >
+                        {t('publish')}
+                      </Button>
+                    ) : null}
+                    {profile.status === 'published' ? (
+                      <Link href={`/profile/${profile.slug}`}>
+                        <Button variant="secondary">{t('view')}</Button>
+                      </Link>
+                    ) : null}
+                  </div>
+                  {publish.isError && publish.variables === profile.id ? (
+                    <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+
+          <aside className={styles.sidebar}>
+            <div className={styles.sidebarCard}>
+              <span className={styles.sidebarTitle}>{t('statsTitle')}</span>
+              <div className={styles.statRow}>
+                <span>{t('statsProfiles')}</span>
+                <span className={styles.statValue}>
+                  {limit === null
+                    ? profiles.length
+                    : t('statsOf', { count: profiles.length, limit })}
+                </span>
+              </div>
+              {limit !== null && limit > 0 ? (
+                <div className={styles.progress} aria-hidden="true">
+                  <div
+                    className={styles.progressBar}
+                    style={{ width: `${Math.min(100, (profiles.length / limit) * 100)}%` }}
+                  />
+                </div>
+              ) : null}
+              <div className={styles.statRow}>
+                <span>{t('statsPublished')}</span>
+                <span className={styles.statValue}>{publishedCount}</span>
+              </div>
+              <div className={styles.statRow}>
+                <span>{t('statsBlocked')}</span>
+                <span className={styles.statValue}>{blockedCount}</span>
+              </div>
+            </div>
+
+            <div className={styles.sidebarCard}>
+              <span className={styles.sidebarTitle}>{t('bulkTitle')}</span>
+              {bulkNotice ? (
+                <p
+                  className={`${styles.notice} ${bulkNotice.kind === 'ok' ? styles.noticeOk : styles.noticeError}`}
+                  style={{ margin: 0 }}
+                >
+                  {bulkNotice.text}
+                </p>
+              ) : null}
+              <div className={styles.sidebarActions}>
+                {submittableCount === 0 && incompleteDraftCount > 0 ? (
+                  <span className={styles.missing}>
+                    {t('submitAllIncomplete', { count: incompleteDraftCount })}
+                  </span>
+                ) : null}
+                {submittableCount > 0 ? (
+                  <Button
+                    disabled={bulkPending}
+                    onClick={() => {
+                      setBulkNotice(null);
+                      submitAll.mutate();
+                    }}
+                  >
+                    {t('submitAll', { count: submittableCount })}
+                  </Button>
+                ) : null}
+                <Button
+                  disabled={publishableCount === 0 || bulkPending}
+                  onClick={() => {
+                    setBulkNotice(null);
+                    publishAll.mutate();
+                  }}
+                >
+                  {t('publishAll', { count: publishableCount })}
+                </Button>
+                {confirmPause ? (
+                  <>
+                    <span className={styles.hint}>
+                      {t('pauseAllConfirm', { count: publishedCount })}
+                    </span>
+                    <Button
+                      variant="secondary"
+                      disabled={bulkPending}
+                      onClick={() => {
+                        setBulkNotice(null);
+                        pauseAll.mutate();
+                      }}
+                    >
+                      {t('pauseAllYes')}
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      disabled={bulkPending}
+                      onClick={() => setConfirmPause(false)}
+                    >
+                      {t('pauseAllNo')}
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="secondary"
+                    disabled={publishedCount === 0 || bulkPending}
+                    onClick={() => setConfirmPause(true)}
+                  >
+                    {t('pauseAll', { count: publishedCount })}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
       ) : (
         <div className={styles.list}>

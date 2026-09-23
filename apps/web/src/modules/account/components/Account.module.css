@@ -72,6 +72,7 @@
 .statusDraft { background: var(--surfaceMuted); color: var(--secondaryText); }
 .statusPending { background: var(--warningSubtle); color: var(--warning); }
 .statusPublished { background: var(--successSubtle); color: var(--success); }
+.statusReady { background: var(--primarySubtle); color: var(--primary); }
 .statusPaused { background: var(--surfaceMuted); color: var(--tertiaryText); }
 .statusRejected { background: var(--dangerSubtle); color: var(--danger); }
 .statusBanned { background: var(--dangerSubtle); color: var(--danger); }
@@ -506,4 +507,100 @@
   font-size: var(--textSm);
   color: var(--secondaryText);
   white-space: nowrap;
+}
+
+/* Список анкет агентства: компактные карточки с превью в сетке, рядом —
+   липкая панель со сводкой и массовыми действиями (`.sidebar`). */
+.profileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--space3);
+  min-width: 0;
+}
+
+.profileCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+}
+
+.profileThumb {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: var(--surfaceMuted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileThumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profileThumbEmpty {
+  color: var(--tertiaryText);
+  font-size: var(--textSm);
+}
+
+.profileThumbStatus {
+  position: absolute;
+  top: var(--space2);
+  left: var(--space2);
+}
+
+.profileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space3) var(--space3) 0;
+  min-width: 0;
+}
+
+.profileActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+  padding: var(--space3);
+  margin-top: auto;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  font-size: var(--textSm);
+}
+
+.statValue {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  height: 6px;
+  border-radius: var(--radiusPill);
+  background: var(--border);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: var(--radiusPill);
+}
+
+/* То, что блокирует отправку анкеты на проверку: «Не хватает: …». Оранжевым
+   и жирнее обычной подсказки, чтобы читалось как причина, а не как справка. */
+.missing {
+  color: var(--accentHover);
+  font-size: var(--textSm);
+  font-weight: 600;
 }
