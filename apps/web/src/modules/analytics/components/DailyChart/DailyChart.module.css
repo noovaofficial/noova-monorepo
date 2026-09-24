@@ -2,44 +2,106 @@
   margin: 0;
 }
 
-/* Максимум подписан поверх поля, а не отдельной колонкой: колонка оси
-   отъедала бы ширину у самого графика, ради одного числа. */
-.plot {
-  position: relative;
+.chart {
+  display: flex;
+  gap: var(--space2);
 }
 
-.axisMax {
-  position: absolute;
-  top: 0;
-  right: 0;
+/* Подписи оси: верх, середина, ноль — выровнены по линиям сетки. */
+.yAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 160px;
+  min-width: 36px;
   font-size: var(--textXs);
   color: var(--tertiaryText);
-  background: var(--surface);
-  padding-left: var(--space2);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
-.svg {
-  display: block;
-  width: 100%;
-  height: 140px;
+.area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Линии на максимуме и середине (ноль — граница столбиков). */
+.grid {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 160px;
+  pointer-events: none;
+}
+
+.grid span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--border);
+}
+
+.grid span:first-child {
+  top: 0;
+}
+
+.grid span:last-child {
+  top: 50%;
+}
+
+.bars {
+  position: relative;
+  display: grid;
+  align-items: end;
+  gap: 2px;
+  height: 160px;
   /* Линия основания: без неё пустые дни выглядят как обрыв данных. */
   border-bottom: 1px solid var(--border);
 }
 
-.bar {
-  fill: var(--primary);
-}
-
-/* Пустой день оставлен без заливки намеренно: подсветка нуля тем же цветом
-   читалась бы как «что-то было». */
-.barEmpty {
-  fill: none;
-}
-
-.axis {
+.col {
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  margin-top: var(--space2);
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Значение над столбиком. Не режем по ширине колонки: короткие числа
+   («12», «1,2 Tsd.») влезают, длинные уходят за неё симметрично. */
+.value {
+  margin-bottom: 2px;
+  font-size: 10px;
+  line-height: 1;
+  color: var(--secondaryText);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  display: block;
+  width: 100%;
+  background: var(--primary);
+  border-radius: 2px 2px 0 0;
+  min-height: 0;
+}
+
+.xAxis {
+  display: grid;
+  gap: 2px;
+  margin-top: var(--space1);
+}
+
+/* Дата центрирована под своим столбиком и может выходить за его ширину:
+   подписи стоят через несколько столбиков и друг на друга не налезают. */
+.tick {
+  display: flex;
+  justify-content: center;
   font-size: var(--textXs);
   color: var(--tertiaryText);
+  white-space: nowrap;
+  overflow: visible;
 }

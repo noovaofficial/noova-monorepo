@@ -2,6 +2,7 @@
 
 import { useFormatter } from 'next-intl';
 import styles from './DailyChart.module.css';
+import { MAX_LABELED_BARS, niceCeil, tickIndexes } from './scale';
 
 type Props = {
   /** Дни подряд, включая пустые. Пустые дни рисуются нулём, а не пропуском. */
@@ -10,89 +11,97 @@ type Props = {
   label: string;
   /** Шаг ряда: сутки (`YYYY-MM-DD`) или месяц (`YYYY-MM`). По умолчанию сутки. */
   unit?: 'day' | 'month';
-  /** Как показать значение в подсказке и на засечке; по умолчанию число. */
+  /** Как показать значение в подсказке, на оси и над столбиком; по умолчанию число. */
   formatValue?: (value: number) => string;
 };
 
-/** Столбики рисуются в этой системе координат и растягиваются по месту. */
-const VIEW_HEIGHT = 120;
-
 /**
- * Дневной ряд одной метрики.
+ * Ряд одной метрики: столбики с шкалой слева, датами снизу и значением над
+ * столбиком.
  *
- * Столбики, а не линия: значения дискретны — это «сколько раз за сутки», а
- * не непрерывная величина, и линия между двумя днями рисовала бы значения,
- * которых не было. Собственный SVG, а не библиотека графиков: одному
- * столбчатому ряду не нужны ни оси со шкалами, ни зум, ни легенда, а
- * ближайшая библиотека весит больше всего кабинета вместе взятого.
+ * Собственная разметка, а не библиотека графиков: одному столбчатому ряду не
+ * нужны ни зум, ни легенда, а ближайшая библиотека весит больше всего
+ * кабинета вместе взятого. Столбики — HTML, а не SVG с растяжением: текст в
+ * растянутом SVG искажается.
+ *
+ * - Ось: верх — «круглое» число (1/2/5 × 10^k), подписаны верх, середина и
+ *   ноль, по ним проведены линии.
+ * - Даты: равномерно под столбиками (`tickIndexes`), не только края.
+ * - Значения: над каждым столбиком, если их немного; иначе только над
+ *   самым высоким, остальные — в подсказке при наведении.
  *
  * Одна метрика за раз: у просмотров и кликов разница на порядок, и на общей
  * шкале клики превратились бы в ровную линию по нулю.
  */
 export function DailyChart({ points, label, unit = 'day', formatValue }: Props) {
   const format = useFormatter();
-  const valueLabel = formatValue ?? ((value: number) => format.number(value));
+  const valueLabel =
+    formatValue ??
+    ((value: number) => format.number(value, { notation: 'compact', maximumFractionDigits: 1 }));
 
   // Пустой ряд невозможен — период всегда хотя бы неделя, — но рисовать
-  // «график ни из чего» всё равно нечем, и `points[0]` ниже без этого лжёт.
+  // «график ни из чего» всё равно нечем.
   if (points.length === 0) return null;
 
-  const max = Math.max(...points.map((point) => point.value), 1);
+  const peak = Math.max(...points.map((point) => point.value), 0);
+  const top = niceCeil(peak);
+  const labelAll = points.length <= MAX_LABELED_BARS;
+  const peakIndex = points.findIndex((point) => point.value === peak);
+  const ticks = new Set(tickIndexes(points.length));
 
-  // Ширина столбика в процентах, чтобы график тянулся по контейнеру.
-  const step = 100 / points.length;
-  // Зазор между столбиками. На девяноста днях он съедает столбик целиком,
-  // поэтому доля от шага, а не фиксированные пиксели.
-  const gap = Math.min(step * 0.25, 0.6);
-
-  const dayLabel = (date: string) =>
+  const dateLabel = (date: string, short = true) =>
     unit === 'month'
-      ? format.dateTime(new Date(`${date}-01T12:00:00Z`), { month: 'short', year: 'numeric' })
-      : format.dateTime(new Date(`${date}T12:00:00Z`), { day: 'numeric', month: 'short' });
+      ? format.dateTime(new Date(`${date}-01T12:00:00Z`), { month: 'short', year: '2-digit' })
+      : format.dateTime(new Date(`${date}T12:00:00Z`), {
+          day: 'numeric',
+          month: short ? 'short' : 'long',
+        });
+
+  const columns = { gridTemplateColumns: `repeat(${points.length}, minmax(0, 1fr))` };
 
   return (
     <figure className={styles.wrap}>
-      <div className={styles.plot}>
-        {/* Верхняя засечка — максимум ряда: без неё высота столбика ничего
-            не говорит, а полноценные оси на семи днях только шумят. */}
-        <span className={styles.axisMax}>{valueLabel(max)}</span>
+      <div className={styles.chart}>
+        <div className={styles.yAxis} aria-hidden="true">
+          <span>{valueLabel(top)}</span>
+          <span>{valueLabel(top / 2)}</span>
+          <span>0</span>
+        </div>
 
-        <svg
-          className={styles.svg}
-          viewBox={`0 0 100 ${VIEW_HEIGHT}`}
-          preserveAspectRatio="none"
-          role="img"
-          aria-label={label}
-        >
-          {points.map((point, index) => {
-            // Ненулевой день должен быть виден и при значении в единицу
-            // против тысячи: иначе «был один звонок» и «звонков не было»
-            // выглядят одинаково.
-            const height = point.value === 0 ? 0 : Math.max((point.value / max) * VIEW_HEIGHT, 2);
-            return (
-              <rect
-                key={point.date}
-                x={index * step + gap / 2}
-                y={VIEW_HEIGHT - height}
-                width={step - gap}
-                height={height}
-                rx={0.4}
-                className={point.value === 0 ? styles.barEmpty : styles.bar}
-              >
-                <title>{`${dayLabel(point.date)}: ${valueLabel(point.value)}`}</title>
-              </rect>
-            );
-          })}
-        </svg>
+        <div className={styles.area}>
+          <div className={styles.grid} aria-hidden="true">
+            <span />
+            <span />
+          </div>
+
+          <div className={styles.bars} style={columns} role="img" aria-label={label}>
+            {points.map((point, index) => {
+              const height = point.value === 0 ? 0 : Math.max((point.value / top) * 100, 1.5);
+              const showValue = point.value > 0 && (labelAll || index === peakIndex);
+              return (
+                <div
+                  key={point.date}
+                  className={styles.col}
+                  title={`${dateLabel(point.date, false)}: ${valueLabel(point.value)}`}
+                >
+                  {showValue ? (
+                    <span className={styles.value}>{valueLabel(point.value)}</span>
+                  ) : null}
+                  <span className={styles.bar} style={{ height: `${height}%` }} />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className={styles.xAxis} style={columns} aria-hidden="true">
+            {points.map((point, index) => (
+              <span key={point.date} className={styles.tick}>
+                {ticks.has(index) ? dateLabel(point.date) : ''}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
-
-      {/* Только края ряда: подписать каждый из девяноста дней негде, а первая
-          и последняя дата отвечают на единственный вопрос к оси — какой
-          отрезок времени перед глазами. */}
-      <figcaption className={styles.axis}>
-        <span>{dayLabel((points[0] as { date: string }).date)}</span>
-        <span>{dayLabel((points[points.length - 1] as { date: string }).date)}</span>
-      </figcaption>
     </figure>
   );
 }

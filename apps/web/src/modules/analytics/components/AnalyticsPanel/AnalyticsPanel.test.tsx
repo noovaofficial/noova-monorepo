@@ -166,9 +166,10 @@ describe('график', () => {
 
   it('рисует столбик на каждый день ряда', async () => {
     const { container } = renderPanel();
-    await waitFor(() => expect(container.querySelector('svg')).toBeTruthy());
+    await waitFor(() => expect(container.querySelector('[role="img"]')).toBeTruthy());
 
-    expect(container.querySelectorAll('svg rect')).toHaveLength(2);
+    // Колонка на каждый день ряда; под каждым столбиком своя дата.
+    expect(container.querySelectorAll('[role="img"] > div')).toHaveLength(2);
   });
 });
 

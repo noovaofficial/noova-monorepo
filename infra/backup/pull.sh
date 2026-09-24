@@ -27,10 +27,102 @@ DEST="${PULL_DEST:-$HOME/backups}"
 FRESH="${PULL_MIN_FRESH_HOURS:-26}"
 PING="${PULL_PING_URL:-}"
 LOG="${PULL_LOG:-$HOME/noova-pull.log}"
+TG_TOKEN="${PULL_TG_TOKEN:-}"
+TG_CHAT="${PULL_TG_CHAT:-}"
 
 log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1"; }
+
+# --- Telegram ---------------------------------------------------------------
+# Сообщения — об успехе и о поломке, одного вида. Не заданы PULL_TG_TOKEN и
+# PULL_TG_CHAT — молчит. Токен уходит через конфиг на stdin, а не аргументом:
+# иначе он виден в `ps` всем, кто есть на машине. Ошибку отправки глотаем:
+# уведомление не должно ронять сам бэкап.
+#
+# Разметка — HTML (<b>), а не Markdown: причина ошибки — произвольный текст, и
+# любой `_` или `*` в нём сломал бы Markdown-разбор и сообщение бы не ушло.
+# Всё, что подставляется в сообщение, экранируется (`esc`).
+tg() {
+	[ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ] || return 0
+	printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TG_TOKEN" \
+		| curl -fsS -m 15 -K - --data-urlencode "chat_id=$TG_CHAT" \
+			--data-urlencode "parse_mode=HTML" \
+			--data-urlencode "text=$1" >/dev/null 2>&1 || true
+}
+
+esc() { sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g'; }
+
+# Размер человеческим языком: B, KB, MB, GB — единица всегда названа.
+human_size() {
+	awk -v b="$1" 'BEGIN {
+		if (b < 1024) printf "%d B", b
+		else if (b < 1048576) printf "%.0f KB", b / 1024
+		else if (b < 1073741824) { v = b / 1048576; if (v < 10) printf "%.1f MB", v; else printf "%.0f MB", v }
+		else printf "%.1f GB", b / 1073741824
+	}'
+}
+
+# Возраст: «0 часов» ничего не говорит — показываем минуты, а для старых копий дни.
+human_age() {
+	local s="$1" d h m
+	if [ "$s" -lt 90 ]; then printf 'только что'; return; fi
+	m=$(( s / 60 ))
+	if [ "$m" -lt 60 ]; then printf '%d мин назад' "$m"; return; fi
+	h=$(( m / 60 )); m=$(( m % 60 ))
+	if [ "$h" -lt 24 ]; then printf '%d ч %d мин назад' "$h" "$m"; return; fi
+	d=$(( h / 24 )); h=$(( h % 24 ))
+	printf '%d д %d ч назад' "$d" "$h"
+}
+
+# Метка копии (20260923T234621Z) -> секунды и «23.09.2026 23:46 UTC».
+stamp_epoch() { date -u -d "${1:0:4}-${1:4:2}-${1:6:2} ${1:9:2}:${1:11:2}:${1:13:2} UTC" +%s; }
+stamp_pretty() { printf '%s.%s.%s %s:%s UTC' "${1:6:2}" "${1:4:2}" "${1:0:4}" "${1:9:2}" "${1:11:2}"; }
+
+# Итоговое сообщение: $1 = ok | error, $2 = причина (для ошибки).
+# Что лежит на хранилище считаем с диска на момент отправки, поэтому при
+# поломке видно, на что можно откатиться прямо сейчас.
+report() {
+	[ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ] || return 0
+	local kind="$1" reason="${2:-}" head total=0 newest="" S text
+
+	if [ "$kind" = ok ]; then head="Успешно ✅"; else head="Ошибка ❌"; fi
+	text="<b>Backup Noova: ${head}</b>"
+	if [ -n "$reason" ]; then
+		text="${text}"$'\n'"Причина: <b>$(printf '%s' "$reason" | esc)</b>"
+	fi
+
+	# Полная копия — пара «дамп + фотографии»; одиночный файл копией не считается.
+	while read -r S; do
+		[ -n "$S" ] || continue
+		[ -f "$DEST/noova-media-${S}.tar.gz.enc" ] || continue
+		total=$(( total + 1 ))
+		[ -n "$newest" ] || newest="$S"
+	done < <(ls "$DEST"/noova-*.sql.gz.enc 2>/dev/null | sed 's|.*/noova-||; s|\.sql\.gz\.enc$||' | sort -r)
+
+	local split=""
+	if [ -f "$DEST/.rotation" ]; then
+		local d w m
+		d="$(sed -n 's/^daily=//p' "$DEST/.rotation")"
+		w="$(sed -n 's/^weekly=//p' "$DEST/.rotation")"
+		m="$(sed -n 's/^monthly=//p' "$DEST/.rotation")"
+		split=" (ежедневных: ${d:-0}, недельных: ${w:-0}, месячных: ${m:-0})"
+	fi
+	text="${text}"$'\n'"Текущее количество копий: <b>${total}</b>${split}"
+
+	if [ -n "$newest" ]; then
+		local age label="Свежесть"
+		age=$(( $(date +%s) - $(stamp_epoch "$newest") ))
+		[ "$kind" = ok ] || label="Свежесть последней копии"
+		text="${text}"$'\n'"${label}: <b>$(human_age "$age")</b> ($(stamp_pretty "$newest"))"
+		text="${text}"$'\n'"База: <b>$(human_size "$(wc -c < "$DEST/noova-${newest}.sql.gz.enc")")</b>"
+		text="${text}"$'\n'"Фото: <b>$(human_size "$(wc -c < "$DEST/noova-media-${newest}.tar.gz.enc")")</b>"
+	fi
+
+	tg "$text"
+}
+
 fail() {
 	log "ОШИБКА: $1" >&2
+	report error "$1"
 	# Сообщаем монитору сразу, а не ждём, пока он заметит тишину: тревога
 	# приходит в момент поломки, а не через льготный период. Причина уходит
 	# телом запроса — в письме будет видно, что именно сломалось.
@@ -144,6 +236,8 @@ log "готово: копий ${TOTAL}, свежесть ${AGE_H} ч"
 # Битая копия в архиве — повод разобраться, даже если свежая в порядке.
 # Ненулевой код заодно не даёт уйти пингу «всё хорошо» ниже.
 [ "$BAD" = 0 ] || fail "часть копий не прошла проверку — см. файлы *.bad в $DEST"
+
+report ok
 
 # Внешний монитор (healthchecks.io и подобные): пинг уходит только после
 # полностью успешной ночи, поэтому тревогу поднимает сама тишина.

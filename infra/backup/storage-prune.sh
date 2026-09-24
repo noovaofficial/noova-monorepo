@@ -113,4 +113,16 @@ for M in "$DIR"/noova-media-*.tar.gz.enc; do
 	if [ -n "$DRY" ]; then log "удалил бы архив без дампа: $S"; else rm -f "$M"; log "удалил архив без дампа: $S"; fi
 done
 
+# Разбивка оставленного по ролям — для сообщения в Telegram (pull.sh читает
+# этот файл). Не пишем при пробном прогоне: он ничего не удаляет.
+if [ -z "$DRY" ]; then
+	DAILY_KEPT=0
+	for S in "${KEEP[@]}"; do
+		if [ "$S" != "$WEEKLY" ] && [ "$S" != "$MONTHLY" ]; then DAILY_KEPT=$((DAILY_KEPT + 1)); fi
+	done
+	printf 'daily=%s\nweekly=%s\nmonthly=%s\n' "$DAILY_KEPT" \
+		"$([ -n "$WEEKLY" ] && echo 1 || echo 0)" "$([ -n "$MONTHLY" ] && echo 1 || echo 0)" \
+		> "$DIR/.rotation"
+fi
+
 log "оставлено ${#KEEP[@]} (ежедневных до ${DAILY}, недельная ${WEEKLY:-—}, месячная ${MONTHLY:-—}), удалено ${REMOVED}"

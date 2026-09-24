@@ -34,4 +34,20 @@ case "${SSH_ORIGINAL_COMMAND:-}" in
 esac
 
 [ -f "$STREAM" ] || deny "нет $STREAM — на сервере не хватает файлов: make deploy-files"
-exec /usr/bin/env bash "$STREAM" "$WHAT"
+
+# Пульс: когда хранилище в последний раз забрало эту копию ЦЕЛИКОМ. Его читает
+# watch.sh — сторож на проде, который поднимает тревогу, если хранилище
+# перестало приходить (выключено, сломан крон, не тот адрес). Проверять это
+# с самого хранилища бессмысленно: ровно тогда оно и молчит. Отдельный от
+# каталога стека путь — выкладка (`make deploy`) его не трогает.
+#
+# Без `exec`, чтобы успеть записать пульс после потока. Код возврата
+# передаём как есть: оборванная выдача пульса не обновляет.
+STATE="${NOOVA_BACKUP_STATE:-$HOME/.noova-backup}"
+if /usr/bin/env bash "$STREAM" "$WHAT"; then
+	umask 077
+	mkdir -p "$STATE"
+	date +%s > "$STATE/last-$WHAT.tmp" && mv "$STATE/last-$WHAT.tmp" "$STATE/last-$WHAT"
+else
+	exit 1
+fi
