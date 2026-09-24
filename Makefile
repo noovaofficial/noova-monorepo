@@ -166,7 +166,7 @@ backup-storage: ## Настроить хранилище (STORAGE=user@host SERV
 	@test -n "$(KEY)" || (echo "Укажите KEY=~/noova-backup/backup-private.pem — хранилище проверяет копии само"; exit 1)
 	@test -f "$(KEY)" || (echo "Нет файла $(KEY)"; exit 1)
 	scp infra/backup/pull.sh infra/backup/storage-verify.sh infra/backup/storage-prune.sh \
-		infra/backup/storage-setup.sh $(STORAGE):
+		infra/backup/storage-setup.sh infra/backup/bot.py infra/backup/bot-setup.sh $(STORAGE):
 	scp '$(KEY)' $(STORAGE):backup-private.pem
 	ssh $(STORAGE) "chmod 600 backup-private.pem && bash storage-setup.sh '$(SERVER)'"
 

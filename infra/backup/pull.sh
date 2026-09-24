@@ -25,7 +25,6 @@ FROM="${PULL_FROM:-}"
 KEY="${PULL_KEY:-$HOME/.ssh/noova-pull}"
 DEST="${PULL_DEST:-$HOME/backups}"
 FRESH="${PULL_MIN_FRESH_HOURS:-26}"
-PING="${PULL_PING_URL:-}"
 LOG="${PULL_LOG:-$HOME/noova-pull.log}"
 TG_TOKEN="${PULL_TG_TOKEN:-}"
 TG_CHAT="${PULL_TG_CHAT:-}"
@@ -117,18 +116,31 @@ report() {
 		text="${text}"$'\n'"Фото: <b>$(human_size "$(wc -c < "$DEST/noova-media-${newest}.tar.gz.enc")")</b>"
 	fi
 
+	# Место на диске: и в отчёте об успехе, и об ошибке — причиной сбоя вполне
+	# может быть переполненный диск. Сколько копий ещё поместится, считаем по
+	# размеру последней: «хватит на 3 ночи» понятнее, чем гигабайты. Пороги те
+	# же, что у /disk в bot.py.
+	local dpath="$DEST" total_b free_b pct fits="" mark=""
+	[ -d "$dpath" ] || dpath="$HOME"
+	read -r total_b free_b < <(df -Pk "$dpath" | awk 'NR==2 { printf "%d %d\n", $2 * 1024, $4 * 1024 }')
+	if [ "${total_b:-0}" -gt 0 ]; then
+		pct=$(( free_b * 100 / total_b ))
+		if [ -n "$newest" ]; then
+			local last=$(( $(wc -c < "$DEST/noova-${newest}.sql.gz.enc") + $(wc -c < "$DEST/noova-media-${newest}.tar.gz.enc") ))
+			[ "$last" -gt 0 ] && fits=$(( free_b / last ))
+		fi
+		if [ "$pct" -lt 5 ] || { [ -n "$fits" ] && [ "$fits" -lt 2 ]; }; then mark=" ❌"
+		elif [ "$pct" -lt 15 ] || { [ -n "$fits" ] && [ "$fits" -lt 5 ]; }; then mark=" ⚠️"; fi
+		text="${text}"$'\n'"Свободно на диске: <b>$(human_size "$free_b")</b> из $(human_size "$total_b") (${pct}%)${mark}"
+		[ -z "$fits" ] || text="${text}"$'\n'"Ещё поместится копий: <b>~${fits}</b>"
+	fi
+
 	tg "$text"
 }
 
 fail() {
 	log "ОШИБКА: $1" >&2
 	report error "$1"
-	# Сообщаем монитору сразу, а не ждём, пока он заметит тишину: тревога
-	# приходит в момент поломки, а не через льготный период. Причина уходит
-	# телом запроса — в письме будет видно, что именно сломалось.
-	if [ -n "${PING:-}" ]; then
-		curl -fsS -m 15 --data-raw "$1" "${PING%/}/fail" >/dev/null 2>&1 || true
-	fi
 	exit 1
 }
 
@@ -143,6 +155,22 @@ fi
 [ -n "$FROM" ] || fail "не задан PULL_FROM — проверьте $CONF"
 [ -f "$KEY" ] || fail "нет ключа $KEY"
 mkdir -p "$DEST"
+
+# Один запуск за раз: ночной цикл, ручной запуск и команды бота (bot.py) не
+# должны идти вместе — параллельные снимки нагружают прод дважды, а ротация во
+# время чужой проверки удалила бы копию из-под неё. Замок общий с bot.py
+# (/verify берёт тот же файл). Крон дожидается своей очереди (до получаса),
+# бот просит PULL_LOCK_WAIT=0 и получает код 75 — «занято», а не ожидание.
+LOCK="${PULL_LOCK:-$HOME/.noova-pull.lock}"
+WAIT="${PULL_LOCK_WAIT:-1800}"
+if command -v flock >/dev/null 2>&1; then
+	exec 9>"$LOCK"
+	if [ "$WAIT" = 0 ]; then
+		flock -n 9 || { log "пропуск: уже идёт другой запуск"; exit 75; }
+	else
+		flock -w "$WAIT" 9 || fail "не дождался окончания другого запуска (${WAIT} с)"
+	fi
+fi
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VERIFY="$HERE/storage-verify.sh"
@@ -234,14 +262,7 @@ TOTAL="$(find "$DEST" -name 'noova-*.sql.gz.enc' -type f | wc -l)"
 log "готово: копий ${TOTAL}, свежесть ${AGE_H} ч"
 
 # Битая копия в архиве — повод разобраться, даже если свежая в порядке.
-# Ненулевой код заодно не даёт уйти пингу «всё хорошо» ниже.
+# Ненулевой код заодно не даёт отправить сообщение «Успешно» ниже.
 [ "$BAD" = 0 ] || fail "часть копий не прошла проверку — см. файлы *.bad в $DEST"
 
 report ok
-
-# Внешний монитор (healthchecks.io и подобные): пинг уходит только после
-# полностью успешной ночи, поэтому тревогу поднимает сама тишина.
-if [ -n "$PING" ]; then
-	curl -fsS -m 15 --data-raw "копий ${TOTAL}, свежесть ${AGE_H} ч" "$PING" >/dev/null \
-		|| log "предупреждение: не достучался до монитора"
-fi
