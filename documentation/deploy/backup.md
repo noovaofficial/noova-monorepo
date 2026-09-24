@@ -124,6 +124,25 @@ bash ~/bot-setup.sh                       # нужны python3, flock, sudo
 sudo journalctl -u noova-backup-bot -f    # логи
 ```
 
+### 3в. Нагрузка сервера
+
+Сторож на проде заодно следит за нагрузкой: `load-sample.sh` каждые 10 минут
+пишет замер в `~/.noova-backup/load.log` (load average, память, диск, CPU каждого
+контейнера), хранит 8 суток. Ставится тем же `watch-setup.sh`.
+
+- **Суточный отчёт** приходит вместе со сторожем (09:00 UTC): среднее и пик за 24 часа
+  по нагрузке CPU, памяти и диску, пик по контейнерам, цвет 🟢🟡🔴. Отключается
+  `WATCH_LOAD_REPORT=0` в `~/noova-watch.env`.
+- **Тревоги** из `load-sample.sh`: CPU выше `LOAD_ALERT_CPU_PCT` (80%) три замера
+  подряд, память выше `LOAD_ALERT_MEM_PCT` (90%), диск выше `LOAD_ALERT_DISK_PCT`
+  (85%). Не чаще раза в `LOAD_ALERT_COOLDOWN_H` часов (6) на вид тревоги.
+- «Нагрузка CPU» — это load average за минуту, делённый на число ядер: 100% —
+  все ядра заняты, выше — процессы стоят в очереди. Не процент процессора.
+
+Обновить на проде: `make deploy-files SERVER=…`, затем
+`bash ~/noova/infra/backup/watch-setup.sh` (пересоздаёт крон, настройки не трогает),
+допишите новые переменные в `~/noova-watch.env` (шаблон в watch-setup.sh).
+
 ## 4. Проверить
 
 ```bash

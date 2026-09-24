@@ -15,6 +15,7 @@
 #   WATCH_TG_CHAT=id чата
 #   WATCH_MAX_HOURS=30      # старше — тревога (ночной цикл + запас)
 #   WATCH_DAILY_OK=1        # необязательно: писать и «всё хорошо» раз в день
+#   WATCH_LOAD_REPORT=1     # суточный отчёт о нагрузке сервера (0 — выключить)
 set -euo pipefail
 
 CONF="${NOOVA_WATCH_CONF:-$HOME/noova-watch.env}"
@@ -67,6 +68,14 @@ for WHAT in db media; do
 	fi
 	if [ "$WHAT" = db ]; then DB_LINE="$LINE"; else MEDIA_LINE="$LINE"; fi
 done
+
+# Суточный отчёт о нагрузке сервера (по журналу load-sample.sh). Шлётся всегда,
+# независимо от исхода проверки копий, и до возможного выхода с тревогой ниже.
+# Отключается WATCH_LOAD_REPORT=0. Мало замеров — молчит.
+if [ "${WATCH_LOAD_REPORT:-1}" != 0 ]; then
+	LOAD_MSG="$(bash "$(dirname "${BASH_SOURCE[0]}")/load-report.sh" "$STATE/load.log" 2>/dev/null || true)"
+	[ -z "$LOAD_MSG" ] || tg "$LOAD_MSG"
+fi
 
 BODY="База забирали: <b>${DB_LINE}</b>
 Фото забирали: <b>${MEDIA_LINE}</b>"
