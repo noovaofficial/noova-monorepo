@@ -1,0 +1,102 @@
+.wrap {
+  max-width: 960px;
+  padding: var(--space6) 0 var(--space12);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.lead {
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+  margin: var(--space2) 0 var(--space3);
+  max-width: 720px;
+}
+
+.defaults {
+  font-size: var(--textSm);
+  font-weight: 600;
+  margin-bottom: var(--space4);
+}
+
+.tableScroll {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--textSm);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--space2) var(--space3);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.table thead th {
+  color: var(--secondaryText);
+  font-weight: 600;
+}
+
+.city {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sub {
+  margin-left: var(--space2);
+  font-weight: 400;
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Занято больше, чем мест: лимит опустили ниже занятого — новые покупки закрыты. */
+.over {
+  color: var(--accentHover);
+  font-weight: 600;
+}
+
+.input {
+  width: 110px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  flex-wrap: wrap;
+}
+
+.err {
+  color: var(--danger);
+  font-size: var(--textXs);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}

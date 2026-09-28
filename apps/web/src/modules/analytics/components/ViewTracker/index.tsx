@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { trackProfileView } from '@/modules/analytics/api';
+import { markPageLoaded } from '@/modules/analytics/interaction';
 
 /**
  * Маяк просмотра анкеты.
@@ -23,6 +24,10 @@ export function ViewTracker({ slug }: { slug: string }) {
   const sent = useRef<string | null>(null);
 
   useEffect(() => {
+    // Новая анкета — новый отсчёт для антибот-правил «слишком быстро» и
+    // «не было взаимодействия»: они смотрят на эту страницу, а не на
+    // предыдущую, с которой могли и не уйти по-настоящему (SPA-переход).
+    markPageLoaded();
     if (sent.current === slug) return;
     sent.current = slug;
     void trackProfileView(slug);

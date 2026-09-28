@@ -26,6 +26,7 @@ export const PUBLIC_CLIENT_NAMESPACES = [
   'cityPicker',
   'comments',
   'contacts',
+  'cookieBanner',
   'error',
   'eyeColor',
   'favorites',

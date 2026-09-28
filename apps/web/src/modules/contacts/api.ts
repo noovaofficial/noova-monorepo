@@ -1,4 +1,6 @@
 import { type RevealedContacts, revealedContactsSchema } from '@noova/shared';
+import { interactionSignals } from '@/modules/analytics/interaction';
+import { getSessionId } from '@/modules/analytics/session';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -16,7 +18,13 @@ export class RevealError extends Error {
  * попали бы в HTML страницы, ради чего весь гейт и затевался.
  */
 export async function revealContacts(slug: string): Promise<RevealedContacts> {
-  return reveal(`/profiles/${slug}/contacts/reveal`);
+  // Сессия и сигналы взаимодействия — только у анкеты: раскрытие контактов
+  // анкеты это ещё и антифрод (фаза 3 аналитики), а у агентства своего
+  // журнала событий нет и размечать там нечего.
+  return reveal(`/profiles/${slug}/contacts/reveal`, {
+    sessionId: getSessionId(),
+    ...interactionSignals(),
+  });
 }
 
 /** То же самое, но для контактов агентства — свой маршрут (см. api/company/reveal.ts). */
@@ -24,12 +32,16 @@ export async function revealCompanyContacts(slug: string): Promise<RevealedConta
   return reveal(`/companies/${slug}/contacts/reveal`);
 }
 
-async function reveal(path: string): Promise<RevealedContacts> {
+async function reveal(path: string, body?: unknown): Promise<RevealedContacts> {
   const response = await fetch(`${BASE}/api/v1${path}`, {
     method: 'POST',
-    // Заголовка content-type нет намеренно: тела у запроса тоже нет, а Fastify
-    // на «application/json» без тела отвечает ошибкой.
-    headers: { accept: 'application/json' },
+    headers: {
+      accept: 'application/json',
+      // Заголовка нет, когда тела тоже нет: Fastify на «application/json»
+      // без тела отвечает ошибкой.
+      ...(body === undefined ? {} : { 'content-type': 'application/json' }),
+    },
+    body: body === undefined ? undefined : JSON.stringify(body),
     // Вход не требуется, но если он есть — журнал раскрытий должен это знать.
     credentials: 'include',
     cache: 'no-store',

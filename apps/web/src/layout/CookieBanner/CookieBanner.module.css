@@ -1,0 +1,64 @@
+/* Скрыт, пока решение уже есть — любое из двух, «да» или «нет»: спросили
+   один раз, и точка. Разметка остаётся в DOM (display: none, не unmount) —
+   решать нечего заново при каждой загрузке до отработки инлайн-скрипта. */
+:global(html[data-consent]) .bar {
+  display: none;
+}
+
+.bar {
+  position: fixed;
+  left: var(--space4);
+  right: var(--space4);
+  bottom: var(--space4);
+  z-index: var(--zOverlay);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space4);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space4) var(--space5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  box-shadow: var(--shadowLg);
+}
+
+.text {
+  flex: 1 1 260px;
+  font-size: var(--textSm);
+  line-height: var(--leadingRelaxed);
+  color: var(--secondaryText);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space3);
+}
+
+.details {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.details:hover {
+  color: var(--primaryText);
+}
+
+/* На телефоне кнопки занимают всю ширину — рядом с текстом они бы жались
+   до неразличимости, а под ним в столбик это уже не проблема. */
+@media (max-width: 480px) {
+  .bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+}

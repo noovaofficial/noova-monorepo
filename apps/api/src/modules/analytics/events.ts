@@ -3,6 +3,7 @@ import type { ContactType } from '@noova/shared';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { env } from '../../env.js';
 import type { ProfileEventKind } from '../../generated/prisma/enums.js';
+import { classifyEventBot } from './bot.js';
 
 /**
  * Журнал событий не должен сам стать базой персональных данных: адрес
@@ -39,7 +40,7 @@ const CLICK_WINDOW_SECONDS = 60;
  * Гость (сессии нет вовсе) считается: вход не требуется ни для просмотра
  * анкеты, ни для раскрытия контактов, и половина аудитории — это он.
  */
-function isVisitor(request: FastifyRequest): boolean {
+export function isVisitor(request: FastifyRequest): boolean {
   return request.session === null || request.session.role === 'client';
 }
 
@@ -79,6 +80,15 @@ type RecordOptions = {
   profileId: string;
   /** Только у `contact_click`: по какому каналу ушли. */
   contactType?: ContactType;
+  /** Сессия браузера; пусто, если маяк её не передал. */
+  sessionId?: string;
+  /** `City.slug` и `Profile.kind` анкеты — для спроса по городам. */
+  city?: string;
+  category?: string;
+  /** Сигналы для антибот-правил 3 и 4 (фаза 3): было ли взаимодействие со
+   *  страницей и сколько прошло с её загрузки. Только у контактных событий. */
+  interacted?: boolean;
+  msSincePageLoad?: number;
 };
 
 /**
@@ -96,7 +106,16 @@ type RecordOptions = {
 export async function recordProfileEvent(
   fastify: FastifyInstance,
   request: FastifyRequest,
-  { kind, profileId, contactType }: RecordOptions,
+  {
+    kind,
+    profileId,
+    contactType,
+    sessionId,
+    city,
+    category,
+    interacted,
+    msSincePageLoad,
+  }: RecordOptions,
 ): Promise<boolean> {
   // Раскрытие пишется всегда и от кого угодно: это ещё и антифрод, а он
   // теряет смысл, если часть обращений в журнал не попадает. Владелец
@@ -113,6 +132,17 @@ export async function recordProfileEvent(
     if (!(await firstInWindow(fastify, key, window))) return false;
   }
 
+  // Разметка бота (фаза 3): считается на каждую запись, а не только на
+  // сессию, — скорость просмотров и время до клика видны только на уровне
+  // события. Сбой (напр. Redis недоступен для счётчика скорости) не должен
+  // ронять запись, поэтому классификация не в одном try/catch с записью.
+  const { isBot, botReason } = await classifyEventBot(fastify, request, {
+    kind,
+    sessionId,
+    interacted,
+    msSincePageLoad,
+  });
+
   const write = fastify.prisma.profileEvent.create({
     data: {
       profileId,
@@ -121,6 +151,11 @@ export async function recordProfileEvent(
       // Сессия читается на каждом запросе и здесь просто может отсутствовать.
       userId: request.session?.userId ?? null,
       ipHash,
+      sessionId: sessionId ?? null,
+      city: city ?? null,
+      category: category ?? null,
+      isBot,
+      botReason,
     },
   });
 

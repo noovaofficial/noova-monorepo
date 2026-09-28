@@ -28,7 +28,14 @@ function fakeFastify({ redisFails = false }: { redisFails?: boolean } = {}) {
 }
 
 const request = (session: { userId: string; role: string } | null = null, ip = '10.0.0.1') =>
-  ({ ip, session }) as unknown as FastifyRequest;
+  ({
+    ip,
+    session,
+    // Обычный браузерный User-Agent: тесты этого файла проверяют дедуп и
+    // устойчивость к сбоям, а не антибот-правила — те разобраны отдельно
+    // в bot.test.ts.
+    headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+  }) as unknown as FastifyRequest;
 
 describe('кого считаем', () => {
   it('считает гостя', async () => {
@@ -162,5 +169,25 @@ describe('устойчивость', () => {
     await expect(
       recordProfileEvent(fastify, request(), { kind: 'contact_reveal', profileId: 'p1' }),
     ).rejects.toThrow();
+  });
+});
+
+describe('разметка бота (фаза 3)', () => {
+  const botRequest = (ua: string, ip = '10.0.0.2') =>
+    ({ ip, session: null, headers: { 'user-agent': ua } }) as unknown as FastifyRequest;
+
+  it('записывает isBot и botReason для явного бота', async () => {
+    const { fastify, create } = fakeFastify();
+    await recordProfileEvent(fastify, botRequest('curl/8.4.0'), {
+      kind: 'view',
+      profileId: 'p1',
+    });
+    expect(create.mock.calls[0]?.[0].data).toMatchObject({ isBot: true, botReason: 'ua' });
+  });
+
+  it('обычный визит остаётся не-ботом', async () => {
+    const { fastify, create } = fakeFastify();
+    await recordProfileEvent(fastify, request(), { kind: 'view', profileId: 'p1' });
+    expect(create.mock.calls[0]?.[0].data).toMatchObject({ isBot: false, botReason: null });
   });
 });

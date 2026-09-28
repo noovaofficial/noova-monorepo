@@ -23,6 +23,7 @@ export type StaffSection = {
     | 'log'
     | 'topNow'
     | 'overview'
+    | 'cityTop'
     | 'locations'
     | 'serviceCatalog'
     | 'monetization'
@@ -73,6 +74,8 @@ export const STAFF_SECTIONS: StaffSection[] = [
   // продукта о деньгах, только своя страница: тарифов несколько, и правка
   // одной строкой в форме монетизации не поместилась бы.
   { key: 'agencyTariffs', href: '/admin/agency-tariffs', adminOnly: true, group: 'reference' },
+  // Цена и число мест ТОПа у каждого города свои — деньги проекта, только админ.
+  { key: 'cityTop', href: '/admin/city-top', adminOnly: true, group: 'reference' },
   // Акции раздают размещения и монеты — то же решение владельца продукта,
   // что и цены, и той же ролью.
   { key: 'campaigns', href: '/admin/campaigns', adminOnly: true, group: 'reference' },

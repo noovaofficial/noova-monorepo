@@ -1,4 +1,11 @@
-import { type BuyTopResult, TOP_WEEK_DAYS, type TopPlacement, type TopState } from '@noova/shared';
+import {
+  type BuyTopResult,
+  type CityTopInput,
+  type CityTopList,
+  TOP_WEEK_DAYS,
+  type TopPlacement,
+  type TopState,
+} from '@noova/shared';
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { applyMovement } from './wallet.js';
@@ -10,6 +17,10 @@ import { applyMovement } from './wallet.js';
  * Пока место активно, купить его снова нельзя (D-11): недели не
  * складываются, и место занимает ровно одну неделю. Купить заново можно
  * после истечения — тогда та же строка оживает с новым сроком.
+ *
+ * Места считаются по ГОРОДУ анкеты: у каждого города свои цена и число мест
+ * (`CityTopSetting`), а у города без настроек действуют общие по умолчанию из
+ * настроек монетизации. Анкета занимает место только среди анкет своего города.
  *
  * `Profile.isFeatured` — производная: ставится здесь, снимается задачей.
  * По ней работают сортировка каталога и фильтр «ТОП», без джойна.
@@ -57,39 +68,77 @@ export function toTopPlacement(row: PlacementRow): TopPlacement {
 /** Занятые места — активные и ещё не истёкшие: задача снимает их с опозданием до цикла. */
 const activeWhere = (now: Date) => ({ status: 'active' as const, expiresAt: { gt: now } });
 
+/** Общие цена и число мест — для городов без собственных настроек. */
+export type TopDefaults = { weekGc: number; slots: number };
+
+type CityDb = Pick<PrismaClient, 'cityTopSetting'>;
+
+/** Действующие цена и число мест города: своё значение или общее по умолчанию. */
+export async function cityTopConfig(
+  db: CityDb,
+  cityId: string,
+  defaults: TopDefaults,
+): Promise<TopDefaults> {
+  const own = await db.cityTopSetting.findUnique({ where: { cityId } });
+  return { weekGc: own?.weekGc ?? defaults.weekGc, slots: own?.slots ?? defaults.slots };
+}
+
+/** Занятые места города: активные размещения анкет этого города. */
+const takenInCity = (db: Pick<PrismaClient, 'topPlacement'>, cityId: string, now: Date) =>
+  db.topPlacement.count({ where: { ...activeWhere(now), profile: { cityId } } });
+
 export async function topState(
   prisma: PrismaClient,
   userId: string,
-  config: { weekGc: number; slots: number },
+  defaults: TopDefaults,
   now: Date = new Date(),
 ): Promise<TopState> {
-  const [taken, placements] = await Promise.all([
-    prisma.topPlacement.count({ where: activeWhere(now) }),
+  const [own, placements] = await Promise.all([
+    prisma.profile.findMany({
+      where: { ownerId: userId },
+      select: { cityId: true, city: { select: { slug: true, name: true } } },
+    }),
     prisma.topPlacement.findMany({
       where: { userId, ...activeWhere(now) },
       orderBy: { expiresAt: 'asc' },
     }),
   ]);
-  return {
-    priceGc: config.weekGc,
-    slots: config.slots,
-    freeSlots: Math.max(0, config.slots - taken),
-    placements: placements.map(toTopPlacement),
-  };
+
+  // Города, где у рекламодателя есть анкеты, — по одному разу.
+  const cities = new Map(own.map((p) => [p.cityId, p.city]));
+  const rows = await Promise.all(
+    [...cities.entries()].map(async ([cityId, city]) => {
+      const [config, taken] = await Promise.all([
+        cityTopConfig(prisma, cityId, defaults),
+        takenInCity(prisma, cityId, now),
+      ]);
+      return {
+        citySlug: city.slug,
+        cityName: city.name,
+        priceGc: config.weekGc,
+        slots: config.slots,
+        freeSlots: Math.max(0, config.slots - taken),
+      };
+    }),
+  );
+  rows.sort((a, b) => a.cityName.localeCompare(b.cityName));
+
+  return { cities: rows, placements: placements.map(toTopPlacement) };
 }
 
 export type TopPurchase = {
   userId: string;
   profileId: string;
-  priceGc: number;
-  slots: number;
+  /** Общие значения; у города могут быть свои (`CityTopSetting`). */
+  defaults: TopDefaults;
   now?: Date;
 };
 
 /**
  * Покупка недели. Всё в одной транзакции под замком на строке настроек:
  * два человека, берущие последнее место одновременно, встанут в очередь,
- * и второму честно откажут, а не выдадут семнадцатое.
+ * и второму честно откажут, а не выдадут лишнее. Цена и число мест — по
+ * городу анкеты.
  */
 export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<BuyTopResult> {
   const now = purchase.now ?? new Date();
@@ -101,7 +150,7 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
 
     const profile = await tx.profile.findFirst({
       where: { id: purchase.profileId, ownerId: purchase.userId },
-      select: { id: true, status: true, topPlacement: true },
+      select: { id: true, status: true, cityId: true, topPlacement: true },
     });
     if (!profile) throw new TopNotPublishedError();
     if (profile.status !== 'published') throw new TopNotPublishedError();
@@ -114,13 +163,14 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
       throw new TopAlreadyActiveError(current.expiresAt);
     }
 
-    const taken = await tx.topPlacement.count({ where: activeWhere(now) });
-    if (taken >= purchase.slots) throw new TopFullError(purchase.slots);
+    const config = await cityTopConfig(tx, profile.cityId, purchase.defaults);
+    const taken = await takenInCity(tx, profile.cityId, now);
+    if (taken >= config.slots) throw new TopFullError(config.slots);
 
     const spend = await applyMovement(tx, {
       userId: purchase.userId,
       kind: 'TOP',
-      gcAmount: -purchase.priceGc,
+      gcAmount: -config.weekGc,
     });
 
     // Срок всегда от сегодня: активного места здесь уже не бывает.
@@ -196,7 +246,8 @@ export function expiryAfterGrant(
 
 export type TopGrant = {
   profileId: string;
-  slots: number;
+  /** Общие значения; у города могут быть свои (`CityTopSetting`). */
+  defaults: TopDefaults;
   now?: Date;
   /** Кастомный срок в днях — только для ручной выдачи админом. Без него — неделя. */
   durationDays?: number;
@@ -220,7 +271,7 @@ export function grantTop(
 
     const profile = await tx.profile.findUnique({
       where: { id: grant.profileId },
-      select: { id: true, ownerId: true, status: true, topPlacement: true },
+      select: { id: true, ownerId: true, status: true, cityId: true, topPlacement: true },
     });
     if (!profile) throw new TopNotPublishedError();
     if (profile.status !== 'published') throw new TopNotPublishedError();
@@ -230,8 +281,9 @@ export function grantTop(
 
     // Продление места, которое уже занято, свободного слота не требует.
     if (!extended) {
-      const taken = await tx.topPlacement.count({ where: activeWhere(now) });
-      if (taken >= grant.slots) throw new TopFullError(grant.slots);
+      const config = await cityTopConfig(tx, profile.cityId, grant.defaults);
+      const taken = await takenInCity(tx, profile.cityId, now);
+      if (taken >= config.slots) throw new TopFullError(config.slots);
     }
 
     const placement = current
@@ -265,4 +317,78 @@ export function shuffle<T>(items: T[]): T[] {
     [result[i], result[j]] = [result[j] as T, result[i] as T];
   }
   return result;
+}
+
+/**
+ * Настройки ТОПа по городам для админа: действующие значения, свои значения
+ * (если заданы) и сколько мест занято сейчас. Города без анкет тоже в списке:
+ * условия можно задать заранее.
+ */
+export async function listCityTop(
+  prisma: PrismaClient,
+  defaults: TopDefaults,
+  now: Date = new Date(),
+): Promise<CityTopList> {
+  const [cities, settings, active] = await Promise.all([
+    prisma.city.findMany({
+      where: { isActive: true },
+      orderBy: [{ country: { code: 'asc' } }, { name: 'asc' }],
+      select: { id: true, slug: true, name: true, country: { select: { code: true } } },
+    }),
+    prisma.cityTopSetting.findMany(),
+    prisma.topPlacement.findMany({
+      where: activeWhere(now),
+      select: { profile: { select: { cityId: true } } },
+    }),
+  ]);
+
+  const own = new Map(settings.map((s) => [s.cityId, s]));
+  const taken = new Map<string, number>();
+  for (const row of active) {
+    taken.set(row.profile.cityId, (taken.get(row.profile.cityId) ?? 0) + 1);
+  }
+
+  return {
+    defaults,
+    cities: cities.map((city) => {
+      const setting = own.get(city.id);
+      return {
+        cityId: city.id,
+        slug: city.slug,
+        name: city.name,
+        countryCode: city.country.code,
+        weekGc: setting?.weekGc ?? defaults.weekGc,
+        slots: setting?.slots ?? defaults.slots,
+        weekGcOverride: setting?.weekGc ?? null,
+        slotsOverride: setting?.slots ?? null,
+        taken: taken.get(city.id) ?? 0,
+      };
+    }),
+  };
+}
+
+/**
+ * Задаёт городу свои цену и число мест. Оба поля пустые — строка удаляется, и
+ * город снова живёт по умолчанию. Уже занятые места не снимаются, если лимит
+ * опустили ниже занятого: новые покупки просто закрыты, пока не освободятся.
+ * Возвращает `false`, если такого города нет.
+ */
+export async function setCityTop(
+  prisma: PrismaClient,
+  cityId: string,
+  input: CityTopInput,
+): Promise<boolean> {
+  const city = await prisma.city.findUnique({ where: { id: cityId }, select: { id: true } });
+  if (!city) return false;
+
+  if (input.weekGc === null && input.slots === null) {
+    await prisma.cityTopSetting.deleteMany({ where: { cityId } });
+  } else {
+    await prisma.cityTopSetting.upsert({
+      where: { cityId },
+      create: { cityId, weekGc: input.weekGc, slots: input.slots },
+      update: { weekGc: input.weekGc, slots: input.slots },
+    });
+  }
+  return true;
 }

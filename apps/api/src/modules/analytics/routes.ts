@@ -2,17 +2,22 @@ import {
   ANALYTICS_PERIOD_DAYS,
   analyticsPeriodSchema,
   analyticsSchema,
+  eventBatchSchema,
   ownMoneyAnalyticsSchema,
   slugSchema,
   trackClickSchema,
+  trackEventContextSchema,
+  trackSessionSchema,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireSession } from '../../plugins/session.js';
 import { loadMoney, toOwnMoney } from './admin-money.js';
+import { recordEventBatch } from './batch.js';
 import { recordProfileEvent } from './events.js';
 import { loadAnalytics } from './query.js';
+import { recordSession } from './session.js';
 
 /**
  * Событие пишется только опубликованной анкете. Черновик и снятая наружу
@@ -22,10 +27,10 @@ import { loadAnalytics } from './query.js';
 async function publishedProfileOr404(fastify: FastifyInstance, slug: string) {
   const profile = await fastify.prisma.profile.findFirst({
     where: { slug, status: 'published' },
-    select: { id: true },
+    select: { id: true, kind: true, city: { select: { slug: true } } },
   });
   if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
-  return profile;
+  return { id: profile.id, city: profile.city.slug, category: profile.kind };
 }
 
 export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
@@ -55,12 +60,77 @@ export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['analytics'],
         params: z.object({ slug: slugSchema }),
+        body: trackEventContextSchema.optional(),
         response: { 204: z.null() },
       },
     },
     async (request, reply) => {
       const profile = await publishedProfileOr404(fastify, request.params.slug);
-      await recordProfileEvent(fastify, request, { kind: 'view', profileId: profile.id });
+      await recordProfileEvent(fastify, request, {
+        kind: 'view',
+        profileId: profile.id,
+        city: profile.city,
+        category: profile.category,
+        sessionId: request.body?.sessionId,
+      });
+      return reply.status(204).send(null);
+    },
+  );
+
+  /**
+   * Батч каталожных событий (фаза 1): заходы на страницы без анкеты
+   * (город, категория, поиск, главная), открытие галереи, применение
+   * фильтра. Ответ всегда 204 сразу — запись в базу идёт из буфера
+   * (`fastify.eventBuffer`) отдельным циклом, а не в рамках этого запроса.
+   *
+   * Своего лимита на размер тела не заводим сверх схемы (не больше 50
+   * событий): достаточно единого лимита на частоту самих батчей внутри
+   * `recordEventBatch`.
+   */
+  fastify.post(
+    '/e',
+    {
+      // Свой (молчаливый) лимит по батчам — внутри `recordEventBatch`.
+      // Общий лимит плагина `rate-limit` тут не годится: он ответил бы 429,
+      // а лишний батч трекера должен просто пропасть без ответа-ошибки.
+      config: { rateLimit: false },
+      schema: {
+        tags: ['analytics'],
+        body: eventBatchSchema,
+        response: { 204: z.null() },
+      },
+    },
+    async (request, reply) => {
+      try {
+        await recordEventBatch(fastify, request, request.body);
+      } catch (error) {
+        fastify.log.warn({ err: error }, 'не удалось записать батч событий');
+      }
+      return reply.status(204).send(null);
+    },
+  );
+
+  /**
+   * Начало сессии: откуда пришёл посетитель. Браузер шлёт один раз за
+   * сессию, на первой странице. Ответ всегда 204: повтор с тем же
+   * идентификатором молча игнорируется, и рассказывать об этом клиенту
+   * незачем. Сбой записи не роняет ответ — как и у остальных маяков.
+   */
+  fastify.post(
+    '/analytics/session',
+    {
+      schema: {
+        tags: ['analytics'],
+        body: trackSessionSchema,
+        response: { 204: z.null() },
+      },
+    },
+    async (request, reply) => {
+      try {
+        await recordSession(fastify.prisma, request, request.body);
+      } catch (error) {
+        fastify.log.warn({ err: error }, 'не удалось записать сессию');
+      }
       return reply.status(204).send(null);
     },
   );
@@ -77,7 +147,7 @@ export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['analytics'],
         params: z.object({ slug: slugSchema }),
-        body: trackClickSchema,
+        body: trackClickSchema.extend(trackEventContextSchema.shape),
         response: { 204: z.null() },
       },
     },
@@ -87,6 +157,11 @@ export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
         kind: 'contact_click',
         profileId: profile.id,
         contactType: request.body.type,
+        city: profile.city,
+        category: profile.category,
+        sessionId: request.body.sessionId,
+        interacted: request.body.interacted,
+        msSincePageLoad: request.body.msSincePageLoad,
       });
       return reply.status(204).send(null);
     },

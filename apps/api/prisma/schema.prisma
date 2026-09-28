@@ -276,14 +276,14 @@ model AuthToken {
 /// урегулирования правовых вопросов по этой юрисдикции (L-09): кнопка делает
 /// шаг лёгким технически, но не юридически.
 model Country {
-  id       String  @id @default(cuid())
+  id        String  @id @default(cuid())
   /// ISO 3166-1 alpha-2. Он же идентичность страны: слуг не нужен —
   /// в адресах страна не участвует, город второй сегмент после языка.
-  code     String  @unique @db.Char(2)
+  code      String  @unique @db.Char(2)
   /// Техническое имя для админки и журналов; посетителю идёт перевод.
-  name     String
+  name      String
   /// Страну не удаляем, а отключаем: на неё ссылаются города, а на них — анкеты.
-  isActive Boolean @default(true)
+  isActive  Boolean @default(true)
   /// Куда ведёт корень сайта, если у посетителя ещё нет запомненного города
   /// или страны. Ровно у одной активной страны — проверяется в коде роута,
   /// а не ограничением БД: сценарий редкий, требует транзакции «снять с
@@ -321,8 +321,21 @@ model City {
   profiles     Profile[]
   translations CityTranslation[]
   campaigns    Campaign[]
+  topSetting   CityTopSetting?
 
   @@index([countryId])
+}
+
+/// Свои цена и число мест ТОПа анкет для города. Пустое поле — «как по
+/// умолчанию» из BillingSettings (`topWeekGc`, `topSlots`): у города без строки
+/// или с пустыми полями действуют общие значения. Место в ТОПе занимает
+/// анкета в своём городе и считается только среди анкет этого города.
+model CityTopSetting {
+  cityId    String   @id
+  city      City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  weekGc    Int?
+  slots     Int?
+  updatedAt DateTime @updatedAt
 }
 
 /// Переводы названий справочников вынесены в отдельные таблицы, а не в
@@ -652,15 +665,15 @@ enum ContactType {
 /// Одна компания на учётную запись: `ownerId` уникален. Рекламодатель — это
 /// и есть компания, отдельной сущности «сотрудник компании» пока нет.
 model Company {
-  id          String      @id @default(cuid())
+  id             String      @id @default(cuid())
   /// Адрес страницы компании: /{locale}/company/{slug}.
-  slug        String      @unique
-  kind        CompanyKind
-  name        String
-  description String?
+  slug           String      @unique
+  kind           CompanyKind
+  name           String
+  description    String?
   /// Сайт агентства — своя ссылка, а не строка в contacts: контакты это
   /// каналы связи, сайт — витрина, и мешать их в одном списке неверно.
-  website     String?
+  website        String?
   /// Логотип не модерируется (в отличие от фото анкет): это не образ
   /// человека, а элемент фирменного стиля, и повод для проверки — другой.
   /// Одно поле, а не отдельная модель со множеством файлов, как у Photo:
@@ -668,7 +681,7 @@ model Company {
   /// удаляется из хранилища.
   logoStorageKey String?
   /// Языки персонала — коды из SPOKEN_LANGUAGES.
-  languages   String[]    @default([])
+  languages      String[]    @default([])
 
   /// Способы оплаты агентства. Удобства и часы — салонные, они у анкеты.
   payments PaymentMethod[] @default([])
@@ -690,9 +703,9 @@ model Company {
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  profiles Profile[]
-  contacts CompanyContact[]
-  prices   CompanyPriceSlot[]
+  profiles     Profile[]
+  contacts     CompanyContact[]
+  prices       CompanyPriceSlot[]
   topPlacement AgencyTopPlacement?
 
   /// Тариф из сетки (payments.md §3.3, D-13). `null` — переходное состояние
@@ -823,14 +836,30 @@ enum ProfileEventKind {
   contact_reveal
   /// Переход по самому контакту: звонок или мессенджер.
   contact_click
+  /// Заход на любую нестраничную-анкету страницу: город, категория, поиск,
+  /// главная. Приходит батчем через `/api/e` (фаза 1), не отдельным маяком:
+  /// таких заходов на порядок больше, чем открытий анкеты, и не должно быть
+  /// отдельной вставки на каждый.
+  page_view
+  /// Открытие галереи фотографий анкеты (лайтбокс). Дедупликации нет:
+  /// «открыл ещё раз» на той же странице — тоже интерес, не повтор одного и
+  /// того же клика, как у `contact_click`.
+  gallery_open
+  /// Применение фильтра поиска — кнопкой «Показать» в `FilterPanel`.
+  /// Какие именно значения выбраны, не пишем: событие про сам факт
+  /// уточнения выдачи, а не про то, что искал конкретный посетитель.
+  search_filter
 }
 
 /// Журнал событий анкеты: антифрод по раскрытиям и статистика для владелицы.
 /// Чистится по сроку из documentation/planning/planning.md — 12 месяцев.
 model ProfileEvent {
   id          String           @id @default(cuid())
-  profileId   String
-  profile     Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Пусто у `page_view` и части `search_filter`: эти события бывают на
+  /// страницах без анкеты (город, категория, главная). У `gallery_open`
+  /// заполнен всегда — открывать нечего без анкеты.
+  profileId   String?
+  profile     Profile?         @relation(fields: [profileId], references: [id], onDelete: Cascade)
   kind        ProfileEventKind
   /// Только у `contact_click`: по какому именно каналу ушли. У раскрытия
   /// его нет — кнопка одна на всю карточку, дробить нечего.
@@ -841,12 +870,64 @@ model ProfileEvent {
   userId      String?
   /// Соль плюс хэш, не сырой адрес — журнал не должен сам стать базой ПД.
   ipHash      String
+  /// Сессия браузера, к которой относится событие. Пусто у событий, чей
+  /// маяк пока не передаёт её (раскрытие, избранное), и у записей до её появления.
+  sessionId   String?
+  /// Город (`City.slug`) и категория (`Profile.kind`) анкеты на момент события:
+  /// спрос по городам считается по журналу, без соединения с анкетами.
+  city        String?
+  category    String?
+  /// Путь страницы без строки запроса. Заполнен только у батчевых событий
+  /// (`page_view`, `gallery_open`, `search_filter`) — у остальных страница
+  /// и так известна по `profileId`.
+  path        String?
+  /// Бот, помеченный, а не удалённый (фаза 3): роллап и кабинет читают
+  /// только `isBot = false`, а `botReason` остаётся для разбора, по какому
+  /// именно правилу сработало.
+  isBot       Boolean          @default(false)
+  botReason   String?
   createdAt   DateTime         @default(now())
 
   // Основной индекс статистики: анкета × событие, отсортированные по времени.
   @@index([profileId, kind, createdAt])
+  @@index([sessionId])
   // Чистка по сроку идёт по всей таблице разом, без разбора анкет.
   @@index([createdAt])
+}
+
+/// Сессия посетителя и то, откуда он пришёл. Одна строка на сессию, пишется
+/// первым же обращением браузера; повтор с тем же `id` ничего не меняет:
+/// источник определяет первый заход, а не последний.
+model AnalyticsSession {
+  /// Случайный идентификатор из `sessionStorage` браузера.
+  id             String   @id
+  /// sha256 от адреса и User-Agent с солью. Сырого адреса не хранится.
+  visitorHash    String
+  utmSource      String?
+  utmMedium      String?
+  utmCampaign    String?
+  utmContent     String?
+  /// Платная сеть (`KNOWN_NETWORKS`), если распознана.
+  network        String?
+  /// Идентификатор клика сети. Только при согласии или при выключенном
+  /// `ANALYTICS_REQUIRE_CONSENT`.
+  networkClickId String?
+  /// Только хост реферера, не полный адрес.
+  referrerHost   String?
+  /// Классифицированный источник (`SourceKind`).
+  source         String
+  /// Путь первой страницы, без строки запроса.
+  landingPath    String
+  deviceType     String?
+  /// По User-Agent на момент старта сессии (правило 1 фазы 3; правило 2,
+  /// дата-центр, пока не подключено — см. `bot.ts`). Дальнейшие события той
+  /// же сессии (правила 3–5) её задним числом не перекрашивают — помечен
+  /// остаётся сам ботовский ряд событий.
+  isBot          Boolean  @default(false)
+  botReason      String?
+  startedAt      DateTime @default(now())
+
+  @@index([startedAt])
 }
 
 /// Суточные счётчики событий анкеты для админского обзора рекламодателей.
@@ -865,6 +946,56 @@ model ProfileEventDaily {
   anonymous  Int              @default(0)
 
   @@id([profileId, day, kind])
+  @@index([day])
+}
+
+/// Дневная статистика по источнику трафика (фаза 4): сессии, доля ботов и
+/// контакты за день. Основа cost-per-contact (фаза 6) — джойн с расходом
+/// сети (`ad_spend`, когда появится) идёт по `day` и `network`. Заполняется
+/// той же задачей `event-rollup`, что и `ProfileEventDaily`.
+model SourceDailyStat {
+  day         DateTime @db.Date
+  /// Классифицированный источник (`SourceKind` из `attribution.ts`).
+  source      String
+  /// Платная сеть. Пустая строка вместо NULL, как и `utmCampaign`: NULL не
+  /// участвует в уникальности составного ключа Postgres, и вторая строка
+  /// того же дня и источника без сети тихо легла бы отдельной строкой
+  /// вместо накопления в уже существующую — тем самым нарушив
+  /// идемпотентность пересчёта (спека прямо требует пустую строку вместо
+  /// NULL по этой причине).
+  network     String   @default("")
+  utmCampaign String   @default("")
+  /// Все сессии дня в этом разрезе, включая ботов — знаменатель для доли
+  /// ботов (`botSessions / sessions`), а не только «хорошие» посещения.
+  sessions    Int
+  botSessions Int
+  /// Контакты (`contact_reveal` + `contact_click`) не-ботов сессий этого
+  /// разреза. Здесь только настоящие обращения: попади сюда боты, стоимость
+  /// контакта в фазе 6 была бы занижена на их долю.
+  contacts    Int
+
+  @@id([day, source, network, utmCampaign])
+  @@index([day])
+}
+
+/// Спрос и предложение по городу и категории (фаза 4): сколько сессий и
+/// просмотров анкет пришлось на город, сколько там контактов и сколько
+/// анкет там размещено сейчас. `activeProfiles` — снимок `Profile` на
+/// момент пересчёта, а не историческая правда: у дней вне окна пересчёта
+/// (те же `RECENT_DAYS`, что и у `ProfileEventDaily`) это последний
+/// посчитанный снимок, не факт именно на ту дату — своей истории размещений
+/// по дням в базе нет, и заводить её ради одной колонки этого дашборда
+/// избыточно.
+model CityDailyStat {
+  day            DateTime @db.Date
+  city           String
+  category       String
+  sessions       Int
+  profileViews   Int
+  contacts       Int
+  activeProfiles Int
+
+  @@id([day, city, category])
   @@index([day])
 }
 

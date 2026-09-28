@@ -60,6 +60,14 @@ export type CountryTranslation = Prisma.CountryTranslationModel
  */
 export type City = Prisma.CityModel
 /**
+ * Model CityTopSetting
+ * Свои цена и число мест ТОПа анкет для города. Пустое поле — «как по
+ * умолчанию» из BillingSettings (`topWeekGc`, `topSlots`): у города без строки
+ * или с пустыми полями действуют общие значения. Место в ТОПе занимает
+ * анкета в своём городе и считается только среди анкет этого города.
+ */
+export type CityTopSetting = Prisma.CityTopSettingModel
+/**
  * Model CityTranslation
  * Переводы названий справочников вынесены в отдельные таблицы, а не в
  * словари фронта: справочники редактируются из админки (N-32, N-36), и
@@ -171,6 +179,13 @@ export type ProfileContact = Prisma.ProfileContactModel
  */
 export type ProfileEvent = Prisma.ProfileEventModel
 /**
+ * Model AnalyticsSession
+ * Сессия посетителя и то, откуда он пришёл. Одна строка на сессию, пишется
+ * первым же обращением браузера; повтор с тем же `id` ничего не меняет:
+ * источник определяет первый заход, а не последний.
+ */
+export type AnalyticsSession = Prisma.AnalyticsSessionModel
+/**
  * Model ProfileEventDaily
  * Суточные счётчики событий анкеты для админского обзора рекламодателей.
  * Сырые `ProfileEvent` — десятки миллионов строк в месяц и живут 12 месяцев:
@@ -181,6 +196,26 @@ export type ProfileEvent = Prisma.ProfileEventModel
  * на горячем пути остаётся одной вставкой.
  */
 export type ProfileEventDaily = Prisma.ProfileEventDailyModel
+/**
+ * Model SourceDailyStat
+ * Дневная статистика по источнику трафика (фаза 4): сессии, доля ботов и
+ * контакты за день. Основа cost-per-contact (фаза 6) — джойн с расходом
+ * сети (`ad_spend`, когда появится) идёт по `day` и `network`. Заполняется
+ * той же задачей `event-rollup`, что и `ProfileEventDaily`.
+ */
+export type SourceDailyStat = Prisma.SourceDailyStatModel
+/**
+ * Model CityDailyStat
+ * Спрос и предложение по городу и категории (фаза 4): сколько сессий и
+ * просмотров анкет пришлось на город, сколько там контактов и сколько
+ * анкет там размещено сейчас. `activeProfiles` — снимок `Profile` на
+ * момент пересчёта, а не историческая правда: у дней вне окна пересчёта
+ * (те же `RECENT_DAYS`, что и у `ProfileEventDaily`) это последний
+ * посчитанный снимок, не факт именно на ту дату — своей истории размещений
+ * по дням в базе нет, и заводить её ради одной колонки этого дашборда
+ * избыточно.
+ */
+export type CityDailyStat = Prisma.CityDailyStatModel
 /**
  * Model PriceSlot
  * 

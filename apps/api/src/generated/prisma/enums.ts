@@ -232,7 +232,10 @@ export const ProfileEventKind = {
   view: 'view',
   favorite: 'favorite',
   contact_reveal: 'contact_reveal',
-  contact_click: 'contact_click'
+  contact_click: 'contact_click',
+  page_view: 'page_view',
+  gallery_open: 'gallery_open',
+  search_filter: 'search_filter'
 } as const
 
 export type ProfileEventKind = (typeof ProfileEventKind)[keyof typeof ProfileEventKind]

@@ -210,6 +210,7 @@ export default async function ProfilePage({ params }: Props) {
             photos={profile.photos}
             alt={`${profile.displayName}, ${profile.city.name}`}
             seed={profile.id}
+            profileSlug={profile.slug}
           />
 
           <Section title={t('description')}>

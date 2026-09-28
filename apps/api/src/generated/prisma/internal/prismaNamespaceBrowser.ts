@@ -58,6 +58,7 @@ export const ModelName = {
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
   City: 'City',
+  CityTopSetting: 'CityTopSetting',
   CityTranslation: 'CityTranslation',
   District: 'District',
   DistrictTranslation: 'DistrictTranslation',
@@ -73,7 +74,10 @@ export const ModelName = {
   CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
+  AnalyticsSession: 'AnalyticsSession',
   ProfileEventDaily: 'ProfileEventDaily',
+  SourceDailyStat: 'SourceDailyStat',
+  CityDailyStat: 'CityDailyStat',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -207,6 +211,16 @@ export const CityScalarFieldEnum = {
 } as const
 
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
+
+
+export const CityTopSettingScalarFieldEnum = {
+  cityId: 'cityId',
+  weekGc: 'weekGc',
+  slots: 'slots',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CityTopSettingScalarFieldEnum = (typeof CityTopSettingScalarFieldEnum)[keyof typeof CityTopSettingScalarFieldEnum]
 
 
 export const CityTranslationScalarFieldEnum = {
@@ -441,10 +455,37 @@ export const ProfileEventScalarFieldEnum = {
   contactType: 'contactType',
   userId: 'userId',
   ipHash: 'ipHash',
+  sessionId: 'sessionId',
+  city: 'city',
+  category: 'category',
+  path: 'path',
+  isBot: 'isBot',
+  botReason: 'botReason',
   createdAt: 'createdAt'
 } as const
 
 export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
+
+
+export const AnalyticsSessionScalarFieldEnum = {
+  id: 'id',
+  visitorHash: 'visitorHash',
+  utmSource: 'utmSource',
+  utmMedium: 'utmMedium',
+  utmCampaign: 'utmCampaign',
+  utmContent: 'utmContent',
+  network: 'network',
+  networkClickId: 'networkClickId',
+  referrerHost: 'referrerHost',
+  source: 'source',
+  landingPath: 'landingPath',
+  deviceType: 'deviceType',
+  isBot: 'isBot',
+  botReason: 'botReason',
+  startedAt: 'startedAt'
+} as const
+
+export type AnalyticsSessionScalarFieldEnum = (typeof AnalyticsSessionScalarFieldEnum)[keyof typeof AnalyticsSessionScalarFieldEnum]
 
 
 export const ProfileEventDailyScalarFieldEnum = {
@@ -456,6 +497,32 @@ export const ProfileEventDailyScalarFieldEnum = {
 } as const
 
 export type ProfileEventDailyScalarFieldEnum = (typeof ProfileEventDailyScalarFieldEnum)[keyof typeof ProfileEventDailyScalarFieldEnum]
+
+
+export const SourceDailyStatScalarFieldEnum = {
+  day: 'day',
+  source: 'source',
+  network: 'network',
+  utmCampaign: 'utmCampaign',
+  sessions: 'sessions',
+  botSessions: 'botSessions',
+  contacts: 'contacts'
+} as const
+
+export type SourceDailyStatScalarFieldEnum = (typeof SourceDailyStatScalarFieldEnum)[keyof typeof SourceDailyStatScalarFieldEnum]
+
+
+export const CityDailyStatScalarFieldEnum = {
+  day: 'day',
+  city: 'city',
+  category: 'category',
+  sessions: 'sessions',
+  profileViews: 'profileViews',
+  contacts: 'contacts',
+  activeProfiles: 'activeProfiles'
+} as const
+
+export type CityDailyStatScalarFieldEnum = (typeof CityDailyStatScalarFieldEnum)[keyof typeof CityDailyStatScalarFieldEnum]
 
 
 export const PriceSlotScalarFieldEnum = {

@@ -404,6 +404,7 @@ export const ModelName = {
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
   City: 'City',
+  CityTopSetting: 'CityTopSetting',
   CityTranslation: 'CityTranslation',
   District: 'District',
   DistrictTranslation: 'DistrictTranslation',
@@ -419,7 +420,10 @@ export const ModelName = {
   CompanyPriceSlot: 'CompanyPriceSlot',
   ProfileContact: 'ProfileContact',
   ProfileEvent: 'ProfileEvent',
+  AnalyticsSession: 'AnalyticsSession',
   ProfileEventDaily: 'ProfileEventDaily',
+  SourceDailyStat: 'SourceDailyStat',
+  CityDailyStat: 'CityDailyStat',
   PriceSlot: 'PriceSlot',
   Service: 'Service',
   ServiceTranslation: 'ServiceTranslation',
@@ -455,7 +459,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "profileEventDaily" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTopSetting" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -974,6 +978,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CityCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CityCountAggregateOutputType> | number
+        }
+      }
+    }
+    CityTopSetting: {
+      payload: Prisma.$CityTopSettingPayload<ExtArgs>
+      fields: Prisma.CityTopSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CityTopSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CityTopSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.CityTopSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CityTopSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        findMany: {
+          args: Prisma.CityTopSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>[]
+        }
+        create: {
+          args: Prisma.CityTopSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        createMany: {
+          args: Prisma.CityTopSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CityTopSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.CityTopSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        update: {
+          args: Prisma.CityTopSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.CityTopSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CityTopSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CityTopSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.CityTopSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityTopSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.CityTopSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCityTopSetting>
+        }
+        groupBy: {
+          args: Prisma.CityTopSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityTopSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CityTopSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityTopSettingCountAggregateOutputType> | number
         }
       }
     }
@@ -2087,6 +2165,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AnalyticsSession: {
+      payload: Prisma.$AnalyticsSessionPayload<ExtArgs>
+      fields: Prisma.AnalyticsSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsSession>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsSessionCountAggregateOutputType> | number
+        }
+      }
+    }
     ProfileEventDaily: {
       payload: Prisma.$ProfileEventDailyPayload<ExtArgs>
       fields: Prisma.ProfileEventDailyFieldRefs
@@ -2158,6 +2310,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ProfileEventDailyCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ProfileEventDailyCountAggregateOutputType> | number
+        }
+      }
+    }
+    SourceDailyStat: {
+      payload: Prisma.$SourceDailyStatPayload<ExtArgs>
+      fields: Prisma.SourceDailyStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SourceDailyStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SourceDailyStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        findFirst: {
+          args: Prisma.SourceDailyStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SourceDailyStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        findMany: {
+          args: Prisma.SourceDailyStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>[]
+        }
+        create: {
+          args: Prisma.SourceDailyStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        createMany: {
+          args: Prisma.SourceDailyStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SourceDailyStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>[]
+        }
+        delete: {
+          args: Prisma.SourceDailyStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        update: {
+          args: Prisma.SourceDailyStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.SourceDailyStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SourceDailyStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SourceDailyStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.SourceDailyStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SourceDailyStatPayload>
+        }
+        aggregate: {
+          args: Prisma.SourceDailyStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSourceDailyStat>
+        }
+        groupBy: {
+          args: Prisma.SourceDailyStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SourceDailyStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SourceDailyStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SourceDailyStatCountAggregateOutputType> | number
+        }
+      }
+    }
+    CityDailyStat: {
+      payload: Prisma.$CityDailyStatPayload<ExtArgs>
+      fields: Prisma.CityDailyStatFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CityDailyStatFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CityDailyStatFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        findFirst: {
+          args: Prisma.CityDailyStatFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CityDailyStatFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        findMany: {
+          args: Prisma.CityDailyStatFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>[]
+        }
+        create: {
+          args: Prisma.CityDailyStatCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        createMany: {
+          args: Prisma.CityDailyStatCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CityDailyStatCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>[]
+        }
+        delete: {
+          args: Prisma.CityDailyStatDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        update: {
+          args: Prisma.CityDailyStatUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        deleteMany: {
+          args: Prisma.CityDailyStatDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CityDailyStatUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CityDailyStatUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>[]
+        }
+        upsert: {
+          args: Prisma.CityDailyStatUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityDailyStatPayload>
+        }
+        aggregate: {
+          args: Prisma.CityDailyStatAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCityDailyStat>
+        }
+        groupBy: {
+          args: Prisma.CityDailyStatGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityDailyStatGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CityDailyStatCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityDailyStatCountAggregateOutputType> | number
         }
       }
     }
@@ -3777,6 +4077,16 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const CityTopSettingScalarFieldEnum = {
+  cityId: 'cityId',
+  weekGc: 'weekGc',
+  slots: 'slots',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CityTopSettingScalarFieldEnum = (typeof CityTopSettingScalarFieldEnum)[keyof typeof CityTopSettingScalarFieldEnum]
+
+
 export const CityTranslationScalarFieldEnum = {
   id: 'id',
   cityId: 'cityId',
@@ -4009,10 +4319,37 @@ export const ProfileEventScalarFieldEnum = {
   contactType: 'contactType',
   userId: 'userId',
   ipHash: 'ipHash',
+  sessionId: 'sessionId',
+  city: 'city',
+  category: 'category',
+  path: 'path',
+  isBot: 'isBot',
+  botReason: 'botReason',
   createdAt: 'createdAt'
 } as const
 
 export type ProfileEventScalarFieldEnum = (typeof ProfileEventScalarFieldEnum)[keyof typeof ProfileEventScalarFieldEnum]
+
+
+export const AnalyticsSessionScalarFieldEnum = {
+  id: 'id',
+  visitorHash: 'visitorHash',
+  utmSource: 'utmSource',
+  utmMedium: 'utmMedium',
+  utmCampaign: 'utmCampaign',
+  utmContent: 'utmContent',
+  network: 'network',
+  networkClickId: 'networkClickId',
+  referrerHost: 'referrerHost',
+  source: 'source',
+  landingPath: 'landingPath',
+  deviceType: 'deviceType',
+  isBot: 'isBot',
+  botReason: 'botReason',
+  startedAt: 'startedAt'
+} as const
+
+export type AnalyticsSessionScalarFieldEnum = (typeof AnalyticsSessionScalarFieldEnum)[keyof typeof AnalyticsSessionScalarFieldEnum]
 
 
 export const ProfileEventDailyScalarFieldEnum = {
@@ -4024,6 +4361,32 @@ export const ProfileEventDailyScalarFieldEnum = {
 } as const
 
 export type ProfileEventDailyScalarFieldEnum = (typeof ProfileEventDailyScalarFieldEnum)[keyof typeof ProfileEventDailyScalarFieldEnum]
+
+
+export const SourceDailyStatScalarFieldEnum = {
+  day: 'day',
+  source: 'source',
+  network: 'network',
+  utmCampaign: 'utmCampaign',
+  sessions: 'sessions',
+  botSessions: 'botSessions',
+  contacts: 'contacts'
+} as const
+
+export type SourceDailyStatScalarFieldEnum = (typeof SourceDailyStatScalarFieldEnum)[keyof typeof SourceDailyStatScalarFieldEnum]
+
+
+export const CityDailyStatScalarFieldEnum = {
+  day: 'day',
+  city: 'city',
+  category: 'category',
+  sessions: 'sessions',
+  profileViews: 'profileViews',
+  contacts: 'contacts',
+  activeProfiles: 'activeProfiles'
+} as const
+
+export type CityDailyStatScalarFieldEnum = (typeof CityDailyStatScalarFieldEnum)[keyof typeof CityDailyStatScalarFieldEnum]
 
 
 export const PriceSlotScalarFieldEnum = {
@@ -5006,6 +5369,7 @@ export type GlobalOmitConfig = {
   country?: Prisma.CountryOmit
   countryTranslation?: Prisma.CountryTranslationOmit
   city?: Prisma.CityOmit
+  cityTopSetting?: Prisma.CityTopSettingOmit
   cityTranslation?: Prisma.CityTranslationOmit
   district?: Prisma.DistrictOmit
   districtTranslation?: Prisma.DistrictTranslationOmit
@@ -5021,7 +5385,10 @@ export type GlobalOmitConfig = {
   companyPriceSlot?: Prisma.CompanyPriceSlotOmit
   profileContact?: Prisma.ProfileContactOmit
   profileEvent?: Prisma.ProfileEventOmit
+  analyticsSession?: Prisma.AnalyticsSessionOmit
   profileEventDaily?: Prisma.ProfileEventDailyOmit
+  sourceDailyStat?: Prisma.SourceDailyStatOmit
+  cityDailyStat?: Prisma.CityDailyStatOmit
   priceSlot?: Prisma.PriceSlotOmit
   service?: Prisma.ServiceOmit
   serviceTranslation?: Prisma.ServiceTranslationOmit

@@ -636,8 +636,10 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
               : {}),
         },
         // Мест немного (§3.4): берём все и тасуем — так выборка честная,
-        // а не «первые N по дате».
-        take: Math.max(config.top.slots, config.top.shown),
+        // а не «первые N по дате». У городов свои лимиты мест, поэтому на
+        // срезе «страна»/«всё» их может быть больше общего `top.slots` —
+        // потолок с запасом, а не по общему числу.
+        take: Math.max(config.top.slots, config.top.shown, 500),
         select: cardSelect(request.query.locale),
       });
       const picked = shuffle(rows).slice(0, config.top.shown);

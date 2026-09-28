@@ -360,11 +360,23 @@ export const topPlacementSchema = z.object({
 });
 export type TopPlacement = z.infer<typeof topPlacementSchema>;
 
-/** Что нужно кабинету, чтобы предложить покупку: цена, места, свои анкеты в ТОПе. */
-export const topStateSchema = z.object({
+/**
+ * ТОП считается по городу анкеты: у каждого города свои цена и число мест
+ * (`CityTopSetting`, по умолчанию — общие из настроек монетизации). Кабинету
+ * нужны условия по каждому городу, где у рекламодателя есть анкеты, и его
+ * места в ТОПе.
+ */
+export const cityTopSchema = z.object({
+  citySlug: z.string(),
+  cityName: z.string(),
   priceGc: z.number().int().positive(),
   slots: z.number().int().positive(),
   freeSlots: z.number().int().nonnegative(),
+});
+export type CityTop = z.infer<typeof cityTopSchema>;
+
+export const topStateSchema = z.object({
+  cities: z.array(cityTopSchema),
   placements: z.array(topPlacementSchema),
 });
 export type TopState = z.infer<typeof topStateSchema>;
@@ -643,3 +655,34 @@ export const overviewSchema = z.object({
   total: z.number().int().nonnegative(),
 });
 export type Overview = z.infer<typeof overviewSchema>;
+
+/* --- ТОП по городам: настройки для админа ------------------------------------- */
+
+export const cityTopRowSchema = z.object({
+  cityId: z.string(),
+  slug: z.string(),
+  name: z.string(),
+  countryCode: z.string(),
+  /** Действующие значения: своё, если задано, иначе общие по умолчанию. */
+  weekGc: z.number().int().positive(),
+  slots: z.number().int().positive(),
+  /** Своё значение города; `null` — действует значение по умолчанию. */
+  weekGcOverride: z.number().int().positive().nullable(),
+  slotsOverride: z.number().int().positive().nullable(),
+  /** Сколько мест занято прямо сейчас. */
+  taken: z.number().int().nonnegative(),
+});
+export type CityTopRow = z.infer<typeof cityTopRowSchema>;
+
+export const cityTopListSchema = z.object({
+  defaults: z.object({ weekGc: z.number().int().positive(), slots: z.number().int().positive() }),
+  cities: z.array(cityTopRowSchema),
+});
+export type CityTopList = z.infer<typeof cityTopListSchema>;
+
+/** Оба поля пустые — вернуть городу значения по умолчанию. */
+export const cityTopInputSchema = z.object({
+  weekGc: gcPriceSchema.nullable(),
+  slots: z.number().int().min(1).max(200).nullable(),
+});
+export type CityTopInput = z.infer<typeof cityTopInputSchema>;

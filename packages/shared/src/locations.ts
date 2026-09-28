@@ -29,6 +29,7 @@ export const RESERVED_CITY_SLUGS = [
   'catalog',
   'company',
   'contact',
+  'legal',
   'login',
   'moderation',
   'profile',

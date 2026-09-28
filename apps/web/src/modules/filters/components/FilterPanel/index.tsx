@@ -16,6 +16,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { track } from '@/modules/analytics/tracker';
 import { clearFilters, setValue, toggleValue } from '@/modules/filters/params';
 import { Overlay } from '@/overlays/Overlay';
 import { useRouter } from '@/shared/i18n/navigation';
@@ -76,6 +77,9 @@ export function FilterPanel({
 
   const apply = () => {
     const query = params.toString();
+    // Значения фильтра не пишем — событие про сам факт уточнения выдачи
+    // (`category`, `path`), не про то, что искал конкретный посетитель.
+    track({ name: 'search_filter', path: targetPath, category: kind });
     router.push(query ? `${targetPath}?${query}` : targetPath);
     onClose();
   };

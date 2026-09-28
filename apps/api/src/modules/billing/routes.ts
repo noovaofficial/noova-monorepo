@@ -282,8 +282,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
         const result = await buyTop(fastify.prisma, {
           userId,
           profileId: request.body.profileId,
-          priceGc: config.top.weekGc,
-          slots: config.top.slots,
+          defaults: config.top,
         });
         const profile = await fastify.prisma.profile.findUnique({
           where: { id: request.body.profileId },

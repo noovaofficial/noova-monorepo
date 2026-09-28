@@ -60,6 +60,7 @@ export const queryKeys = {
   listing: () => ['listing'] as const,
   topupOrder: (id: string) => ['topup-order', id] as const,
   top: () => ['top'] as const,
+  cityTop: () => ['city-top'] as const,
   agencyTop: () => ['agency-top'] as const,
   billingOperations: (query: string) => ['billing-operations', query] as const,
   /** Период — часть ключа: иначе переключение отдавало бы прежний отчёт. */

@@ -1740,10 +1740,12 @@ export type ProfileCreateNestedOneWithoutEventsInput = {
   connect?: Prisma.ProfileWhereUniqueInput
 }
 
-export type ProfileUpdateOneRequiredWithoutEventsNestedInput = {
+export type ProfileUpdateOneWithoutEventsNestedInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutEventsInput, Prisma.ProfileUncheckedCreateWithoutEventsInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutEventsInput
   upsert?: Prisma.ProfileUpsertWithoutEventsInput
+  disconnect?: Prisma.ProfileWhereInput | boolean
+  delete?: Prisma.ProfileWhereInput | boolean
   connect?: Prisma.ProfileWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutEventsInput, Prisma.ProfileUpdateWithoutEventsInput>, Prisma.ProfileUncheckedUpdateWithoutEventsInput>
 }

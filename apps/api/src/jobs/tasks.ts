@@ -4,6 +4,7 @@ import { env } from '../env.js';
 import type { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
 import { runEventRollup } from '../modules/analytics/rollup.js';
+import { purgeAnalyticsSessions } from '../modules/analytics/session.js';
 import { pushMail } from '../modules/auth/mail-queue.js';
 import { expireAgencyTopPlacements } from '../modules/billing/agency-top.js';
 import { expireListings } from '../modules/billing/listing.js';
@@ -33,9 +34,11 @@ export type Job = {
  */
 export const JOBS: Job[] = [
   {
-    // Суточные счётчики событий для админского обзора рекламодателей: последние
-    // сутки пересчитываются каждый цикл, при первом запуске заполняется вся
-    // история. Число — сколько строк записано.
+    // Суточные роллапы аналитики (фазы 3–4): воронка анкеты для кабинета,
+    // трафик по источнику, спрос по городам и снимок активных анкет.
+    // Последние сутки пересчитываются каждый цикл, при первом запуске
+    // заполняется вся история. Число — сколько строк записано во все
+    // четыре таблицы вместе.
     name: 'event-rollup',
     run: (prisma) => runEventRollup(prisma),
   },
@@ -77,6 +80,12 @@ export const JOBS: Job[] = [
   {
     name: 'profile-events',
     run: (prisma) => purgeProfileEvents(prisma, env.RETENTION_PROFILE_EVENTS_DAYS),
+  },
+  {
+    // Сессии посетителей живут ровно столько же, сколько события: одно без
+    // другого смысла не имеет.
+    name: 'analytics-sessions',
+    run: (prisma) => purgeAnalyticsSessions(prisma, env.RETENTION_PROFILE_EVENTS_DAYS),
   },
   {
     name: 'deleted-accounts',

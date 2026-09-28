@@ -53,12 +53,29 @@ const KIND_TO_METRIC = {
   favorite: 'favorites',
   contact_reveal: 'contactReveals',
   contact_click: 'contactClicks',
-} as const satisfies Record<ProfileEventKind, keyof AnalyticsPoint>;
+} as const satisfies Partial<Record<ProfileEventKind, keyof AnalyticsPoint>>;
+
+/**
+ * Воронка кабинета — те же четыре вида, что и всегда. `page_view`,
+ * `gallery_open` и `search_filter` (фаза 1, батч `/api/e`) в неё
+ * сознательно не входят: `KIND_TO_METRIC` не знает, куда их деть, а раздел
+ * про них — это будущий дашборд спроса, не отчёт по конкретной анкете.
+ * Фильтр — явный список видов, а не отрицание: так лишний вид, добавленный
+ * позже без правки здесь, беззвучно выпадет из отчёта вместо падения на
+ * необработанном ключе.
+ */
+export const FUNNEL_KINDS = Object.keys(KIND_TO_METRIC) as ProfileEventKind[];
+
+/** Вид события, ограниченный воронкой кабинета — ровно то, что позволяет
+ *  WHERE-фильтр `FUNNEL_KINDS` в запросах ниже. Раздельный тип, а не
+ *  `ProfileEventKind`: `page_view` и другие батчевые виды в бакетах не
+ *  появляются, и `KIND_TO_METRIC` не должен уметь их индексировать. */
+type FunnelKind = keyof typeof KIND_TO_METRIC;
 
 const emptySplit = (): AnalyticsSplit => ({ total: 0, registered: 0, anonymous: 0 });
 
-type Bucket = { day: string; kind: ProfileEventKind; registered: boolean; n: number };
-type ProfileBucket = { profileId: string; kind: ProfileEventKind; n: number };
+type Bucket = { day: string; kind: FunnelKind; registered: boolean; n: number };
+type ProfileBucket = { profileId: string; kind: FunnelKind; n: number };
 type ContactBucket = { contactType: ContactType | null; n: number };
 
 export type AnalyticsScope = {
@@ -151,7 +168,9 @@ export async function loadAnalytics(
              count(*)::int AS n
         FROM "ProfileEvent"
        WHERE "profileId" = ANY(${ids})
+         AND "kind" = ANY(${FUNNEL_KINDS}::"ProfileEventKind"[])
          AND "createdAt" >= ${since}
+         AND "isBot" = FALSE
          AND ("userId" IS NULL OR "userId" <> ${ownerId})
        GROUP BY 1, 2, 3
     `,
@@ -159,7 +178,9 @@ export async function loadAnalytics(
       SELECT "profileId", "kind", count(*)::int AS n
         FROM "ProfileEvent"
        WHERE "profileId" = ANY(${ids})
+         AND "kind" = ANY(${FUNNEL_KINDS}::"ProfileEventKind"[])
          AND "createdAt" >= ${since}
+         AND "isBot" = FALSE
          AND ("userId" IS NULL OR "userId" <> ${ownerId})
        GROUP BY 1, 2
     `,
@@ -169,6 +190,7 @@ export async function loadAnalytics(
        WHERE "profileId" = ANY(${ids})
          AND "kind" = 'contact_click'::"ProfileEventKind"
          AND "createdAt" >= ${since}
+         AND "isBot" = FALSE
          AND ("userId" IS NULL OR "userId" <> ${ownerId})
        GROUP BY 1
     `,

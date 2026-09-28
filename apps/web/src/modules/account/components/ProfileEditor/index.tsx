@@ -1038,7 +1038,11 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
 
           {/* ТОП — между состоянием и удалением: это платное действие над
               анкетой, и место ему рядом с публикацией, а не под удалением. */}
-          <TopCard profileId={profile.id} published={profile.status === 'published'} />
+          <TopCard
+            profileId={profile.id}
+            citySlug={profile.city.slug}
+            published={profile.status === 'published'}
+          />
 
           <div className={`${styles.sidebarCard} ${styles.dangerCard}`}>
             <span className={styles.sidebarTitle}>{t('deleteProfileTitle')}</span>

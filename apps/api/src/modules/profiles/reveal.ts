@@ -1,4 +1,4 @@
-import { revealedContactsSchema, slugSchema } from '@noova/shared';
+import { revealedContactsSchema, slugSchema, trackEventContextSchema } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { recordProfileEvent } from '../analytics/events.js';
@@ -19,6 +19,9 @@ export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
       schema: {
         tags: ['profiles'],
         params: z.object({ slug: slugSchema }),
+        // Опционально: старые клиенты и прямые вызовы без тела не должны
+        // ломаться, просто раскрытие пойдёт без антибот-сигналов 3 и 4.
+        body: trackEventContextSchema.optional(),
         response: { 200: revealedContactsSchema },
       },
     },
@@ -29,6 +32,8 @@ export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { slug: request.params.slug, status: 'published' },
         select: {
           id: true,
+          kind: true,
+          city: { select: { slug: true } },
           contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
         },
       });
@@ -40,6 +45,11 @@ export const revealRoutes: FastifyPluginAsyncZod = async (fastify) => {
       await recordProfileEvent(fastify, request, {
         kind: 'contact_reveal',
         profileId: profile.id,
+        city: profile.city.slug,
+        category: profile.kind,
+        sessionId: request.body?.sessionId,
+        interacted: request.body?.interacted,
+        msSincePageLoad: request.body?.msSincePageLoad,
       });
 
       return {

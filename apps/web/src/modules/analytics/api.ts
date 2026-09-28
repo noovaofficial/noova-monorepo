@@ -5,7 +5,10 @@ import {
   type ContactType,
   type OwnMoneyAnalytics,
   ownMoneyAnalyticsSchema,
+  type TrackSession,
 } from '@noova/shared';
+import { interactionSignals } from './interaction';
+import { getSessionId } from './session';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -69,7 +72,15 @@ async function beacon(path: string, body?: unknown): Promise<void> {
   }
 }
 
-export const trackProfileView = (slug: string): Promise<void> => beacon(`/profiles/${slug}/view`);
+export const trackSession = (payload: TrackSession): Promise<void> =>
+  beacon('/analytics/session', payload);
+
+export const trackProfileView = (slug: string): Promise<void> =>
+  beacon(`/profiles/${slug}/view`, { sessionId: getSessionId() });
 
 export const trackContactClick = (slug: string, type: ContactType): Promise<void> =>
-  beacon(`/profiles/${slug}/contacts/click`, { type });
+  beacon(`/profiles/${slug}/contacts/click`, {
+    type,
+    sessionId: getSessionId(),
+    ...interactionSignals(),
+  });

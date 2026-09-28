@@ -33,6 +33,7 @@ import { promoRoutes } from './modules/promo/routes.js';
 import { reportRoutes } from './modules/reports/routes.js';
 import { serviceCatalogRoutes } from './modules/service-catalog/routes.js';
 import { verificationRoutes } from './modules/verification/routes.js';
+import eventBufferPlugin from './plugins/event-buffer.js';
 import presencePlugin from './plugins/presence.js';
 import prismaPlugin from './plugins/prisma.js';
 import redisPlugin from './plugins/redis.js';
@@ -62,6 +63,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(securityPlugin);
   await app.register(prismaPlugin);
   await app.register(redisPlugin);
+  await app.register(eventBufferPlugin);
   await app.register(sessionPlugin);
   await app.register(revalidatePlugin);
   await app.register(presencePlugin);

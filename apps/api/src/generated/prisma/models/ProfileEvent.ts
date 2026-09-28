@@ -32,6 +32,12 @@ export type ProfileEventMinAggregateOutputType = {
   contactType: $Enums.ContactType | null
   userId: string | null
   ipHash: string | null
+  sessionId: string | null
+  city: string | null
+  category: string | null
+  path: string | null
+  isBot: boolean | null
+  botReason: string | null
   createdAt: Date | null
 }
 
@@ -42,6 +48,12 @@ export type ProfileEventMaxAggregateOutputType = {
   contactType: $Enums.ContactType | null
   userId: string | null
   ipHash: string | null
+  sessionId: string | null
+  city: string | null
+  category: string | null
+  path: string | null
+  isBot: boolean | null
+  botReason: string | null
   createdAt: Date | null
 }
 
@@ -52,6 +64,12 @@ export type ProfileEventCountAggregateOutputType = {
   contactType: number
   userId: number
   ipHash: number
+  sessionId: number
+  city: number
+  category: number
+  path: number
+  isBot: number
+  botReason: number
   createdAt: number
   _all: number
 }
@@ -64,6 +82,12 @@ export type ProfileEventMinAggregateInputType = {
   contactType?: true
   userId?: true
   ipHash?: true
+  sessionId?: true
+  city?: true
+  category?: true
+  path?: true
+  isBot?: true
+  botReason?: true
   createdAt?: true
 }
 
@@ -74,6 +98,12 @@ export type ProfileEventMaxAggregateInputType = {
   contactType?: true
   userId?: true
   ipHash?: true
+  sessionId?: true
+  city?: true
+  category?: true
+  path?: true
+  isBot?: true
+  botReason?: true
   createdAt?: true
 }
 
@@ -84,6 +114,12 @@ export type ProfileEventCountAggregateInputType = {
   contactType?: true
   userId?: true
   ipHash?: true
+  sessionId?: true
+  city?: true
+  category?: true
+  path?: true
+  isBot?: true
+  botReason?: true
   createdAt?: true
   _all?: true
 }
@@ -162,11 +198,17 @@ export type ProfileEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type ProfileEventGroupByOutputType = {
   id: string
-  profileId: string
+  profileId: string | null
   kind: $Enums.ProfileEventKind
   contactType: $Enums.ContactType | null
   userId: string | null
   ipHash: string
+  sessionId: string | null
+  city: string | null
+  category: string | null
+  path: string | null
+  isBot: boolean
+  botReason: string | null
   createdAt: Date
   _count: ProfileEventCountAggregateOutputType | null
   _min: ProfileEventMinAggregateOutputType | null
@@ -193,22 +235,34 @@ export type ProfileEventWhereInput = {
   OR?: Prisma.ProfileEventWhereInput[]
   NOT?: Prisma.ProfileEventWhereInput | Prisma.ProfileEventWhereInput[]
   id?: Prisma.StringFilter<"ProfileEvent"> | string
-  profileId?: Prisma.StringFilter<"ProfileEvent"> | string
+  profileId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   kind?: Prisma.EnumProfileEventKindFilter<"ProfileEvent"> | $Enums.ProfileEventKind
   contactType?: Prisma.EnumContactTypeNullableFilter<"ProfileEvent"> | $Enums.ContactType | null
   userId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   ipHash?: Prisma.StringFilter<"ProfileEvent"> | string
+  sessionId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  city?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  category?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  path?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  isBot?: Prisma.BoolFilter<"ProfileEvent"> | boolean
+  botReason?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProfileEvent"> | Date | string
-  profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }
 
 export type ProfileEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  profileId?: Prisma.SortOrder
+  profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   contactType?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   ipHash?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  path?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
 }
@@ -218,22 +272,34 @@ export type ProfileEventWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ProfileEventWhereInput | Prisma.ProfileEventWhereInput[]
   OR?: Prisma.ProfileEventWhereInput[]
   NOT?: Prisma.ProfileEventWhereInput | Prisma.ProfileEventWhereInput[]
-  profileId?: Prisma.StringFilter<"ProfileEvent"> | string
+  profileId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   kind?: Prisma.EnumProfileEventKindFilter<"ProfileEvent"> | $Enums.ProfileEventKind
   contactType?: Prisma.EnumContactTypeNullableFilter<"ProfileEvent"> | $Enums.ContactType | null
   userId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   ipHash?: Prisma.StringFilter<"ProfileEvent"> | string
+  sessionId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  city?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  category?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  path?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  isBot?: Prisma.BoolFilter<"ProfileEvent"> | boolean
+  botReason?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProfileEvent"> | Date | string
-  profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  profile?: Prisma.XOR<Prisma.ProfileNullableScalarRelationFilter, Prisma.ProfileWhereInput> | null
 }, "id">
 
 export type ProfileEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  profileId?: Prisma.SortOrder
+  profileId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   contactType?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   ipHash?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  path?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ProfileEventCountOrderByAggregateInput
   _max?: Prisma.ProfileEventMaxOrderByAggregateInput
@@ -245,11 +311,17 @@ export type ProfileEventScalarWhereWithAggregatesInput = {
   OR?: Prisma.ProfileEventScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ProfileEventScalarWhereWithAggregatesInput | Prisma.ProfileEventScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ProfileEvent"> | string
-  profileId?: Prisma.StringWithAggregatesFilter<"ProfileEvent"> | string
+  profileId?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
   kind?: Prisma.EnumProfileEventKindWithAggregatesFilter<"ProfileEvent"> | $Enums.ProfileEventKind
   contactType?: Prisma.EnumContactTypeNullableWithAggregatesFilter<"ProfileEvent"> | $Enums.ContactType | null
   userId?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
   ipHash?: Prisma.StringWithAggregatesFilter<"ProfileEvent"> | string
+  sessionId?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
+  city?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
+  path?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
+  isBot?: Prisma.BoolWithAggregatesFilter<"ProfileEvent"> | boolean
+  botReason?: Prisma.StringNullableWithAggregatesFilter<"ProfileEvent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProfileEvent"> | Date | string
 }
 
@@ -259,17 +331,29 @@ export type ProfileEventCreateInput = {
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
-  profile: Prisma.ProfileCreateNestedOneWithoutEventsInput
+  profile?: Prisma.ProfileCreateNestedOneWithoutEventsInput
 }
 
 export type ProfileEventUncheckedCreateInput = {
   id?: string
-  profileId: string
+  profileId?: string | null
   kind: $Enums.ProfileEventKind
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
 }
 
@@ -279,27 +363,45 @@ export type ProfileEventUpdateInput = {
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  profile?: Prisma.ProfileUpdateOneRequiredWithoutEventsNestedInput
+  profile?: Prisma.ProfileUpdateOneWithoutEventsNestedInput
 }
 
 export type ProfileEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumProfileEventKindFieldUpdateOperationsInput | $Enums.ProfileEventKind
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProfileEventCreateManyInput = {
   id?: string
-  profileId: string
+  profileId?: string | null
   kind: $Enums.ProfileEventKind
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
 }
 
@@ -309,16 +411,28 @@ export type ProfileEventUpdateManyMutationInput = {
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ProfileEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumProfileEventKindFieldUpdateOperationsInput | $Enums.ProfileEventKind
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -339,6 +453,12 @@ export type ProfileEventCountOrderByAggregateInput = {
   contactType?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   ipHash?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  path?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -349,6 +469,12 @@ export type ProfileEventMaxOrderByAggregateInput = {
   contactType?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   ipHash?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  path?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -359,6 +485,12 @@ export type ProfileEventMinOrderByAggregateInput = {
   contactType?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   ipHash?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  path?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -418,6 +550,12 @@ export type ProfileEventCreateWithoutProfileInput = {
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
 }
 
@@ -427,6 +565,12 @@ export type ProfileEventUncheckedCreateWithoutProfileInput = {
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
 }
 
@@ -461,11 +605,17 @@ export type ProfileEventScalarWhereInput = {
   OR?: Prisma.ProfileEventScalarWhereInput[]
   NOT?: Prisma.ProfileEventScalarWhereInput | Prisma.ProfileEventScalarWhereInput[]
   id?: Prisma.StringFilter<"ProfileEvent"> | string
-  profileId?: Prisma.StringFilter<"ProfileEvent"> | string
+  profileId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   kind?: Prisma.EnumProfileEventKindFilter<"ProfileEvent"> | $Enums.ProfileEventKind
   contactType?: Prisma.EnumContactTypeNullableFilter<"ProfileEvent"> | $Enums.ContactType | null
   userId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   ipHash?: Prisma.StringFilter<"ProfileEvent"> | string
+  sessionId?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  city?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  category?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  path?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
+  isBot?: Prisma.BoolFilter<"ProfileEvent"> | boolean
+  botReason?: Prisma.StringNullableFilter<"ProfileEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ProfileEvent"> | Date | string
 }
 
@@ -475,6 +625,12 @@ export type ProfileEventCreateManyProfileInput = {
   contactType?: $Enums.ContactType | null
   userId?: string | null
   ipHash: string
+  sessionId?: string | null
+  city?: string | null
+  category?: string | null
+  path?: string | null
+  isBot?: boolean
+  botReason?: string | null
   createdAt?: Date | string
 }
 
@@ -484,6 +640,12 @@ export type ProfileEventUpdateWithoutProfileInput = {
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -493,6 +655,12 @@ export type ProfileEventUncheckedUpdateWithoutProfileInput = {
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -502,6 +670,12 @@ export type ProfileEventUncheckedUpdateManyWithoutProfileInput = {
   contactType?: Prisma.NullableEnumContactTypeFieldUpdateOperationsInput | $Enums.ContactType | null
   userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipHash?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -514,8 +688,14 @@ export type ProfileEventSelect<ExtArgs extends runtime.Types.Extensions.Internal
   contactType?: boolean
   userId?: boolean
   ipHash?: boolean
+  sessionId?: boolean
+  city?: boolean
+  category?: boolean
+  path?: boolean
+  isBot?: boolean
+  botReason?: boolean
   createdAt?: boolean
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }, ExtArgs["result"]["profileEvent"]>
 
 export type ProfileEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -525,8 +705,14 @@ export type ProfileEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   contactType?: boolean
   userId?: boolean
   ipHash?: boolean
+  sessionId?: boolean
+  city?: boolean
+  category?: boolean
+  path?: boolean
+  isBot?: boolean
+  botReason?: boolean
   createdAt?: boolean
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }, ExtArgs["result"]["profileEvent"]>
 
 export type ProfileEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -536,8 +722,14 @@ export type ProfileEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   contactType?: boolean
   userId?: boolean
   ipHash?: boolean
+  sessionId?: boolean
+  city?: boolean
+  category?: boolean
+  path?: boolean
+  isBot?: boolean
+  botReason?: boolean
   createdAt?: boolean
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }, ExtArgs["result"]["profileEvent"]>
 
 export type ProfileEventSelectScalar = {
@@ -547,28 +739,39 @@ export type ProfileEventSelectScalar = {
   contactType?: boolean
   userId?: boolean
   ipHash?: boolean
+  sessionId?: boolean
+  city?: boolean
+  category?: boolean
+  path?: boolean
+  isBot?: boolean
+  botReason?: boolean
   createdAt?: boolean
 }
 
-export type ProfileEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "profileId" | "kind" | "contactType" | "userId" | "ipHash" | "createdAt", ExtArgs["result"]["profileEvent"]>
+export type ProfileEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "profileId" | "kind" | "contactType" | "userId" | "ipHash" | "sessionId" | "city" | "category" | "path" | "isBot" | "botReason" | "createdAt", ExtArgs["result"]["profileEvent"]>
 export type ProfileEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }
 export type ProfileEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }
 export type ProfileEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  profile?: boolean | Prisma.ProfileEvent$profileArgs<ExtArgs>
 }
 
 export type $ProfileEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ProfileEvent"
   objects: {
-    profile: Prisma.$ProfilePayload<ExtArgs>
+    profile: Prisma.$ProfilePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    profileId: string
+    /**
+     * Пусто у `page_view` и части `search_filter`: эти события бывают на
+     * страницах без анкеты (город, категория, главная). У `gallery_open`
+     * заполнен всегда — открывать нечего без анкеты.
+     */
+    profileId: string | null
     kind: $Enums.ProfileEventKind
     /**
      * Только у `contact_click`: по какому именно каналу ушли. У раскрытия
@@ -585,6 +788,30 @@ export type $ProfileEventPayload<ExtArgs extends runtime.Types.Extensions.Intern
      * Соль плюс хэш, не сырой адрес — журнал не должен сам стать базой ПД.
      */
     ipHash: string
+    /**
+     * Сессия браузера, к которой относится событие. Пусто у событий, чей
+     * маяк пока не передаёт её (раскрытие, избранное), и у записей до её появления.
+     */
+    sessionId: string | null
+    /**
+     * Город (`City.slug`) и категория (`Profile.kind`) анкеты на момент события:
+     * спрос по городам считается по журналу, без соединения с анкетами.
+     */
+    city: string | null
+    category: string | null
+    /**
+     * Путь страницы без строки запроса. Заполнен только у батчевых событий
+     * (`page_view`, `gallery_open`, `search_filter`) — у остальных страница
+     * и так известна по `profileId`.
+     */
+    path: string | null
+    /**
+     * Бот, помеченный, а не удалённый (фаза 3): роллап и кабинет читают
+     * только `isBot = false`, а `botReason` остаётся для разбора, по какому
+     * именно правилу сработало.
+     */
+    isBot: boolean
+    botReason: string | null
     createdAt: Date
   }, ExtArgs["result"]["profileEvent"]>
   composites: {}
@@ -980,7 +1207,7 @@ readonly fields: ProfileEventFieldRefs;
  */
 export interface Prisma__ProfileEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  profile<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  profile<T extends Prisma.ProfileEvent$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileEvent$profileArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1016,6 +1243,12 @@ export interface ProfileEventFieldRefs {
   readonly contactType: Prisma.FieldRef<"ProfileEvent", 'ContactType'>
   readonly userId: Prisma.FieldRef<"ProfileEvent", 'String'>
   readonly ipHash: Prisma.FieldRef<"ProfileEvent", 'String'>
+  readonly sessionId: Prisma.FieldRef<"ProfileEvent", 'String'>
+  readonly city: Prisma.FieldRef<"ProfileEvent", 'String'>
+  readonly category: Prisma.FieldRef<"ProfileEvent", 'String'>
+  readonly path: Prisma.FieldRef<"ProfileEvent", 'String'>
+  readonly isBot: Prisma.FieldRef<"ProfileEvent", 'Boolean'>
+  readonly botReason: Prisma.FieldRef<"ProfileEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"ProfileEvent", 'DateTime'>
 }
     
@@ -1415,6 +1648,25 @@ export type ProfileEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many ProfileEvents to delete.
    */
   limit?: number
+}
+
+/**
+ * ProfileEvent.profile
+ */
+export type ProfileEvent$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Profile
+   */
+  select?: Prisma.ProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Profile
+   */
+  omit?: Prisma.ProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProfileInclude<ExtArgs> | null
+  where?: Prisma.ProfileWhereInput
 }
 
 /**

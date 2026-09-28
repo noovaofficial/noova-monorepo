@@ -78,7 +78,7 @@ export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // узнать, что такая анкета вообще существует.
       const profile = await fastify.prisma.profile.findFirst({
         where: { id: request.params.profileId, status: 'published' },
-        select: { id: true },
+        select: { id: true, kind: true, city: { select: { slug: true } } },
       });
       if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
 
@@ -99,6 +99,8 @@ export const favoriteRoutes: FastifyPluginAsyncZod = async (fastify) => {
         await recordProfileEvent(fastify, request, {
           kind: 'favorite',
           profileId: profile.id,
+          city: profile.city.slug,
+          category: profile.kind,
         });
       }
 

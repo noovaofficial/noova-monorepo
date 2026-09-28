@@ -3,7 +3,8 @@
 import type { Photo } from '@noova/shared';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { track } from '@/modules/analytics/tracker';
 import { placeholderGradient } from '@/shared/format';
 import styles from '../Gallery.module.css';
 import { Lightbox } from '../Lightbox';
@@ -13,6 +14,10 @@ type Props = {
   alt: string;
   /** Сид для градиента-заглушки, когда фото ещё нет. */
   seed: string;
+  /** Слаг анкеты — только для события `gallery_open` (фаза 1): чью галерею
+   *  открыли. Необязателен, чтобы модерация и другие потребители галереи
+   *  без анкеты не были обязаны его придумывать. */
+  profileSlug?: string;
 };
 
 const ChevronLeft = () => (
@@ -27,13 +32,25 @@ const ChevronRight = () => (
   </svg>
 );
 
-export function Gallery({ photos, alt, seed }: Props) {
+export function Gallery({ photos, alt, seed, profileSlug }: Props) {
   const t = useTranslations('profile');
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const closeZoom = useCallback(() => setZoomed(false), []);
   const active = photos[activeIndex];
   const hasMany = photos.length > 1;
+
+  // Одно событие на посещение страницы, а не на каждое открытие: значение
+  // имеет сам факт «дошёл до фото крупным планом», а не сколько раз потом
+  // щёлкал по стрелкам внутри уже открытого лайтбокса.
+  const galleryOpenSent = useRef(false);
+  const openZoom = useCallback(() => {
+    setZoomed(true);
+    if (profileSlug && !galleryOpenSent.current) {
+      galleryOpenSent.current = true;
+      track({ name: 'gallery_open', profileSlug, path: window.location.pathname });
+    }
+  }, [profileSlug]);
 
   // По кругу, а не с упором в край: на последнем снимке стрелка «вперёд»
   // не должна выглядеть сломанной.
@@ -90,7 +107,7 @@ export function Gallery({ photos, alt, seed }: Props) {
           <button
             type="button"
             className={styles.mainButton}
-            onClick={() => setZoomed(true)}
+            onClick={openZoom}
             aria-label={t('photoOpen')}
           />
         ) : null}

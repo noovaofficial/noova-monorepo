@@ -15,7 +15,16 @@ import styles from './TopCard.module.css';
  * покупка не предлагается (D-11) — недели не складываются.
  * Сумма списания и остаток показываются до нажатия, как везде в биллинге.
  */
-export function TopCard({ profileId, published }: { profileId: string; published: boolean }) {
+export function TopCard({
+  profileId,
+  citySlug,
+  published,
+}: {
+  profileId: string;
+  /** Город анкеты: цена и число мест ТОПа у каждого города свои. */
+  citySlug: string;
+  published: boolean;
+}) {
   const t = useTranslations('billing');
   const format = useFormatter();
   const queryClient = useQueryClient();
@@ -42,15 +51,17 @@ export function TopCard({ profileId, published }: { profileId: string; published
     },
   });
 
-  if (!top.data) return null;
+  // Условия города анкеты; нет их в ответе — карточка не показывается.
+  const cityTop = top.data?.cities.find((item) => item.citySlug === citySlug);
+  if (!top.data || !cityTop) return null;
 
   const placement = top.data.placements.find((item) => item.profileId === profileId) ?? null;
-  const price = top.data.priceGc;
+  const price = cityTop.priceGc;
   const balance = wallet.data?.balanceGc;
   const date = (iso: string) => format.dateTime(new Date(iso), { dateStyle: 'long' });
   // Активное место — покупка недоступна (D-11). Купить снова можно, когда
   // неделя выйдет: тогда `placements` его уже не вернёт.
-  const canBuy = published && placement === null && top.data.freeSlots > 0;
+  const canBuy = published && placement === null && cityTop.freeSlots > 0;
 
   const errorKey =
     buy.error instanceof BillingError
@@ -72,17 +83,17 @@ export function TopCard({ profileId, published }: { profileId: string; published
       ) : null}
 
       <p className={styles.text}>
-        {t('topText', { shown: top.data.slots, price })}{' '}
+        {t('topText', { city: cityTop.cityName, shown: cityTop.slots, price })}{' '}
         {placement
           ? t('topActiveHint')
-          : t('topFree', { free: top.data.freeSlots, slots: top.data.slots })}
+          : t('topFree', { free: cityTop.freeSlots, slots: cityTop.slots })}
       </p>
 
       {doneUntil ? <p className={styles.ok}>{t('topDone', { date: date(doneUntil) })}</p> : null}
       {errorKey ? <p className={styles.err}>{t(errorKey)}</p> : null}
 
       {!published ? <p className={styles.hint}>{t('topNotPublished')}</p> : null}
-      {published && !placement && top.data.freeSlots === 0 ? (
+      {published && !placement && cityTop.freeSlots === 0 ? (
         <p className={styles.hint}>{t('topFull')}</p>
       ) : null}
 

@@ -9,8 +9,12 @@ import { THEME_INIT_SCRIPT } from '@/design-system/theme';
 import { AgeGate } from '@/layout/AgeGate';
 import { AppShell } from '@/layout/AppShell';
 import { AGE_GATE_INIT_SCRIPT } from '@/layout/age-gate';
+import { CookieBanner } from '@/layout/CookieBanner';
+import { CONSENT_INIT_SCRIPT } from '@/layout/cookie-consent';
 import { Footer } from '@/layout/Footer';
 import { Header } from '@/layout/Header';
+import { PageViewTracker } from '@/modules/analytics/components/PageViewTracker';
+import { SessionTracker } from '@/modules/analytics/components/SessionTracker';
 import { SessionProvider } from '@/modules/auth/components/SessionProvider';
 import { SESSION_HINT_SCRIPT } from '@/modules/auth/session-hint';
 import { FavoritesProvider } from '@/modules/favorites/components/FavoritesProvider';
@@ -111,7 +115,7 @@ export default async function LocaleLayout({
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: константный инлайн-скрипт темы, пользовательских данных нет
           dangerouslySetInnerHTML={{
-            __html: `${THEME_INIT_SCRIPT}${AGE_GATE_INIT_SCRIPT}${SESSION_HINT_SCRIPT}`,
+            __html: `${THEME_INIT_SCRIPT}${AGE_GATE_INIT_SCRIPT}${SESSION_HINT_SCRIPT}${CONSENT_INIT_SCRIPT}`,
           }}
         />
       </head>
@@ -132,6 +136,9 @@ export default async function LocaleLayout({
                     {children}
                   </AppShell>
                   <AgeGate />
+                  <CookieBanner />
+                  <SessionTracker />
+                  <PageViewTracker />
                 </FavoritesProvider>
               </SessionProvider>
             </QueryProvider>

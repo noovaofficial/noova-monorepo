@@ -22,8 +22,11 @@ import {
   billingOperationsSchema,
   buyAgencyTopResultSchema,
   buyTopResultSchema,
+  type CityTopInput,
+  type CityTopList,
   type CreateTopupInput,
   type CreateTopupResult,
+  cityTopListSchema,
   createTopupResultSchema,
   currentListingSchema,
   type Listing,
@@ -145,8 +148,18 @@ export async function downloadTransactionsCsv(from: string, to: string): Promise
   return response.blob();
 }
 
-/** ТОП: цена, места и свои анкеты в нём. */
+/** ТОП: цена и места по городам, где есть анкеты, и свои анкеты в нём. */
 export const fetchTopState = (): Promise<TopState> => call('/billing/top', topStateSchema);
+
+/** Админ: цена и число мест ТОПа по городам. */
+export const fetchCityTop = (): Promise<CityTopList> => call('/admin/city-top', cityTopListSchema);
+
+/** Админ: свои условия города; оба поля пустые — вернуть значения по умолчанию. */
+export const saveCityTop = (cityId: string, input: CityTopInput): Promise<CityTopList> =>
+  call(`/admin/city-top/${encodeURIComponent(cityId)}`, cityTopListSchema, {
+    method: 'PUT',
+    body: JSON.stringify(input),
+  });
 
 /** Неделя в ТОПе для анкеты — покупка или продление. */
 export const buyTop = (profileId: string): Promise<BuyTopResult> =>

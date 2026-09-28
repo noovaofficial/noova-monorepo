@@ -2,6 +2,8 @@ import {
   ANALYTICS_PERIOD_DAYS,
   adminAdvertiserAnalyticsSchema,
   analyticsPeriodSchema,
+  cityTopInputSchema,
+  cityTopListSchema,
   createStaffSchema,
   grantTopInputSchema,
   grantTopResultSchema,
@@ -25,7 +27,13 @@ import { loadOverview } from '../analytics/overview.js';
 import { loadAnalytics } from '../analytics/query.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
-import { grantTop, TopFullError, TopNotPublishedError } from '../billing/top.js';
+import {
+  grantTop,
+  listCityTop,
+  setCityTop,
+  TopFullError,
+  TopNotPublishedError,
+} from '../billing/top.js';
 import { toTransaction } from '../billing/wallet.js';
 import { publicUrl } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
@@ -442,6 +450,43 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => loadOverview(fastify.prisma, request.query),
   );
 
+  /**
+   * ТОП по городам: цена и число мест у каждого города свои (по умолчанию —
+   * общие из настроек монетизации). Только админ — это деньги проекта.
+   */
+  fastify.get(
+    '/admin/city-top',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: { tags: ['admin'], response: { 200: cityTopListSchema } },
+    },
+    async () => {
+      const config = await loadBillingConfig(fastify.prisma);
+      return listCityTop(fastify.prisma, config.top);
+    },
+  );
+
+  fastify.put(
+    '/admin/city-top/:cityId',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: z.object({ cityId: z.string().min(1) }),
+        body: cityTopInputSchema,
+        response: { 200: cityTopListSchema },
+      },
+    },
+    async (request) => {
+      const found = await setCityTop(fastify.prisma, request.params.cityId, request.body);
+      if (!found) throw fastify.httpErrors.notFound('Город не найден');
+      const config = await loadBillingConfig(fastify.prisma);
+      return listCityTop(fastify.prisma, config.top);
+    },
+  );
+
   fastify.post(
     '/admin/staff',
     {
@@ -662,7 +707,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       try {
         const result = await grantTop(fastify.prisma, {
           profileId: request.params.id,
-          slots: config.top.slots,
+          defaults: config.top,
           durationDays: request.body.days,
         });
 
