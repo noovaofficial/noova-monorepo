@@ -71,14 +71,27 @@ export function normalizeHost(value: string | null | undefined): string | null {
   return host && /^[a-z0-9.-]+$/.test(host) ? host.slice(0, 253) : null;
 }
 
-/** Хост из полного URL (`document.referrer`); нечитаемое даёт null. */
+/**
+ * Хост из полного URL (`document.referrer`); нечитаемое даёт null.
+ *
+ * Без глобального `URL`: этот пакет собирается и типизируется отдельно от
+ * `apps/web` (DOM) и `apps/api` (Node) — `tsconfig.json` здесь не знает ни
+ * про тот, ни про другой лексикон глобалов, и `new URL(...)` не пройдёт
+ * `tsc --noEmit` в изолированной сборке (`pnpm -r typecheck`), хотя молча
+ * проходил в обоих приложениях, у которых глобал есть. Для хоста реферера
+ * полноценный парсер не нужен — только то, что лежит между `//` и первым
+ * `/`, `?`, `#` или `@`.
+ */
 export function hostFromUrl(url: string | null | undefined): string | null {
-  if (!url) return null;
-  try {
-    return normalizeHost(new URL(url).hostname);
-  } catch {
-    return null;
-  }
+  const match = /^[a-z][a-z0-9+.-]*:\/\/([^/?#]*)/i.exec(url?.trim() ?? '');
+  const authority = match?.[1];
+  if (!authority) return null;
+  // Отбрасываем userinfo (`user:pass@`) и порт — `normalizeHost` дальше
+  // всё равно отвергнет то, что не похоже на голый хост (в т. ч. IPv6
+  // в скобках: `[::1]` не проходит её regex, и это осознанно — реферер
+  // с IPv6-литералом статистике ничем не полезен).
+  const host = authority.split('@').pop()?.split(':')[0];
+  return normalizeHost(host);
 }
 
 export function isSearchEngineHost(host: string): boolean {
