@@ -1,4 +1,4 @@
-import { isEditedSinceRejection, type OwnPhoto, type OwnProfile } from '@noova/shared';
+import type { OwnPhoto, OwnProfile } from '@noova/shared';
 import { toMoney } from '../../mappers.js';
 
 type OwnProfileRow = {
@@ -29,6 +29,7 @@ type OwnProfileRow = {
   hasManualLocation: boolean;
   fromPriceCents: number | null;
   moderationNote: string | null;
+  needsEditBeforeResubmit: boolean;
   publishedAt: Date | null;
   updatedAt: Date;
   prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
@@ -52,7 +53,7 @@ type OwnProfileRow = {
     isApproved: boolean;
     rejectedReason: string | null;
   }[];
-  verification: { status: OwnProfile['verificationStatus']; reviewedAt: Date | null } | null;
+  verification: { status: OwnProfile['verificationStatus'] } | null;
 };
 
 /**
@@ -113,10 +114,7 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     moderationNote: row.moderationNote,
     publishedAt: row.publishedAt?.toISOString() ?? null,
     updatedAt: row.updatedAt.toISOString(),
-    editedSinceRejection: isEditedSinceRejection(
-      row.updatedAt,
-      row.verification?.reviewedAt ?? null,
-    ),
+    editedSinceRejection: !row.needsEditBeforeResubmit,
   };
 }
 
@@ -146,6 +144,7 @@ export const ownProfileSelect = {
   hasManualLocation: true,
   fromPriceCents: true,
   moderationNote: true,
+  needsEditBeforeResubmit: true,
   publishedAt: true,
   updatedAt: true,
   city: { select: { slug: true, name: true } },
@@ -186,5 +185,5 @@ export const ownProfileSelect = {
       rejectedReason: true,
     },
   },
-  verification: { select: { status: true, reviewedAt: true } },
+  verification: { select: { status: true } },
 } as const;

@@ -912,9 +912,15 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           },
         }),
         // Анкета возвращается владельцу на доработку с видимой причиной.
+        // needsEditBeforeResubmit: true — отправить на проверку снова можно
+        // только после правки (см. Profile.needsEditBeforeResubmit в схеме).
         fastify.prisma.profile.update({
           where: { id: item.profileId },
-          data: { status: 'rejected', moderationNote: request.body.reason },
+          data: {
+            status: 'rejected',
+            moderationNote: request.body.reason,
+            needsEditBeforeResubmit: true,
+          },
         }),
       ]);
 

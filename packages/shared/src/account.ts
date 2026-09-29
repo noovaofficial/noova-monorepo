@@ -251,25 +251,17 @@ export function missingForReview(p: ProfileCompleteness): MissingField[] {
 }
 
 /**
- * Правили ли анкету после того, как её отклонил модератор — от этого зависит,
- * можно ли отправить её на проверку повторно без правок (нельзя, см.
- * `isReadyToSubmit`): кнопка «на проверку» не должна отправлять туда же то же
- * самое, за что уже отказали. Нет отметки об отказе (`rejectedAt` = null,
- * анкету ещё не отклоняли) — не блокируем: это не тот случай.
- */
-export function isEditedSinceRejection(
-  updatedAt: string | Date,
-  rejectedAt: string | Date | null,
-): boolean {
-  if (rejectedAt === null) return true;
-  return new Date(updatedAt).getTime() > new Date(rejectedAt).getTime();
-}
-
-/**
  * Можно ли отправить анкету на проверку (в том числе массово): статус
  * «черновик» или «отклонена», проверка ещё не пройдена, анкета заполнена, а
- * если её уже отклоняли — правки внесены уже после отказа (`isEditedSinceRejection`).
+ * если её уже отклоняли — правили ли её после отказа (`editedSinceRejection`).
  * Заблокированные сюда не входят — их повторная отправка идёт вручную.
+ *
+ * `editedSinceRejection` намеренно передаётся готовым булевым значением, а не
+ * выводится здесь из дат: у отказа `Profile.updatedAt` и `VerificationCase.
+ * reviewedAt` бьются одной и той же операцией (см. `Profile.
+ * needsEditBeforeResubmit` в схеме БД), и порядок простановки этих меток не
+ * гарантирован — сравнивать их на равенство ненадёжно. Источник этого
+ * булева — колонка `needsEditBeforeResubmit`, снимается явной правкой анкеты.
  */
 export function isReadyToSubmit(
   p: ProfileCompleteness & {

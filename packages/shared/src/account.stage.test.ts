@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  isEditedSinceRejection,
   isProfileComplete,
   isReadyToSubmit,
   profileStage,
@@ -67,21 +66,6 @@ describe('можно ли отправить на проверку', () => {
 
   it('у черновика (никогда не отклоняли) правки после отказа роли не играют', () => {
     expect(ready('draft', 'none', { editedSinceRejection: false })).toBe(true);
-  });
-});
-
-describe('правили ли анкету после отказа', () => {
-  it('нет отметки об отказе — не блокируем', () => {
-    expect(isEditedSinceRejection('2026-01-02T00:00:00Z', null)).toBe(true);
-  });
-
-  it('анкету сохранили после отказа — можно отправлять снова', () => {
-    expect(isEditedSinceRejection('2026-01-02T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(true);
-  });
-
-  it('анкету не трогали с момента отказа — нельзя', () => {
-    expect(isEditedSinceRejection('2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(false);
-    expect(isEditedSinceRejection('2025-12-31T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(false);
   });
 });
 

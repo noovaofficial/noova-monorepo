@@ -25,15 +25,21 @@ async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profi
 }
 
 /**
- * Фото не меняют саму строку `Profile`, поэтому её `updatedAt` без этого не
- * сдвигается от правки снимков — а именно по нему решается, можно ли снова
- * отправить отклонённую анкету на проверку без изменений в тексте формы
- * (`isEditedSinceRejection` в account/routes.ts). Трогаем только когда это
- * имеет значение: остальным статусам лишняя запись не нужна.
+ * Фото не проходят через основную форму анкеты, поэтому без этого правка
+ * снимков не снимала бы `Profile.needsEditBeforeResubmit` — отклонённую за
+ * плохое фото анкету нечем было бы отправить на проверку снова даже после
+ * замены фото. Трогаем только когда это имеет значение: остальным статусам
+ * лишняя запись не нужна.
  */
-async function touchIfRejected(fastify: FastifyInstance, profile: { id: string; status: string }) {
+async function clearNeedsEditIfRejected(
+  fastify: FastifyInstance,
+  profile: { id: string; status: string },
+) {
   if (profile.status !== 'rejected') return;
-  await fastify.prisma.profile.update({ where: { id: profile.id }, data: {} });
+  await fastify.prisma.profile.update({
+    where: { id: profile.id },
+    data: { needsEditBeforeResubmit: false },
+  });
 }
 
 type PhotoRow = {
@@ -207,7 +213,7 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
 
-      await touchIfRejected(fastify, owned);
+      await clearNeedsEditIfRejected(fastify, owned);
 
       // Новое фото ещё не одобрено и публично не видно, но обложка кабинета
       // и порядок уже изменились — кэш всё равно стоит сбросить.
@@ -255,7 +261,7 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         );
       }
 
-      await touchIfRejected(fastify, owned);
+      await clearNeedsEditIfRejected(fastify, owned);
 
       fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
       return { ok: true as const };
@@ -309,7 +315,7 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
 
-      await touchIfRejected(fastify, owned);
+      await clearNeedsEditIfRejected(fastify, owned);
 
       fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
       return Promise.all(rows.map(toOwnPhoto));

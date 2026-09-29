@@ -58,6 +58,9 @@ export function ProfileList() {
   const [bulkNotice, setBulkNotice] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
   // Пустая строка — «город ещё не выбран»: до загрузки справочника берём первый.
   const [citySlug, setCitySlug] = useState('');
+  // Фильтр списка по стадии — тот же набор, что и разбивка в сводке справа:
+  // клик по строке сводки сужает сетку карточек до этой стадии.
+  const [stageFilter, setStageFilter] = useState<ProfileStage | null>(null);
 
   const enabled = sessionStatus === 'authenticated';
   const isAgency = user?.advertiserKind === 'agency';
@@ -279,7 +282,14 @@ export function ProfileList() {
   const selectedCitySlug = citySlug || cities[0]?.slug || '';
   const selectedCity = cities.find((city) => city.slug === selectedCitySlug);
 
-  const profileCards = profiles?.map((profile) => {
+  // Фильтр по стадии сужает сетку карточек, но не сводку справа — иначе
+  // счётчики стадий менялись бы под собственным фильтром и не с чем было бы
+  // сравнить, сколько анкет в остальных стадиях.
+  const visibleProfiles = stageFilter
+    ? profiles?.filter((p) => stageOf(p) === stageFilter)
+    : profiles;
+
+  const profileCards = visibleProfiles?.map((profile) => {
     const cover = profile.photos[0];
     return (
       <div key={profile.id} className={styles.profileCard}>
@@ -430,7 +440,30 @@ export function ProfileList() {
         </div>
       ) : isAgency ? (
         <div className={styles.layout}>
-          <div className={styles.profileGrid}>{profileCards}</div>
+          <div>
+            {stageFilter ? (
+              <div className={styles.filterBar}>
+                <span>
+                  {t('filterShowing', {
+                    stage: t(KEY_BY_STAGE[stageFilter]),
+                    count: visibleProfiles?.length ?? 0,
+                  })}
+                </span>
+                <button
+                  type="button"
+                  className={styles.filterClear}
+                  onClick={() => setStageFilter(null)}
+                >
+                  {t('filterClear')}
+                </button>
+              </div>
+            ) : null}
+            {stageFilter && visibleProfiles?.length === 0 ? (
+              <p className={styles.empty}>{t('filterEmpty')}</p>
+            ) : (
+              <div className={styles.profileGrid}>{profileCards}</div>
+            )}
+          </div>
 
           <aside className={styles.sidebar}>
             <div className={styles.sidebarCard}>
@@ -452,10 +485,17 @@ export function ProfileList() {
                 </div>
               ) : null}
               {STAGE_ORDER.map((stage) => (
-                <div className={styles.statRow} key={stage}>
+                <button
+                  type="button"
+                  key={stage}
+                  className={`${styles.statRowFilter} ${
+                    stageFilter === stage ? styles.statRowFilterActive : ''
+                  }`}
+                  onClick={() => setStageFilter((current) => (current === stage ? null : stage))}
+                >
                   <span>{t(KEY_BY_STAGE[stage])}</span>
                   <span className={styles.statValue}>{stageCounts.get(stage) ?? 0}</span>
-                </div>
+                </button>
               ))}
             </div>
 

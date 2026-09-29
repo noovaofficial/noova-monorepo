@@ -515,6 +515,27 @@
   white-space: nowrap;
 }
 
+/* Активный фильтр по стадии (клик по строке сводки) — над сеткой карточек,
+   чтобы было видно, что список сейчас сужен, и как это снять. */
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin-bottom: var(--space3);
+}
+
+.filterClear {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 /* Список анкет агентства: компактные карточки с превью в сетке, рядом —
    липкая панель со сводкой и массовыми действиями (`.sidebar`). */
 .profileGrid {
@@ -586,6 +607,38 @@
   justify-content: space-between;
   gap: var(--space3);
   font-size: var(--textSm);
+}
+
+/* Строка сводки как фильтр списка (ProfileList): та же строка, но кликабельная
+   кнопка на всю ширину — сохраняет вид `.statRow`, только курсор и наведение
+   выдают, что это переключатель. */
+.statRowFilter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 2px var(--space1);
+  margin: 0 calc(var(--space1) * -1);
+  border-radius: var(--radiusSm);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.statRowFilter:hover {
+  background: var(--surfaceMuted);
+}
+
+.statRowFilterActive {
+  background: var(--primarySubtle);
+}
+
+.statRowFilterActive:hover {
+  background: var(--primarySubtle);
 }
 
 .statValue {

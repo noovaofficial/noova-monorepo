@@ -4163,6 +4163,7 @@ export const ProfileScalarFieldEnum = {
   appearanceType: 'appearanceType',
   smoker: 'smoker',
   moderationNote: 'moderationNote',
+  needsEditBeforeResubmit: 'needsEditBeforeResubmit',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

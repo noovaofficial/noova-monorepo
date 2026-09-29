@@ -7,7 +7,6 @@ import {
   createProfileSchema,
   deleteAccountSchema,
   effectiveProfileLimit,
-  isEditedSinceRejection,
   isProfileComplete,
   isReadyToSubmit,
   LISTING_KIND_BY_ADVERTISER,
@@ -100,7 +99,7 @@ import { buildUniqueSlug } from './slug.js';
 async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profileId: string) {
   const profile = await fastify.prisma.profile.findFirst({
     where: { id: profileId, ownerId: userId },
-    select: { id: true, status: true, slug: true, updatedAt: true },
+    select: { id: true, status: true, slug: true, needsEditBeforeResubmit: true },
   });
   if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
   return profile;
@@ -669,6 +668,11 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         return tx.profile.update({
           where: { id: request.params.id },
           data: {
+            // Сохранение формы снимает запрет на повторную отправку после
+            // отказа (см. Profile.needsEditBeforeResubmit) — независимо от
+            // того, поменялось ли поле, само действие «сохранить» и есть
+            // тот самый акт правки, за которым сюда приходят.
+            needsEditBeforeResubmit: false,
             ...(body.displayName !== undefined ? { displayName: body.displayName } : {}),
             ...(body.description !== undefined ? { description: body.description } : {}),
             ...(cityId !== undefined ? { cityId } : {}),
@@ -737,7 +741,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const verification = await fastify.prisma.verificationCase.findUnique({
         where: { profileId: owned.id },
-        select: { status: true, reviewedAt: true },
+        select: { status: true },
       });
 
       /**
@@ -755,12 +759,9 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       // Отклонённую анкету нельзя отправить туда же без правок: кнопка не
       // должна позволять просто попытать счастья ещё раз с тем же, за что уже
-      // отказали. `updatedAt` трогает и сохранение формы, и правка фото
-      // (см. photos/routes.ts) — ровно то, что должно снять этот запрет.
-      if (
-        owned.status === 'rejected' &&
-        !isEditedSinceRejection(owned.updatedAt, verification?.reviewedAt ?? null)
-      ) {
+      // отказали. Флаг снимает сохранение формы или правка фото (см.
+      // photos/routes.ts) — ровно то, что должно снять этот запрет.
+      if (owned.status === 'rejected' && owned.needsEditBeforeResubmit) {
         throw fastify.httpErrors.conflict(
           'Анкету нужно изменить и сохранить перед повторной отправкой на проверку',
         );
@@ -862,8 +863,8 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           status: true,
           kind: true,
           age: true,
-          updatedAt: true,
-          verification: { select: { status: true, reviewedAt: true } },
+          needsEditBeforeResubmit: true,
+          verification: { select: { status: true } },
           _count: { select: { photos: true, prices: true, contacts: true } },
         },
       });
@@ -876,10 +877,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           photosCount: p._count.photos,
           pricesCount: p._count.prices,
           contactsCount: p._count.contacts,
-          editedSinceRejection: isEditedSinceRejection(
-            p.updatedAt,
-            p.verification?.reviewedAt ?? null,
-          ),
+          editedSinceRejection: !p.needsEditBeforeResubmit,
         }),
       );
 

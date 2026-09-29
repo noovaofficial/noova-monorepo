@@ -86,6 +86,7 @@ export type ProfileMinAggregateOutputType = {
   appearanceType: $Enums.AppearanceType | null
   smoker: boolean | null
   moderationNote: string | null
+  needsEditBeforeResubmit: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -130,6 +131,7 @@ export type ProfileMaxAggregateOutputType = {
   appearanceType: $Enums.AppearanceType | null
   smoker: boolean | null
   moderationNote: string | null
+  needsEditBeforeResubmit: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -177,6 +179,7 @@ export type ProfileCountAggregateOutputType = {
   appearanceType: number
   smoker: number
   moderationNote: number
+  needsEditBeforeResubmit: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -243,6 +246,7 @@ export type ProfileMinAggregateInputType = {
   appearanceType?: true
   smoker?: true
   moderationNote?: true
+  needsEditBeforeResubmit?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -287,6 +291,7 @@ export type ProfileMaxAggregateInputType = {
   appearanceType?: true
   smoker?: true
   moderationNote?: true
+  needsEditBeforeResubmit?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -334,6 +339,7 @@ export type ProfileCountAggregateInputType = {
   appearanceType?: true
   smoker?: true
   moderationNote?: true
+  needsEditBeforeResubmit?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -468,6 +474,7 @@ export type ProfileGroupByOutputType = {
   appearanceType: $Enums.AppearanceType | null
   smoker: boolean | null
   moderationNote: string | null
+  needsEditBeforeResubmit: boolean
   createdAt: Date
   updatedAt: Date
   _count: ProfileCountAggregateOutputType | null
@@ -538,6 +545,7 @@ export type ProfileWhereInput = {
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFilter<"Profile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
@@ -604,6 +612,7 @@ export type ProfileOrderByWithRelationInput = {
   appearanceType?: Prisma.SortOrderInput | Prisma.SortOrder
   smoker?: Prisma.SortOrderInput | Prisma.SortOrder
   moderationNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  needsEditBeforeResubmit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
@@ -673,6 +682,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFilter<"Profile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
@@ -739,6 +749,7 @@ export type ProfileOrderByWithAggregationInput = {
   appearanceType?: Prisma.SortOrderInput | Prisma.SortOrder
   smoker?: Prisma.SortOrderInput | Prisma.SortOrder
   moderationNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  needsEditBeforeResubmit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProfileCountOrderByAggregateInput
@@ -794,6 +805,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   appearanceType?: Prisma.EnumAppearanceTypeNullableWithAggregatesFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableWithAggregatesFilter<"Profile"> | boolean | null
   moderationNote?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  needsEditBeforeResubmit?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
 }
@@ -836,6 +848,7 @@ export type ProfileCreateInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -902,6 +915,7 @@ export type ProfileUncheckedCreateInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -958,6 +972,7 @@ export type ProfileUpdateInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -1024,6 +1039,7 @@ export type ProfileUncheckedUpdateInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -1085,6 +1101,7 @@ export type ProfileCreateManyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1127,6 +1144,7 @@ export type ProfileUpdateManyMutationInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1174,6 +1192,7 @@ export type ProfileUncheckedUpdateManyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1247,6 +1266,7 @@ export type ProfileCountOrderByAggregateInput = {
   appearanceType?: Prisma.SortOrder
   smoker?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrder
+  needsEditBeforeResubmit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1301,6 +1321,7 @@ export type ProfileMaxOrderByAggregateInput = {
   appearanceType?: Prisma.SortOrder
   smoker?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrder
+  needsEditBeforeResubmit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1345,6 +1366,7 @@ export type ProfileMinOrderByAggregateInput = {
   appearanceType?: Prisma.SortOrder
   smoker?: Prisma.SortOrder
   moderationNote?: Prisma.SortOrder
+  needsEditBeforeResubmit?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1888,6 +1910,7 @@ export type ProfileCreateWithoutOwnerInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -1952,6 +1975,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2042,6 +2066,7 @@ export type ProfileScalarWhereInput = {
   appearanceType?: Prisma.EnumAppearanceTypeNullableFilter<"Profile"> | $Enums.AppearanceType | null
   smoker?: Prisma.BoolNullableFilter<"Profile"> | boolean | null
   moderationNote?: Prisma.StringNullableFilter<"Profile"> | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFilter<"Profile"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
 }
@@ -2084,6 +2109,7 @@ export type ProfileCreateWithoutCountryInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -2148,6 +2174,7 @@ export type ProfileUncheckedCreateWithoutCountryInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2230,6 +2257,7 @@ export type ProfileCreateWithoutCityInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -2294,6 +2322,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2376,6 +2405,7 @@ export type ProfileCreateWithoutDistrictInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -2440,6 +2470,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2522,6 +2553,7 @@ export type ProfileCreateWithoutPhotosInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -2587,6 +2619,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2658,6 +2691,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -2723,6 +2757,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -2778,6 +2813,7 @@ export type ProfileCreateWithoutReportsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -2843,6 +2879,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -2914,6 +2951,7 @@ export type ProfileUpdateWithoutReportsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -2979,6 +3017,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -3034,6 +3073,7 @@ export type ProfileCreateWithoutCommentsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -3099,6 +3139,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -3170,6 +3211,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -3235,6 +3277,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -3290,6 +3333,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -3355,6 +3399,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -3426,6 +3471,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -3491,6 +3537,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -3546,6 +3593,7 @@ export type ProfileCreateWithoutCompanyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
@@ -3610,6 +3658,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -3692,6 +3741,7 @@ export type ProfileCreateWithoutHoursInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -3757,6 +3807,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
@@ -3828,6 +3879,7 @@ export type ProfileUpdateWithoutHoursInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -3893,6 +3945,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
@@ -3948,6 +4001,7 @@ export type ProfileCreateWithoutContactsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -4013,6 +4067,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -4084,6 +4139,7 @@ export type ProfileUpdateWithoutContactsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -4149,6 +4205,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -4204,6 +4261,7 @@ export type ProfileCreateWithoutEventsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -4269,6 +4327,7 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -4340,6 +4399,7 @@ export type ProfileUpdateWithoutEventsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -4405,6 +4465,7 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -4460,6 +4521,7 @@ export type ProfileCreateWithoutEventsDailyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -4525,6 +4587,7 @@ export type ProfileUncheckedCreateWithoutEventsDailyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -4596,6 +4659,7 @@ export type ProfileUpdateWithoutEventsDailyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -4661,6 +4725,7 @@ export type ProfileUncheckedUpdateWithoutEventsDailyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -4716,6 +4781,7 @@ export type ProfileCreateWithoutPricesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -4781,6 +4847,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -4852,6 +4919,7 @@ export type ProfileUpdateWithoutPricesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -4917,6 +4985,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -4972,6 +5041,7 @@ export type ProfileCreateWithoutServicesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -5037,6 +5107,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -5108,6 +5179,7 @@ export type ProfileUpdateWithoutServicesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -5173,6 +5245,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -5228,6 +5301,7 @@ export type ProfileCreateWithoutVerificationInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -5293,6 +5367,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -5364,6 +5439,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -5429,6 +5505,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -5484,6 +5561,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -5549,6 +5627,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -5620,6 +5699,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -5685,6 +5765,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -5740,6 +5821,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -5805,6 +5887,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -5876,6 +5959,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -5941,6 +6025,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -5996,6 +6081,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
@@ -6061,6 +6147,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
@@ -6132,6 +6219,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -6197,6 +6285,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -6256,6 +6345,7 @@ export type ProfileCreateManyOwnerInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6298,6 +6388,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -6362,6 +6453,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -6422,6 +6514,7 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6468,6 +6561,7 @@ export type ProfileCreateManyCountryInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6510,6 +6604,7 @@ export type ProfileUpdateWithoutCountryInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -6574,6 +6669,7 @@ export type ProfileUncheckedUpdateWithoutCountryInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -6634,6 +6730,7 @@ export type ProfileUncheckedUpdateManyWithoutCountryInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6680,6 +6777,7 @@ export type ProfileCreateManyCityInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6722,6 +6820,7 @@ export type ProfileUpdateWithoutCityInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -6786,6 +6885,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -6846,6 +6946,7 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6892,6 +6993,7 @@ export type ProfileCreateManyDistrictInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -6934,6 +7036,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
@@ -6998,6 +7101,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -7058,6 +7162,7 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7104,6 +7209,7 @@ export type ProfileCreateManyCompanyInput = {
   appearanceType?: $Enums.AppearanceType | null
   smoker?: boolean | null
   moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -7146,6 +7252,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
@@ -7210,6 +7317,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
@@ -7270,6 +7378,7 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
   smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -7447,6 +7556,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   appearanceType?: boolean
   smoker?: boolean
   moderationNote?: boolean
+  needsEditBeforeResubmit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
@@ -7514,6 +7624,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   appearanceType?: boolean
   smoker?: boolean
   moderationNote?: boolean
+  needsEditBeforeResubmit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
@@ -7566,6 +7677,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   appearanceType?: boolean
   smoker?: boolean
   moderationNote?: boolean
+  needsEditBeforeResubmit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
@@ -7618,11 +7730,12 @@ export type ProfileSelectScalar = {
   appearanceType?: boolean
   smoker?: boolean
   moderationNote?: boolean
+  needsEditBeforeResubmit?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "countryId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "countryId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "needsEditBeforeResubmit" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
@@ -7783,6 +7896,20 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      * Комментарий модератора владельцу: причина отказа или что исправить.
      */
     moderationNote: string | null
+    /**
+     * Анкету отклонили, и с тех пор её не редактировали — отправить на проверку
+     * снова нельзя (см. `isReadyToSubmit` в @noova/shared): иначе кнопка
+     * позволяла бы просто попытать счастья ещё раз с тем же, за что уже
+     * отказали. Ставится при отказе, снимается любой правкой анкеты — формой
+     * или фото (см. account/routes.ts, photos/routes.ts).
+     * 
+     * Не производная от сравнения `updatedAt` с `VerificationCase.reviewedAt`:
+     * решение об отказе меняет обе строки в одной транзакции, и порядок, в
+     * котором Prisma проставит им время, не гарантирован — сравнение дат
+     * оказалось ненадёжным на практике (обе метки бьются практически
+     * одновременно самим отказом, а не последующей правкой).
+     */
+    needsEditBeforeResubmit: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["profile"]>
@@ -8269,6 +8396,7 @@ export interface ProfileFieldRefs {
   readonly appearanceType: Prisma.FieldRef<"Profile", 'AppearanceType'>
   readonly smoker: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly moderationNote: Prisma.FieldRef<"Profile", 'String'>
+  readonly needsEditBeforeResubmit: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Profile", 'DateTime'>
 }
