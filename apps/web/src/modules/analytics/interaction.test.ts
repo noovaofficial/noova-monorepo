@@ -30,9 +30,12 @@ describe('interactionSignals', () => {
     expect(interactionSignals().interacted).toBe(false);
   });
 
-  it('считает миллисекунды с загрузки', async () => {
+  it('считает миллисекунды с загрузки', () => {
+    // Фейковые часы: реальный setTimeout(5) иногда просыпается, когда
+    // Date.now() сдвинулся лишь на 4 мс, — тест падал через раз.
+    vi.useFakeTimers();
     markPageLoaded();
-    await new Promise((resolve) => setTimeout(resolve, 5));
-    expect(interactionSignals().msSincePageLoad).toBeGreaterThanOrEqual(5);
+    vi.advanceTimersByTime(5);
+    expect(interactionSignals().msSincePageLoad).toBe(5);
   });
 });
