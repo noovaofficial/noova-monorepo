@@ -18,10 +18,22 @@ import {
 async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profileId: string) {
   const profile = await fastify.prisma.profile.findFirst({
     where: { id: profileId, ownerId: userId },
-    select: { id: true, slug: true },
+    select: { id: true, slug: true, status: true },
   });
   if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
   return profile;
+}
+
+/**
+ * Фото не меняют саму строку `Profile`, поэтому её `updatedAt` без этого не
+ * сдвигается от правки снимков — а именно по нему решается, можно ли снова
+ * отправить отклонённую анкету на проверку без изменений в тексте формы
+ * (`isEditedSinceRejection` в account/routes.ts). Трогаем только когда это
+ * имеет значение: остальным статусам лишняя запись не нужна.
+ */
+async function touchIfRejected(fastify: FastifyInstance, profile: { id: string; status: string }) {
+  if (profile.status !== 'rejected') return;
+  await fastify.prisma.profile.update({ where: { id: profile.id }, data: {} });
 }
 
 type PhotoRow = {
@@ -195,6 +207,8 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
 
+      await touchIfRejected(fastify, owned);
+
       // Новое фото ещё не одобрено и публично не видно, но обложка кабинета
       // и порядок уже изменились — кэш всё равно стоит сбросить.
       fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
@@ -240,6 +254,8 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ),
         );
       }
+
+      await touchIfRejected(fastify, owned);
 
       fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
       return { ok: true as const };
@@ -292,6 +308,8 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
           rejectedReason: true,
         },
       });
+
+      await touchIfRejected(fastify, owned);
 
       fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
       return Promise.all(rows.map(toOwnPhoto));

@@ -212,6 +212,9 @@ export const ownProfileSchema = z.object({
   moderationNote: z.string().nullable(),
   publishedAt: z.string().datetime().nullable(),
   updatedAt: z.string().datetime(),
+  /** Только при `status: 'rejected'`: анкету правили уже после отказа, можно
+   *  отправить на проверку снова (см. `isReadyToSubmit` в этом же модуле). */
+  editedSinceRejection: z.boolean(),
 });
 export type OwnProfile = z.infer<typeof ownProfileSchema>;
 
@@ -248,13 +251,35 @@ export function missingForReview(p: ProfileCompleteness): MissingField[] {
 }
 
 /**
+ * Правили ли анкету после того, как её отклонил модератор — от этого зависит,
+ * можно ли отправить её на проверку повторно без правок (нельзя, см.
+ * `isReadyToSubmit`): кнопка «на проверку» не должна отправлять туда же то же
+ * самое, за что уже отказали. Нет отметки об отказе (`rejectedAt` = null,
+ * анкету ещё не отклоняли) — не блокируем: это не тот случай.
+ */
+export function isEditedSinceRejection(
+  updatedAt: string | Date,
+  rejectedAt: string | Date | null,
+): boolean {
+  if (rejectedAt === null) return true;
+  return new Date(updatedAt).getTime() > new Date(rejectedAt).getTime();
+}
+
+/**
  * Можно ли отправить анкету на проверку (в том числе массово): статус
- * «черновик» или «отклонена», проверка ещё не пройдена и анкета заполнена.
+ * «черновик» или «отклонена», проверка ещё не пройдена, анкета заполнена, а
+ * если её уже отклоняли — правки внесены уже после отказа (`isEditedSinceRejection`).
  * Заблокированные сюда не входят — их повторная отправка идёт вручную.
  */
 export function isReadyToSubmit(
-  p: ProfileCompleteness & { status: ProfileStatus; verificationStatus: VerificationStatus },
+  p: ProfileCompleteness & {
+    status: ProfileStatus;
+    verificationStatus: VerificationStatus;
+    /** Не важно при статусе, отличном от «отклонена». */
+    editedSinceRejection: boolean;
+  },
 ): boolean {
+  if (p.status === 'rejected' && !p.editedSinceRejection) return false;
   return (
     (p.status === 'draft' || p.status === 'rejected') &&
     p.verificationStatus !== 'verified' &&

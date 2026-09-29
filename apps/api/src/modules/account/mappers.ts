@@ -1,4 +1,4 @@
-import type { OwnPhoto, OwnProfile } from '@noova/shared';
+import { isEditedSinceRejection, type OwnPhoto, type OwnProfile } from '@noova/shared';
 import { toMoney } from '../../mappers.js';
 
 type OwnProfileRow = {
@@ -52,7 +52,7 @@ type OwnProfileRow = {
     isApproved: boolean;
     rejectedReason: string | null;
   }[];
-  verification: { status: OwnProfile['verificationStatus'] } | null;
+  verification: { status: OwnProfile['verificationStatus']; reviewedAt: Date | null } | null;
 };
 
 /**
@@ -113,6 +113,10 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     moderationNote: row.moderationNote,
     publishedAt: row.publishedAt?.toISOString() ?? null,
     updatedAt: row.updatedAt.toISOString(),
+    editedSinceRejection: isEditedSinceRejection(
+      row.updatedAt,
+      row.verification?.reviewedAt ?? null,
+    ),
   };
 }
 
@@ -182,5 +186,5 @@ export const ownProfileSelect = {
       rejectedReason: true,
     },
   },
-  verification: { select: { status: true } },
+  verification: { select: { status: true, reviewedAt: true } },
 } as const;

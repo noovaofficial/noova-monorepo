@@ -40,7 +40,10 @@ const STYLE_BY_STAGE: Record<ProfileStage, string | undefined> = {
   banned: styles.statusBanned,
 };
 
-const KEY_BY_STAGE: Record<ProfileStage, string> = {
+/** Подпись стадии по ключу словаря `account` — переиспользуется разбивкой
+ *  по статусам в сводке списка анкет (ProfileList), чтобы не заводить
+ *  вторую копию тех же подписей. */
+export const KEY_BY_STAGE: Record<ProfileStage, string> = {
   draft: 'statusDraft',
   ready_for_review: 'stageReadyForReview',
   in_review: 'statusPending',

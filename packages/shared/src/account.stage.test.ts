@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { isProfileComplete, isReadyToSubmit, profileStage } from './account';
+import {
+  isEditedSinceRejection,
+  isProfileComplete,
+  isReadyToSubmit,
+  profileStage,
+} from './account';
 
 const full = { age: 25, photosCount: 3, pricesCount: 2, contactsCount: 1 };
 
@@ -41,9 +46,10 @@ describe('можно ли отправить на проверку', () => {
     status: Parameters<typeof isReadyToSubmit>[0]['status'],
     verificationStatus: Parameters<typeof isReadyToSubmit>[0]['verificationStatus'],
     extra = {},
-  ) => isReadyToSubmit({ ...full, status, verificationStatus, ...extra });
+  ) =>
+    isReadyToSubmit({ ...full, status, verificationStatus, editedSinceRejection: true, ...extra });
 
-  it('да: заполненный черновик или отклонённая', () => {
+  it('да: заполненный черновик или отклонённая (с правками после отказа)', () => {
     expect(ready('draft', 'none')).toBe(true);
     expect(ready('rejected', 'failed')).toBe(true);
   });
@@ -53,6 +59,29 @@ describe('можно ли отправить на проверку', () => {
     expect(ready('pending_verification', 'pending')).toBe(false);
     expect(ready('published', 'verified')).toBe(false);
     expect(ready('banned', 'none')).toBe(false);
+  });
+
+  it('отклонённую без правок после отказа отправить нельзя', () => {
+    expect(ready('rejected', 'failed', { editedSinceRejection: false })).toBe(false);
+  });
+
+  it('у черновика (никогда не отклоняли) правки после отказа роли не играют', () => {
+    expect(ready('draft', 'none', { editedSinceRejection: false })).toBe(true);
+  });
+});
+
+describe('правили ли анкету после отказа', () => {
+  it('нет отметки об отказе — не блокируем', () => {
+    expect(isEditedSinceRejection('2026-01-02T00:00:00Z', null)).toBe(true);
+  });
+
+  it('анкету сохранили после отказа — можно отправлять снова', () => {
+    expect(isEditedSinceRejection('2026-01-02T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(true);
+  });
+
+  it('анкету не трогали с момента отказа — нельзя', () => {
+    expect(isEditedSinceRejection('2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(false);
+    expect(isEditedSinceRejection('2025-12-31T00:00:00Z', '2026-01-01T00:00:00Z')).toBe(false);
   });
 });
 

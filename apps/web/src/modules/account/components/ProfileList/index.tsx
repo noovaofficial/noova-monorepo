@@ -7,6 +7,7 @@ import {
   missingForReview,
   type OwnProfile,
   PROFILE_LIMIT_BY_ADVERTISER,
+  type ProfileStage,
   profileStage,
 } from '@noova/shared';
 
@@ -31,7 +32,19 @@ import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 import { AgencyPaywallNotice } from '../AgencyPaywallNotice';
-import { ProfileStageBadge } from '../ProfileStatusBadge';
+import { KEY_BY_STAGE, ProfileStageBadge } from '../ProfileStatusBadge';
+
+/** Порядок разбивки в сводке — по ходу жизни анкеты, а не по алфавиту. */
+const STAGE_ORDER: ProfileStage[] = [
+  'draft',
+  'ready_for_review',
+  'in_review',
+  'ready_for_publication',
+  'published',
+  'paused',
+  'rejected',
+  'banned',
+];
 
 export function ProfileList() {
   const locale = useLocale() as Locale;
@@ -212,12 +225,20 @@ export function ProfileList() {
       : t('missingLabel', { fields: missing.map((m) => t(`missing_${m}`)).join(', ') });
   };
   const incompleteDraftCount = profiles?.filter((p) => missingHint(p) !== null).length ?? 0;
+  // Отклонённую и заполненную, но ни разу не изменённую с момента отказа —
+  // на проверку отправить нельзя (см. account.ts): кнопка не должна позволять
+  // просто попытать счастья ещё раз с тем же, за что уже отказали.
+  const rejectionHint = (p: OwnProfile): string | null =>
+    p.status === 'rejected' && !p.editedSinceRejection && missingHint(p) === null
+      ? t('editBeforeResubmit')
+      : null;
   const submittableCount =
     profiles?.filter((p) =>
       isReadyToSubmit({
         ...completeness(p),
         status: p.status,
         verificationStatus: p.verificationStatus,
+        editedSinceRejection: p.editedSinceRejection,
       }),
     ).length ?? 0;
   const canPublish = (p: OwnProfile) =>
@@ -226,8 +247,15 @@ export function ProfileList() {
     p.status !== 'banned' &&
     missingForReview(completeness(p)).length === 0;
   const publishedCount = profiles?.filter((p) => p.status === 'published').length ?? 0;
-  const blockedCount = profiles?.filter((p) => p.status === 'banned').length ?? 0;
   const publishableCount = profiles?.filter(canPublish).length ?? 0;
+  // Разбивка сводки — по стадии (`profileStage`), не по сырому статусу: она
+  // различает «черновик» и «готова к проверке», «на проверке» и «готова к
+  // публикации» — то же деление, что и бейджи на карточках.
+  const stageCounts = new Map<ProfileStage, number>();
+  for (const p of profiles ?? []) {
+    const stage = stageOf(p);
+    stageCounts.set(stage, (stageCounts.get(stage) ?? 0) + 1);
+  }
   const bulkPending = publishAll.isPending || pauseAll.isPending || submitAll.isPending;
 
   // Салон — это анкета, но называть её так в его кабинете значит путать:
@@ -274,8 +302,8 @@ export function ProfileList() {
             {profile.city.name}
             {profile.district ? ` · ${profile.district.name}` : ''}
           </span>
-          {missingHint(profile) ? (
-            <span className={styles.missing}>{missingHint(profile)}</span>
+          {(missingHint(profile) ?? rejectionHint(profile)) ? (
+            <span className={styles.missing}>{missingHint(profile) ?? rejectionHint(profile)}</span>
           ) : null}
         </div>
         <div className={styles.profileActions}>
@@ -423,14 +451,12 @@ export function ProfileList() {
                   />
                 </div>
               ) : null}
-              <div className={styles.statRow}>
-                <span>{t('statsPublished')}</span>
-                <span className={styles.statValue}>{publishedCount}</span>
-              </div>
-              <div className={styles.statRow}>
-                <span>{t('statsBlocked')}</span>
-                <span className={styles.statValue}>{blockedCount}</span>
-              </div>
+              {STAGE_ORDER.map((stage) => (
+                <div className={styles.statRow} key={stage}>
+                  <span>{t(KEY_BY_STAGE[stage])}</span>
+                  <span className={styles.statValue}>{stageCounts.get(stage) ?? 0}</span>
+                </div>
+              ))}
             </div>
 
             <div className={styles.sidebarCard}>

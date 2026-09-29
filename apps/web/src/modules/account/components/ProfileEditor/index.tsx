@@ -422,6 +422,10 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
     contactsCount: profile.contacts.length,
   });
   const incomplete = missing.length > 0;
+  // Отклонённую анкету нельзя отправить снова без правок — иначе кнопка
+  // позволяла бы просто попытать счастья ещё раз с тем, за что уже отказали.
+  // Тот же минимум сервер проверяет и здесь: apps/api/.../account/routes.ts.
+  const blockedByRejection = profile.status === 'rejected' && !profile.editedSinceRejection;
 
   return (
     <div className={styles.wrap}>
@@ -982,6 +986,8 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
               <p className={styles.missing}>
                 {t('missingLabel', { fields: missing.map((m) => t(`missing_${m}`)).join(', ') })}
               </p>
+            ) : blockedByRejection ? (
+              <p className={styles.missing}>{t('editBeforeResubmit')}</p>
             ) : null}
 
             <div className={styles.sidebarActions}>
@@ -1000,7 +1006,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
               (!canPublish && (profile.status === 'draft' || profile.status === 'rejected')) ? (
                 <Button
                   variant="secondary"
-                  disabled={pending || incomplete}
+                  disabled={pending || incomplete || blockedByRejection}
                   onClick={() => runAction(submitProfile)}
                 >
                   {t('submit')}
