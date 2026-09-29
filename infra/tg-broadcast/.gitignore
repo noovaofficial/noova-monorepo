@@ -1,0 +1,7 @@
+*.session
+*.session-journal
+*.csv
+!recipients.example.csv
+sent.jsonl
+.env
+.venv/

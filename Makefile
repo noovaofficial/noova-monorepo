@@ -7,7 +7,7 @@ SHELL := /bin/bash
         reference-from-dev reference-from-server reference-to-server backup-key backup-fetch backup-open backup-verify backup-check restore-media \
         backup-storage backup-allow-pull backup-storage-check backup-storage-verify \
         build lint typecheck stack-up stack-down stack-logs backup restore \
-        deploy rollback migrate-server
+        deploy rollback migrate-server tg-broadcast-test tg-broadcast
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -214,3 +214,20 @@ restore: ## Восстановить БД из расшифрованного д
 restore-media: ## Восстановить фотографии: make restore-media ARCHIVE=noova-media-<stamp>.tar.gz
 	@test -n "$(ARCHIVE)" || (echo "Укажите ARCHIVE=путь"; exit 1)
 	./infra/backup/restore-media.sh '$(ARCHIVE)'
+
+# --- Разовая рассылка моделям от Telegram-аккаунта компании -----------------
+# Подробности и риски — в шапке infra/tg-broadcast/broadcast.py. Креды — в
+# infra/tg-broadcast/.env (TG_API_ID, TG_API_HASH), получатели — в
+# infra/tg-broadcast/recipients.csv (name,telegram,locale).
+
+TG_DIR := infra/tg-broadcast
+TG_PY := $(TG_DIR)/.venv/bin/python
+
+$(TG_PY):
+	python3 -m venv $(TG_DIR)/.venv && $(TG_DIR)/.venv/bin/pip install -q telethon
+
+tg-broadcast-test: $(TG_PY) ## Рассылка в TG: первые 3 получателя, для проверки глазами
+	$(TG_PY) $(TG_DIR)/broadcast.py $(TG_DIR)/recipients.csv --send --limit 3
+
+tg-broadcast: $(TG_PY) ## Рассылка в TG: все, до дневного лимита (25); повторять раз в сутки
+	$(TG_PY) $(TG_DIR)/broadcast.py $(TG_DIR)/recipients.csv --send
