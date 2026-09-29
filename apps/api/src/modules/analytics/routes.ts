@@ -16,6 +16,7 @@ import { requireSession } from '../../plugins/session.js';
 import { loadMoney, toOwnMoney } from './admin-money.js';
 import { recordEventBatch } from './batch.js';
 import { recordProfileEvent } from './events.js';
+import { loadPromotionEffects } from './promotion.js';
 import { loadAnalytics } from './query.js';
 import { recordSession } from './session.js';
 
@@ -197,7 +198,14 @@ export const analyticsRoutes: FastifyPluginAsyncZod = async (fastify) => {
         orderBy: { createdAt: 'asc' },
       });
 
-      return loadAnalytics(fastify.prisma, { profiles, ownerId: userId }, request.query.period);
+      const scope = { profiles, ownerId: userId };
+      // Эффект ТОПа не зависит от выбранного периода (см. `promotion.ts`),
+      // поэтому считается отдельным запросом, а не частью `loadAnalytics`.
+      const [analytics, promotions] = await Promise.all([
+        loadAnalytics(fastify.prisma, scope, request.query.period),
+        loadPromotionEffects(fastify.prisma, scope),
+      ]);
+      return { ...analytics, promotions };
     },
   );
 

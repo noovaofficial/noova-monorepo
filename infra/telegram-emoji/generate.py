@@ -12,6 +12,7 @@
 import argparse
 import gzip
 import json
+import math
 import re
 from pathlib import Path
 
@@ -76,7 +77,8 @@ def contours_to_svg(contours):
         parts.append(f'M{start[0]:.2f},{start[1]:.2f}')
         for c1, c2, end in segs:
             parts.append(f'C{c1[0]:.2f},{c1[1]:.2f} {c2[0]:.2f},{c2[1]:.2f} {end[0]:.2f},{end[1]:.2f}')
-        parts.append('Z')
+        if (segs[-1][2] if segs else start) == start:
+            parts.append('Z')
     return ' '.join(parts)
 
 
@@ -227,7 +229,7 @@ def lottie_path(contour):
         b = (k + 1) % n if closes else k + 1
         o_t[a] = [(c1[0] - pts[a][0]) * K, (c1[1] - pts[a][1]) * K]
         i_t[b] = [(c2[0] - end[0]) * K, (c2[1] - end[1]) * K]
-    return {'ty': 'sh', 'ks': {'a': 0, 'k': {'c': True, 'v': v, 'i': i_t, 'o': o_t}}}
+    return {'ty': 'sh', 'ks': {'a': 0, 'k': {'c': closes, 'v': v, 'i': i_t, 'o': o_t}}}
 
 
 def static(v):
@@ -352,6 +354,225 @@ def export_tgs(name, data, out):
     (out / 'animated' / f'{name}.tgs').write_bytes(gzip.compress(raw, 9))
 
 
+# ---------------------------------------------------------------------- coin
+
+# GlowCoin: золотая монета с литерой G и свечением вокруг. Знак повторяет
+# apps/web/src/modules/billing/components/GlowCoinIcon (кольцо + G на поле
+# 24x24), золото сведено к токену --featured (#c29a33 / #d8b048).
+COIN_R = 36  # внешний радиус (ободок)
+COIN_FACE_R = 30  # радиус кольца на поле — как r=8.6 у иконки
+COIN_T = 6  # толщина ребра — видна, когда монета повёрнута
+COIN_GLOW = '#e9c04f'
+COIN_RIM = ('#f3d472', '#b08526')  # линейный градиент ободка: свет сверху-слева
+COIN_FACE = ('#fbe8a6', '#d8b048')  # радиальный градиент поля, край = --featured (dark)
+COIN_ENGRAVE = '#8a6417'  # гравировка: кольцо и G
+COIN_EDGE = '#86621a'
+COIN_SPARKLE = '#f5c32c'  # насыщенное золото: видно и на белом, и на тёмном фоне
+
+# Литера G из GlowCoinIcon: M14.9 9.9 A3.6 3.6 0 1 0 15.4 13.4 H12.6 (поле 24x24).
+G_ARC = ((14.9, 9.9), 3.6, 1, 0, (15.4, 13.4))  # старт, радиус, large-arc, sweep, конец
+G_BAR_END = (12.6, 13.4)
+G_STROKE = 1.7
+# В иконке G занимает 3.6/8.6 радиуса кольца; в эмодзи чуть крупнее — читаться
+# ей приходится с ~20px в строке.
+COIN_G_SCALE = COIN_FACE_R / 8.6 * 1.15
+
+SPARKLES = [((83, 17), 9, 0), ((17, 81), 6, 8), ((86, 72), 5, 14)]  # центр, размер, задержка
+
+
+def arc_to_cubics(p1, r, large_arc, sweep, p2):
+    """SVG-дуга окружности -> кубические сегменты (по <= 90 градусов)."""
+    x1p, y1p = (p1[0] - p2[0]) / 2, (p1[1] - p2[1]) / 2
+    d2 = x1p ** 2 + y1p ** 2
+    coef = math.sqrt(max(0.0, (r * r - d2) / d2)) * (1 if large_arc != sweep else -1)
+    cx = coef * y1p + (p1[0] + p2[0]) / 2
+    cy = -coef * x1p + (p1[1] + p2[1]) / 2
+    r = max(r, math.sqrt(d2))
+    a1 = math.atan2(p1[1] - cy, p1[0] - cx)
+    da = math.atan2(p2[1] - cy, p2[0] - cx) - a1
+    if sweep == 0 and da > 0:
+        da -= 2 * math.pi
+    elif sweep == 1 and da < 0:
+        da += 2 * math.pi
+    n = math.ceil(abs(da) / (math.pi / 2))
+    step = da / n
+    k = 4 / 3 * math.tan(step / 4)
+    segs = []
+    for i in range(n):
+        a, b = a1 + i * step, a1 + (i + 1) * step
+        pa = (cx + r * math.cos(a), cy + r * math.sin(a))
+        pb = (cx + r * math.cos(b), cy + r * math.sin(b))
+        c1 = (pa[0] - k * r * math.sin(a), pa[1] + k * r * math.cos(a))
+        c2 = (pb[0] + k * r * math.sin(b), pb[1] - k * r * math.cos(b))
+        segs.append((c1, c2, pb))
+    segs[-1] = (segs[-1][0], segs[-1][1], p2)
+    return segs
+
+
+def coin_glyph():
+    """Литера G (открытый контур) в дизайн-пространстве монеты."""
+    start, r, large_arc, sweep, end = G_ARC
+    segs = arc_to_cubics(start, r, large_arc, sweep, end)
+    segs.append((end, G_BAR_END, G_BAR_END))
+
+    def fn(p):
+        return (50 + (p[0] - 12) * COIN_G_SCALE, 50 + (p[1] - 12) * COIN_G_SCALE)
+
+    return transform_contours([(start, segs)], fn)
+
+
+def sparkle_contour(cx, cy, s):
+    """Четырёхлучевая искра обычным путём (Star Shape в TGS запрещён)."""
+    tips = [(cx, cy - s), (cx + s, cy), (cx, cy + s), (cx - s, cy)]
+    k = 0.12 * s
+    pinch = [(cx + k, cy - k), (cx + k, cy + k), (cx - k, cy + k), (cx - k, cy - k)]
+    segs = [(pinch[n], pinch[n], tips[(n + 1) % 4]) for n in range(4)]
+    return tips[0], segs
+
+
+def svg_coin():
+    glyph = coin_glyph()
+    sw = G_STROKE * COIN_G_SCALE
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <radialGradient id="glow" cx="50" cy="50" r="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0.6" stop-color="{COIN_GLOW}" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="{COIN_GLOW}" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="20" y1="14" x2="80" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="{COIN_RIM[0]}"/><stop offset="1" stop-color="{COIN_RIM[1]}"/>
+    </linearGradient>
+    <radialGradient id="face" cx="42" cy="38" r="{COIN_FACE_R * 1.5}" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="{COIN_FACE[0]}"/><stop offset="1" stop-color="{COIN_FACE[1]}"/>
+    </radialGradient>
+  </defs>
+  <circle cx="50" cy="50" r="50" fill="url(#glow)"/>
+  <circle cx="50" cy="50" r="{COIN_R}" fill="url(#rim)"/>
+  <circle cx="50" cy="50" r="{COIN_FACE_R}" fill="url(#face)" stroke="{COIN_ENGRAVE}" stroke-width="1.6"/>
+  <g fill="none" stroke="{COIN_ENGRAVE}" stroke-linejoin="round" stroke-linecap="round" stroke-width="{sw:.2f}">
+    <path d="{contours_to_svg(glyph)}"/>
+  </g>
+</svg>
+'''
+
+
+def ellipse(cx, cy, w, h):
+    return {'ty': 'el', 'd': 1, 'p': static([cx * K, cy * K]), 's': static([w * K, h * K])}
+
+
+def fill(color):
+    return {'ty': 'fl', 'c': static(hex_rgb(color) + [1]), 'o': static(100), 'r': 1}
+
+
+def grad(kind, start, end, colors, opacities=None, start_anim=None, end_anim=None):
+    """Градиентная заливка. colors: [(pos, hex)], opacities: [(pos, 0..1)]."""
+    k = [v for pos, c in colors for v in [pos, *hex_rgb(c)]]
+    if opacities:
+        k += [v for pos, a in opacities for v in (pos, a)]
+    g = {'ty': 'gf', 'o': static(100), 'r': 1, 't': kind,
+         's': start_anim or static([start[0] * K, start[1] * K]),
+         'e': end_anim or static([end[0] * K, end[1] * K]),
+         'g': {'p': len(colors), 'k': static(k)}}
+    if kind == 2:
+        g['h'] = static(0)
+        g['a'] = static(0)
+    return g
+
+
+def per_frame(values, span):
+    """Покадровые линейные ключи на отрезке span=(from, to); вне его — удержание."""
+    lo, hi = span
+    keys = [(t, [round(x, 2) for x in values(t)]) for t in range(lo, hi + 1)]
+    return anim(keys, ease=(0, 0, 1, 1))
+
+
+def coin_angle(op):
+    """Угол поворота (градусы) по кадрам: покой -> разгон -> торможение ->
+    покачивание до остановки -> покой. Конец цикла совпадает с началом."""
+    spin_from, spin_to, turns = 14, 128, 5
+    settle = 24
+    # Профиль скорости: быстрый разгон (~35% времени), долгое торможение.
+    n = spin_to - spin_from
+    peak = 0.35
+    speed = [(u / peak) ** 2 if u < peak else ((1 - u) / (1 - peak)) ** 1.6
+             for u in ((t + 0.5) / n for t in range(n))]
+    total = sum(speed)
+    angles = [0.0] * (op + 1)
+    acc = 0.0
+    for t in range(n):
+        acc += speed[t] / total * turns * 360
+        angles[spin_from + t + 1] = acc
+    for t in range(spin_to + 1, op + 1):
+        dt = t - spin_to
+        # Затухающее покачивание: монета «докатывается» и замирает.
+        wobble = 14 * math.exp(-dt / 7) * math.sin(dt / settle * 2 * math.pi * 1.5) if dt <= settle else 0
+        angles[t] = turns * 360 + wobble
+    return angles, (spin_from, spin_to + settle)
+
+
+def anim_coin():
+    op = 180
+    angles, span = coin_angle(op)
+    c = lambda t: math.cos(math.radians(angles[t]))
+    s = lambda t: math.sin(math.radians(angles[t]))
+    half = COIN_T / 2
+
+    # Лицевая сторона: сжатие по X = |cos(угла)|, сдвиг вперёд на полтолщины.
+    # Модуль, а не cos: на обороте та же G, а не её зеркало.
+    face_ks = transform(
+        position=per_frame(lambda t: [(50 + half * s(t)) * K, 50 * K, 0], span),
+        scale=per_frame(lambda t: [100 * abs(c(t)), 100, 100], span),
+    )
+    glyph = coin_glyph()
+    sw = G_STROKE * COIN_G_SCALE
+    # Блик: прозрачная заливка с белой полосой, полоса проезжает по диагонали.
+    shine_c = lambda t: -10 + 120 * min(1, max(0, (t - 134) / 26))
+    shine = grad(1, None, None, [(0, '#ffffff'), (1, '#ffffff')],
+                 [(0, 0), (0.36, 0), (0.5, 0.95), (0.64, 0), (1, 0)],
+                 start_anim=per_frame(lambda t: [(shine_c(t) - 22) * K, (shine_c(t) - 22) * K], (134, 160)),
+                 end_anim=per_frame(lambda t: [(shine_c(t) + 22) * K, (shine_c(t) + 22) * K], (134, 160)))
+    face_shapes = [
+        group([ellipse(50, 50, COIN_R * 2, COIN_R * 2), shine]),
+        group([lottie_path(ct) for ct in glyph] + [stroke(COIN_ENGRAVE, sw)]),
+        group([ellipse(50, 50, COIN_FACE_R * 2, COIN_FACE_R * 2), stroke(COIN_ENGRAVE, 1.6),
+               grad(2, (42, 38), (42 + COIN_FACE_R * 1.5, 38), [(0, COIN_FACE[0]), (1, COIN_FACE[1])])]),
+        group([ellipse(50, 50, COIN_R * 2, COIN_R * 2),
+               grad(1, (20, 14), (80, 86), [(0, COIN_RIM[0]), (1, COIN_RIM[1])])]),
+    ]
+
+    # Ребро: задняя сторона (сдвинута назад) + прямоугольник между сторонами.
+    edge = group([
+        {'ty': 'el', 'd': 1,
+         'p': per_frame(lambda t: [(50 - half * s(t)) * K, 50 * K], span),
+         's': per_frame(lambda t: [abs(c(t)) * COIN_R * 2 * K, COIN_R * 2 * K], span)},
+        {'ty': 'rc', 'd': 1, 'r': static(0), 'p': static([50 * K, 50 * K]),
+         's': per_frame(lambda t: [abs(COIN_T * s(t)) * K, COIN_R * 2 * K], span)},
+        fill(COIN_EDGE),
+    ])
+
+    # Свечение: ярче на пике скорости, вспышка при остановке, к концу — как в начале.
+    glow_o = anim([(0, 55), (14, 55), (55, 85), (128, 70), (142, 100), (179, 55)])
+    glow_s = anim([(0, [100, 100, 100]), (128, [100, 100, 100]), (142, [106, 106, 100]),
+                   (179, [100, 100, 100])])
+    glow = group([ellipse(50, 50, 100, 100),
+                  grad(2, (50, 50), (100, 50), [(0, COIN_GLOW), (1, COIN_GLOW)],
+                       [(0, 0.9), (0.6, 0.55), (1, 0)])])
+
+    layers = []
+    for n, ((cx, cy), size, delay) in enumerate(SPARKLES):
+        t0 = 140 + delay
+        sc = anim([(0, [0, 0, 100]), (t0, [0, 0, 100]), (t0 + 8, [110, 110, 100]),
+                   (t0 + 14, [90, 90, 100]), (t0 + 24, [0, 0, 100]), (179, [0, 0, 100])])
+        rot = anim([(0, 0), (t0, 0), (t0 + 24, 90), (179, 90)])
+        layers.append(layer(len(layers) + 1, f'sparkle {n + 1}',
+                            [group([lottie_path(sparkle_contour(cx, cy, size)), fill(COIN_SPARKLE)])],
+                            transform(anchor=(cx, cy), scale=sc, rotation=rot), op))
+    layers.append(layer(len(layers) + 1, 'face', face_shapes, face_ks, op))
+    layers.append(layer(len(layers) + 1, 'edge', [edge], transform(), op))
+    layers.append(layer(len(layers) + 1, 'glow', [glow], transform(scale=glow_s, opacity=glow_o), op))
+    return animation('noova coin', layers, op)
+
+
 # ---------------------------------------------------------------------- main
 
 def main():
@@ -372,6 +593,8 @@ def main():
 
     export_tgs('noova-heartbeat', anim_heartbeat(outer, inner), out)
     export_tgs('noova-draw', anim_draw(outer, inner), out)
+    export_static('coin', svg_coin(), out)
+    export_tgs('coin-spin', anim_coin(), out)
     for ch, contours in letters.items():
         export_tgs(f'{ch}-hop', anim_hop(ch, contours, baseline), out)
     # «Волна»: n-o-o-v-a по позициям в слове, каждая следующая на 10 кадров позже.

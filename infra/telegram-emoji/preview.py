@@ -9,6 +9,11 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from rlottie_python import LottieAnimation
 
+
+def unpremultiply(img):
+    # rlottie отдаёт premultiplied alpha — без этого полупрозрачное темнеет на светлом фоне.
+    return Image.frombytes('RGBa', img.size, img.tobytes()).convert('RGBA')
+
 out = Path(sys.argv[1])
 BGS = [(255, 255, 255), (24, 24, 28)]
 CELL = 96
@@ -25,7 +30,7 @@ for row, f in enumerate(files):
     anim = LottieAnimation.from_tgs(str(f))
     total = anim.lottie_animation_get_totalframe()
     for col in range(N):
-        frame = anim.render_pillow_frame(frame_num=int(col * total / N), width=CELL, height=CELL)
+        frame = unpremultiply(anim.render_pillow_frame(frame_num=int(col * total / N), width=CELL, height=CELL))
         for b, bg in enumerate(BGS):
             cell = Image.new('RGB', (CELL, CELL), bg)
             cell.paste(frame, (0, 0), frame)

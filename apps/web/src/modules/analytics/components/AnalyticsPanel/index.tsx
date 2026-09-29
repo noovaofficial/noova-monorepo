@@ -203,9 +203,18 @@ export function AnalyticsReport({
                   </thead>
                   <tbody>
                     {data.profiles.map((row) => (
-                      <tr key={row.profileId}>
+                      <tr
+                        key={row.profileId}
+                        className={row.hasNoContacts30d ? styles.flaggedRow : undefined}
+                      >
                         <th scope="row" className={styles.nameCell}>
                           {row.displayName}
+                          {/* «Слот не работает»: фиксированное окно 30 дней,
+                              не зависит от переключателя периода сверху —
+                              см. `hasNoContacts30d` в схеме. */}
+                          {row.hasNoContacts30d ? (
+                            <span className={styles.flagBadge}>{t('flagNoContacts')}</span>
+                          ) : null}
                         </th>
                         {ANALYTICS_METRICS.map((key) => (
                           <td className={styles.numCell} key={key}>
@@ -216,6 +225,58 @@ export function AnalyticsReport({
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </section>
+          ) : null}
+
+          {/* Эффект ТОПа — только у тех, кто его хоть раз покупал. */}
+          {data.promotions.length > 0 ? (
+            <section className={styles.card}>
+              <h2 className={styles.sectionTitle}>{t('promotionTitle')}</h2>
+              <p className={styles.hint}>{t('promotionHint')}</p>
+              <div className={styles.promoList}>
+                {data.promotions.map((promo) => {
+                  const up = promo.contactsPerDayDuring >= promo.contactsPerDayBefore;
+                  return (
+                    <div className={styles.promoRow} key={promo.profileId}>
+                      <div>
+                        <div className={styles.promoName}>{promo.displayName}</div>
+                        <div className={styles.promoRange}>
+                          {t('promotionRange', {
+                            from: format.dateTime(new Date(promo.startsAt), {
+                              dateStyle: 'medium',
+                            }),
+                            to: format.dateTime(new Date(promo.expiresAt), { dateStyle: 'medium' }),
+                          })}
+                        </div>
+                      </div>
+                      <div className={styles.promoStats}>
+                        <div className={styles.promoStat}>
+                          <span className={styles.promoStatLabel}>{t('promotionBefore')}</span>
+                          <span className={styles.promoStatValue}>
+                            {t('promotionPerDay', {
+                              value: format.number(promo.contactsPerDayBefore, {
+                                maximumFractionDigits: 1,
+                              }),
+                            })}
+                          </span>
+                        </div>
+                        <div className={styles.promoStat}>
+                          <span className={styles.promoStatLabel}>{t('promotionDuring')}</span>
+                          <span
+                            className={`${styles.promoStatValue} ${up ? styles.promoUp : styles.promoDown}`}
+                          >
+                            {t('promotionPerDay', {
+                              value: format.number(promo.contactsPerDayDuring, {
+                                maximumFractionDigits: 1,
+                              }),
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           ) : null}
@@ -260,8 +321,11 @@ function MetricCard({ metric, data, selected, onSelect }: CardProps) {
       <span className={styles.metricValue}>{format.number(split.total)}</span>
 
       {/* У избранного разбивки нет по устройству функции: отметить анкету
-          может только вошедший клиент, гостевых добавлений не бывает. */}
-      {metric === 'favorites' ? null : (
+          может только вошедший клиент, гостевых добавлений не бывает.
+          У уникальных посетителей разбивки на вошедших/гостей нет по
+          смыслу метрики — один посетитель за день не гость и не вошедший,
+          а просто один человек (см. `analyticsTotalsSchema` в схеме). */}
+      {metric === 'favorites' || metric === 'uniqueViewers' ? null : (
         <span className={styles.metricSplit}>
           {t('splitRegistered', { count: split.registered })}
           {' · '}

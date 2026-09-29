@@ -10,6 +10,7 @@ export * from './comment';
 export * from './common';
 export * from './company';
 export * from './contact';
+export * from './dashboard';
 export * from './event-batch';
 export * from './favorite';
 export * from './geo';

@@ -1,0 +1,168 @@
+.wrap {
+  padding: var(--space6) 0 var(--space12);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space5);
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 600;
+}
+
+.periods {
+  display: flex;
+  gap: var(--space1);
+  flex-wrap: wrap;
+}
+
+.period {
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusPill);
+  background: var(--surface);
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  cursor: pointer;
+}
+
+.periodSelected {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primarySubtle);
+}
+
+.block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space5);
+  margin-bottom: var(--space5);
+}
+
+.blockTitle {
+  font-family: var(--fontDisplay);
+  font-size: var(--textLg);
+  font-weight: 600;
+  margin-bottom: var(--space2);
+}
+
+.hint {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  margin: 0 0 var(--space4);
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--textSm);
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: var(--space2) var(--space3);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--secondaryText);
+}
+
+.table tbody tr:last-child th,
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.sub {
+  display: block;
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* «Высокий спрос, мало анкет» (фаза 6) — тот же визуальный язык, что и
+   «слот не работает» в кабинете рекламодателя: акцент на строке, которую
+   и открывают эту таблицу искать. */
+.flaggedRow {
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+
+.badge {
+  display: inline-block;
+  margin-left: var(--space2);
+  padding: 1px var(--space2);
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  border-radius: var(--radiusPill);
+  white-space: nowrap;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space3);
+  margin-bottom: var(--space4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space4);
+  background: var(--surfaceSunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+}
+
+.cardLabel {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.cardValue {
+  font-family: var(--fontDisplay);
+  font-size: var(--text2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.muted {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.empty {
+  padding: var(--space12) 0;
+  text-align: center;
+  color: var(--secondaryText);
+}
+
+.err {
+  color: var(--danger);
+  font-size: var(--textSm);
+  margin-bottom: var(--space4);
+}

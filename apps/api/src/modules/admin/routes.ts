@@ -5,6 +5,8 @@ import {
   cityTopInputSchema,
   cityTopListSchema,
   createStaffSchema,
+  dashboardQuerySchema,
+  dashboardSchema,
   grantTopInputSchema,
   grantTopResultSchema,
   moderationLogEntrySchema,
@@ -23,7 +25,9 @@ import { photoUrl } from '../../mappers.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { loadMoney } from '../analytics/admin-money.js';
+import { loadDashboard } from '../analytics/dashboard.js';
 import { loadOverview } from '../analytics/overview.js';
+import { loadPromotionEffects } from '../analytics/promotion.js';
 import { loadAnalytics } from '../analytics/query.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
@@ -397,9 +401,11 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       const since = new Date(Date.now() - ANALYTICS_PERIOD_DAYS[period] * 24 * 60 * 60 * 1000);
+      const scope = { profiles, ownerId: userId };
 
-      const [traffic, money, listing] = await Promise.all([
-        loadAnalytics(fastify.prisma, { profiles, ownerId: userId }, period),
+      const [analytics, promotions, money, listing] = await Promise.all([
+        loadAnalytics(fastify.prisma, scope, period),
+        loadPromotionEffects(fastify.prisma, scope),
         loadMoney(fastify.prisma, userId, since),
         fastify.prisma.listing.findFirst({
           where: { userId },
@@ -407,6 +413,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
           select: { status: true, term: true, expiresAt: true },
         }),
       ]);
+      const traffic = { ...analytics, promotions };
 
       return {
         advertiser: {
@@ -448,6 +455,25 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     async (request) => loadOverview(fastify.prisma, request.query),
+  );
+
+  /**
+   * Внутренний дашборд (фаза 6 спеки аналитики): источники трафика с долей
+   * ботов, спрос по городам против числа анкет, выручка по дням. Только
+   * роллапы — на 90 днях та же цена запроса, что и на семи.
+   */
+  fastify.get(
+    '/admin/dashboard',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        querystring: dashboardQuerySchema,
+        response: { 200: dashboardSchema },
+      },
+    },
+    async (request) => loadDashboard(fastify.prisma, request.query.period),
   );
 
   /**

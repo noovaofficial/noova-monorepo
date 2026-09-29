@@ -4,6 +4,7 @@ import {
   type AnalyticsPeriod,
   type AnalyticsPoint,
   type AnalyticsSplit,
+  CONTACT_EVENT_KINDS,
   CONTACT_TYPES,
   type ContactType,
 } from '@noova/shared';
@@ -77,6 +78,19 @@ const emptySplit = (): AnalyticsSplit => ({ total: 0, registered: 0, anonymous: 
 type Bucket = { day: string; kind: FunnelKind; registered: boolean; n: number };
 type ProfileBucket = { profileId: string; kind: FunnelKind; n: number };
 type ContactBucket = { contactType: ContactType | null; n: number };
+/** День × анкета: разных посетителей в этот день у этой анкеты. Не делится
+ *  на вошедших/гостей — см. комментарий у `uniqueViewers` в схеме. */
+type ViewerBucket = { day: string; profileId: string; n: number };
+/** Анкета → контактов за последние 30 дней, фикс, не выбранный период —
+ *  «слот не работает» (фаза 5) один и тот же на всех переключателях сверху. */
+type Contacts30Bucket = { profileId: string; n: number };
+
+/** Ровно 30 суток назад от текущего момента, не от календарной границы
+ *  Берлина: это не отчётный период с графиком по дням, а один плоский
+ *  порог для булева флага, точность до дня ему не нужна. */
+function daysAgo(now: Date, days: number): Date {
+  return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+}
 
 export type AnalyticsScope = {
   /** Анкеты, по которым собираем. Пустой список — у рекламодателя ещё нет анкет. */
@@ -110,6 +124,7 @@ export async function loadAnalytics(
     to,
     totals: {
       views: emptySplit(),
+      uniqueViewers: emptySplit(),
       favorites: emptySplit(),
       contactReveals: emptySplit(),
       contactClicks: emptySplit(),
@@ -117,12 +132,14 @@ export async function loadAnalytics(
     series: dateRange(from, to).map((date) => ({
       date,
       views: 0,
+      uniqueViewers: 0,
       favorites: 0,
       contactReveals: 0,
       contactClicks: 0,
     })),
     contacts: CONTACT_TYPES.map((type) => ({ type, clicks: 0 })),
     profiles: [],
+    promotions: [],
   };
 
   // Ни одной анкеты — считать нечего, а `IN ()` в запросе ещё и не соберётся.
@@ -160,7 +177,9 @@ export async function loadAnalytics(
    * этого условия проверял бы по графику сам себя. Гости (`userId IS NULL`)
    * остаются: среди них его не отличить, да и не нужно.
    */
-  const [buckets, byProfile, byContact] = await Promise.all([
+  const since30 = daysAgo(now, 30);
+
+  const [buckets, byProfile, byContact, viewerBuckets, contacts30] = await Promise.all([
     prisma.$queryRaw<Bucket[]>`
       SELECT to_char(${berlinDay}, 'YYYY-MM-DD') AS day,
              "kind",
@@ -194,6 +213,41 @@ export async function loadAnalytics(
          AND ("userId" IS NULL OR "userId" <> ${ownerId})
        GROUP BY 1
     `,
+    /**
+     * Уникальные посетители: посетитель — `sessionId`, если он известен
+     * (гость без JS или заблокировавший `sessionStorage` — редкость), иначе
+     * хэш IP. День и анкета вместе в одной группировке — этого достаточно
+     * и для графика (сумма по анкетам за день), и для таблицы по анкетам
+     * (сумма по дням за анкету): строки не пересекаются, суммировать в обе
+     * стороны безопасно.
+     */
+    prisma.$queryRaw<ViewerBucket[]>`
+      SELECT to_char(${berlinDay}, 'YYYY-MM-DD') AS day,
+             "profileId",
+             count(DISTINCT COALESCE("sessionId", "ipHash"))::int AS n
+        FROM "ProfileEvent"
+       WHERE "profileId" = ANY(${ids})
+         AND "kind" = 'view'::"ProfileEventKind"
+         AND "createdAt" >= ${since}
+         AND "isBot" = FALSE
+         AND ("userId" IS NULL OR "userId" <> ${ownerId})
+       GROUP BY 1, 2
+    `,
+    /**
+     * «Слот не работает» (фаза 5): контакты за последние 30 суток —
+     * фиксированное окно, отдельное от `since` выше (тот зависит от
+     * выбранного периода отчёта, этот — нет).
+     */
+    prisma.$queryRaw<Contacts30Bucket[]>`
+      SELECT "profileId", count(*)::int AS n
+        FROM "ProfileEvent"
+       WHERE "profileId" = ANY(${ids})
+         AND "kind" = ANY(${CONTACT_EVENT_KINDS}::"ProfileEventKind"[])
+         AND "createdAt" >= ${since30}
+         AND "isBot" = FALSE
+         AND ("userId" IS NULL OR "userId" <> ${ownerId})
+       GROUP BY 1
+    `,
   ]);
 
   const result = empty;
@@ -213,6 +267,24 @@ export async function loadAnalytics(
     const point = pointByDate.get(bucket.day);
     if (point) point[metric] += bucket.n;
   }
+
+  const viewersByProfile = new Map<string, number>();
+  for (const bucket of viewerBuckets) {
+    // Разбивки на вошедших/гостей у этой метрики нет (см. схему) — весь
+    // прирост идёт в `anonymous`, чтобы `total` совпадал с суммой split.
+    result.totals.uniqueViewers.total += bucket.n;
+    result.totals.uniqueViewers.anonymous += bucket.n;
+
+    const point = pointByDate.get(bucket.day);
+    if (point) point.uniqueViewers += bucket.n;
+
+    viewersByProfile.set(
+      bucket.profileId,
+      (viewersByProfile.get(bucket.profileId) ?? 0) + bucket.n,
+    );
+  }
+
+  const contacts30ByProfile = new Map(contacts30.map((row) => [row.profileId, row.n]));
 
   const clicksByType = new Map(byContact.map((row) => [row.contactType, row.n]));
   result.contacts = CONTACT_TYPES.map((type) => ({ type, clicks: clicksByType.get(type) ?? 0 }));
@@ -236,9 +308,11 @@ export async function loadAnalytics(
         displayName: profile.displayName,
         slug: profile.slug,
         views: 0,
+        uniqueViewers: viewersByProfile.get(profile.id) ?? 0,
         favorites: 0,
         contactReveals: 0,
         contactClicks: 0,
+        hasNoContacts30d: (contacts30ByProfile.get(profile.id) ?? 0) === 0,
       };
       for (const bucket of counts.get(profile.id) ?? []) {
         row[KIND_TO_METRIC[bucket.kind]] += bucket.n;

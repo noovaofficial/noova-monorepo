@@ -41,13 +41,30 @@ function report(overrides: Partial<Analytics> = {}): Analytics {
     to: '2026-09-03',
     totals: {
       views: split(1248, 412),
+      // Разбивки на вошедших/гостей нет по смыслу метрики — весь итог
+      // в `anonymous`, как и в реальном ответе сервера (см. query.ts).
+      uniqueViewers: split(860, 0),
       favorites: split(37, 37),
       contactReveals: split(214, 61),
       contactClicks: split(96, 28),
     },
     series: [
-      { date: '2026-09-02', views: 40, favorites: 1, contactReveals: 7, contactClicks: 3 },
-      { date: '2026-09-03', views: 55, favorites: 2, contactReveals: 9, contactClicks: 4 },
+      {
+        date: '2026-09-02',
+        views: 40,
+        uniqueViewers: 31,
+        favorites: 1,
+        contactReveals: 7,
+        contactClicks: 3,
+      },
+      {
+        date: '2026-09-03',
+        views: 55,
+        uniqueViewers: 42,
+        favorites: 2,
+        contactReveals: 9,
+        contactClicks: 4,
+      },
     ],
     contacts: [
       { type: 'phone', clicks: 20 },
@@ -56,6 +73,7 @@ function report(overrides: Partial<Analytics> = {}): Analytics {
       { type: 'viber', clicks: 0 },
     ],
     profiles: [],
+    promotions: [],
     ...overrides,
   };
 }
@@ -134,6 +152,15 @@ describe('карточки итогов', () => {
     // не бывает по устройству функции, и строка «0 гостей» вводила бы в
     // заблуждение.
     expect(card(t.metric_favorites).textContent).not.toContain('37 вошли');
+  });
+
+  it('не показывают разбивку у уникальных посетителей', async () => {
+    renderPanel();
+    await waitFor(() => expect(card(t.metric_uniqueViewers)).toBeTruthy());
+
+    // Один посетитель за день — не гость и не вошедший, а просто один
+    // человек; строка «0 вошли» тут ничего не объясняет.
+    expect(card(t.metric_uniqueViewers).textContent).not.toContain('вошли');
   });
 
   it('не показывают долей между ступенями', async () => {
@@ -226,18 +253,22 @@ describe('разбивка по анкетам', () => {
             displayName: 'Вторая',
             slug: 'vtoraya',
             views: 900,
+            uniqueViewers: 640,
             favorites: 20,
             contactReveals: 150,
             contactClicks: 70,
+            hasNoContacts30d: false,
           },
           {
             profileId: 'p1',
             displayName: 'Первая',
             slug: 'pervaya',
             views: 348,
+            uniqueViewers: 210,
             favorites: 17,
             contactReveals: 64,
             contactClicks: 26,
+            hasNoContacts30d: true,
           },
         ],
       }),
@@ -247,8 +278,49 @@ describe('разбивка по анкетам', () => {
     await waitFor(() => expect(screen.getByText(t.profilesTitle)).toBeTruthy());
 
     // Список читают, чтобы найти отстающую анкету; порядок «как заведены»
-    // этому не помогает.
+    // этому не помогает. Текст ячейки — имя плюс, если есть, значок флага,
+    // поэтому сверяем начало строки, а не всю ячейку целиком.
     const names = screen.getAllByRole('rowheader').map((cell) => cell.textContent);
-    expect(names).toEqual(['Вторая', 'Первая']);
+    expect(names[0]?.startsWith('Вторая')).toBe(true);
+    expect(names[1]?.startsWith('Первая')).toBe(true);
+
+    // Флаг «слот не работает» — только у анкеты без контактов 30 дней.
+    const rows = screen.getAllByRole('row');
+    const first = rows.find((row) => row.textContent?.includes('Вторая'));
+    const second = rows.find((row) => row.textContent?.includes('Первая'));
+    expect(within(first as HTMLElement).queryByText(t.flagNoContacts)).toBeNull();
+    expect(within(second as HTMLElement).getByText(t.flagNoContacts)).toBeTruthy();
+  });
+});
+
+describe('эффект ТОПа', () => {
+  it('не показывается, если анкету никогда не поднимали', async () => {
+    renderPanel();
+    await waitFor(() => expect(card(t.metric_views)).toBeTruthy());
+
+    expect(screen.queryByText(t.promotionTitle)).toBeNull();
+  });
+
+  it('показывает контакты в день до и во время последнего ТОПа', async () => {
+    api.fetchAnalytics.mockResolvedValue(
+      report({
+        promotions: [
+          {
+            profileId: 'p0',
+            displayName: 'Анкета',
+            slug: 'anketa',
+            startsAt: '2026-08-20T00:00:00.000Z',
+            expiresAt: '2026-08-27T00:00:00.000Z',
+            contactsPerDayBefore: 2,
+            contactsPerDayDuring: 5,
+          },
+        ],
+      }),
+    );
+
+    renderPanel();
+    await waitFor(() => expect(screen.getByText(t.promotionTitle)).toBeTruthy());
+
+    expect(screen.getByText('Анкета')).toBeTruthy();
   });
 });

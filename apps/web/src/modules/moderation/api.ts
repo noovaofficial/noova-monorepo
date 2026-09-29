@@ -6,6 +6,8 @@ import {
   type BlockedProfile,
   blockedProfileSchema,
   type CreateStaffInput,
+  type Dashboard,
+  dashboardSchema,
   type GrantTopResult,
   grantTopResultSchema,
   type ManagedUser,
@@ -256,6 +258,11 @@ export function fetchOverview(query: OverviewQuery): Promise<Overview> {
 /** Кто сейчас в ТОПе: анкеты и агентства (только админ). */
 export function fetchTopNow(): Promise<TopNow> {
   return call('/admin/top-now', topNowSchema);
+}
+
+/** Внутренний дашборд: источники, спрос по городам, выручка (только админ). */
+export function fetchDashboard(period: AnalyticsPeriod): Promise<Dashboard> {
+  return call(`/admin/dashboard?period=${period}`, dashboardSchema);
 }
 
 export function fetchStaff(): Promise<StaffMember[]> {

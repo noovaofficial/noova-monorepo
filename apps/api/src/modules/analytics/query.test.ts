@@ -11,18 +11,33 @@ const NOW = new Date('2026-09-03T10:00:00Z');
 type Row = Record<string, unknown>;
 
 /**
- * Три запроса статистики различаются текстом, а не порядком: `Promise.all`
+ * Пять запросов статистики различаются текстом, а не порядком: `Promise.all`
  * их не упорядочивает, и раскладывать ответы по индексу вызова значит
- * привязать тест к тому, чего он не контролирует.
+ * привязать тест к тому, чего он не контролирует. Каждый узнаётся по своему
+ * уникальному куску SQL — единственному месту, где он встречается:
+ * `"contactType"` только в запросе каналов, `DISTINCT` только в запросе
+ * уникальных посетителей, `registered` только в посуточных бакетах,
+ * `"view"` в JSON-параметре — это `FUNNEL_KINDS` (там есть `view`), которого
+ * нет в `CONTACT_EVENT_KINDS` запроса «слот не работает».
  */
-function fakePrisma(rows: { buckets?: Row[]; profiles?: Row[]; contacts?: Row[] } = {}) {
+function fakePrisma(
+  rows: {
+    buckets?: Row[];
+    profiles?: Row[];
+    contacts?: Row[];
+    viewers?: Row[];
+    contacts30?: Row[];
+  } = {},
+) {
   const queryRaw = vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => {
     // Куски запроса, собранные через `Prisma.sql`, лежат в значениях, а не
     // в статических строках: без них текст запроса читается неполным.
     const sql = [...strings, ...values.map((value) => JSON.stringify(value))].join(' ');
-    if (sql.includes('to_char')) return Promise.resolve(rows.buckets ?? []);
-    if (sql.includes("'contact_click'")) return Promise.resolve(rows.contacts ?? []);
-    return Promise.resolve(rows.profiles ?? []);
+    if (sql.includes('"contactType"')) return Promise.resolve(rows.contacts ?? []);
+    if (sql.includes('DISTINCT')) return Promise.resolve(rows.viewers ?? []);
+    if (sql.includes('registered')) return Promise.resolve(rows.buckets ?? []);
+    if (sql.includes('"view"')) return Promise.resolve(rows.profiles ?? []);
+    return Promise.resolve(rows.contacts30 ?? []);
   });
   // biome-ignore lint/suspicious/noExplicitAny: подделка ровно того куска клиента, который нужен запросу
   return { $queryRaw: queryRaw } as any as PrismaClient;
@@ -157,6 +172,67 @@ describe('разбивка по анкетам', () => {
     // Анкета без единого события остаётся в таблице: её отсутствие
     // выглядело бы как удалённая, а не как никем не открытая.
     expect(result.profiles.at(-1)).toMatchObject({ profileId: 'p1', views: 0 });
+  });
+
+  /**
+   * Доступ (фаза 5): таблица строится проходом по `scope.profiles`, а не по
+   * тому, что вернула база, — строка для чужой анкеты в ответе `$queryRaw`
+   * (например, из-за будущей ошибки в WHERE-фильтре SQL) не должна попасть
+   * в отчёт этого рекламодателя ни при каких обстоятельствах. Настоящий
+   * запрос и так фильтрует по `profileId = ANY(ids)`; этот тест —
+   * дополнительный слой на случай, если фильтр когда-нибудь сломается.
+   */
+  it('не включает анкету, которой нет в scope, даже если для неё пришли строки', async () => {
+    const prisma = fakePrisma({
+      profiles: [
+        { profileId: 'p0', kind: 'view', n: 3 },
+        { profileId: 'evil-someone-elses-profile', kind: 'view', n: 999 },
+      ],
+      viewers: [{ day: '2026-09-03', profileId: 'evil-someone-elses-profile', n: 500 }],
+      contacts30: [{ profileId: 'evil-someone-elses-profile', n: 1 }],
+    });
+
+    const result = await loadAnalytics(prisma, scope(2), 'd7', NOW);
+
+    expect(result.profiles.map((row) => row.profileId)).toEqual(['p0', 'p1']);
+    expect(result.profiles.some((row) => row.profileId === 'evil-someone-elses-profile')).toBe(
+      false,
+    );
+  });
+});
+
+describe('уникальные посетители', () => {
+  it('суммируется по дням в график и по анкетам в таблицу без пересечения', async () => {
+    const prisma = fakePrisma({
+      viewers: [
+        { day: '2026-09-03', profileId: 'p0', n: 5 },
+        { day: '2026-09-03', profileId: 'p1', n: 2 },
+        { day: '2026-09-02', profileId: 'p0', n: 3 },
+      ],
+    });
+
+    const result = await loadAnalytics(prisma, scope(2), 'd7', NOW);
+    const byDate = new Map(result.series.map((point) => [point.date, point]));
+
+    expect(result.totals.uniqueViewers).toEqual({ total: 10, registered: 0, anonymous: 10 });
+    expect(byDate.get('2026-09-03')?.uniqueViewers).toBe(7);
+    expect(byDate.get('2026-09-02')?.uniqueViewers).toBe(3);
+
+    const byProfile = new Map(result.profiles.map((row) => [row.profileId, row.uniqueViewers]));
+    expect(byProfile.get('p0')).toBe(8);
+    expect(byProfile.get('p1')).toBe(2);
+  });
+});
+
+describe('«слот не работает»', () => {
+  it('помечает анкету без контактов за 30 дней, не за выбранный период', async () => {
+    const prisma = fakePrisma({ contacts30: [{ profileId: 'p0', n: 1 }] });
+    const result = await loadAnalytics(prisma, scope(2), 'd7', NOW);
+
+    const byProfile = new Map(result.profiles.map((row) => [row.profileId, row.hasNoContacts30d]));
+    expect(byProfile.get('p0')).toBe(false);
+    // Ни одной строки для p1 — контактов не было вовсе, флаг всё равно есть.
+    expect(byProfile.get('p1')).toBe(true);
   });
 });
 

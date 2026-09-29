@@ -57,7 +57,10 @@
    парами, чтобы карточка не сжималась до нечитаемой. */
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* auto-fit, а не жёсткое число колонок: карточек то четыре, то пять
+     (`uniqueViewers` — уточнение просмотров, а не отдельная ступень —
+     добавляет пятую), и подстраивать сетку под точное число незачем. */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: var(--space3);
   margin-bottom: var(--space6);
 }
@@ -204,6 +207,88 @@
 
 .nameCell {
   font-weight: 600;
+}
+
+/* «Слот не работает» (фаза 5): анкета без контактов 30 дней подряд —
+   строка теряется среди прочих без выраженного акцента, а именно её и
+   ищут, открывая эту таблицу у агентства с восемью анкетами. */
+.flaggedRow {
+  background: color-mix(in srgb, var(--warning) 8%, transparent);
+}
+
+.flagBadge {
+  display: inline-block;
+  margin-left: var(--space2);
+  padding: 1px var(--space2);
+  font-size: var(--textXs);
+  font-weight: 600;
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 16%, transparent);
+  border-radius: var(--radiusPill);
+  white-space: nowrap;
+}
+
+/* Эффект ТОПа: строка на анкету, до/во время рядом — сравнивают на глаз,
+   не по абзацу текста между двумя числами. */
+.promoList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space4);
+}
+
+.promoRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space2) var(--space4);
+  padding-bottom: var(--space3);
+  border-bottom: 1px solid var(--border);
+}
+
+.promoRow:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.promoName {
+  font-weight: 600;
+}
+
+.promoRange {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.promoStats {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space4);
+  font-variant-numeric: tabular-nums;
+}
+
+.promoStat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.promoStatLabel {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+}
+
+.promoStatValue {
+  font-weight: 600;
+}
+
+.promoUp {
+  color: var(--success);
+}
+
+.promoDown {
+  color: var(--danger);
 }
 
 .numCell {

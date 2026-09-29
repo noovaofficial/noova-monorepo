@@ -18,15 +18,22 @@ import { contactTypeSchema } from './contact';
 
 export const analyticsMetricSchema = z.enum([
   'views',
+  'uniqueViewers',
   'favorites',
   'contactReveals',
   'contactClicks',
 ]);
 export type AnalyticsMetric = z.infer<typeof analyticsMetricSchema>;
 
-/** Порядок в интерфейсе — порядок воронки, от широкой ступени к узкой. */
+/**
+ * Порядок в интерфейсе — порядок воронки, от широкой ступени к узкой.
+ * `uniqueViewers` — не отдельная ступень, а уточнение «просмотров» (сколько
+ * разных людей их дали), поэтому стоит сразу за ней, а не наравне с
+ * избранным и контактами. См. `docs/analytics-metrics.md`.
+ */
 export const ANALYTICS_METRICS: readonly AnalyticsMetric[] = [
   'views',
+  'uniqueViewers',
   'favorites',
   'contactReveals',
   'contactClicks',
@@ -52,6 +59,9 @@ export const analyticsPointSchema = z.object({
   /** Дата в часовом поясе Европы/Берлина, YYYY-MM-DD. */
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   views: z.number().int().min(0),
+  /** Разных посетителей за этот день — не сумма за период, см.
+   *  `docs/analytics-metrics.md#unique-viewer-уникальный-посетитель`. */
+  uniqueViewers: z.number().int().min(0),
   favorites: z.number().int().min(0),
   contactReveals: z.number().int().min(0),
   contactClicks: z.number().int().min(0),
@@ -67,6 +77,12 @@ export type AnalyticsContactBreakdown = z.infer<typeof analyticsContactBreakdown
 
 export const analyticsTotalsSchema = z.object({
   views: analyticsSplitSchema,
+  /** Разбивки на вошедших/гостей у этой метрики по существу нет — один
+   *  посетитель за день не гость и не вошедший, а просто один человек.
+   *  `registered` здесь всегда 0, `anonymous` равен `total`: поле сохранено
+   *  ради общей формы `AnalyticsSplit`, интерфейс эту разбивку не показывает
+   *  (см. `MetricCard` в кабинете). */
+  uniqueViewers: analyticsSplitSchema,
   /** Добавления в избранное. Гостевых не бывает — отметка требует входа. */
   favorites: analyticsSplitSchema,
   contactReveals: analyticsSplitSchema,
@@ -81,11 +97,40 @@ export const analyticsProfileRowSchema = z.object({
   displayName: z.string(),
   slug: z.string(),
   views: z.number().int().min(0),
+  uniqueViewers: z.number().int().min(0),
   favorites: z.number().int().min(0),
   contactReveals: z.number().int().min(0),
   contactClicks: z.number().int().min(0),
+  /**
+   * Ни одного контакта (раскрытия или клика) за последние 30 дней — фикс,
+   * а не выбранный период отчёта: анкета за пределами окна «слота не
+   * работает» одна на все выбранные периоды, иначе строка мигала бы
+   * тревогой и обратно при переключении 7/30/90 дней.
+   */
+  hasNoContacts30d: z.boolean(),
 });
 export type AnalyticsProfileRow = z.infer<typeof analyticsProfileRowSchema>;
+
+/**
+ * Эффект ТОПа для одной анкеты: контакты в день во время последнего
+ * размещения против 14 дней до его начала. Строится по `TopPlacement`,
+ * который держит только текущее или последнее размещение анкеты (D-11:
+ * покупка заново оживляет ту же строку), поэтому история более ранних
+ * размещений сюда не попадает — прошлых покупок в базе просто не осталось.
+ */
+export const analyticsPromotionEffectSchema = z.object({
+  profileId: z.string(),
+  displayName: z.string(),
+  slug: z.string(),
+  /** ISO-дата начала и окончания размещения. */
+  startsAt: z.string(),
+  expiresAt: z.string(),
+  /** Контакты в день за 14 суток до `startsAt`. */
+  contactsPerDayBefore: z.number().min(0),
+  /** Контакты в день за время действия ТОПа: от `startsAt` до `min(expiresAt, сейчас)`. */
+  contactsPerDayDuring: z.number().min(0),
+});
+export type AnalyticsPromotionEffect = z.infer<typeof analyticsPromotionEffectSchema>;
 
 /** Периоды выбраны так, чтобы младший укладывался в неделю рекламы,
  *  а старший не упирался в срок хранения журнала (365 дней). */
@@ -105,6 +150,8 @@ export const analyticsSchema = z.object({
   /** Пусто у индивидуалки и салона: анкета у них одна, и таблица из
    *  единственной строки повторяла бы карточки выше. */
   profiles: z.array(analyticsProfileRowSchema),
+  /** Пусто у тех, кто ни разу не поднимал анкету в ТОП. */
+  promotions: z.array(analyticsPromotionEffectSchema),
 });
 export type Analytics = z.infer<typeof analyticsSchema>;
 
