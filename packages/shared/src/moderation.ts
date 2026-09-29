@@ -152,6 +152,10 @@ export const moderatedProfileSchema = z.object({
     }),
   ),
   verificationStatus: verificationStatusSchema,
+  /** Id заявки на проверку анкеты (`VerificationCase`) — на неё ссылаются
+   *  `/moderation/verifications/:id/approve|reject`. `null`, пока анкета ни
+   *  разу не отправлялась на проверку. */
+  verificationCaseId: z.string().nullable(),
   owner: z.object({
     id: z.string(),
     email: z.string(),

@@ -1615,7 +1615,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
               rejectedReason: true,
             },
           },
-          verification: { select: { status: true } },
+          verification: { select: { id: true, status: true } },
         },
       });
 
@@ -1654,6 +1654,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           })),
         ),
         verificationStatus: profile.verification?.status ?? 'none',
+        verificationCaseId: profile.verification?.id ?? null,
         owner: {
           id: profile.owner.id,
           email: profile.owner.email,

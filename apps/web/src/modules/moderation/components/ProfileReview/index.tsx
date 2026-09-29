@@ -10,12 +10,14 @@ import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import {
   approvePhoto,
+  approveVerification,
   blockProfile,
   deleteModeratedProfile,
   deleteUser,
   fetchModeratedProfile,
   grantProfileTop,
   rejectPhoto,
+  rejectVerification,
   unblockProfile,
 } from '@/modules/moderation/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
@@ -23,7 +25,7 @@ import { queryKeys } from '@/shared/query-keys';
 import { ActionCard } from '../ActionCard';
 import cardStyles from '../ActionCard/ActionCard.module.css';
 import { AdvertiserAnalyticsLink } from '../AdvertiserAnalytics';
-import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon } from '../icons';
+import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon, VerifyIcon } from '../icons';
 import styles from '../Moderation.module.css';
 import { PhotoViewer } from '../PhotoViewer';
 
@@ -51,6 +53,8 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const [topDays, setTopDays] = useState('');
   const [rejectingPhotoId, setRejectingPhotoId] = useState<string | null>(null);
   const [photoReason, setPhotoReason] = useState('');
+  const [rejectingVerification, setRejectingVerification] = useState(false);
+  const [verificationReason, setVerificationReason] = useState('');
 
   const adjustLimit = useQuery({
     queryKey: queryKeys.adjustLimit(),
@@ -85,6 +89,24 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const unblock = useMutation({
     mutationFn: () => unblockProfile(profileId),
     onSuccess: refresh,
+  });
+
+  // Решение по самой заявке на проверку анкеты (VerificationCase) — отдельно
+  // от блокировки: та снимает уже опубликованную/проверенную анкету с показа,
+  // а это решение открывает или закрывает путь к публикации впервые.
+  const approveReview = useMutation({
+    mutationFn: (caseId: string) => approveVerification(caseId),
+    onSuccess: refresh,
+  });
+
+  const rejectReview = useMutation({
+    mutationFn: ({ caseId, reason }: { caseId: string; reason: string }) =>
+      rejectVerification(caseId, reason),
+    onSuccess: async () => {
+      setRejectingVerification(false);
+      setVerificationReason('');
+      await refresh();
+    },
   });
 
   const grantTop = useMutation({
@@ -147,6 +169,8 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const busy =
     block.isPending ||
     unblock.isPending ||
+    approveReview.isPending ||
+    rejectReview.isPending ||
     grantTop.isPending ||
     adjust.isPending ||
     remove.isPending ||
@@ -211,6 +235,73 @@ export function ProfileReview({ profileId }: { profileId: string }) {
       </div>
 
       <div className={cardStyles.grid}>
+        {/* Решение по заявке на проверку — видно, только пока заявка ждёт
+            решения: одобренную или отклонённую анкету отсюда не открыть
+            заново, для этого владелица отправляет её на проверку повторно. */}
+        {profile.verificationCaseId && profile.verificationStatus === 'pending' ? (
+          <ActionCard
+            icon={<VerifyIcon />}
+            title={t('verificationSection')}
+            status={t('verificationSectionPending')}
+            expanded={rejectingVerification}
+          >
+            {rejectingVerification ? (
+              <>
+                <textarea
+                  className={styles.textarea}
+                  value={verificationReason}
+                  onChange={(event) => setVerificationReason(event.target.value)}
+                  placeholder={t('reason')}
+                  minLength={5}
+                />
+                <span className={styles.hint}>{t('reasonHint')}</span>
+                <div className={cardStyles.actions}>
+                  <Button
+                    disabled={busy || verificationReason.trim().length < 5}
+                    onClick={() =>
+                      rejectReview.mutate({
+                        caseId: profile.verificationCaseId as string,
+                        reason: verificationReason.trim(),
+                      })
+                    }
+                  >
+                    {t('reject')}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => setRejectingVerification(false)}
+                  >
+                    {t('cancel')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={cardStyles.actions}>
+                <Button
+                  disabled={busy}
+                  onClick={() => approveReview.mutate(profile.verificationCaseId as string)}
+                >
+                  {t('approve')}
+                </Button>
+                <Button
+                  variant="secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    setRejectingVerification(true);
+                    setVerificationReason('');
+                  }}
+                >
+                  {t('reject')}
+                </Button>
+              </div>
+            )}
+            {rejectReview.isError ? (
+              <span className={styles.hint}>{t('verificationSectionFailed')}</span>
+            ) : null}
+          </ActionCard>
+        ) : null}
+
         {/* Блокировка анкеты — основная мера модератора: показ прекращается,
             но владелица видит причину, правит и отправляет на проверку заново.
             Учётная запись при этом не трогается, иначе исправить было бы нечем. */}
