@@ -37,6 +37,11 @@
  *     node dist/scripts/import-agency-profiles.js'
  *
  * PRICES — "минуты:центы" через запятую, столько слотов, сколько нужно.
+ *
+ * Без PRICES и без TELEGRAM_HANDLE/WHATSAPP_NUMBER тарифы и контакты
+ * копируются из карточки компании агентства (CompanyPriceSlot/CompanyContact) —
+ * так заведено для Armani Escort (2026-09-29): агентство уже заполнило их у себя
+ * в кабинете, дублировать руками в команде незачем.
  */
 import 'dotenv/config';
 import { readFile, readdir, writeFile } from 'node:fs/promises';
@@ -46,6 +51,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
 import type {
   AppearanceType,
+  ContactType,
   BodyType,
   BreastSize,
   BreastType,
@@ -66,36 +72,40 @@ if (!connectionString) {
 const AGENCY_EMAIL = process.env.AGENCY_EMAIL;
 const INPUT_DIR = process.env.INPUT_DIR;
 const PRICES_RAW = process.env.PRICES;
-if (!AGENCY_EMAIL || !INPUT_DIR || !PRICES_RAW) {
-  console.error(
-    'Нужны переменные окружения: AGENCY_EMAIL, INPUT_DIR, PRICES ("минуты:центы,минуты:центы,...")',
-  );
-  process.exit(1);
-}
-if (!process.env.TELEGRAM_HANDLE && !process.env.WHATSAPP_NUMBER) {
-  console.error('Нужен хотя бы один контакт: TELEGRAM_HANDLE или WHATSAPP_NUMBER.');
+if (!AGENCY_EMAIL || !INPUT_DIR) {
+  console.error('Нужны переменные окружения: AGENCY_EMAIL, INPUT_DIR');
   process.exit(1);
 }
 
 const CITY_SLUG = process.env.CITY_SLUG ?? 'frankfurt';
 
-const CONTACTS: Array<{ type: 'telegram' | 'whatsapp'; value: string }> = [
+type Contact = { type: ContactType; value: string };
+type Price = { durationMinutes: number; incallCents: number | null; outcallCents: number | null };
+
+/** Контакты из окружения; пусто — значит берём у компании (см. loadAgencyDefaults). */
+const ENV_CONTACTS: Contact[] = [
   ...(process.env.TELEGRAM_HANDLE ? [{ type: 'telegram' as const, value: process.env.TELEGRAM_HANDLE }] : []),
   ...(process.env.WHATSAPP_NUMBER ? [{ type: 'whatsapp' as const, value: process.env.WHATSAPP_NUMBER }] : []),
 ];
 
 /** Единые тарифы на весь пакет анкет — приходят через PRICES, не из draft.json.
  *  Инкол и ауткол одинаковы (решение от 2026-09-21, подтверждено для обоих агентств). */
-const PRICE_SLOTS = PRICES_RAW.split(',').map((pair) => {
-  const [minutesRaw, centsRaw] = pair.split(':');
-  const durationMinutes = Number(minutesRaw);
-  const cents = Number(centsRaw);
-  if (!durationMinutes || !cents) {
-    throw new Error(`PRICES: не разобрать "${pair}" — ожидается "минуты:центы"`);
-  }
-  return { durationMinutes, incallCents: cents, outcallCents: cents };
-});
-const LOWEST_PRICE_CENTS = Math.min(...PRICE_SLOTS.map((p) => p.incallCents));
+const ENV_PRICE_SLOTS: Price[] | null = PRICES_RAW
+  ? PRICES_RAW.split(',').map((pair) => {
+      const [minutesRaw, centsRaw] = pair.split(':');
+      const durationMinutes = Number(minutesRaw);
+      const cents = Number(centsRaw);
+      if (!durationMinutes || !cents) {
+        throw new Error(`PRICES: не разобрать "${pair}" — ожидается "минуты:центы"`);
+      }
+      return { durationMinutes, incallCents: cents, outcallCents: cents };
+    })
+  : null;
+
+// Заполняются в main() — из окружения или из карточки компании.
+let CONTACTS: Contact[] = [];
+let PRICE_SLOTS: Price[] = [];
+let LOWEST_PRICE_CENTS = 0;
 
 const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
@@ -145,6 +155,37 @@ async function findAgency() {
     throw new Error(`${AGENCY_EMAIL} не является агентством (advertiserKind/company)`);
   }
   return { userId: user.id, companyId: user.company.id };
+}
+
+/** Тарифы и контакты: из окружения, если заданы, иначе — копия из карточки
+ *  компании. Контакты компании уже нормализованы (пишутся через тот же
+ *  normalizeContact в PUT /me/company); при создании анкеты прогоняются ещё
+ *  раз, как и контакты из окружения — повторная нормализация безвредна. */
+async function loadAgencyDefaults(companyId: string) {
+  const company = await prisma.company.findUniqueOrThrow({
+    where: { id: companyId },
+    select: {
+      contacts: { select: { type: true, value: true }, orderBy: { position: 'asc' } },
+      prices: {
+        select: { durationMinutes: true, incallCents: true, outcallCents: true },
+        orderBy: { durationMinutes: 'asc' },
+      },
+    },
+  });
+
+  PRICE_SLOTS = ENV_PRICE_SLOTS ?? company.prices;
+  CONTACTS = ENV_CONTACTS.length ? ENV_CONTACTS : company.contacts;
+  if (PRICE_SLOTS.length === 0) throw new Error('Нет тарифов: ни PRICES, ни тарифов в карточке компании');
+  if (CONTACTS.length === 0) throw new Error('Нет контактов: ни TELEGRAM_HANDLE/WHATSAPP_NUMBER, ни контактов компании');
+
+  const allCents = PRICE_SLOTS.flatMap((p) => [p.incallCents, p.outcallCents]).filter(
+    (c): c is number => typeof c === 'number' && c > 0,
+  );
+  if (allCents.length === 0) throw new Error('В тарифах нет ни одной цены');
+  LOWEST_PRICE_CENTS = Math.min(...allCents);
+
+  console.log(`Тарифы (${ENV_PRICE_SLOTS ? 'из PRICES' : 'из компании'}): ${PRICE_SLOTS.map((p) => `${p.durationMinutes}м=${p.incallCents ?? '—'}/${p.outcallCents ?? '—'}`).join(', ')}`);
+  console.log(`Контакты (${ENV_CONTACTS.length ? 'из окружения' : 'из компании'}): ${CONTACTS.map((c) => `${c.type} ${c.value}`).join(', ')}`);
 }
 
 async function findCity() {
@@ -325,6 +366,7 @@ async function importOne(
 
 async function main() {
   const agency = await findAgency();
+  await loadAgencyDefaults(agency.companyId);
   const city = await findCity();
 
   const allSlugs = (await readdir(INPUT_DIR!, { withFileTypes: true }))
