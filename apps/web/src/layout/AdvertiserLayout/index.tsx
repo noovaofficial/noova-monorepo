@@ -49,7 +49,10 @@ export function AdvertiserLayout({ children }: { children: ReactNode }) {
       ) : (
         <Link href="/account/profiles" className={itemClass('/account/profiles')}>
           <MenuIcon name="myProfiles" className={styles.itemIcon} />
-          {ta('myProfiles')}
+          {/* У агентства за этой ссылкой — анкеты девушек, а не его
+              собственная; у салона — записи заведений, поэтому подпись
+              только для агентства отличается от общей. */}
+          {ta(user?.advertiserKind === 'agency' ? 'myProfilesAgency' : 'myProfiles')}
         </Link>
       )}
 

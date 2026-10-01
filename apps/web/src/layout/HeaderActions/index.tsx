@@ -110,7 +110,13 @@ export function HeaderActions() {
                   role="menuitem"
                 >
                   <MenuIcon name="myProfiles" className={styles.itemIcon} />
-                  {ta(user.advertiserKind === 'individual' ? 'myProfile' : 'myProfiles')}
+                  {ta(
+                    user.advertiserKind === 'individual'
+                      ? 'myProfile'
+                      : user.advertiserKind === 'agency'
+                        ? 'myProfilesAgency'
+                        : 'myProfiles',
+                  )}
                 </Link>
                 {/* Подписка отдельно от кошелька: срок размещения — то, ради
                     чего заходят, а кошелёк — только способ его оплатить. */}
