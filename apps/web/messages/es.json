@@ -455,7 +455,7 @@
     "ovTopups": "Recargas",
     "ovPaying": "Anunciantes que pagan",
     "ovAvgCheck": "Ticket medio",
-    "ovNote": "Solo cuentan los € pagados (recargas). Los pagos se actualizan cada pocos minutos; vistas y clics, cada hora.",
+    "ovNote": "Solo cuentan los € pagados (recargas). Los pagos se actualizan cada pocos minutos; vistas y clics, cada hora. «Contactos mostrados» es el clic en «mostrar contactos»; «clics en contactos» es el clic en un canal después, dos pasos distintos.",
     "ovChartDays": "Pagos por día",
     "ovChartMonths": "Pagos por mes",
     "ovChartLabel": "Gráfico de pagos",
@@ -556,7 +556,7 @@
     "promotionPerDay": "{value} / día",
     "dashTitle": "Tráfico, ciudades e ingresos",
     "dashSourcesTitle": "Fuentes y campañas",
-    "dashSourcesHint": "Sesiones, proporción de bots y contactos por fuente en el período elegido.",
+    "dashSourcesHint": "Sesiones, proporción de bots y contactos por fuente en el período elegido. «Contacts» suma ambas acciones: contacto mostrado + clic en un canal de contacto.",
     "dashColSource": "Fuente",
     "dashColCampaign": "Campaña",
     "dashColSessions": "Sesiones",
@@ -566,7 +566,7 @@
     "dashCostPending": "aún sin datos",
     "dashEmpty": "Todavía no hay datos para este período.",
     "dashCitiesTitle": "Demanda por ciudad y categoría",
-    "dashCitiesHint": "Contactos por perfil publicado. Marcado: alta demanda con pocos perfiles.",
+    "dashCitiesHint": "Contactos por perfil publicado. Marcado: alta demanda con pocos perfiles. «Contacts» suma ambas acciones: contacto mostrado + clic en un canal de contacto.",
     "dashColCity": "Ciudad",
     "dashColCategory": "Categoría",
     "dashColProfileViews": "Vistas de perfil",
@@ -585,7 +585,8 @@
     "dashSource_referral": "Referencia",
     "dashSource_direct": "Directo",
     "dashKind_escort": "Escort",
-    "dashKind_massage": "Masaje"
+    "dashKind_massage": "Masaje",
+    "ovColReveals": "Contactos mostrados"
   },
   "moderation": {
     "title": "Moderación",

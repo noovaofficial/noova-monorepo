@@ -608,6 +608,11 @@ export const overviewKindStatsSchema = z.object({
   eurPerAdvertiserCents: z.number().int().nullable(),
   eurPerPublishedCents: z.number().int().nullable(),
   views: overviewSplitSchema,
+  /** Нажатие «показать контакты» — ступень между просмотром и кликом по
+   *  каналу. Без неё ноль кликов неотличим от нуля интереса: клика может
+   *  не быть и при живом спросе, если посетитель увидел номер и просто
+   *  набрал его не через сайт. */
+  contactReveals: overviewSplitSchema,
   contactClicks: overviewSplitSchema,
 });
 export type OverviewKindStats = z.infer<typeof overviewKindStatsSchema>;
@@ -622,6 +627,7 @@ export const overviewRowSchema = z.object({
   paidEurCents: z.number().int().nonnegative(),
   topupCount: z.number().int().nonnegative(),
   views: z.number().int().nonnegative(),
+  contactReveals: z.number().int().nonnegative(),
   contactClicks: z.number().int().nonnegative(),
   eurPerPublishedCents: z.number().int().nullable(),
   eurPerClickCents: z.number().int().nullable(),

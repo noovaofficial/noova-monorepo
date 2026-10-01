@@ -34,12 +34,15 @@ type UserMetrics = {
   topupCount: number;
   viewsReg: number;
   viewsAnon: number;
+  revealsReg: number;
+  revealsAnon: number;
   clicksReg: number;
   clicksAnon: number;
   giftedGc: number;
 };
 
 const views = (m: UserMetrics) => m.viewsReg + m.viewsAnon;
+const reveals = (m: UserMetrics) => m.revealsReg + m.revealsAnon;
 const clicks = (m: UserMetrics) => m.clicksReg + m.clicksAnon;
 
 /** Сводка по типам рекламодателя. Чистая функция: правила деления и долей
@@ -65,6 +68,10 @@ export function summarizeKinds(users: UserMetrics[]): OverviewKindStats[] {
         registered: group.reduce((sum, u) => sum + u.viewsReg, 0),
         anonymous: group.reduce((sum, u) => sum + u.viewsAnon, 0),
       },
+      contactReveals: {
+        registered: group.reduce((sum, u) => sum + u.revealsReg, 0),
+        anonymous: group.reduce((sum, u) => sum + u.revealsAnon, 0),
+      },
       contactClicks: {
         registered: group.reduce((sum, u) => sum + u.clicksReg, 0),
         anonymous: group.reduce((sum, u) => sum + u.clicksAnon, 0),
@@ -84,6 +91,7 @@ function toRow(m: UserMetrics, name: string | null): OverviewRow {
     paidEurCents: m.paidEurCents,
     topupCount: m.topupCount,
     views: views(m),
+    contactReveals: reveals(m),
     contactClicks: clicks(m),
     eurPerPublishedCents: ratioCents(m.paidEurCents, m.publishedProfiles),
     eurPerClickCents: ratioCents(m.paidEurCents, clicks(m)),
@@ -174,7 +182,7 @@ async function load(prisma: PrismaClient, query: OverviewQuery, now: Date): Prom
              sum(d."registered")::int AS registered, sum(d."anonymous")::int AS anonymous
         FROM "ProfileEventDaily" d
         JOIN "Profile" p ON p."id" = d."profileId"
-       WHERE d."kind" IN ('view'::"ProfileEventKind", 'contact_click'::"ProfileEventKind")
+       WHERE d."kind" IN ('view'::"ProfileEventKind", 'contact_reveal'::"ProfileEventKind", 'contact_click'::"ProfileEventKind")
          ${range ? Prisma.sql`AND d."day" >= ${range.from}::date AND d."day" <= ${range.to}::date` : Prisma.empty}
        GROUP BY 1, 2`,
     prisma.$queryRaw<ProfileRow[]>`
@@ -208,6 +216,8 @@ async function load(prisma: PrismaClient, query: OverviewQuery, now: Date): Prom
       topupCount: paidBy.get(u.id)?.n ?? 0,
       viewsReg: ev.view?.registered ?? 0,
       viewsAnon: ev.view?.anonymous ?? 0,
+      revealsReg: ev.contact_reveal?.registered ?? 0,
+      revealsAnon: ev.contact_reveal?.anonymous ?? 0,
       clicksReg: ev.contact_click?.registered ?? 0,
       clicksAnon: ev.contact_click?.anonymous ?? 0,
       giftedGc: giftBy.get(u.id) ?? 0,

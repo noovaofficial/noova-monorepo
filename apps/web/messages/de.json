@@ -455,7 +455,7 @@
     "ovTopups": "Aufladungen",
     "ovPaying": "Zahlende Werbetreibende",
     "ovAvgCheck": "Durchschnittlicher Betrag",
-    "ovNote": "Es zählen nur bezahlte € (Aufladungen). Zahlungen werden alle paar Minuten aktualisiert, Aufrufe und Klicks stündlich.",
+    "ovNote": "Es zählen nur bezahlte € (Aufladungen). Zahlungen werden alle paar Minuten aktualisiert, Aufrufe und Klicks stündlich. „Kontakt angezeigt“ ist der Klick auf „Kontakte anzeigen“, „Kontaktklicks“ der Klick auf einen Kanal danach — zwei verschiedene Schritte.",
     "ovChartDays": "Zahlungen pro Tag",
     "ovChartMonths": "Zahlungen pro Monat",
     "ovChartLabel": "Zahlungsdiagramm",
@@ -556,7 +556,7 @@
     "promotionPerDay": "{value} / Tag",
     "dashTitle": "Traffic, Städte und Umsatz",
     "dashSourcesTitle": "Quellen und Kampagnen",
-    "dashSourcesHint": "Sitzungen, Bot-Anteil und Kontakte je Quelle im gewählten Zeitraum.",
+    "dashSourcesHint": "Sitzungen, Bot-Anteil und Kontakte je Quelle im gewählten Zeitraum. „Contacts“ zählt beides zusammen: Kontakt angezeigt + auf einen Kontaktkanal geklickt.",
     "dashColSource": "Quelle",
     "dashColCampaign": "Kampagne",
     "dashColSessions": "Sitzungen",
@@ -566,7 +566,7 @@
     "dashCostPending": "noch keine Daten",
     "dashEmpty": "Noch keine Daten für diesen Zeitraum.",
     "dashCitiesTitle": "Nachfrage nach Stadt und Kategorie",
-    "dashCitiesHint": "Kontakte je veröffentlichtem Profil. Markiert: hohe Nachfrage bei wenigen Profilen.",
+    "dashCitiesHint": "Kontakte je veröffentlichtem Profil. Markiert: hohe Nachfrage bei wenigen Profilen. „Contacts“ zählt beides zusammen: Kontakt angezeigt + auf einen Kontaktkanal geklickt.",
     "dashColCity": "Stadt",
     "dashColCategory": "Kategorie",
     "dashColProfileViews": "Profilaufrufe",
@@ -585,7 +585,8 @@
     "dashSource_referral": "Verweis",
     "dashSource_direct": "Direkt",
     "dashKind_escort": "Escort",
-    "dashKind_massage": "Massage"
+    "dashKind_massage": "Massage",
+    "ovColReveals": "Kontakt angezeigt"
   },
   "moderation": {
     "title": "Moderation",

@@ -11,6 +11,8 @@ const user = (over: Partial<Parameters<typeof summarizeKinds>[0][number]>) => ({
   topupCount: 0,
   viewsReg: 0,
   viewsAnon: 0,
+  revealsReg: 0,
+  revealsAnon: 0,
   clicksReg: 0,
   clicksAnon: 0,
   giftedGc: 0,
@@ -40,6 +42,8 @@ describe('сводка по типам', () => {
       profiles: 4,
       viewsReg: 1,
       viewsAnon: 9,
+      revealsReg: 2,
+      revealsAnon: 3,
     }),
     user({ kind: 'agency', paidEurCents: 0, profiles: 2 }),
     user({ kind: 'individual', paidEurCents: 10000, publishedProfiles: 1, profiles: 1 }),
@@ -54,6 +58,10 @@ describe('сводка по типам', () => {
     expect(byKind.agency?.eurPerAdvertiserCents).toBe(15000);
     expect(byKind.agency?.eurPerPublishedCents).toBe(10000);
     expect(byKind.agency?.views).toEqual({ registered: 1, anonymous: 9 });
+    // Раскрытия — отдельная ступень, не слитая с просмотрами или кликами:
+    // ноль кликов при живых раскрытиях означает «видят номер, но не звонят»,
+    // а не «сайтом не интересуются».
+    expect(byKind.agency?.contactReveals).toEqual({ registered: 2, anonymous: 3 });
   });
 
   it('тип без рекламодателей — нули и null, а не ошибка', () => {

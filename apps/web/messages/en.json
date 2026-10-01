@@ -455,7 +455,7 @@
     "ovTopups": "Top-ups",
     "ovPaying": "Paying advertisers",
     "ovAvgCheck": "Average check",
-    "ovNote": "Only paid € (top-ups) are counted. Payments refresh every few minutes, views and clicks hourly.",
+    "ovNote": "Only paid € (top-ups) are counted. Payments refresh every few minutes, views and clicks hourly. \"Contacts shown\" is the click on \"show contacts\"; \"contact clicks\" is clicking a channel afterwards — two different steps.",
     "ovChartDays": "Payments by day",
     "ovChartMonths": "Payments by month",
     "ovChartLabel": "Payments chart",
@@ -556,7 +556,7 @@
     "promotionPerDay": "{value} / day",
     "dashTitle": "Traffic, cities and revenue",
     "dashSourcesTitle": "Sources and campaigns",
-    "dashSourcesHint": "Sessions, bot share and contacts by source for the selected period.",
+    "dashSourcesHint": "Sessions, bot share and contacts by source for the selected period. \"Contacts\" counts both together: contact shown + clicked a contact channel.",
     "dashColSource": "Source",
     "dashColCampaign": "Campaign",
     "dashColSessions": "Sessions",
@@ -566,7 +566,7 @@
     "dashCostPending": "no data yet",
     "dashEmpty": "No data for this period yet.",
     "dashCitiesTitle": "Demand by city and category",
-    "dashCitiesHint": "Contacts per published profile. Flagged: high demand with few profiles.",
+    "dashCitiesHint": "Contacts per published profile. Flagged: high demand with few profiles. \"Contacts\" counts both together: contact shown + clicked a contact channel.",
     "dashColCity": "City",
     "dashColCategory": "Category",
     "dashColProfileViews": "Profile views",
@@ -585,7 +585,8 @@
     "dashSource_referral": "Referral",
     "dashSource_direct": "Direct",
     "dashKind_escort": "Escort",
-    "dashKind_massage": "Massage"
+    "dashKind_massage": "Massage",
+    "ovColReveals": "Contacts shown"
   },
   "moderation": {
     "title": "Moderation",

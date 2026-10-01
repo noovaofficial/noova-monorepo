@@ -244,6 +244,9 @@ function ByKind({ data }: { data: Overview }) {
                 {t('ovColViews')}
               </th>
               <th scope="col" className={styles.num}>
+                {t('ovColReveals')}
+              </th>
+              <th scope="col" className={styles.num}>
                 {t('ovColClicks')}
               </th>
               <th scope="col" className={styles.num}>
@@ -269,6 +272,9 @@ function ByKind({ data }: { data: Overview }) {
                 <td className={styles.num}>{eur(k.eurPerPublishedCents)}</td>
                 <td className={styles.num}>
                   <Split {...k.views} />
+                </td>
+                <td className={styles.num}>
+                  <Split {...k.contactReveals} />
                 </td>
                 <td className={styles.num}>
                   <Split {...k.contactClicks} />
@@ -346,6 +352,9 @@ function Table({ data, kind, onKind, sort, dir, onSort, offset, onOffset }: Tabl
                 {header('profiles', t('ovColProfiles'))}
                 {header('paid', t('ovColPaid'))}
                 {header('views', t('ovColViews'))}
+                <th scope="col" className={styles.num}>
+                  {t('ovColReveals')}
+                </th>
                 {header('clicks', t('ovColClicks'))}
                 {header('eurPerProfile', t('ovColPerProfile'))}
                 {header('eurPerClick', t('ovColPerClick'))}
@@ -378,6 +387,7 @@ function Table({ data, kind, onKind, sort, dir, onSort, offset, onOffset }: Tabl
                   </td>
                   <td className={styles.num}>{eur(row.paidEurCents)}</td>
                   <td className={styles.num}>{num(row.views)}</td>
+                  <td className={styles.num}>{num(row.contactReveals)}</td>
                   <td className={styles.num}>{num(row.contactClicks)}</td>
                   <td className={styles.num}>{eur(row.eurPerPublishedCents)}</td>
                   <td className={styles.num}>{eur(row.eurPerClickCents)}</td>

@@ -455,7 +455,7 @@
     "ovTopups": "Recharges",
     "ovPaying": "Annonceurs payants",
     "ovAvgCheck": "Panier moyen",
-    "ovNote": "Seuls les € payés (recharges) comptent. Les paiements sont actualisés toutes les quelques minutes, vues et clics chaque heure.",
+    "ovNote": "Seuls les € payés (recharges) comptent. Les paiements sont actualisés toutes les quelques minutes, vues et clics chaque heure. « Contacts affichés » est le clic sur « afficher les contacts » ; « clics sur contacts » est le clic sur un canal ensuite — deux étapes différentes.",
     "ovChartDays": "Paiements par jour",
     "ovChartMonths": "Paiements par mois",
     "ovChartLabel": "Graphique des paiements",
@@ -556,7 +556,7 @@
     "promotionPerDay": "{value} / jour",
     "dashTitle": "Trafic, villes et revenus",
     "dashSourcesTitle": "Sources et campagnes",
-    "dashSourcesHint": "Sessions, part de bots et contacts par source pour la période choisie.",
+    "dashSourcesHint": "Sessions, part de bots et contacts par source pour la période choisie. « Contacts » compte les deux ensemble : contact affiché + clic sur un canal de contact.",
     "dashColSource": "Source",
     "dashColCampaign": "Campagne",
     "dashColSessions": "Sessions",
@@ -566,7 +566,7 @@
     "dashCostPending": "pas encore de données",
     "dashEmpty": "Pas encore de données pour cette période.",
     "dashCitiesTitle": "Demande par ville et catégorie",
-    "dashCitiesHint": "Contacts par profil publié. Signalé : forte demande avec peu de profils.",
+    "dashCitiesHint": "Contacts par profil publié. Signalé : forte demande avec peu de profils. « Contacts » compte les deux ensemble : contact affiché + clic sur un canal de contact.",
     "dashColCity": "Ville",
     "dashColCategory": "Catégorie",
     "dashColProfileViews": "Vues de profil",
@@ -585,7 +585,8 @@
     "dashSource_referral": "Référent",
     "dashSource_direct": "Direct",
     "dashKind_escort": "Escort",
-    "dashKind_massage": "Massage"
+    "dashKind_massage": "Massage",
+    "ovColReveals": "Contacts affichés"
   },
   "moderation": {
     "title": "Modération",
