@@ -7,6 +7,7 @@ import {
   blockedProfileSchema,
   type CreateStaffInput,
   type Dashboard,
+  type DashboardPeriod,
   dashboardSchema,
   type GrantTopResult,
   grantTopResultSchema,
@@ -30,7 +31,9 @@ import {
   type StaffMember,
   staffMemberSchema,
   type TopNow,
+  type TrafficQuality,
   topNowSchema,
+  trafficQualitySchema,
   type UserRole,
   type VerificationRequestDetail,
   type VerificationRequestItem,
@@ -260,9 +263,32 @@ export function fetchTopNow(): Promise<TopNow> {
   return call('/admin/top-now', topNowSchema);
 }
 
-/** Внутренний дашборд: источники, спрос по городам, выручка (только админ). */
-export function fetchDashboard(period: AnalyticsPeriod): Promise<Dashboard> {
-  return call(`/admin/dashboard?period=${period}`, dashboardSchema);
+/**
+ * Внутренний дашборд: источники, спрос по городам, выручка (только админ).
+ * `date`, если передана, перекрывает `period` на сервере — показывает
+ * ровно этот один день, независимо от того, что выбрано в переключателе.
+ */
+export function fetchDashboard(query: {
+  period: DashboardPeriod;
+  date?: string;
+}): Promise<Dashboard> {
+  const params = new URLSearchParams({ period: query.period });
+  if (query.date) params.set('date', query.date);
+  return call(`/admin/dashboard?${params.toString()}`, dashboardSchema);
+}
+
+/**
+ * Проверка качества трафика за один день (только админ) — по требованию,
+ * не кэшируется запросом дашборда: `utmCampaign`, если задан, сужает все
+ * пять срезов до одной кампании.
+ */
+export function fetchTrafficQuality(query: {
+  date: string;
+  utmCampaign?: string;
+}): Promise<TrafficQuality> {
+  const params = new URLSearchParams({ date: query.date });
+  if (query.utmCampaign) params.set('utmCampaign', query.utmCampaign);
+  return call(`/admin/dashboard/traffic-quality?${params.toString()}`, trafficQualitySchema);
 }
 
 export function fetchStaff(): Promise<StaffMember[]> {

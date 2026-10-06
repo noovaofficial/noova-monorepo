@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
-.PHONY: help setup dev infra-up infra-down db-migrate db-seed db-seed-reference db-reset \
+.PHONY: help setup dev infra-up infra-down docker-clean db-migrate db-seed db-seed-reference db-reset \
         server-setup server-env update \
         reference-from-dev reference-from-server reference-to-server backup-key backup-fetch backup-open backup-verify backup-check restore-media \
         backup-storage backup-allow-pull backup-storage-check backup-storage-verify \
@@ -33,6 +33,14 @@ infra-up: ## Поднять Postgres, Redis, MinIO
 
 infra-down: ## Остановить инфраструктуру разработки
 	docker compose -f docker-compose.dev.yml down
+
+docker-clean: ## Почистить старые образы и кэш сборки локально (volumes/данные БД не трогает)
+	@echo "До очистки:"
+	@docker system df
+	docker image prune -af --filter "until=72h"
+	docker builder prune -af --filter "until=72h"
+	@echo "После очистки:"
+	@docker system df
 
 db-migrate: ## Применить миграции
 	pnpm db:migrate

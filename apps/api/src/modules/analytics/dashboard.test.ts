@@ -98,7 +98,7 @@ describe('loadDashboard · источники', () => {
       ],
     });
 
-    const result = await loadDashboard(prisma, 'd30', NOW);
+    const result = await loadDashboard(prisma, { period: 'd30' }, NOW);
 
     expect(result.sources.rows[0]).toMatchObject({
       source: 'network',
@@ -121,7 +121,7 @@ describe('loadDashboard · города', () => {
       citySnapshot: [{ city: 'berlin', category: 'escort', activeProfiles: 5 }],
     });
 
-    const result = await loadDashboard(prisma, 'd30', NOW);
+    const result = await loadDashboard(prisma, { period: 'd30' }, NOW);
 
     const row = result.cities.rows.find((r) => r.city === 'berlin');
     // Если бы снимок суммировался по дням окна, здесь было бы 5 × 30 дней,
@@ -135,7 +135,7 @@ describe('loadDashboard · города', () => {
       citySnapshot: [{ city: 'munich', category: 'escort', activeProfiles: 2 }],
     });
 
-    const result = await loadDashboard(prisma, 'd30', NOW);
+    const result = await loadDashboard(prisma, { period: 'd30' }, NOW);
 
     const row = result.cities.rows.find((r) => r.city === 'munich');
     expect(row).toMatchObject({ sessions: 0, profileViews: 0, contacts: 0, activeProfiles: 2 });
@@ -148,7 +148,7 @@ describe('loadDashboard · города', () => {
       ],
     });
 
-    const result = await loadDashboard(prisma, 'd30', NOW);
+    const result = await loadDashboard(prisma, { period: 'd30' }, NOW);
 
     const row = result.cities.rows.find((r) => r.city === 'leipzig');
     expect(row).toMatchObject({ activeProfiles: 0, contactsPerProfile: null, highDemand: true });
@@ -161,7 +161,7 @@ describe('loadDashboard · выручка', () => {
       revenue: [{ day: '2026-09-10', topup: 5000, listing: 300, top: 900 }],
     });
 
-    const result = await loadDashboard(prisma, 'd7', NOW);
+    const result = await loadDashboard(prisma, { period: 'd7' }, NOW);
 
     expect(result.revenue.series).toHaveLength(7);
     const day = result.revenue.series.find((p) => p.date === '2026-09-10');
@@ -183,5 +183,32 @@ describe('loadDashboard · выручка', () => {
       spentListingGc: 300,
       spentTopGc: 900,
     });
+  });
+});
+
+describe('loadDashboard · период и конкретная дата', () => {
+  it('пресет «1 день» — окно в одни сутки, заканчивающееся сегодня', async () => {
+    const prisma = fakePrisma({});
+    const result = await loadDashboard(prisma, { period: 'd1' }, NOW);
+
+    expect(result.from).toBe('2026-09-10');
+    expect(result.to).toBe('2026-09-10');
+    expect(result.period).toBe('d1');
+  });
+
+  it('`date` перекрывает `period` — окно в одни сутки на выбранную дату', async () => {
+    const prisma = fakePrisma({
+      revenue: [{ day: '2026-08-15', topup: 1200, listing: 0, top: 0 }],
+    });
+
+    // period здесь намеренно d90 — проверяем, что date его полностью
+    // переопределяет, а не складывается с ним.
+    const result = await loadDashboard(prisma, { period: 'd90', date: '2026-08-15' }, NOW);
+
+    expect(result.from).toBe('2026-08-15');
+    expect(result.to).toBe('2026-08-15');
+    expect(result.period).toBe('d1');
+    expect(result.revenue.series).toHaveLength(1);
+    expect(result.revenue.totals.topupEurCents).toBe(1200);
   });
 });

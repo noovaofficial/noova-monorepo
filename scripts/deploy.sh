@@ -215,6 +215,16 @@ docker save "$IMAGE_PREFIX/api:$IMAGE_TAG" "$IMAGE_PREFIX/web:$IMAGE_TAG" \
             && sed -i 's|^IMAGE_PREFIX=.*|IMAGE_PREFIX=$IMAGE_PREFIX|' .env \
             || printf 'IMAGE_PREFIX=%s\n' '$IMAGE_PREFIX' >> .env)"
 
+step "Чистка локальных образов и кэша сборки"
+# Образ и слои сборки этого выпуска уже уехали на сервер — локально они не
+# нужны. Без этого шага `docker compose build` на каждом выпуске копит и
+# старые образы `noova/api`/`web` (по тегу на коммит), и buildx-кэш:
+# виртуальный диск Docker Desktop рано или поздно упирается в «No space
+# left on device» — ровно так уже падал Postgres в дев-стенде. 72 часа —
+# запас на случай быстрого повтора выпуска или откат без пересборки.
+docker image prune -af --filter "until=72h" || true
+docker builder prune -af --filter "until=72h" || true
+
 step "Файлы вне образов"
 retry ssh "$SERVER" "mkdir -p $REMOTE_DIR/infra/caddy $REMOTE_DIR/infra/backup"
 retry scp -q docker-compose.yml "$SERVER:$REMOTE_DIR/"
@@ -328,7 +338,11 @@ echo "Справочники…"
 docker compose exec -T api node dist/scripts/seed-reference.js </dev/null
 
 # Образы прошлых выпусков накапливаются по гигабайту: api около 1 ГБ.
-docker image prune -f >/dev/null 2>&1 || true
+# Простой `prune -f` (без -a) чистит только безымянные слои — старые
+# помеченные теги `noova/api:<sha>` остаются висеть навсегда. `-a` снимает
+# и их, оставляя последние 72 часа на случай отката без пересборки.
+docker image prune -af --filter "until=72h" >/dev/null 2>&1 || true
+docker builder prune -af --filter "until=72h" >/dev/null 2>&1 || true
 REMOTE
 
 # ---------------------------------------------------------------------------

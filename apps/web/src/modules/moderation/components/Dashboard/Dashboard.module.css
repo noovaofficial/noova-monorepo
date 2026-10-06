@@ -17,6 +17,15 @@
   font-weight: 600;
 }
 
+/* Пресеты и выбор даты — один ряд, который переносится на телефоне: вместе
+   они не влезают в строку с заголовком на узком экране. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  flex-wrap: wrap;
+}
+
 .periods {
   display: flex;
   gap: var(--space1);
@@ -37,6 +46,33 @@
   border-color: var(--primary);
   color: var(--primary);
   background: var(--primarySubtle);
+}
+
+.dateField {
+  display: flex;
+  align-items: center;
+  gap: var(--space2);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.dateInput {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+  font-size: var(--textSm);
+}
+
+/* Какой именно диапазон сейчас на экране — важно знать явно: роллапы
+   обновляются не вживую (см. `event-rollup`), и «сегодня» в заголовке
+   не означает «прямо сейчас». */
+.rangeHint {
+  margin: 0 0 var(--space4);
+  font-size: var(--textSm);
+  color: var(--tertiaryText);
 }
 
 .block {
@@ -165,4 +201,41 @@
   color: var(--danger);
   font-size: var(--textSm);
   margin-bottom: var(--space4);
+}
+
+/* Форма проверки качества трафика: дата, опциональная кампания, кнопка —
+   один ряд, который переносится на телефоне. */
+.tqForm {
+  display: flex;
+  align-items: center;
+  gap: var(--space3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space4);
+}
+
+.tqSubmit {
+  padding: 6px 16px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radiusPill);
+  background: var(--primary);
+  color: var(--onPrimary, #fff);
+  font-size: var(--textSm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tqSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tqResult .table {
+  margin-bottom: var(--space5);
+}
+
+.tqSubTitle {
+  font-size: var(--textSm);
+  font-weight: 600;
+  color: var(--secondaryText);
+  margin: 0 0 var(--space2);
 }

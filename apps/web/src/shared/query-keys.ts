@@ -25,7 +25,10 @@ export const queryKeys = {
   queueCount: () => ['moderation-queue-count'] as const,
   topNow: () => ['admin-top-now'] as const,
   overview: (query: object) => ['admin-overview', query] as const,
-  dashboard: (period: string) => ['admin-dashboard', period] as const,
+  dashboard: (period: string, date?: string) =>
+    ['admin-dashboard', period, date ?? 'none'] as const,
+  trafficQuality: (date: string, utmCampaign?: string) =>
+    ['admin-traffic-quality', date, utmCampaign ?? 'all'] as const,
   advertiserAnalytics: (userId: string, period: string) =>
     ['admin-advertiser-analytics', userId, period] as const,
   moderatedProfile: (id: string) => ['moderated-profile', id] as const,

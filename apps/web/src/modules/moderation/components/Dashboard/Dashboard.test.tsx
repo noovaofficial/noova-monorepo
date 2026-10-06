@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import type { Dashboard } from '@noova/shared';
+import type { Dashboard, TrafficQuality } from '@noova/shared';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -16,7 +16,7 @@ const session = vi.hoisted(() => ({
 }));
 vi.mock('@/modules/auth/components/SessionProvider', () => ({ useSession: () => session.value }));
 
-const api = vi.hoisted(() => ({ fetchDashboard: vi.fn() }));
+const api = vi.hoisted(() => ({ fetchDashboard: vi.fn(), fetchTrafficQuality: vi.fn() }));
 vi.mock('@/modules/moderation/api', () => api);
 
 vi.mock('@/shared/i18n/navigation', () => ({
@@ -81,6 +81,24 @@ function report(overrides: Partial<Dashboard> = {}): Dashboard {
   };
 }
 
+function trafficQuality(overrides: Partial<TrafficQuality> = {}): TrafficQuality {
+  return {
+    date: '2026-09-10',
+    utmCampaign: null,
+    sessions: 2006,
+    distinctVisitors: 1820,
+    sessionsPerVisitor: 1.1,
+    topVisitors: [{ visitorHash: 'hash1', deviceType: 'mobile', sessions: 10 }],
+    sessionsWithoutEvents: 170,
+    sessionsWithoutEventsPct: 17,
+    funnelSessionsWithActivity: 1829,
+    funnelViews: 204,
+    funnelContacts: 4,
+    arrivals: [{ bucket: '02:20', sessions: 3 }],
+    ...overrides,
+  };
+}
+
 function renderDashboard() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
@@ -114,10 +132,32 @@ describe('доступ', () => {
 describe('период', () => {
   it('по умолчанию запрашивает тридцать дней и перезапрашивает при смене', async () => {
     renderDashboard();
-    await waitFor(() => expect(api.fetchDashboard).toHaveBeenCalledWith('d30'));
+    await waitFor(() =>
+      expect(api.fetchDashboard).toHaveBeenCalledWith({ period: 'd30', date: undefined }),
+    );
 
     await userEvent.click(screen.getByRole('button', { name: t.period_d7 }));
-    await waitFor(() => expect(api.fetchDashboard).toHaveBeenCalledWith('d7'));
+    await waitFor(() =>
+      expect(api.fetchDashboard).toHaveBeenCalledWith({ period: 'd7', date: undefined }),
+    );
+  });
+
+  it('выбор даты перекрывает период, а клик по пресету снимает дату', async () => {
+    renderDashboard();
+    await waitFor(() => expect(api.fetchDashboard).toHaveBeenCalled());
+
+    const dateInput = screen.getByLabelText(t.dashDateLabel);
+    await userEvent.type(dateInput, '2026-08-15');
+    await waitFor(() =>
+      expect(api.fetchDashboard).toHaveBeenCalledWith({ period: 'd30', date: '2026-08-15' }),
+    );
+
+    // Клик по любому пресету должен снять выбранную дату, а не сложиться с ней.
+    await userEvent.click(screen.getByRole('button', { name: t.period_d1 }));
+    await waitFor(() =>
+      expect(api.fetchDashboard).toHaveBeenCalledWith({ period: 'd1', date: undefined }),
+    );
+    expect((dateInput as HTMLInputElement).value).toBe('');
   });
 });
 
@@ -161,5 +201,52 @@ describe('выручка', () => {
 
     // 8000 центов = 80 €.
     expect(screen.getByText(/80/)).toBeTruthy();
+  });
+});
+
+describe('проверка качества трафика', () => {
+  it('до выбора даты запрос не уходит', async () => {
+    renderDashboard();
+    await waitFor(() => expect(screen.getByText(t.tqTitle)).toBeTruthy());
+
+    expect(screen.getByText(t.tqPickDate)).toBeTruthy();
+    expect(api.fetchTrafficQuality).not.toHaveBeenCalled();
+  });
+
+  it('по кнопке запрашивает проверку за выбранную дату и кампанию, рисует таблицы', async () => {
+    api.fetchTrafficQuality.mockResolvedValue(trafficQuality());
+    renderDashboard();
+    await waitFor(() => expect(screen.getByText(t.tqTitle)).toBeTruthy());
+
+    await userEvent.type(screen.getByLabelText(t.tqDateLabel), '2026-09-10');
+    await userEvent.type(screen.getByLabelText(t.tqCampaignLabel), 'exoclick-autumn');
+    await userEvent.click(screen.getByRole('button', { name: t.tqSubmit }));
+
+    await waitFor(() =>
+      expect(api.fetchTrafficQuality).toHaveBeenCalledWith({
+        date: '2026-09-10',
+        utmCampaign: 'exoclick-autumn',
+      }),
+    );
+
+    await waitFor(() => expect(screen.getByText(t.tqTopVisitorsTitle)).toBeTruthy());
+    expect(screen.getByText('hash1')).toBeTruthy();
+    expect(screen.getByText('02:20')).toBeTruthy();
+  });
+
+  it('без кампании отправляет запрос без utmCampaign', async () => {
+    api.fetchTrafficQuality.mockResolvedValue(trafficQuality());
+    renderDashboard();
+    await waitFor(() => expect(screen.getByText(t.tqTitle)).toBeTruthy());
+
+    await userEvent.type(screen.getByLabelText(t.tqDateLabel), '2026-09-10');
+    await userEvent.click(screen.getByRole('button', { name: t.tqSubmit }));
+
+    await waitFor(() =>
+      expect(api.fetchTrafficQuality).toHaveBeenCalledWith({
+        date: '2026-09-10',
+        utmCampaign: undefined,
+      }),
+    );
   });
 });

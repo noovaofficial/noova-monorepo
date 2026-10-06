@@ -1,8 +1,8 @@
 import {
-  ANALYTICS_PERIOD_DAYS,
-  type AnalyticsPeriod,
+  DASHBOARD_PERIOD_DAYS,
   type Dashboard,
   type DashboardCityRow,
+  type DashboardQuery,
   type DashboardSourceRow,
 } from '@noova/shared';
 import { Prisma, type PrismaClient } from '../../generated/prisma/client.js';
@@ -230,14 +230,21 @@ async function loadRevenue(
  * Все три читают только роллапы (`SourceDailyStat`, `CityDailyStat`) и
  * `BillingTransaction` за диапазон дней — ни один не сканирует сырой
  * `ProfileEvent`, отсюда и требование «меньше секунды на 90 днях».
+ *
+ * `query.date`, если задан, перекрывает `query.period`: отчёт строится
+ * ровно за эти одни сутки (берлинские), а не за N дней до сегодня. Это
+ * тот же самый код, что и у пресета «1 день» — там `from === to`, здесь
+ * `from === to === date`, разница только в том, какая дата взята.
  */
 export async function loadDashboard(
   prisma: PrismaClient,
-  period: AnalyticsPeriod,
+  query: DashboardQuery,
   now: Date = new Date(),
 ): Promise<Dashboard> {
-  const to = berlinDate(now);
-  const from = shiftDate(to, -(ANALYTICS_PERIOD_DAYS[period] - 1));
+  const to = query.date ?? berlinDate(now);
+  const days = query.date ? 1 : DASHBOARD_PERIOD_DAYS[query.period];
+  const from = shiftDate(to, -(days - 1));
+  const period = query.date ? 'd1' : query.period;
 
   const [sources, cities, revenue] = await Promise.all([
     loadSources(prisma, from, to),

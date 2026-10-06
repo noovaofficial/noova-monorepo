@@ -17,6 +17,8 @@ import {
   pageSchema,
   staffMemberSchema,
   topNowSchema,
+  trafficQualityQuerySchema,
+  trafficQualitySchema,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
@@ -29,6 +31,7 @@ import { loadDashboard } from '../analytics/dashboard.js';
 import { loadOverview } from '../analytics/overview.js';
 import { loadPromotionEffects } from '../analytics/promotion.js';
 import { loadAnalytics } from '../analytics/query.js';
+import { loadTrafficQuality } from '../analytics/traffic-quality.js';
 import { hashPassword } from '../auth/passwords.js';
 import { loadBillingConfig } from '../billing/config.js';
 import {
@@ -473,7 +476,27 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         response: { 200: dashboardSchema },
       },
     },
-    async (request) => loadDashboard(fastify.prisma, request.query.period),
+    async (request) => loadDashboard(fastify.prisma, request.query),
+  );
+
+  /**
+   * Проверка качества трафика за один день — по требованию, не часть
+   * обычного дашборда: сканирует сырые `AnalyticsSession`/`ProfileEvent`
+   * за сутки, а не роллапы, поэтому отдельная кнопка, а не ещё один блок
+   * на дашборде, который грузится при каждом открытии страницы.
+   */
+  fastify.get(
+    '/admin/dashboard/traffic-quality',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        querystring: trafficQualityQuerySchema,
+        response: { 200: trafficQualitySchema },
+      },
+    },
+    async (request) => loadTrafficQuality(fastify.prisma, request.query),
   );
 
   /**
