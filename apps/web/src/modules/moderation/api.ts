@@ -211,6 +211,11 @@ export function grantProfileTop(id: string, days?: number): Promise<GrantTopResu
   });
 }
 
+/** Досрочное снятие ТОПа у анкеты — без возврата GlowCoin, только админ. */
+export function revokeProfileTop(id: string) {
+  return call(`/admin/profiles/${id}/top/revoke`, ackSchema, { method: 'POST' });
+}
+
 /** Мгновенное удаление учётки — только админ. 204 без тела. */
 export async function deleteUser(id: string): Promise<void> {
   const response = await fetch(`${BASE}/api/v1/moderation/users/${id}`, {

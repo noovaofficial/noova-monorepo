@@ -11,7 +11,12 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { blockCompany, grantCompanyTop, unblockCompany } from '@/modules/agencies/api';
+import {
+  blockCompany,
+  grantCompanyTop,
+  revokeCompanyTop,
+  unblockCompany,
+} from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
@@ -21,6 +26,7 @@ import {
   deleteUser,
   fetchUsers,
   grantProfileTop,
+  revokeProfileTop,
   unblockProfile,
   unblockUser,
   verifyUserEmail,
@@ -228,6 +234,16 @@ export function UserList({
     onSuccess: invalidate,
   });
 
+  const revokeTop = useMutation({
+    mutationFn: async (user: ManagedUser): Promise<void> => {
+      const target = topTargetFor(user);
+      if (!target) throw new Error('no top target');
+      if (target.kind === 'profile') await revokeProfileTop(target.id);
+      else await revokeCompanyTop(target.id);
+    },
+    onSuccess: invalidate,
+  });
+
   const adjustInput = (user: ManagedUser) =>
     adjustBalanceInputSchema.safeParse({
       userId: user.id,
@@ -271,7 +287,8 @@ export function UserList({
     unblock.isPending ||
     adjust.isPending ||
     remove.isPending ||
-    grantTop.isPending;
+    grantTop.isPending ||
+    revokeTop.isPending;
   const adjustStatus = adjust.error instanceof BillingError ? adjust.error.status : null;
   const error =
     adjustStatus === 409
@@ -285,7 +302,8 @@ export function UserList({
             unblock.isError ||
             adjust.isError ||
             remove.isError ||
-            grantTop.isError
+            grantTop.isError ||
+            revokeTop.isError
           ? 'actionFailed'
           : list.isError
             ? 'loadFailed'
@@ -616,6 +634,16 @@ export function UserList({
                         >
                           <TopIcon />
                           {t(topTarget.isFeatured ? 'extendTop' : 'grantTop')}
+                        </Button>
+                      ) : null}
+                      {isAdmin && topTarget?.isFeatured ? (
+                        <Button
+                          variant="secondary"
+                          disabled={busy}
+                          onClick={() => revokeTop.mutate(user)}
+                        >
+                          <TopIcon />
+                          {t('revokeTop')}
                         </Button>
                       ) : null}
                     </>

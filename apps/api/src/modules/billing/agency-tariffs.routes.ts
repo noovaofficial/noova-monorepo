@@ -24,8 +24,10 @@ import {
 import {
   AgencyTopFullError,
   AgencyTopNoCompanyError,
+  AgencyTopNotActiveError,
   agencyTopState,
   grantAgencyTop,
+  revokeAgencyTop,
 } from './agency-top.js';
 import { loadBillingConfig } from './config.js';
 
@@ -310,6 +312,48 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
         }
         throw error;
       }
+    },
+  );
+
+  /**
+   * Снятие ТОПа у агентства досрочно — зеркало снятия у анкеты (top.ts),
+   * без возврата GlowCoin. Только админ.
+   */
+  fastify.post(
+    '/admin/companies/:id/top/revoke',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+
+      try {
+        await revokeAgencyTop(fastify.prisma, request.params.id);
+      } catch (error) {
+        if (error instanceof AgencyTopNotActiveError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        throw error;
+      }
+
+      await fastify.prisma.moderationAction.create({
+        data: {
+          moderatorId: userId,
+          subjectType: 'company',
+          subjectId: request.params.id,
+          decision: 'rejected',
+          reason: 'ТОП агентства снят администратором',
+        },
+      });
+
+      fastify.revalidate([PROFILES_TAG]);
+      return { ok: true as const };
     },
   );
 };

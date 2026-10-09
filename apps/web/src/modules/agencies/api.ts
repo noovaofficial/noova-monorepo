@@ -78,6 +78,10 @@ export const grantCompanyTop = (companyId: string): Promise<GrantAgencyTopResult
 
 const ackSchema = z.object({ ok: z.literal(true) });
 
+/** Досрочное снятие ТОПа у агентства — без возврата GlowCoin, только админ. */
+export const revokeCompanyTop = (companyId: string) =>
+  call(`/admin/companies/${companyId}/top/revoke`, ackSchema, { method: 'POST' });
+
 /** Блокировка агентства — независимо от `isActive`, которым распоряжается
  *  сам владелец. Каскадом банит анкеты компании. */
 export const blockCompany = (companyId: string, reason: string) =>

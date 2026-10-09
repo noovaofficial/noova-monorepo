@@ -710,6 +710,8 @@
     "topActiveUntil": "Im TOP bis {date}",
     "topInactive": "Aktuell nicht im TOP",
     "topGrantFailed": "TOP konnte nicht vergeben werden: Platz belegt, alle Plätze voll, oder Profil/Agentur nicht veröffentlicht.",
+    "revokeTop": "TOP entziehen",
+    "topRevokeFailed": "TOP konnte nicht entzogen werden. Bitte erneut versuchen.",
     "grantTop": "TOP vergeben",
     "extendTop": "TOP verlängern",
     "topDisabledNotPublished": "TOP kann nicht vergeben werden: Profil nicht veröffentlicht.",

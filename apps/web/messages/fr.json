@@ -710,6 +710,8 @@
     "topActiveUntil": "Dans le TOP jusqu'au {date}",
     "topInactive": "Pas dans le TOP actuellement",
     "topGrantFailed": "Impossible d'attribuer le TOP : place déjà prise, toutes les places sont occupées, ou le profil/l'agence n'est pas publié.",
+    "revokeTop": "Retirer le TOP",
+    "topRevokeFailed": "Impossible de retirer le TOP. Réessayez.",
     "grantTop": "Attribuer le TOP",
     "extendTop": "Prolonger le TOP",
     "topDisabledNotPublished": "Impossible d'attribuer le TOP : le profil n'est pas publié.",

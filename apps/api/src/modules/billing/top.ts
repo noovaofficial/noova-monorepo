@@ -42,6 +42,13 @@ export class TopAlreadyActiveError extends Error {
   }
 }
 
+export class TopNotActiveError extends Error {
+  constructor() {
+    super('Анкета сейчас не в ТОПе');
+    this.name = 'TopNotActiveError';
+  }
+}
+
 export class TopNotPublishedError extends Error {
   constructor() {
     super('В ТОП можно поднять только опубликованную анкету');
@@ -306,6 +313,28 @@ export function grantTop(
     await tx.profile.update({ where: { id: profile.id }, data: { isFeatured: true } });
 
     return { placement: toTopPlacement(placement), extended };
+  });
+}
+
+/**
+ * Снятие места админом — досрочное завершение. Не различаем, было место
+ * купленным или подаренным: источник решает D-10-эквивалент выше (грант без
+ * `applyMovement`), а здесь просто нет обратного движения денег — ни
+ * возврата, ни штрафа.
+ */
+export async function revokeTop(
+  prisma: PrismaClient,
+  profileId: string,
+  options: { now?: Date } = {},
+): Promise<void> {
+  const now = options.now ?? new Date();
+  await prisma.$transaction(async (tx) => {
+    const placement = await tx.topPlacement.findUnique({ where: { profileId } });
+    if (placement?.status !== 'active' || placement.expiresAt <= now) {
+      throw new TopNotActiveError();
+    }
+    await tx.topPlacement.update({ where: { profileId }, data: { status: 'expired' } });
+    await tx.profile.update({ where: { id: profileId }, data: { isFeatured: false } });
   });
 }
 

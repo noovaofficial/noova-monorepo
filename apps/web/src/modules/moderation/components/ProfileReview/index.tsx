@@ -20,6 +20,7 @@ import {
   publishModeratedProfile,
   rejectPhoto,
   rejectVerification,
+  revokeProfileTop,
   setManualVerification,
   unblockProfile,
 } from '@/modules/moderation/api';
@@ -119,6 +120,11 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     onSuccess: refresh,
   });
 
+  const revokeTop = useMutation({
+    mutationFn: () => revokeProfileTop(profileId),
+    onSuccess: refresh,
+  });
+
   // Ручная отметка верификации (D-12) — для случаев, когда документы пришли
   // на email, а не через форму заявки. Только admin.
   const manualVerify = useMutation({
@@ -202,7 +208,8 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     approvePhotoM.isPending ||
     rejectPhotoM.isPending ||
     manualVerify.isPending ||
-    publishNow.isPending;
+    publishNow.isPending ||
+    revokeTop.isPending;
 
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
@@ -513,8 +520,15 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                 <TopIcon />
                 {t(profile.isFeatured ? 'extendTop' : 'grantTop')}
               </Button>
+              {profile.isFeatured ? (
+                <Button variant="secondary" disabled={busy} onClick={() => revokeTop.mutate()}>
+                  <TopIcon />
+                  {t('revokeTop')}
+                </Button>
+              ) : null}
             </div>
             {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}
+            {revokeTop.isError ? <span className={styles.hint}>{t('topRevokeFailed')}</span> : null}
           </ActionCard>
         ) : null}
 

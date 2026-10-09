@@ -710,6 +710,8 @@
     "topActiveUntil": "En TOP hasta {date}",
     "topInactive": "Ahora mismo no está en TOP",
     "topGrantFailed": "No se pudo conceder el TOP: la plaza ya está ocupada, todas las plazas están llenas, o el perfil/agencia no está publicado.",
+    "revokeTop": "Quitar el TOP",
+    "topRevokeFailed": "No se pudo quitar el TOP. Inténtalo de nuevo.",
     "grantTop": "Conceder TOP",
     "extendTop": "Prolongar TOP",
     "topDisabledNotPublished": "No se puede conceder el TOP: el perfil no está publicado.",

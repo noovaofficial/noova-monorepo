@@ -37,8 +37,10 @@ import { loadBillingConfig } from '../billing/config.js';
 import {
   grantTop,
   listCityTop,
+  revokeTop,
   setCityTop,
   TopFullError,
+  TopNotActiveError,
   TopNotPublishedError,
 } from '../billing/top.js';
 import { toTransaction } from '../billing/wallet.js';
@@ -786,6 +788,53 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
         }
         throw error;
       }
+    },
+  );
+
+  /**
+   * Снятие ТОПа у анкеты досрочно — без возврата GlowCoin, не различаем
+   * купленное и подаренное место (payments.md). Только админ, как и выдача.
+   */
+  fastify.post(
+    '/admin/profiles/:id/top/revoke',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+
+      try {
+        await revokeTop(fastify.prisma, request.params.id);
+      } catch (error) {
+        if (error instanceof TopNotActiveError) {
+          throw fastify.httpErrors.conflict(error.message);
+        }
+        throw error;
+      }
+
+      await fastify.prisma.moderationAction.create({
+        data: {
+          moderatorId: userId,
+          subjectType: 'profile',
+          subjectId: request.params.id,
+          decision: 'rejected',
+          reason: 'ТОП снят администратором',
+        },
+      });
+
+      const profile = await fastify.prisma.profile.findUnique({
+        where: { id: request.params.id },
+        select: { slug: true },
+      });
+      if (profile) fastify.revalidate([PROFILES_TAG, profileTag(profile.slug)]);
+
+      return { ok: true as const };
     },
   );
 };

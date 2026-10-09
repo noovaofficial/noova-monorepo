@@ -36,6 +36,13 @@ export class AgencyTopAlreadyActiveError extends Error {
   }
 }
 
+export class AgencyTopNotActiveError extends Error {
+  constructor() {
+    super('Агентство сейчас не в ТОПе');
+    this.name = 'AgencyTopNotActiveError';
+  }
+}
+
 export class AgencyTopNoCompanyError extends Error {
   constructor() {
     super('Сначала заведите компанию');
@@ -233,6 +240,23 @@ export function grantAgencyTop(
     await tx.company.update({ where: { id: company.id }, data: { isFeatured: true } });
 
     return { placement: toAgencyTopPlacement(placement), extended };
+  });
+}
+
+/** Снятие места у агентства админом — зеркало `revokeTop` для `Company`. */
+export async function revokeAgencyTop(
+  prisma: PrismaClient,
+  companyId: string,
+  options: { now?: Date } = {},
+): Promise<void> {
+  const now = options.now ?? new Date();
+  await prisma.$transaction(async (tx) => {
+    const placement = await tx.agencyTopPlacement.findUnique({ where: { companyId } });
+    if (placement?.status !== 'active' || placement.expiresAt <= now) {
+      throw new AgencyTopNotActiveError();
+    }
+    await tx.agencyTopPlacement.update({ where: { companyId }, data: { status: 'expired' } });
+    await tx.company.update({ where: { id: companyId }, data: { isFeatured: false } });
   });
 }
 

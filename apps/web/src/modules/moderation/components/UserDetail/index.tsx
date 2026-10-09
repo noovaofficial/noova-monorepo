@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { grantCompanyTop } from '@/modules/agencies/api';
+import { grantCompanyTop, revokeCompanyTop } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { adjustBalance, BillingError, fetchAdjustLimit } from '@/modules/billing/api';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
@@ -14,6 +14,7 @@ import {
   deleteUser,
   fetchUserDetail,
   grantProfileTop,
+  revokeProfileTop,
   unblockUser,
   verifyUserEmail,
 } from '@/modules/moderation/api';
@@ -124,6 +125,15 @@ export function UserDetail({ userId }: { userId: string }) {
     onSuccess: refresh,
   });
 
+  const revokeTop = useMutation({
+    mutationFn: async (target: TopTarget): Promise<void> => {
+      if (!target) throw new Error('no top target');
+      if (target.kind === 'profile') await revokeProfileTop(target.id);
+      else await revokeCompanyTop(target.id);
+    },
+    onSuccess: refresh,
+  });
+
   const adjustInput = () =>
     adjustBalanceInputSchema.safeParse({
       userId,
@@ -160,6 +170,7 @@ export function UserDetail({ userId }: { userId: string }) {
     block.isPending ||
     unblock.isPending ||
     grantTop.isPending ||
+    revokeTop.isPending ||
     adjust.isPending ||
     remove.isPending;
 
@@ -355,8 +366,21 @@ export function UserDetail({ userId }: { userId: string }) {
                   <TopIcon />
                   {t(topTarget?.isFeatured ? 'extendTop' : 'grantTop')}
                 </Button>
+                {topTarget?.isFeatured ? (
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => revokeTop.mutate(topTarget)}
+                  >
+                    <TopIcon />
+                    {t('revokeTop')}
+                  </Button>
+                ) : null}
               </div>
               {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}
+              {revokeTop.isError ? (
+                <span className={styles.hint}>{t('topRevokeFailed')}</span>
+              ) : null}
             </ActionCard>
           ) : null}
 

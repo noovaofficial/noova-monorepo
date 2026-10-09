@@ -710,6 +710,8 @@
     "topActiveUntil": "In TOP until {date}",
     "topInactive": "Not in TOP right now",
     "topGrantFailed": "Couldn't grant TOP: the slot is taken, all slots are full, or the profile/agency isn't published.",
+    "revokeTop": "Revoke TOP",
+    "topRevokeFailed": "Couldn't revoke TOP. Try again.",
     "grantTop": "Grant TOP",
     "extendTop": "Extend TOP",
     "topDisabledNotPublished": "Can't grant TOP: the profile isn't published.",
