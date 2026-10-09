@@ -699,11 +699,17 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const target = await fastify.prisma.user.findUnique({
         where: { id: userId },
-        select: { role: true },
+        select: { role: true, advertiserKind: true },
       });
       if (!target) throw fastify.httpErrors.notFound('Пользователь не найден');
       if (target.role !== 'advertiser') {
         throw fastify.httpErrors.conflict('GlowCoin есть только у рекламодателя');
+      }
+      // Агентский баланс не трогаем вручную здесь: документы агентства
+      // приходят по другим каналам (тариф, промокод, самостоятельное
+      // пополнение) — эта ручная корректировка поддержки их не подменяет.
+      if (target.advertiserKind === 'agency') {
+        throw fastify.httpErrors.conflict('Баланс агентства нельзя скорректировать здесь');
       }
 
       try {

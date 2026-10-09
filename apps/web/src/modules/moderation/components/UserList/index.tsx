@@ -555,7 +555,10 @@ export function UserList({
 
                   {isSpecializedView ? null : (
                     <>
-                      {isStaffActor && user.role === 'advertiser' && adjusting !== user.id ? (
+                      {isStaffActor &&
+                      user.role === 'advertiser' &&
+                      user.advertiserKind !== 'agency' &&
+                      adjusting !== user.id ? (
                         <Button
                           variant="secondary"
                           disabled={busy}

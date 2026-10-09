@@ -59,6 +59,9 @@ type Action = {
 export type EmailContent = {
   heading: string;
   intro: string;
+  /** Пронумерованные шаги — только там, где письмо подводит к серии действий
+   *  (сейчас только welcome-письмо после регистрации). */
+  steps?: string[];
   action?: Action;
   /** Мелким шрифтом под разделителем: срок жизни ссылки и что делать, если это не вы. */
   note?: string;
@@ -107,7 +110,7 @@ const FOOTER: Record<Locale, string> = {
 };
 
 export function renderEmail(locale: Locale, content: EmailContent): string {
-  const { heading, intro, action, note } = content;
+  const { heading, intro, steps, action, note } = content;
 
   // Предзаголовок: то, что почтовый клиент показывает в списке рядом с темой.
   // Без него туда попадает начало разметки или слово «noova» — ни то, ни
@@ -116,6 +119,33 @@ export function renderEmail(locale: Locale, content: EmailContent): string {
     <div style="display:none;font-size:1px;color:${COLOR.page};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
       ${esc(intro)}
     </div>`;
+
+  const stepsBlock =
+    steps && steps.length > 0
+      ? `
+              <tr>
+                <td style="padding:0 0 16px 0;">
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                      <td bgcolor="${COLOR.panel}" style="background:${COLOR.panel};border-radius:8px;padding:16px 18px;">
+                        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                          ${steps
+                            .map(
+                              (step, index) => `
+                          <tr>
+                            <td style="padding:${index === steps.length - 1 ? '0' : '0 0 8px 0'};font-family:${FONT};font-size:15px;line-height:21px;color:${COLOR.text};">
+                              <span style="color:${COLOR.brand};font-weight:700;">${index + 1}.&nbsp;</span>${esc(step)}
+                            </td>
+                          </tr>`,
+                            )
+                            .join('')}
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>`
+      : '';
 
   const button = action
     ? `
@@ -199,7 +229,7 @@ ${preheader}
                 <td align="left" style="padding:0 0 16px 0;font-family:${FONT};font-size:16px;line-height:22px;color:${COLOR.text};">
                   ${esc(intro)}
                 </td>
-              </tr>${button}${footnote}
+              </tr>${stepsBlock}${button}${footnote}
             </table>
           </td>
         </tr>

@@ -56,7 +56,7 @@ const MISSING_LABEL: Record<MissingField, string> = {
  * Не пускаем незаполненную анкету ни к модератору, ни в выдачу: и поодиночке,
  * и массово действует один и тот же минимум (`missingForReview` в shared).
  */
-async function assertComplete(fastify: FastifyInstance, profileId: string): Promise<void> {
+export async function assertComplete(fastify: FastifyInstance, profileId: string): Promise<void> {
   const p = await fastify.prisma.profile.findUniqueOrThrow({
     where: { id: profileId },
     select: {

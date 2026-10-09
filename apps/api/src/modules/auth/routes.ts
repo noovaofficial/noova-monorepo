@@ -17,7 +17,7 @@ import { MailQueue } from './mail-queue.js';
 import { createMailer, localeOf, mailLink } from './mailer.js';
 import { toCurrentUser } from './mappers.js';
 import { burnTimeLikeVerify, hashPassword, verifyPassword } from './passwords.js';
-import { emailTakenMail, resetPasswordMail, verifyEmailMail } from './templates.js';
+import { emailTakenMail, resetPasswordMail, verifyEmailMail, welcomeMail } from './templates.js';
 import { EMAIL_TOKEN_TTL_MS, generateToken, hashToken, RESET_TOKEN_TTL_MS } from './tokens.js';
 
 const ACK = { ok: true } as const;
@@ -333,16 +333,30 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         throw fastify.httpErrors.badRequest('Ссылка недействительна или устарела');
       }
 
-      await fastify.prisma.$transaction([
+      const [verifiedUser] = await fastify.prisma.$transaction([
         fastify.prisma.user.update({
           where: { id: record.userId },
           data: { emailVerifiedAt: new Date() },
+          select: { email: true, locale: true, role: true, advertiserKind: true },
         }),
         fastify.prisma.authToken.update({
           where: { id: record.id },
           data: { usedAt: new Date() },
         }),
       ]);
+
+      // Клиентам не отправляем: им нечего публиковать. У агентства свой текст
+      // (профиль компании + анкета модели — разные шаги) и ссылка на редактор
+      // компании; у индивидуалки/салона — на создание анкеты (ProfileList).
+      if (verifiedUser.role === 'advertiser') {
+        const locale = localeOf(verifiedUser.locale);
+        const isAgency = verifiedUser.advertiserKind === 'agency';
+        const path = isAgency ? '/account/company' : '/account/profiles';
+        mails.enqueue({
+          to: verifiedUser.email,
+          ...welcomeMail(locale, mailLink(locale, path), isAgency),
+        });
+      }
 
       return ACK;
     },

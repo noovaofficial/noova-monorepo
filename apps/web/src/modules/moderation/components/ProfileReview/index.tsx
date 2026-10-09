@@ -16,8 +16,11 @@ import {
   deleteUser,
   fetchModeratedProfile,
   grantProfileTop,
+  ModerationError,
+  publishModeratedProfile,
   rejectPhoto,
   rejectVerification,
+  setManualVerification,
   unblockProfile,
 } from '@/modules/moderation/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
@@ -25,7 +28,7 @@ import { queryKeys } from '@/shared/query-keys';
 import { ActionCard } from '../ActionCard';
 import cardStyles from '../ActionCard/ActionCard.module.css';
 import { AdvertiserAnalyticsLink } from '../AdvertiserAnalytics';
-import { BlockIcon, DeleteIcon, TopIcon, UnblockIcon, VerifyIcon } from '../icons';
+import { BlockIcon, DeleteIcon, PublishIcon, TopIcon, UnblockIcon, VerifyIcon } from '../icons';
 import styles from '../Moderation.module.css';
 import { PhotoViewer } from '../PhotoViewer';
 
@@ -55,6 +58,8 @@ export function ProfileReview({ profileId }: { profileId: string }) {
   const [photoReason, setPhotoReason] = useState('');
   const [rejectingVerification, setRejectingVerification] = useState(false);
   const [verificationReason, setVerificationReason] = useState('');
+  const [togglingVerify, setTogglingVerify] = useState(false);
+  const [verifyReason, setVerifyReason] = useState('');
 
   const adjustLimit = useQuery({
     queryKey: queryKeys.adjustLimit(),
@@ -111,6 +116,25 @@ export function ProfileReview({ profileId }: { profileId: string }) {
 
   const grantTop = useMutation({
     mutationFn: (days?: number) => grantProfileTop(profileId, days),
+    onSuccess: refresh,
+  });
+
+  // Ручная отметка верификации (D-12) — для случаев, когда документы пришли
+  // на email, а не через форму заявки. Только admin.
+  const manualVerify = useMutation({
+    mutationFn: ({ verified, reason }: { verified: boolean; reason: string }) =>
+      setManualVerification(profileId, verified, reason),
+    onSuccess: async () => {
+      setTogglingVerify(false);
+      setVerifyReason('');
+      await refresh();
+    },
+  });
+
+  // Публикация персоналом, минуя клик владельца — у модератора пейвол
+  // работает как и у владельца, у админа кнопка публикует без оплаты.
+  const publishNow = useMutation({
+    mutationFn: () => publishModeratedProfile(profileId),
     onSuccess: refresh,
   });
 
@@ -176,7 +200,9 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     remove.isPending ||
     removeProfile.isPending ||
     approvePhotoM.isPending ||
-    rejectPhotoM.isPending;
+    rejectPhotoM.isPending ||
+    manualVerify.isPending ||
+    publishNow.isPending;
 
   if (status === 'loading') return <p className={styles.empty}>{t('loading')}</p>;
 
@@ -299,6 +325,101 @@ export function ProfileReview({ profileId }: { profileId: string }) {
             {rejectReview.isError ? (
               <span className={styles.hint}>{t('verificationSectionFailed')}</span>
             ) : null}
+          </ActionCard>
+        ) : null}
+
+        {/* Публикация персоналом, минуя клик владельца. У модератора тот же
+            пейвол, что и у владельца; у админа кнопка публикует без оплаты —
+            прямой обход платежа, как и выдача ТОПа без оплаты выше. Карточка
+            видна всегда, недоступна — с подсказкой при наведении. */}
+        {isStaff ? (
+          <ActionCard
+            icon={<PublishIcon />}
+            title={t('publishNow')}
+            status={isAdmin ? t('publishNowAdminHint') : t('publishNowModeratorHint')}
+          >
+            <div className={cardStyles.actions}>
+              <Button
+                disabled={
+                  busy ||
+                  profile.status === 'published' ||
+                  profile.status === 'banned' ||
+                  profile.verificationStatus !== 'verified'
+                }
+                title={
+                  profile.status === 'published'
+                    ? t('publishNowAlready')
+                    : profile.status === 'banned'
+                      ? t('publishNowBanned')
+                      : profile.verificationStatus !== 'verified'
+                        ? t('publishNowNotVerified')
+                        : undefined
+                }
+                onClick={() => publishNow.mutate()}
+              >
+                <PublishIcon />
+                {t('publishNow')}
+              </Button>
+            </div>
+            {publishNow.error instanceof ModerationError && publishNow.error.status === 402 ? (
+              <span className={styles.hint}>{t('publishNowUnpaid')}</span>
+            ) : publishNow.isError ? (
+              <span className={styles.hint}>{t('publishNowFailed')}</span>
+            ) : null}
+          </ActionCard>
+        ) : null}
+
+        {/* Бейдж «Проверено» вручную — для случаев, когда документы пришли по
+            почте, а не через форму верификации (D-12). Только админ: это
+            прямой обход формальной заявки, решение должно быть видно как
+            отдельное, осознанное действие с объяснением. */}
+        {isAdmin ? (
+          <ActionCard
+            icon={<VerifyIcon />}
+            title={t('manualVerify')}
+            status={profile.isVerified ? t('manualVerifyOn') : t('manualVerifyOff')}
+            expanded={togglingVerify}
+          >
+            {togglingVerify ? (
+              <>
+                <textarea
+                  className={styles.textarea}
+                  value={verifyReason}
+                  onChange={(event) => setVerifyReason(event.target.value)}
+                  placeholder={t('reason')}
+                  minLength={5}
+                />
+                <span className={styles.hint}>{t('manualVerifyHint')}</span>
+                <div className={cardStyles.actions}>
+                  <Button
+                    disabled={busy || verifyReason.trim().length < 5}
+                    onClick={() =>
+                      manualVerify.mutate({
+                        verified: !profile.isVerified,
+                        reason: verifyReason.trim(),
+                      })
+                    }
+                  >
+                    <VerifyIcon />
+                    {t(profile.isVerified ? 'manualVerifyRevoke' : 'manualVerifyGrant')}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => setTogglingVerify(false)}
+                  >
+                    {t('cancel')}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={cardStyles.actions}>
+                <Button variant="secondary" disabled={busy} onClick={() => setTogglingVerify(true)}>
+                  <VerifyIcon />
+                  {t(profile.isVerified ? 'manualVerifyRevoke' : 'manualVerifyGrant')}
+                </Button>
+              </div>
+            )}
           </ActionCard>
         ) : null}
 

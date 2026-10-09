@@ -360,8 +360,9 @@ export function UserDetail({ userId }: { userId: string }) {
             </ActionCard>
           ) : null}
 
-          {/* Монеты — staff, потолок для модератора проверяется и на сервере. */}
-          {data.role === 'advertiser' ? (
+          {/* Монеты — staff, потолок для модератора проверяется и на сервере.
+              У агентства свои каналы (тариф, промокод, пополнение) — здесь не трогаем. */}
+          {data.role === 'advertiser' && data.advertiserKind !== 'agency' ? (
             <ActionCard
               icon={<GlowCoinIcon size={18} />}
               title={t('adjustGc')}

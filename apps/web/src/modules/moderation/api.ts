@@ -168,6 +168,19 @@ export function fetchModeratedProfile(id: string): Promise<ModeratedProfile> {
   return call(`/moderation/profiles/${id}`, moderatedProfileSchema);
 }
 
+/** Ручная отметка верификации (D-12), минуя формальную заявку — только admin. */
+export function setManualVerification(id: string, verified: boolean, reason: string) {
+  return call(`/moderation/profiles/${id}/verify-manual`, ackSchema, {
+    method: 'POST',
+    body: JSON.stringify({ verified, reason }),
+  });
+}
+
+/** Публикация анкеты персоналом, минуя клик владельца (см. ProfileReview). */
+export function publishModeratedProfile(id: string) {
+  return call(`/moderation/profiles/${id}/publish`, ackSchema, { method: 'POST' });
+}
+
 export function fetchUsers(
   query?: string,
   blockedOnly = false,

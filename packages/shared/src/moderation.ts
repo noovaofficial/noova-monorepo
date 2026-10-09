@@ -152,6 +152,10 @@ export const moderatedProfileSchema = z.object({
     }),
   ),
   verificationStatus: verificationStatusSchema,
+  /** Бейдж «Проверено» (D-12, личность) — отдельная сущность от проверки
+   *  контента выше: её можно включить и через заявку, и вручную админом,
+   *  когда документы пришли не через форму. */
+  isVerified: z.boolean(),
   /** Id заявки на проверку анкеты (`VerificationCase`) — на неё ссылаются
    *  `/moderation/verifications/:id/approve|reject`. `null`, пока анкета ни
    *  разу не отправлялась на проверку. */
@@ -246,6 +250,17 @@ export const blockSchema = z.object({
   reason: z.string().trim().min(5).max(500),
 });
 export type BlockInput = z.infer<typeof blockSchema>;
+
+/**
+ * Ручная отметка верификации (D-12) — для случаев, когда агентство прислало
+ * документы не через форму заявки, а на email. Причина обязательна и при
+ * снятии отметки: иначе в журнале модерации остаётся решение без объяснения.
+ */
+export const manualVerifyInputSchema = z.object({
+  verified: z.boolean(),
+  reason: z.string().trim().min(5).max(500),
+});
+export type ManualVerifyInput = z.infer<typeof manualVerifyInputSchema>;
 
 // ---------- Управление персоналом ----------
 

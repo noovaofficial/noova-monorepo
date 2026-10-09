@@ -82,10 +82,16 @@ export function createMailer(log: FastifyBaseLogger): Mailer {
   return new SmtpMailer(log);
 }
 
-/** Ссылка в письме собирается из публичного адреса фронта, а не из заголовков запроса. */
-export function mailLink(locale: Locale, path: string, token: string): string {
+/**
+ * Ссылка в письме собирается из публичного адреса фронта, а не из заголовков
+ * запроса. `token` — только для одноразовых ссылок (подтверждение почты,
+ * сброс пароля); ссылки на обычные страницы (например, welcome-письмо) его
+ * не несут.
+ */
+export function mailLink(locale: Locale, path: string, token?: string): string {
   const base = env.PUBLIC_SITE_URL.replace(/\/$/, '');
-  return `${base}/${locale}${path}?token=${encodeURIComponent(token)}`;
+  const query = token ? `?token=${encodeURIComponent(token)}` : '';
+  return `${base}/${locale}${path}${query}`;
 }
 
 export function localeOf(value: string | null | undefined): Locale {

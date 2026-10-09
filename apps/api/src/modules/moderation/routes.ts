@@ -4,6 +4,7 @@ import {
   blockSchema,
   isUrgentReason,
   managedUserSchema,
+  manualVerifyInputSchema,
   moderatedProfileSchema,
   pageSchema,
   queueCountSchema,
@@ -15,10 +16,13 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { env } from '../../env.js';
 import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { purgeUserById } from '../../jobs/retention.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { assertComplete } from '../account/routes.js';
+import { hasVisibleListing } from '../billing/listing.js';
 import { applyFirstProfileCampaign } from '../campaigns/service.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
 import {
@@ -829,6 +833,15 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const profileStatus = item.profile.status;
 
+      // Если анкета ждала проверки и у владельца уже есть оплаченное
+      // размещение, одобрение публикует её сразу — платить и нажимать
+      // «опубликовать» отдельно незачем. Без оплаты ничего не меняется:
+      // анкета уходит в черновик, как раньше, и решение/оплата остаются
+      // за владельцем.
+      const canAutoPublish =
+        profileStatus === 'pending_verification' &&
+        (!env.PAYWALL_ENABLED || (await hasVisibleListing(fastify.prisma, item.profile.ownerId)));
+
       await fastify.prisma.$transaction([
         fastify.prisma.verificationCase.update({
           where: { id: item.id },
@@ -842,18 +855,17 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           },
         }),
         // Бейдж «Проверено» на карточке следует из этого флага.
-        //
-        // Статус анкеты тоже надо снять с «на проверке»: заявка одобрена,
-        // и владелец должен видеть, что мяч на его стороне. Публикуем не мы —
-        // решение остаётся за ним, поэтому возвращаем в черновик, а не
-        // публикуем автоматически.
         fastify.prisma.profile.update({
           where: { id: item.profileId },
           data: {
             // Бейдж «Проверено» даёт только верификация личности (D-12):
             // проверка анкеты решает, попадёт ли она в каталог, и не более.
             moderationNote: null,
-            ...(profileStatus === 'pending_verification' ? { status: 'draft' as const } : {}),
+            ...(profileStatus === 'pending_verification'
+              ? canAutoPublish
+                ? { status: 'published' as const, publishedAt: new Date() }
+                : { status: 'draft' as const }
+              : {}),
           },
         }),
       ]);
@@ -927,6 +939,120 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       await writeAction(fastify, userId, 'verification', item.id, 'rejected', request.body.reason);
       fastify.revalidate([profileTag(item.profile.slug), PROFILES_TAG]);
 
+      return { ok: true as const };
+    },
+  );
+
+  /**
+   * Ручная отметка верификации (D-12) — для агентств, которые присылают
+   * документы на email, минуя форму заявки. Только admin: запись напрямую
+   * обходит формальную заявку `VerificationRequest`, и модератору такой
+   * обход недоступен даже прямым вызовом API.
+   */
+  fastify.post(
+    '/moderation/profiles/:id/verify-manual',
+    {
+      onRequest: fastify.requireRole('admin'),
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        body: manualVerifyInputSchema,
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const { verified, reason } = request.body;
+
+      const profile = await fastify.prisma.profile.findUnique({
+        where: { id: request.params.id },
+        select: { id: true, slug: true, ownerId: true },
+      });
+      if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
+      refuseSelfModeration(fastify, profile.ownerId, userId);
+
+      await fastify.prisma.profile.update({
+        where: { id: profile.id },
+        data: { isVerified: verified },
+      });
+
+      await writeAction(
+        fastify,
+        userId,
+        'identity',
+        profile.id,
+        verified ? 'approved' : 'rejected',
+        reason,
+      );
+
+      fastify.revalidate([profileTag(profile.slug), PROFILES_TAG]);
+      return { ok: true as const };
+    },
+  );
+
+  /**
+   * Публикация анкеты персоналом, минуя клик владельца. Премодерация
+   * содержимого обязательна для обеих ролей — это юридический барьер, а не
+   * вопрос платежа. Пейвол пропускает только admin — прямой обход платежа,
+   * как и выдача ТОПа без оплаты; модератор получает тот же отказ, что и
+   * владелец на собственной публикации.
+   */
+  fastify.post(
+    '/moderation/profiles/:id/publish',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId, role } = requireSession(request);
+      const profile = await fastify.prisma.profile.findUnique({
+        where: { id: request.params.id },
+        select: {
+          id: true,
+          slug: true,
+          ownerId: true,
+          status: true,
+          verification: { select: { status: true } },
+        },
+      });
+      if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
+      refuseSelfModeration(fastify, profile.ownerId, userId);
+
+      if (profile.status === 'banned') {
+        throw fastify.httpErrors.conflict('Заблокированную анкету нужно сначала разблокировать');
+      }
+      await assertComplete(fastify, profile.id);
+      if (profile.verification?.status !== 'verified') {
+        throw fastify.httpErrors.forbidden('Публикация возможна только после проверки анкеты');
+      }
+      if (
+        role !== 'admin' &&
+        env.PAYWALL_ENABLED &&
+        !(await hasVisibleListing(fastify.prisma, profile.ownerId))
+      ) {
+        throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
+      }
+
+      await fastify.prisma.profile.update({
+        where: { id: profile.id },
+        data: { status: 'published', publishedAt: new Date() },
+      });
+
+      await writeAction(
+        fastify,
+        userId,
+        'profile',
+        profile.id,
+        'approved',
+        'Опубликовано персоналом',
+      );
+      fastify.revalidate([profileTag(profile.slug), PROFILES_TAG]);
       return { ok: true as const };
     },
   );
@@ -1600,6 +1726,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           },
           companyId: true,
           isFeatured: true,
+          isVerified: true,
           topPlacement: { select: { status: true, expiresAt: true } },
           prices: {
             orderBy: { durationMinutes: 'asc' },
@@ -1674,6 +1801,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         companyId: profile.companyId,
         isFeatured: profile.isFeatured,
+        isVerified: profile.isVerified,
         topExpiresAt: activeTopExpiry(profile.topPlacement),
         createdAt: profile.createdAt.toISOString(),
       };

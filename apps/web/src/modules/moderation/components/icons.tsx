@@ -78,3 +78,14 @@ export function VerifyIcon(props: IconProps) {
     </IconBase>
   );
 }
+
+/** Стрелка вверх из лотка — публикация анкеты персоналом. */
+export function PublishIcon(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 15V4" />
+      <path d="M8 8l4-4 4 4" />
+      <path d="M5 15v3a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18v-3" />
+    </IconBase>
+  );
+}
