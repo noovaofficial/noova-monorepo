@@ -1,4 +1,5 @@
 import type { ProfileSummary } from '@noova/shared';
+import { placeholderGradient } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
 import styles from '../Moderation.module.css';
 
@@ -9,6 +10,12 @@ import styles from '../Moderation.module.css';
  * и тех же подписей — здесь общий рендер, а подписи приходят уже
  * переведёнными от вызывающей страницы (у той и другой карточки свой
  * изолированный неймспейс словаря, общий компонент за перевод не отвечает).
+ *
+ * `layout="cards"` — фотосетка вместо строки текста: у агентства анкет может
+ * быть много, и с фото их проще узнать глазом, чем по одному имени. Весь
+ * блок карточки — ссылка (клик открывает анкету), отдельного `openLabel`
+ * тут нет. У пользователя (всегда `layout="list"`, по умолчанию) фото не
+ * запрашивается вовсе — `coverPhotoUrl` для него не приходит.
  */
 export function ProfileSummaryList({
   profiles,
@@ -18,6 +25,7 @@ export function ProfileSummaryList({
   verifiedLabel,
   featuredLabel,
   openLabel,
+  layout = 'list',
 }: {
   profiles: ProfileSummary[];
   title: string;
@@ -26,6 +34,7 @@ export function ProfileSummaryList({
   verifiedLabel: string;
   featuredLabel: string;
   openLabel: string;
+  layout?: 'list' | 'cards';
 }) {
   return (
     <>
@@ -33,6 +42,38 @@ export function ProfileSummaryList({
 
       {profiles.length === 0 ? (
         <p className={`${styles.empty} ${styles.summaryList}`}>{emptyText}</p>
+      ) : layout === 'cards' ? (
+        <div className={`${styles.profileCardGrid} ${styles.summaryList}`}>
+          {profiles.map((profile) => (
+            <Link
+              className={styles.profileCardLink}
+              href={`/moderation/profiles/${profile.id}`}
+              key={profile.id}
+            >
+              <div
+                className={styles.profileCardThumb}
+                style={
+                  profile.coverPhotoUrl
+                    ? undefined
+                    : { background: placeholderGradient(profile.id) }
+                }
+              >
+                {profile.coverPhotoUrl ? (
+                  // biome-ignore lint/performance/noImgElement: сетка в админке, не публичная страница — оптимизатор Next здесь не нужен
+                  <img src={profile.coverPhotoUrl} alt="" loading="lazy" />
+                ) : null}
+              </div>
+              <div className={styles.profileCardBody}>
+                <span className={styles.profileCardName}>{profile.displayName}</span>
+                <span className={styles.profileCardMeta}>
+                  {profile.cityName} · {statusLabel(profile.status)}
+                  {profile.isVerified ? ` · ${verifiedLabel}` : ''}
+                  {profile.isFeatured ? ` · ${featuredLabel}` : ''}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
       ) : (
         <div className={`${styles.staffList} ${styles.summaryList}`}>
           {profiles.map((profile) => (

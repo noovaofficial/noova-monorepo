@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { inheritContacts } from './company-defaults';
+import { inheritContacts, lowestPriceCents } from './company-defaults';
 
 describe('inheritContacts', () => {
   it('приводит значения к каноническому виду и нумерует позиции подряд', () => {
@@ -27,5 +27,20 @@ describe('inheritContacts', () => {
       { type: 'telegram', value: '@ok_name' },
     ]);
     expect(result).toEqual([{ type: 'telegram', value: '@ok_name', position: 0 }]);
+  });
+});
+
+describe('lowestPriceCents', () => {
+  it('берёт минимум среди выездных и приёмных, игнорируя нули и пропуски', () => {
+    expect(
+      lowestPriceCents([
+        { incallCents: 0, outcallCents: 15000 },
+        { incallCents: 10000, outcallCents: null },
+      ]),
+    ).toBe(10000);
+  });
+
+  it('пустой прайс — нет минимума', () => {
+    expect(lowestPriceCents([])).toBeNull();
   });
 });

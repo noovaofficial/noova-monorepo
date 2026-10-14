@@ -22,3 +22,13 @@ export function inheritContacts(
   }
   return result;
 }
+
+/** Минимальная цена денормализована: по ней идёт сортировка листинга без джойнов. */
+export function lowestPriceCents(
+  prices: { incallCents: number | null; outcallCents: number | null }[],
+): number | null {
+  const values = prices
+    .flatMap((p) => [p.incallCents, p.outcallCents])
+    .filter((v): v is number => v !== null && v > 0);
+  return values.length > 0 ? Math.min(...values) : null;
+}

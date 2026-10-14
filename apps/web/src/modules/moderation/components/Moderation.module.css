@@ -240,6 +240,67 @@
   color: var(--tertiaryText);
 }
 
+/* Анкеты агентства на `admin/companies/{id}` — фотокарточками, а не строкой
+   текста (`.staffList`): это удобнее опознаётся глазом, когда у агентства
+   их десятки. 180px даёт 3-4 в ряд на ширине карточки компании (860px). */
+.profileCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space3);
+}
+
+.profileCardLink {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+  background: var(--surface);
+  color: inherit;
+  transition: box-shadow 0.15s;
+}
+
+.profileCardLink:hover {
+  box-shadow: var(--shadowSm);
+}
+
+.profileCardThumb {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background-size: cover;
+}
+
+.profileCardThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.profileCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space2) var(--space3) var(--space3);
+  min-width: 0;
+}
+
+.profileCardName {
+  font-weight: 600;
+  font-size: var(--textSm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileCardMeta {
+  font-size: var(--textXs);
+  color: var(--tertiaryText);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;

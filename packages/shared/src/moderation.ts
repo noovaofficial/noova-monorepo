@@ -399,6 +399,10 @@ export const profileSummarySchema = z.object({
   cityName: z.string(),
   isVerified: z.boolean(),
   isFeatured: z.boolean(),
+  /** Только там, где список рисуется фотокарточками (карточка агентства) —
+   *  остальным местам (карточка пользователя) фото не нужно, и запрос за
+   *  ним там не делается. */
+  coverPhotoUrl: z.string().nullable().optional(),
 });
 export type ProfileSummary = z.infer<typeof profileSummarySchema>;
 

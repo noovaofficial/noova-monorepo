@@ -87,7 +87,7 @@ function tagsFor(slug: string): string[] {
   return [profileTag(slug), PROFILES_TAG];
 }
 
-import { inheritContacts } from './company-defaults.js';
+import { inheritContacts, lowestPriceCents } from './company-defaults.js';
 import { buildUniqueSlug } from './slug.js';
 
 /**
@@ -114,16 +114,6 @@ async function advertiserOr403(fastify: FastifyInstance, userId: string) {
     throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
   }
   return { advertiserKind: user.advertiserKind, isEmailVerified: user.emailVerifiedAt !== null };
-}
-
-/** Минимальная цена денормализована: по ней идёт сортировка листинга без джойнов. */
-function lowestPriceCents(
-  prices: { incallCents: number | null; outcallCents: number | null }[],
-): number | null {
-  const values = prices
-    .flatMap((p) => [p.incallCents, p.outcallCents])
-    .filter((v): v is number => v !== null && v > 0);
-  return values.length > 0 ? Math.min(...values) : null;
 }
 
 /**

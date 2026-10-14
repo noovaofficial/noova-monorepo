@@ -9,6 +9,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { photoUrl } from '../../mappers.js';
 import { BILLING_TAG, PROFILES_TAG } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import {
@@ -170,6 +171,15 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
           isVerified: true,
           isFeatured: true,
           city: { select: { name: true } },
+          // Обложка для карточки анкеты на этой странице (фотосетка, а не
+          // строка текста) — остальным местам, где рисуется этот же тип
+          // (карточка пользователя), фото не нужно.
+          photos: {
+            where: { isApproved: true, deletedAt: null },
+            orderBy: { position: 'asc' },
+            take: 1,
+            select: { storageKey: true },
+          },
         },
       });
 
@@ -184,6 +194,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
           cityName: profile.city.name,
           isVerified: profile.isVerified,
           isFeatured: profile.isFeatured,
+          coverPhotoUrl: profile.photos[0] ? photoUrl(profile.photos[0].storageKey) : null,
         })),
       };
     },

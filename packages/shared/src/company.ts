@@ -74,6 +74,24 @@ export const companyInputSchema = z.object({
 
 export type CompanyInput = z.infer<typeof companyInputSchema>;
 
+/**
+ * Разослать контакты и/или прайс компании по уже заведённым анкетам агентства
+ * (а не только в новые — см. комментарий у `CompanyPriceSlot`). Разовое
+ * действие по явному подтверждению в кабинете, а не постоянная привязка:
+ * анкета и после рассылки может снова разойтись с компанией.
+ */
+export const companySyncInputSchema = z.object({
+  contacts: z.boolean().default(false),
+  prices: z.boolean().default(false),
+});
+export type CompanySyncInput = z.infer<typeof companySyncInputSchema>;
+
+export const companySyncResultSchema = z.object({
+  /** Сколько анкет агентства (привязанных к компании) было тронуто. */
+  profilesUpdated: z.number().int().nonnegative(),
+});
+export type CompanySyncResult = z.infer<typeof companySyncResultSchema>;
+
 /** Компания глазами владельца — в кабинете, для правки формы: контакты со
  *  значениями, логотип своей ссылкой. */
 export const companySchema = z.object({

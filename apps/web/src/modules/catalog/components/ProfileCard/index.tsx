@@ -77,9 +77,16 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
           />
         ) : null}
 
-        {/* Бейджи собраны в один ряд слева: правый верхний угол занят сердцем. */}
+        {/* Бейджи собраны в один ряд слева: правый верхний угол занят сердцем.
+            Принадлежность агентству — тоже сюда, а не в ряд услуг: так услуги
+            видны у любой анкеты, а не только у анкет без компании. */}
         <div className={styles.top}>
           {profile.isFeatured ? <Badge variant="featured">★ {t('featured')}</Badge> : null}
+          {profile.company ? (
+            <span className={styles.companyTop}>
+              <Badge variant="company">{t('fromAgency', { name: profile.company.name })}</Badge>
+            </span>
+          ) : null}
           {profile.isOnline ? (
             <span className={styles.online}>
               <span className={styles.dot} />
@@ -103,21 +110,10 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
       </div>
 
       <div className={styles.body}>
-        {/* Принадлежность компании вытесняет услуги: она говорит о анкете
-            больше, чем три строки из шестидесяти пяти, и в одном ряду с ними
-            терялась бы. Нет компании — показываем услуги. */}
         <div className={styles.tags}>
-          {profile.company ? (
-            <Badge variant="company">
-              {t('fromAgency', {
-                name: profile.company.name,
-              })}
-            </Badge>
-          ) : (
-            pickServices(profile.id, profile.services).map((service) => (
-              <Tag key={service.key}>{service.name}</Tag>
-            ))
-          )}
+          {pickServices(profile.id, profile.services).map((service) => (
+            <Tag key={service.key}>{service.name}</Tag>
+          ))}
         </div>
         <div className={styles.foot}>
           {profile.isVerified ? <Badge variant="verified">✓ {t('verified')}</Badge> : <span />}

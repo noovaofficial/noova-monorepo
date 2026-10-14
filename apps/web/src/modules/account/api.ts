@@ -6,9 +6,11 @@ import {
   type CityOption,
   type Company,
   type CompanyInput,
+  type CompanySyncInput,
   type CreateProfileInput,
   cityOptionSchema,
   companySchema,
+  companySyncResultSchema,
   type Locale,
   type OwnPhoto,
   type OwnProfile,
@@ -100,6 +102,18 @@ export function fetchOwnCompany(): Promise<Company | null> {
 
 export function saveOwnCompany(input: CompanyInput): Promise<Company> {
   return call('/me/company', companySchema, { method: 'PUT', body: JSON.stringify(input) });
+}
+
+/**
+ * Разослать текущие контакты и/или прайс компании по уже заведённым анкетам
+ * агентства — по явному подтверждению в кабинете, не автоматически при
+ * каждом сохранении формы.
+ */
+export function syncCompanyToProfiles(input: CompanySyncInput) {
+  return call('/me/company/sync', companySyncResultSchema, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
 }
 
 /**

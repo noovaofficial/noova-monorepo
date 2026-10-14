@@ -473,6 +473,7 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
           verifiedLabel={t('agencyProfileVerified')}
           featuredLabel={t('agencyProfileFeatured')}
           openLabel={t('openProfile')}
+          layout="cards"
         />
       ) : null}
 

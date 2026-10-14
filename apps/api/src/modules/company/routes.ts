@@ -16,14 +16,17 @@ import {
   type CompanyInput,
   companyInputSchema,
   companySchema,
+  companySyncInputSchema,
+  companySyncResultSchema,
   companyTariffStateSchema,
   normalizeContact,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { PROFILES_TAG } from '../../plugins/revalidate.js';
+import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { inheritContacts, lowestPriceCents } from '../account/company-defaults.js';
 import {
   companyTariffSelect,
   computeAgencyUpgrade,
@@ -367,6 +370,91 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       return { attached: request.body.attached };
+    },
+  );
+
+  /**
+   * Разослать контакты и/или прайс компании по уже заведённым анкетам
+   * агентства. Копия подставляется только в новые анкеты при создании
+   * (см. `Company.prices`) — это тот самый «разово догнать старые», когда
+   * агентство поправило контакты или прайс у себя и хочет того же у всех
+   * девушек. Берём только анкеты, сейчас привязанные к этой компании:
+   * отвязанная (см. `PUT /me/profiles/:id/company`) больше не её анкета.
+   */
+  fastify.post(
+    '/me/company/sync',
+    {
+      onRequest: fastify.requireAuth,
+      schema: {
+        tags: ['account'],
+        body: companySyncInputSchema,
+        response: { 200: companySyncResultSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      await companyOwnerOr403(fastify, userId);
+
+      const { contacts: syncContacts, prices: syncPrices } = request.body;
+      if (!syncContacts && !syncPrices) return { profilesUpdated: 0 };
+
+      const company = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: {
+          id: true,
+          contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
+          prices: {
+            orderBy: { durationMinutes: 'asc' },
+            select: { durationMinutes: true, incallCents: true, outcallCents: true },
+          },
+        },
+      });
+      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+
+      const profiles = await fastify.prisma.profile.findMany({
+        where: { companyId: company.id },
+        select: { id: true, slug: true, status: true },
+      });
+      if (profiles.length === 0) return { profilesUpdated: 0 };
+
+      const newContacts = syncContacts ? inheritContacts(company.contacts) : null;
+      const fromPriceCents = syncPrices ? lowestPriceCents(company.prices) : null;
+
+      await fastify.prisma.$transaction(async (tx) => {
+        for (const profile of profiles) {
+          if (newContacts) {
+            await tx.profileContact.deleteMany({ where: { profileId: profile.id } });
+            if (newContacts.length > 0) {
+              await tx.profileContact.createMany({
+                data: newContacts.map((c) => ({ ...c, profileId: profile.id })),
+              });
+            }
+          }
+
+          if (syncPrices) {
+            await tx.priceSlot.deleteMany({ where: { profileId: profile.id } });
+            if (company.prices.length > 0) {
+              await tx.priceSlot.createMany({
+                data: company.prices.map((p) => ({ ...p, profileId: profile.id })),
+              });
+            }
+          }
+
+          await tx.profile.update({
+            where: { id: profile.id },
+            data: {
+              ...(syncPrices ? { fromPriceCents } : {}),
+              // Рассылка — тоже правка анкеты, инициированная её владельцем:
+              // снимает тот же запрет, что и сохранение формы (см.
+              // Profile.needsEditBeforeResubmit).
+              ...(profile.status === 'rejected' ? { needsEditBeforeResubmit: false } : {}),
+            },
+          });
+        }
+      });
+
+      fastify.revalidate([PROFILES_TAG, ...profiles.map((p) => profileTag(p.slug))]);
+      return { profilesUpdated: profiles.length };
     },
   );
 

@@ -17,16 +17,41 @@ import {
   deleteCompanyLogo,
   fetchOwnCompany,
   saveOwnCompany,
+  syncCompanyToProfiles,
   uploadCompanyLogo,
 } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { AgencyTopCard } from '@/modules/billing/components/AgencyTopCard';
+import { Overlay } from '@/overlays/Overlay';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 import { ContactPicker } from '../ContactPicker';
 import { PriceSlotsEditor } from '../PriceSlotsEditor';
 import linkStyles from './CompanyEditor.module.css';
+
+/**
+ * Сравнение «по смыслу», а не по ссылке: порядок строк в форме не важен,
+ * важно только само содержимое. Не учитывает серверную нормализацию номеров —
+ * это эвристика для решения «показать попап», а не источник истины.
+ */
+function sameContacts(a: ContactInput[], b: ContactInput[]): boolean {
+  const norm = (list: ContactInput[]) =>
+    list
+      .map((c) => `${c.type}:${c.value.trim()}`)
+      .sort()
+      .join('|');
+  return norm(a) === norm(b);
+}
+
+function samePrices(a: PriceSlotInput[], b: PriceSlotInput[]): boolean {
+  const norm = (list: PriceSlotInput[]) =>
+    list
+      .map((p) => `${p.durationMinutes}:${p.incallCents ?? ''}:${p.outcallCents ?? ''}`)
+      .sort()
+      .join('|');
+  return norm(a) === norm(b);
+}
 
 const PAYMENTS: PaymentMethod[] = ['cash', 'card', 'transfer'];
 const FORM_ID = 'company-editor-form';
@@ -69,6 +94,7 @@ export function CompanyEditor() {
   const t = useTranslations('company');
   const tAccount = useTranslations('account');
   const tLang = useTranslations('languageNames');
+  const tf = useTranslations('filters');
   const locale = useLocale();
   const { user, status } = useSession();
   const queryClient = useQueryClient();
@@ -91,6 +117,14 @@ export function CompanyEditor() {
   const [prices, setPrices] = useState<PriceSlotInput[]>([]);
   const [notice, setNotice] = useState<Notice>(null);
   const [copied, setCopied] = useState(false);
+  // Попап после сохранения: контакты и/или прайс поменялись, и у агентства
+  // уже есть анкеты — спросить, применить ли то же самое к ним (N-31: сама
+  // анкета своим прайсом и контактами живёт отдельно, подстановка не живая).
+  const [syncPrompt, setSyncPrompt] = useState<{
+    contacts: boolean;
+    prices: boolean;
+    profileCount: number;
+  } | null>(null);
 
   // Данные приходят запросом: до его завершения полей нет, и без синхронизации
   // форма осталась бы пустой поверх уже заведённой компании.
@@ -121,10 +155,25 @@ export function CompanyEditor() {
         prices: prices.filter((p) => p.incallCents !== null || p.outcallCents !== null),
         isActive: true,
       });
-      return saveOwnCompany(input);
+      const saved = await saveOwnCompany(input);
+      return { input, saved };
     },
-    onSuccess: () => {
+    onSuccess: ({ input, saved }) => {
       setNotice({ kind: 'ok', text: t('saved') });
+
+      // Снимок «до» берём из данных запроса сейчас, до их инвалидации ниже:
+      // как раз то, с чем сравнивать только что отправленную форму.
+      const before = query.data;
+      const contactsChanged = before ? !sameContacts(before.contacts, input.contacts) : false;
+      const pricesChanged = before ? !samePrices(before.prices, input.prices) : false;
+      if ((contactsChanged || pricesChanged) && saved.profileCount > 0) {
+        setSyncPrompt({
+          contacts: contactsChanged,
+          prices: pricesChanged,
+          profileCount: saved.profileCount,
+        });
+      }
+
       void queryClient.invalidateQueries({ queryKey: queryKeys.ownCompany() });
     },
     onError: (cause: unknown) => {
@@ -134,6 +183,18 @@ export function CompanyEditor() {
         kind: 'error',
         text: cause instanceof AccountError && cause.message ? cause.message : t('failed'),
       });
+    },
+  });
+
+  const sync = useMutation({
+    mutationFn: syncCompanyToProfiles,
+    onSuccess: ({ profilesUpdated }) => {
+      setSyncPrompt(null);
+      setNotice({ kind: 'ok', text: t('syncDone', { count: profilesUpdated }) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.ownProfiles() });
+    },
+    onError: () => {
+      setNotice({ kind: 'error', text: t('syncFailed') });
     },
   });
 
@@ -437,6 +498,49 @@ export function CompanyEditor() {
           </div>
         </aside>
       </div>
+
+      {syncPrompt ? (
+        <Overlay onClose={() => setSyncPrompt(null)}>
+          <div
+            className={linkStyles.dialogWrap}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('syncTitle')}
+          >
+            <button
+              type="button"
+              className={linkStyles.dialogBackdrop}
+              onClick={() => setSyncPrompt(null)}
+              aria-label={tf('close')}
+            />
+            <div className={linkStyles.dialogCard}>
+              <span className={linkStyles.dialogTitle}>{t('syncTitle')}</span>
+              {syncPrompt.contacts ? <p className={styles.hint}>{t('syncBodyContacts')}</p> : null}
+              {syncPrompt.prices ? <p className={styles.hint}>{t('syncBodyPrices')}</p> : null}
+              <p className={styles.hint}>{t('syncQuestion', { count: syncPrompt.profileCount })}</p>
+              <div className={linkStyles.dialogActions}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={sync.isPending}
+                  onClick={() => setSyncPrompt(null)}
+                >
+                  {t('syncSkip')}
+                </Button>
+                <Button
+                  type="button"
+                  disabled={sync.isPending}
+                  onClick={() =>
+                    sync.mutate({ contacts: syncPrompt.contacts, prices: syncPrompt.prices })
+                  }
+                >
+                  {t('syncApply')}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Overlay>
+      ) : null}
     </div>
   );
 }

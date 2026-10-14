@@ -43,9 +43,28 @@
   position: absolute;
   top: 10px;
   left: 10px;
+  /* Не залезать под сердце (оно в правом верхнем углу, .favorite) — при
+     длинном имени агентства или сразу трёх бейджах ряд переносится, а не
+     прячется под кнопкой. */
+  right: 44px;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   z-index: 2;
+}
+
+/* Бейдж агентства здесь может быть длиннее «★ топ» или «онлайн» — обрезаем
+   многоточием, а не сжимаем остальной ряд под него. */
+.companyTop {
+  display: inline-flex;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.companyTop > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .online {
