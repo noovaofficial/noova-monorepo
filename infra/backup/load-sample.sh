@@ -26,6 +26,7 @@ LOG="$STATE/load.log"
 KEEP_DAYS=8
 TOKEN="${WATCH_TG_TOKEN:-}"
 CHAT="${WATCH_TG_CHAT:-}"
+TOPIC="${WATCH_TG_TOPIC:-}"
 CPU_MAX="${LOAD_ALERT_CPU_PCT:-80}"
 MEM_MAX="${LOAD_ALERT_MEM_PCT:-90}"
 DISK_MAX="${LOAD_ALERT_DISK_PCT:-85}"
@@ -60,8 +61,11 @@ awk -F'|' -v min=$(( NOW - KEEP_DAYS * 86400 )) '$1 >= min' "$LOG" > "$LOG.tmp" 
 # --- тревоги ------------------------------------------------------------------
 tg() {
 	[ -n "$TOKEN" ] && [ -n "$CHAT" ] || return 0
-	printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TOKEN" \
-		| curl -fsS -m 15 -K - --data-urlencode "chat_id=$CHAT" \
+	{
+		printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TOKEN"
+		[ -n "$TOPIC" ] && printf 'data-urlencode = "message_thread_id=%s"\n' "$TOPIC"
+		true
+	} | curl -fsS -m 15 -K - --data-urlencode "chat_id=$CHAT" \
 			--data-urlencode "parse_mode=HTML" --data-urlencode "text=$1" >/dev/null 2>&1 || true
 }
 

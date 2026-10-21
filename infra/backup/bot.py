@@ -83,6 +83,9 @@ class Config:
         expand = lambda v: os.path.expanduser(os.path.expandvars(v))  # noqa: E731
         self.token = env.get("PULL_TG_TOKEN", "")
         self.chat = int(env["PULL_TG_CHAT"]) if env.get("PULL_TG_CHAT") else None
+        # Топик форума в группе — необязателен: не задан, бот пишет в общую
+        # ленту и принимает команды из любого топика группы, как раньше.
+        self.topic = int(env["PULL_TG_TOPIC"]) if env.get("PULL_TG_TOPIC") else None
         self.admins = parse_admins(env.get("PULL_TG_ADMINS", ""))
         self.dest = expand(env.get("PULL_DEST", os.path.join(home, "backups")))
         self.lock = expand(env.get("PULL_LOCK", os.path.join(home, ".noova-pull.lock")))
@@ -287,11 +290,13 @@ def parse_command(text, bot_username=None):
     return cmd.lower(), rest.strip()
 
 
-def authorized(message, chat, admins):
-    """Команду принимаем только из нашей группы и только от перечисленных людей."""
+def authorized(message, chat, admins, topic=None):
+    """Команду принимаем только из нашей группы, только от перечисленных людей
+    и, если задан топик, только из него — тот же топик, куда бот сам пишет."""
     return (
         message.get("chat", {}).get("id") == chat
         and message.get("from", {}).get("id") in admins
+        and (topic is None or message.get("message_thread_id") == topic)
     )
 
 
@@ -358,6 +363,8 @@ class Bot:
 
     def send(self, text, reply_to=None):
         params = {"chat_id": self.cfg.chat, "text": text, "parse_mode": "HTML"}
+        if self.cfg.topic:
+            params["message_thread_id"] = self.cfg.topic
         if reply_to:
             params["reply_to_message_id"] = reply_to
         try:
@@ -371,7 +378,7 @@ class Bot:
         cmd, arg = parse_command(text, self.username)
         if cmd is None:
             return False
-        if not authorized(message, self.cfg.chat, self.cfg.admins):
+        if not authorized(message, self.cfg.chat, self.cfg.admins, self.cfg.topic):
             # Молча: отвечать чужим значит подтверждать, что здесь что-то есть.
             log(f"игнор /{cmd} от {message.get('from', {}).get('id')} в {message.get('chat', {}).get('id')}")
             return False

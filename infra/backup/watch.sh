@@ -13,6 +13,7 @@
 # Настройки — в ~/noova-watch.env (chmod 600):
 #   WATCH_TG_TOKEN=токен бота
 #   WATCH_TG_CHAT=id чата
+#   WATCH_TG_TOPIC=id топика   # необязательно: писать в конкретный топик форума
 #   WATCH_MAX_HOURS=30      # старше — тревога (ночной цикл + запас)
 #   WATCH_DAILY_OK=1        # необязательно: писать и «всё хорошо» раз в день
 #   WATCH_LOAD_REPORT=1     # суточный отчёт о нагрузке сервера (0 — выключить)
@@ -25,14 +26,18 @@ STATE="${NOOVA_BACKUP_STATE:-$HOME/.noova-backup}"
 MAX_H="${WATCH_MAX_HOURS:-30}"
 TOKEN="${WATCH_TG_TOKEN:-}"
 CHAT="${WATCH_TG_CHAT:-}"
+TOPIC="${WATCH_TG_TOPIC:-}"
 HOST="$(hostname)"
 
 log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1"; }
 
 tg() {
 	[ -n "$TOKEN" ] && [ -n "$CHAT" ] || { log "Telegram не настроен: $1"; return 0; }
-	printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TOKEN" \
-		| curl -fsS -m 15 -K - --data-urlencode "chat_id=$CHAT" \
+	{
+		printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TOKEN"
+		[ -n "$TOPIC" ] && printf 'data-urlencode = "message_thread_id=%s"\n' "$TOPIC"
+		true
+	} | curl -fsS -m 15 -K - --data-urlencode "chat_id=$CHAT" \
 			--data-urlencode "parse_mode=HTML" --data-urlencode "text=$1" >/dev/null 2>&1 \
 		|| log "не удалось отправить в Telegram"
 }

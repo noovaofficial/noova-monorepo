@@ -62,6 +62,7 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
    ```bash
    PULL_TG_TOKEN=токен бота от @BotFather
    PULL_TG_CHAT=id чата, куда бот добавлен
+   PULL_TG_TOPIC=id топика форума в группе   # необязательно
    ```
 
    В сообщении: статус, число копий (по ролям), свежесть, размеры базы и фото,
@@ -71,6 +72,13 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
 
    Без этих двух переменных скрипт молчит, как раньше. Токен передаётся `curl`
    через stdin, а не аргументом, чтобы не светиться в `ps`.
+
+   `PULL_TG_TOPIC` — если в группе включены темы (форум) и отчёты должны идти
+   в конкретную тему, а не в общую ленту. Бот с таким же успехом принимает
+   команды (`/list` и т.д.) только из этой темы — см. ниже. Пусто — как
+   раньше, общая лента и любая тема группы. Узнать id темы: написать в неё
+   что угодно и посмотреть `message_thread_id` в ответе
+   `https://api.telegram.org/bot<токен>/getUpdates`.
 
 2. **Сторож на проде** (`watch.sh`) — ловит тишину. Хранилище, выключенное или
    со сломанным кроном/ключом, само ничего не напишет. Поэтому при каждой
@@ -84,7 +92,7 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
    make deploy-files SERVER=deploy@<IP Prod>            # довезти скрипты
    ssh deploy@<IP Prod> 'bash ~/noova/infra/backup/watch-setup.sh'
    ssh deploy@<IP Prod>                                  # вписать токен и чат:
-   nano ~/noova-watch.env                                # WATCH_TG_TOKEN, WATCH_TG_CHAT
+   nano ~/noova-watch.env                   # WATCH_TG_TOKEN, WATCH_TG_CHAT, WATCH_TG_TOPIC (необязательно)
    bash ~/noova/infra/backup/watch.sh                    # проверить вручную
    ```
 
@@ -101,7 +109,8 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
 куда приходят сообщения о копиях. Команды принимаются **только** из
 `PULL_TG_CHAT` и **только** от пользователей из `PULL_TG_ADMINS` (числовые user
 id через запятую; свой узнать у @userinfobot). Остальным бот не отвечает
-вовсе. Пустой список — бот не стартует.
+вовсе. Пустой список — бот не стартует. Задан `PULL_TG_TOPIC` — та же команда
+из другой темы той же группы тоже игнорируется, не только из другого чата.
 
 | Команда | Что делает |
 |---|---|

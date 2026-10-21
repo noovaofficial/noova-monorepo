@@ -27,14 +27,18 @@ class Fake:
         raise AssertionError(f"неожиданный вызов {method}")
 
 
-def cfg(dest, admins="42"):
-    return bot.Config(
-        {"PULL_TG_TOKEN": "T", "PULL_TG_CHAT": "-100", "PULL_TG_ADMINS": admins, "PULL_DEST": dest}
-    )
+def cfg(dest, admins="42", topic=None):
+    env = {"PULL_TG_TOKEN": "T", "PULL_TG_CHAT": "-100", "PULL_TG_ADMINS": admins, "PULL_DEST": dest}
+    if topic is not None:
+        env["PULL_TG_TOPIC"] = str(topic)
+    return bot.Config(env)
 
 
-def msg(text, user=42, chat=-100, mid=7):
-    return {"text": text, "from": {"id": user}, "chat": {"id": chat}, "message_id": mid}
+def msg(text, user=42, chat=-100, mid=7, topic=None):
+    out = {"text": text, "from": {"id": user}, "chat": {"id": chat}, "message_id": mid}
+    if topic is not None:
+        out["message_thread_id"] = topic
+    return out
 
 
 class Parsing(unittest.TestCase):
@@ -59,9 +63,22 @@ class Parsing(unittest.TestCase):
         self.assertFalse(bot.authorized(msg("/x", user=1), -100, {42}))
         self.assertFalse(bot.authorized(msg("/x", chat=5), -100, {42}))
 
+    def test_authorized_topic(self):
+        # Не задан — как раньше, принимаем из любого топика группы.
+        self.assertTrue(bot.authorized(msg("/x"), -100, {42}, topic=None))
+        self.assertTrue(bot.authorized(msg("/x", topic=9), -100, {42}, topic=None))
+        # Задан — только из него; сообщение без топика (общая лента) не подходит.
+        self.assertTrue(bot.authorized(msg("/x", topic=9), -100, {42}, topic=9))
+        self.assertFalse(bot.authorized(msg("/x", topic=5), -100, {42}, topic=9))
+        self.assertFalse(bot.authorized(msg("/x"), -100, {42}, topic=9))
+
     def test_problems_when_no_admins(self):
         c = bot.Config({"PULL_TG_TOKEN": "T", "PULL_TG_CHAT": "-1"})
         self.assertIn("PULL_TG_ADMINS", " ".join(c.problems()))
+
+    def test_config_topic(self):
+        self.assertIsNone(cfg("/tmp").topic)
+        self.assertEqual(cfg("/tmp", topic=9).topic, 9)
 
 
 class Formatting(unittest.TestCase):
@@ -179,6 +196,26 @@ class Handling(unittest.TestCase):
         self.bot.last_backup = __import__("time").time()
         self.bot.handle(msg("/backup"))
         self.assertIn("Слишком часто", self.api.sent[-1]["text"])
+
+
+class HandlingWithTopic(unittest.TestCase):
+    """Задан PULL_TG_TOPIC: бот пишет только туда и слушает только его."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.api = Fake()
+        self.bot = bot.Bot(cfg(self.tmp.name, topic=9), api=self.api)
+        self.bot.username = "b"
+
+    def test_reply_carries_the_topic(self):
+        self.bot.handle(msg("/help", topic=9))
+        self.assertEqual(self.api.sent[-1]["message_thread_id"], 9)
+
+    def test_command_from_another_topic_ignored(self):
+        self.assertFalse(self.bot.handle(msg("/list", topic=1)))
+        self.assertFalse(self.bot.handle(msg("/list")))  # общая лента, без топика
+        self.assertEqual(self.api.sent, [])
 
 
 class Running(unittest.TestCase):

@@ -28,6 +28,8 @@ FRESH="${PULL_MIN_FRESH_HOURS:-26}"
 LOG="${PULL_LOG:-$HOME/noova-pull.log}"
 TG_TOKEN="${PULL_TG_TOKEN:-}"
 TG_CHAT="${PULL_TG_CHAT:-}"
+# Топик форума в группе — необязателен: не задан, сообщение уходит в общую ленту.
+TG_TOPIC="${PULL_TG_TOPIC:-}"
 
 log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1"; }
 
@@ -42,8 +44,11 @@ log() { printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$1"; }
 # Всё, что подставляется в сообщение, экранируется (`esc`).
 tg() {
 	[ -n "$TG_TOKEN" ] && [ -n "$TG_CHAT" ] || return 0
-	printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TG_TOKEN" \
-		| curl -fsS -m 15 -K - --data-urlencode "chat_id=$TG_CHAT" \
+	{
+		printf 'url = "https://api.telegram.org/bot%s/sendMessage"\n' "$TG_TOKEN"
+		[ -n "$TG_TOPIC" ] && printf 'data-urlencode = "message_thread_id=%s"\n' "$TG_TOPIC"
+		true
+	} | curl -fsS -m 15 -K - --data-urlencode "chat_id=$TG_CHAT" \
 			--data-urlencode "parse_mode=HTML" \
 			--data-urlencode "text=$1" >/dev/null 2>&1 || true
 }

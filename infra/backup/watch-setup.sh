@@ -34,6 +34,8 @@ else
 # Настройки сторожа копий. Впишите токен бота (@BotFather) и id чата.
 WATCH_TG_TOKEN=
 WATCH_TG_CHAT=
+# Необязательно: id топика форума в группе — сообщения уйдут только туда.
+WATCH_TG_TOPIC=
 WATCH_MAX_HOURS=30
 # 1 — писать в Telegram и «всё хорошо» раз в день, не только тревоги.
 WATCH_DAILY_OK=0

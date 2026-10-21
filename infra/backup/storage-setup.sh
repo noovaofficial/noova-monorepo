@@ -89,6 +89,9 @@ PULL_MIN_FRESH_HOURS=${PULL_MIN_FRESH_HOURS:-26}
 # Токен бота — у @BotFather, chat_id — id чата, куда бот добавлен.
 PULL_TG_TOKEN=${PULL_TG_TOKEN:-}
 PULL_TG_CHAT=${PULL_TG_CHAT:-}
+# Необязательно: id топика форума в группе — бот пишет и слушает команды
+# только там. Пусто — общая лента, как раньше.
+PULL_TG_TOPIC=${PULL_TG_TOPIC:-}
 # Кому разрешены команды бота (/list, /backup, /verify): числовые user id через
 # запятую. Пусто — бот не стартует. Свой id: написать боту @userinfobot.
 PULL_TG_ADMINS=${PULL_TG_ADMINS:-}
