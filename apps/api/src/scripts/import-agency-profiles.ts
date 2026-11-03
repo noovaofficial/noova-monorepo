@@ -44,17 +44,17 @@
  * в кабинете, дублировать руками в команде незачем.
  */
 import 'dotenv/config';
-import { readFile, readdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { normalizeContact } from '@noova/shared';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
 import type {
   AppearanceType,
-  ContactType,
   BodyType,
   BreastSize,
   BreastType,
+  ContactType,
   EyeColor,
   HairColor,
   PubicHair,
@@ -84,8 +84,12 @@ type Price = { durationMinutes: number; incallCents: number | null; outcallCents
 
 /** Контакты из окружения; пусто — значит берём у компании (см. loadAgencyDefaults). */
 const ENV_CONTACTS: Contact[] = [
-  ...(process.env.TELEGRAM_HANDLE ? [{ type: 'telegram' as const, value: process.env.TELEGRAM_HANDLE }] : []),
-  ...(process.env.WHATSAPP_NUMBER ? [{ type: 'whatsapp' as const, value: process.env.WHATSAPP_NUMBER }] : []),
+  ...(process.env.TELEGRAM_HANDLE
+    ? [{ type: 'telegram' as const, value: process.env.TELEGRAM_HANDLE }]
+    : []),
+  ...(process.env.WHATSAPP_NUMBER
+    ? [{ type: 'whatsapp' as const, value: process.env.WHATSAPP_NUMBER }]
+    : []),
 ];
 
 /** Единые тарифы на весь пакет анкет — приходят через PRICES, не из draft.json.
@@ -175,8 +179,10 @@ async function loadAgencyDefaults(companyId: string) {
 
   PRICE_SLOTS = ENV_PRICE_SLOTS ?? company.prices;
   CONTACTS = ENV_CONTACTS.length ? ENV_CONTACTS : company.contacts;
-  if (PRICE_SLOTS.length === 0) throw new Error('Нет тарифов: ни PRICES, ни тарифов в карточке компании');
-  if (CONTACTS.length === 0) throw new Error('Нет контактов: ни TELEGRAM_HANDLE/WHATSAPP_NUMBER, ни контактов компании');
+  if (PRICE_SLOTS.length === 0)
+    throw new Error('Нет тарифов: ни PRICES, ни тарифов в карточке компании');
+  if (CONTACTS.length === 0)
+    throw new Error('Нет контактов: ни TELEGRAM_HANDLE/WHATSAPP_NUMBER, ни контактов компании');
 
   const allCents = PRICE_SLOTS.flatMap((p) => [p.incallCents, p.outcallCents]).filter(
     (c): c is number => typeof c === 'number' && c > 0,
@@ -184,8 +190,12 @@ async function loadAgencyDefaults(companyId: string) {
   if (allCents.length === 0) throw new Error('В тарифах нет ни одной цены');
   LOWEST_PRICE_CENTS = Math.min(...allCents);
 
-  console.log(`Тарифы (${ENV_PRICE_SLOTS ? 'из PRICES' : 'из компании'}): ${PRICE_SLOTS.map((p) => `${p.durationMinutes}м=${p.incallCents ?? '—'}/${p.outcallCents ?? '—'}`).join(', ')}`);
-  console.log(`Контакты (${ENV_CONTACTS.length ? 'из окружения' : 'из компании'}): ${CONTACTS.map((c) => `${c.type} ${c.value}`).join(', ')}`);
+  console.log(
+    `Тарифы (${ENV_PRICE_SLOTS ? 'из PRICES' : 'из компании'}): ${PRICE_SLOTS.map((p) => `${p.durationMinutes}м=${p.incallCents ?? '—'}/${p.outcallCents ?? '—'}`).join(', ')}`,
+  );
+  console.log(
+    `Контакты (${ENV_CONTACTS.length ? 'из окружения' : 'из компании'}): ${CONTACTS.map((c) => `${c.type} ${c.value}`).join(', ')}`,
+  );
 }
 
 async function findCity() {
@@ -204,7 +214,8 @@ async function resolveServiceIds(keys: string[]) {
     select: { id: true, key: true },
   });
   const missing = keys.filter((k) => !found.some((s) => s.key === k));
-  if (missing.length) console.warn(`    услуги не найдены в каталоге, пропущены: ${missing.join(', ')}`);
+  if (missing.length)
+    console.warn(`    услуги не найдены в каталоге, пропущены: ${missing.join(', ')}`);
   return new Map(found.map((s) => [s.key, s.id]));
 }
 
@@ -239,7 +250,10 @@ async function uploadPhoto(profileId: string, filePath: string, position: number
     data: {
       storageKey,
       variants: Object.fromEntries(
-        Object.entries(processed.variants).map(([name, v]) => [name, { width: v.width, height: v.height }]),
+        Object.entries(processed.variants).map(([name, v]) => [
+          name,
+          { width: v.width, height: v.height },
+        ]),
       ),
     },
   });
@@ -278,7 +292,9 @@ async function importOne(
     await prisma.priceSlot.createMany({
       data: PRICE_SLOTS.map((s) => ({ ...s, profileId: existing.id })),
     });
-    console.log(`  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание и тарифы обновлены`);
+    console.log(
+      `  [${slug}] анкета уже есть: ${profileId} (фото: ${existing._count.photos}), описание и тарифы обновлены`,
+    );
   } else {
     const profileSlug = await buildUniqueSlug(prisma, draft.name, CITY_SLUG);
     const p = draft.params;
@@ -360,7 +376,9 @@ async function importOne(
     await uploadPhoto(profileId, path.join(dir, 'photos', photoFiles[i]!), i);
   }
   if (photoFiles.length > already) {
-    console.log(`  [${slug}] фото загружены: ${photoFiles.length - already} новых, всего ${photoFiles.length}`);
+    console.log(
+      `  [${slug}] фото загружены: ${photoFiles.length - already} новых, всего ${photoFiles.length}`,
+    );
   }
 }
 
@@ -382,7 +400,9 @@ async function main() {
   const slugs = limit ? allSlugs.slice(0, limit) : allSlugs;
 
   console.log(`Агентство: ${AGENCY_EMAIL} (${agency.userId})`);
-  console.log(`Анкет к импорту: ${slugs.length}${limit ? ` (LIMIT=${limit} из ${allSlugs.length})` : ''}`);
+  console.log(
+    `Анкет к импорту: ${slugs.length}${limit ? ` (LIMIT=${limit} из ${allSlugs.length})` : ''}`,
+  );
 
   const manifest = await loadManifest();
 
@@ -397,7 +417,9 @@ async function main() {
     }
   }
 
-  console.log(`\nГотово: ${done}/${slugs.length}. Все — в статусе pending_verification, ждут модерации.`);
+  console.log(
+    `\nГотово: ${done}/${slugs.length}. Все — в статусе pending_verification, ждут модерации.`,
+  );
 }
 
 main()

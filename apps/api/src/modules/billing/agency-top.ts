@@ -4,8 +4,9 @@ import {
   type BuyAgencyTopResult,
   TOP_WEEK_DAYS,
 } from '@noova/shared';
-import type { PrismaClient } from '../../generated/prisma/client.js';
+import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { PROFILES_TAG } from '../../plugins/revalidate.js';
+import { defaultCountryId, resolveAgencyTop } from './scoped.js';
 import { expiryAfterGrant } from './top.js';
 import { applyMovement } from './wallet.js';
 
@@ -73,6 +74,25 @@ export function toAgencyTopPlacement(row: PlacementRow): AgencyTopPlacement {
   };
 }
 
+type Db = PrismaClient | Prisma.TransactionClient;
+
+/**
+ * Пул мест и цена — по стране компании. Страны нет (компания заведена до
+ * появления поля и не заполнена миграцией) — страна по умолчанию.
+ */
+async function poolFor(
+  db: Db,
+  companyCountryId: string | null,
+): Promise<{ countryId: string; weekGc: number; slots: number }> {
+  const countryId = companyCountryId ?? (await defaultCountryId(db));
+  if (!countryId) throw new AgencyTopNoCompanyError();
+  const terms = await resolveAgencyTop(db, countryId);
+  return { countryId, ...terms };
+}
+
+const takenInCountry = (db: Db, countryId: string, now: Date) =>
+  db.agencyTopPlacement.count({ where: { ...activeWhere(now), company: { countryId } } });
+
 /** Занятые места — активные и ещё не истёкшие: задача снимает их с опозданием до цикла. */
 const activeWhere = (now: Date) => ({ status: 'active' as const, expiresAt: { gt: now } });
 
@@ -84,19 +104,18 @@ const activeWhere = (now: Date) => ({ status: 'active' as const, expiresAt: { gt
 export async function agencyTopState(
   prisma: PrismaClient,
   userId: string,
-  config: { weekGc: number; slots: number },
   now: Date = new Date(),
 ): Promise<AgencyTopState> {
-  const [taken, company] = await Promise.all([
-    prisma.agencyTopPlacement.count({ where: activeWhere(now) }),
-    prisma.company.findUnique({
-      where: { ownerId: userId },
-      select: {
-        topPlacement: true,
-        profiles: { where: { status: 'published' }, select: { id: true }, take: 1 },
-      },
-    }),
-  ]);
+  const company = await prisma.company.findUnique({
+    where: { ownerId: userId },
+    select: {
+      countryId: true,
+      topPlacement: true,
+      profiles: { where: { status: 'published' }, select: { id: true }, take: 1 },
+    },
+  });
+  const config = await poolFor(prisma, company?.countryId ?? null);
+  const taken = await takenInCountry(prisma, config.countryId, now);
   const placement = company?.topPlacement ?? null;
   const active = placement && placement.status === 'active' && placement.expiresAt > now;
 
@@ -111,8 +130,6 @@ export async function agencyTopState(
 
 export type AgencyTopPurchase = {
   userId: string;
-  priceGc: number;
-  slots: number;
   now?: Date;
 };
 
@@ -133,11 +150,13 @@ export function buyAgencyTop(
       where: { ownerId: purchase.userId },
       select: {
         id: true,
+        countryId: true,
         topPlacement: true,
         profiles: { where: { status: 'published' }, select: { id: true }, take: 1 },
       },
     });
     if (!company) throw new AgencyTopNoCompanyError();
+    const pool = await poolFor(tx, company.countryId);
     // Как и у анкеты (D-10): платное место без единой опубликованной анкеты
     // нигде не показалось бы — секция «Агентства» сама фильтрует по этому же
     // условию, и оплата тогда выглядела бы принятой, но бесполезной.
@@ -149,13 +168,13 @@ export function buyAgencyTop(
       throw new AgencyTopAlreadyActiveError(current.expiresAt);
     }
 
-    const taken = await tx.agencyTopPlacement.count({ where: activeWhere(now) });
-    if (taken >= purchase.slots) throw new AgencyTopFullError(purchase.slots);
+    const taken = await takenInCountry(tx, pool.countryId, now);
+    if (taken >= pool.slots) throw new AgencyTopFullError(pool.slots);
 
     const spend = await applyMovement(tx, {
       userId: purchase.userId,
       kind: 'TOP',
-      gcAmount: -purchase.priceGc,
+      gcAmount: -pool.weekGc,
     });
 
     const expiresAt = new Date(now.getTime() + WEEK_MS);
@@ -182,7 +201,6 @@ export function buyAgencyTop(
 
 export type AgencyTopGrant = {
   companyId: string;
-  slots: number;
   now?: Date;
 };
 
@@ -207,17 +225,18 @@ export function grantAgencyTop(
 
     const company = await tx.company.findUnique({
       where: { id: grant.companyId },
-      select: { id: true, ownerId: true, topPlacement: true },
+      select: { id: true, ownerId: true, countryId: true, topPlacement: true },
     });
     if (!company) throw new AgencyTopNoCompanyError();
+    const pool = await poolFor(tx, company.countryId);
 
     const current = company.topPlacement;
     const { expiresAt, extended } = expiryAfterGrant(current, now, WEEK_MS);
 
     // Продление места, которое уже занято, свободного слота не требует.
     if (!extended) {
-      const taken = await tx.agencyTopPlacement.count({ where: activeWhere(now) });
-      if (taken >= grant.slots) throw new AgencyTopFullError(grant.slots);
+      const taken = await takenInCountry(tx, pool.countryId, now);
+      if (taken >= pool.slots) throw new AgencyTopFullError(pool.slots);
     }
 
     const placement = current

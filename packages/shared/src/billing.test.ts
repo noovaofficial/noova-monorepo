@@ -2,8 +2,13 @@ import { describe, expect, it } from 'vitest';
 import {
   adjustBalanceInputSchema,
   billingConfigInputSchema,
+  cityMonetizationInputSchema,
+  countryMonetizationSchema,
   DEFAULT_BILLING_CONFIG,
+  emptyCityPriceOverrides,
+  globalBillingConfigSchema,
   grantedGc,
+  overlayPrices,
   toPriceBook,
 } from './billing';
 
@@ -87,5 +92,67 @@ describe('ручная корректировка баланса', () => {
     expect(
       adjustBalanceInputSchema.safeParse({ userId: 'u1', gcAmount: 10, note: '  ' }).success,
     ).toBe(false);
+  });
+});
+
+describe('монетизация по месту', () => {
+  const country = DEFAULT_BILLING_CONFIG.prices;
+
+  it('город переопределяет только заданные ячейки, остальное — как в стране', () => {
+    const city = emptyCityPriceOverrides();
+    (city.individual as Record<string, number | null>).m1 = 150;
+
+    const grid = overlayPrices(country, city);
+    expect(grid.individual.m1).toBe(150);
+    expect(grid.individual.m6).toBe(country.individual.m6);
+    expect(grid.salon).toEqual(country.salon);
+  });
+
+  it('без переопределений город живёт по стране и не меняет её сетку', () => {
+    const grid = overlayPrices(country, undefined);
+    expect(grid).toEqual(country);
+    expect(grid).not.toBe(country);
+
+    overlayPrices(country, emptyCityPriceOverrides());
+    expect(country.individual.m1).toBe(DEFAULT_BILLING_CONFIG.prices.individual.m1);
+  });
+
+  it('страна без пропусков: дырка в сетке не проходит схему', () => {
+    const base = {
+      prices: country,
+      top: { weekGc: 300, slots: 16 },
+      agencyTop: { weekGc: 300, slots: 8 },
+    };
+    expect(countryMonetizationSchema.safeParse(base).success).toBe(true);
+
+    const { m12: _dropped, ...withoutYear } = country.salon;
+    expect(
+      countryMonetizationSchema.safeParse({ ...base, prices: { ...country, salon: withoutYear } })
+        .success,
+    ).toBe(false);
+    expect(
+      countryMonetizationSchema.safeParse({ ...base, top: { weekGc: 300, slots: 0 } }).success,
+    ).toBe(false);
+  });
+
+  it('город допускает пустые значения, но не отрицательные', () => {
+    const ok = {
+      prices: emptyCityPriceOverrides(),
+      top: { weekGc: null, slots: null },
+    };
+    expect(cityMonetizationInputSchema.safeParse(ok).success).toBe(true);
+    expect(
+      cityMonetizationInputSchema.safeParse({ ...ok, top: { weekGc: -5, slots: null } }).success,
+    ).toBe(false);
+  });
+
+  it('общие настройки не несут цен и ТОПа — они в странах', () => {
+    expect(Object.keys(globalBillingConfigSchema.shape).sort()).toEqual([
+      'agencyProfileLimit',
+      'gcPerEur',
+      'moderatorAdjustLimitGc',
+      'topShown',
+      'topupTiers',
+    ]);
   });
 });

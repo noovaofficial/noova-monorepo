@@ -3,7 +3,7 @@
 import type { CityAdmin, Translated } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { addDistrict, fetchCities, updateCity, updateDistrict } from '@/modules/locations/api';
@@ -11,7 +11,9 @@ import { Link } from '@/shared/i18n/navigation';
 import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { emptyNames, NameFields, useRunner } from '../shared';
+import { PlacementRules } from '../PlacementRules';
+import { CityMonetization } from '../ScopeMonetization';
+import { emptyNames, NameFields, type TabDef, Tabs, useRunner, useTab } from '../shared';
 
 /** Третий уровень: один город — его данные и его районы (N-32). */
 export function CityDetail({ countryCode, citySlug }: { countryCode: string; citySlug: string }) {
@@ -32,6 +34,17 @@ export function CityDetail({ countryCode, citySlug }: { countryCode: string; cit
   const { run, error } = useRunner(t, () => {
     void queryClient.invalidateQueries({ queryKey: ['admin-cities'], exact: false });
   });
+
+  const tabs: TabDef[] = useMemo(
+    () => [
+      { key: 'info', label: t('cityInfo') },
+      { key: 'placement', label: t('placementTitle') },
+      { key: 'monetization', label: t('monetizationBlock') },
+      { key: 'districts', label: t('districts'), badge: city?.districts.length },
+    ],
+    [t, city?.districts.length],
+  );
+  const [tab, setTab] = useTab(tabs);
 
   if (status === 'loading' || cities.isLoading) return <p className={styles.empty}>…</p>;
   if (!isAdmin) return <p className={styles.empty}>{t('onlyAdmins')}</p>;
@@ -54,24 +67,42 @@ export function CityDetail({ countryCode, citySlug }: { countryCode: string; cit
 
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{error}</p> : null}
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('cityInfo')}</h2>
-        <CityForm city={city} run={run} t={t} />
-      </section>
+      <Tabs tabs={tabs} active={tab} onSelect={setTab} />
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('districts')}</h2>
-        <p className={styles.hint}>{t('districtsOptional')}</p>
+      {tab === 'info' ? (
+        <section className={styles.section}>
+          <CityForm city={city} run={run} t={t} />
+        </section>
+      ) : null}
 
-        <div className={styles.list}>
-          {city.districts.map((district) => (
-            <DistrictRow key={district.id} district={district} run={run} t={t} />
-          ))}
-          {city.districts.length === 0 ? <p className={styles.empty}>{t('noDistricts')}</p> : null}
-        </div>
+      {tab === 'placement' ? (
+        <section className={styles.section}>
+          <PlacementRules scope={{ cityId: city.id }} run={run} t={t} />
+        </section>
+      ) : null}
 
-        <DistrictForm cityId={city.id} run={run} t={t} />
-      </section>
+      {tab === 'monetization' ? (
+        <section className={styles.section}>
+          <CityMonetization cityId={city.id} />
+        </section>
+      ) : null}
+
+      {tab === 'districts' ? (
+        <section className={styles.section}>
+          <p className={styles.hint}>{t('districtsOptional')}</p>
+
+          <div className={styles.list}>
+            {city.districts.map((district) => (
+              <DistrictRow key={district.id} district={district} run={run} t={t} />
+            ))}
+            {city.districts.length === 0 ? (
+              <p className={styles.empty}>{t('noDistricts')}</p>
+            ) : null}
+          </div>
+
+          <DistrictForm cityId={city.id} run={run} t={t} />
+        </section>
+      ) : null}
     </div>
   );
 }

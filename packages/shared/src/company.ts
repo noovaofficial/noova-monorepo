@@ -70,6 +70,12 @@ export const companyInputSchema = z.object({
   languages: z.array(z.string().length(2)).max(8).default([]),
   payments: z.array(paymentMethodSchema).max(3).default([]),
   isActive: z.boolean().default(true),
+  /** Код страны компании (ISO 3166-1 alpha-2). Задаётся при создании и дальше не меняется. Не указан — страна по умолчанию. */
+  countryCode: z
+    .string()
+    .length(2)
+    .transform((value) => value.toUpperCase())
+    .optional(),
 });
 
 export type CompanyInput = z.infer<typeof companyInputSchema>;
@@ -112,6 +118,8 @@ export const companySchema = z.object({
   isBanned: z.boolean(),
   banReason: z.string().nullable(),
   profileCount: z.number().int().nonnegative(),
+  /** Страна компании; `null` у записей, которые миграция не смогла заполнить. */
+  countryCode: z.string().nullable(),
 });
 export type Company = z.infer<typeof companySchema>;
 

@@ -36,7 +36,9 @@ import {
   TariffTierNotFoundError,
   TariffUpgradeNotAllowedError,
 } from '../billing/agency-tariffs.js';
+import { defaultCountryId } from '../billing/scoped.js';
 import { applyMovement, InsufficientBalanceError } from '../billing/wallet.js';
+import { COMPANY_COUNTRY_LOCKED, withCode } from '../locations/country-lock.js';
 import { ImageError } from '../photos/images.js';
 import { deleteObject, PUBLIC_PREFIX, publicUrl, putObject } from '../photos/storage.js';
 import { MAX_LOGO_BYTES, processLogo } from './logo.js';
@@ -54,6 +56,7 @@ const companySelect = {
   isActive: true,
   bannedAt: true,
   banReason: true,
+  country: { select: { code: true } },
   contacts: { orderBy: { position: 'asc' as const }, select: { type: true, value: true } },
   prices: {
     orderBy: { durationMinutes: 'asc' as const },
@@ -73,6 +76,7 @@ type CompanyRow = {
   isActive: boolean;
   bannedAt: Date | null;
   banReason: string | null;
+  country: { code: string } | null;
   contacts: { type: string; value: string }[];
   prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
   languages: string[];
@@ -96,6 +100,7 @@ const present = (row: CompanyRow) => ({
   languages: row.languages,
   payments: row.payments,
   profileCount: row._count.profiles,
+  countryCode: row.country?.code ?? null,
 });
 
 /**
@@ -150,8 +155,18 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const advertiserKind = await companyOwnerOr403(fastify, userId);
 
-      const { slug, kind, name, description, website, languages, payments, isActive, prices } =
-        request.body;
+      const {
+        slug,
+        kind,
+        name,
+        description,
+        website,
+        languages,
+        payments,
+        isActive,
+        prices,
+        countryCode,
+      } = request.body;
 
       if (kind !== advertiserKind) {
         throw fastify.httpErrors.badRequest(
@@ -200,16 +215,42 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         isActive,
       };
 
+      // Страна задаётся один раз, при создании: по ней выбираются сетка
+      // тарифов и цена ТОПа. Позже её менять нельзя — как и страну анкеты.
+      const existing = await fastify.prisma.company.findUnique({
+        where: { ownerId: userId },
+        select: { countryId: true, country: { select: { code: true } } },
+      });
+      let countryId = existing?.countryId ?? null;
+      if (countryId && countryCode && existing?.country?.code !== countryCode) {
+        throw withCode(
+          fastify.httpErrors.conflict('Нельзя сменить страну компании'),
+          COMPANY_COUNTRY_LOCKED,
+        );
+      }
+      if (!countryId) {
+        const country = countryCode
+          ? await fastify.prisma.country.findUnique({
+              where: { code: countryCode },
+              select: { id: true },
+            })
+          : null;
+        if (countryCode && !country) throw fastify.httpErrors.badRequest('Страна не найдена');
+        countryId = country?.id ?? (await defaultCountryId(fastify.prisma));
+        if (!countryId) throw fastify.httpErrors.conflict('В справочнике нет ни одной страны');
+      }
+
       // Тариф назначается сразу при заведении компании, а не по факту первой
       // анкеты сверх лимита: без этого свежая компания на секунду висела бы
       // без тарифа, и первый же лимит-чек читал бы аварийный fallback.
-      const defaultTariffTierId = await resolveDefaultAgencyTierId(fastify.prisma);
+      const defaultTariffTierId = await resolveDefaultAgencyTierId(fastify.prisma, countryId);
 
       const saved = await fastify.prisma.company.upsert({
         where: { ownerId: userId },
         create: {
           ...fields,
           ownerId: userId,
+          countryId,
           tariffTierId: defaultTariffTierId,
           contacts: { create: contacts.map((c, position) => ({ ...c, position })) },
           prices: { create: prices },
@@ -496,6 +537,7 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           companyId: '',
           companyName: '',
           hasCompany: false,
+          countryId: null,
           profileCount,
           tariffTier: null,
           customProfileLimit: null,

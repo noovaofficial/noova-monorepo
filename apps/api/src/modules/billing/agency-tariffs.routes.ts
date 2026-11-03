@@ -13,6 +13,7 @@ import { photoUrl } from '../../mappers.js';
 import { BILLING_TAG, PROFILES_TAG } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import {
+  companyCountryId,
   companyTariffSelect,
   createAgencyTariffTier,
   deleteAgencyTariffTier,
@@ -30,7 +31,6 @@ import {
   grantAgencyTop,
   revokeAgencyTop,
 } from './agency-top.js';
-import { loadBillingConfig } from './config.js';
 
 /**
  * Сетка тарифов агентств (payments.md §3.3, D-13), индивидуальный override
@@ -45,29 +45,52 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
   // --- Общая сетка тарифов -------------------------------------------------
 
-  fastify.get(
-    '/admin/agency-tariffs',
-    {
-      onRequest: guard,
-      config: { rateLimit: false },
-      schema: { tags: ['admin'], response: { 200: agencyTariffGridSchema } },
-    },
-    async () => loadAgencyTariffGrid(fastify.prisma),
-  );
+  const countryParams = z.object({ countryId: z.string().min(1) });
 
-  fastify.post(
-    '/admin/agency-tariffs',
+  const requireCountry = async (countryId: string) => {
+    const country = await fastify.prisma.country.findUnique({
+      where: { id: countryId },
+      select: { id: true },
+    });
+    if (!country) throw fastify.httpErrors.notFound('Страна не найдена');
+  };
+
+  fastify.get(
+    '/admin/countries/:countryId/agency-tariffs',
     {
       onRequest: guard,
       config: { rateLimit: false },
       schema: {
         tags: ['admin'],
+        params: countryParams,
+        response: { 200: agencyTariffGridSchema },
+      },
+    },
+    async (request) => {
+      await requireCountry(request.params.countryId);
+      return loadAgencyTariffGrid(fastify.prisma, request.params.countryId);
+    },
+  );
+
+  fastify.post(
+    '/admin/countries/:countryId/agency-tariffs',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: countryParams,
         body: agencyTariffTierInputSchema,
         response: { 201: agencyTariffTierSchema },
       },
     },
     async (request, reply) => {
-      const created = await createAgencyTariffTier(fastify.prisma, request.body);
+      await requireCountry(request.params.countryId);
+      const created = await createAgencyTariffTier(
+        fastify.prisma,
+        request.params.countryId,
+        request.body,
+      );
       fastify.revalidate([BILLING_TAG]);
       return reply.status(201).send(created);
     },
@@ -224,11 +247,22 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (!existing) throw fastify.httpErrors.notFound('Компания не найдена');
 
       if (request.body.tariffTierId) {
-        const tier = await fastify.prisma.agencyTariffTier.findUnique({
-          where: { id: request.body.tariffTierId },
-          select: { id: true },
-        });
+        const [tier, company] = await Promise.all([
+          fastify.prisma.agencyTariffTier.findUnique({
+            where: { id: request.body.tariffTierId },
+            select: { id: true, countryId: true },
+          }),
+          fastify.prisma.company.findUnique({
+            where: { id: request.params.id },
+            select: { countryId: true },
+          }),
+        ]);
         if (!tier) throw fastify.httpErrors.badRequest('Тариф не найден');
+        // Тариф берётся из сетки страны компании, не чужой.
+        const companyCountry = await companyCountryId(fastify.prisma, company?.countryId ?? null);
+        if (tier.countryId !== companyCountry) {
+          throw fastify.httpErrors.badRequest('Тариф относится к другой стране');
+        }
       }
 
       const updated = await fastify.prisma.company.update({
@@ -270,8 +304,7 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       if (!company) throw fastify.httpErrors.notFound('Компания не найдена');
 
-      const config = await loadBillingConfig(fastify.prisma);
-      return agencyTopState(fastify.prisma, company.ownerId, config.agencyTop);
+      return agencyTopState(fastify.prisma, company.ownerId);
     },
   );
 
@@ -292,12 +325,10 @@ export const agencyTariffRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request) => {
       const { userId } = requireSession(request);
-      const config = await loadBillingConfig(fastify.prisma);
 
       try {
         const result = await grantAgencyTop(fastify.prisma, {
           companyId: request.params.id,
-          slots: config.agencyTop.slots,
         });
 
         await fastify.prisma.moderationAction.create({

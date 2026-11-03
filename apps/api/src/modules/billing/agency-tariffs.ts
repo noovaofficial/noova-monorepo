@@ -15,6 +15,7 @@ import {
   upgradeCostGc,
 } from '@noova/shared';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { defaultCountryId, getCountryMonetization } from './scoped.js';
 
 /**
  * Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет плоский
@@ -22,7 +23,8 @@ import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
  * заводятся пустыми, значения кладёт первое чтение, а не миграция.
  */
 
-const DEFAULT_TIER_ID = 'default';
+/** Тариф по умолчанию у каждой страны свой — отсюда страна в идентификаторе. */
+const defaultTierId = (countryId: string) => `default:${countryId}`;
 
 type TierRow = Prisma.AgencyTariffTierGetPayload<{ include: { prices: true } }>;
 
@@ -49,13 +51,20 @@ function toTier(row: TierRow): AgencyTariffTier {
  * их же в той же транзакции. Идемпотентно: фиксированный id тарифа переживает
  * повторный вызов и параллельные первые чтения.
  */
-export async function seedAgencyTariffDefaults(prisma: PrismaClient): Promise<void> {
+export async function seedAgencyTariffDefaults(
+  prisma: PrismaClient,
+  countryId: string,
+): Promise<void> {
   const defaults = DEFAULT_BILLING_CONFIG;
+  // Цена по умолчанию — агентская строка прайса страны, а не общая.
+  const agencyPrices = (await getCountryMonetization(prisma, countryId)).prices.agency;
+  const tierId = defaultTierId(countryId);
   await prisma.$transaction(async (tx) => {
     await tx.agencyTariffTier.upsert({
-      where: { id: DEFAULT_TIER_ID },
+      where: { id: tierId },
       create: {
-        id: DEFAULT_TIER_ID,
+        id: tierId,
+        countryId,
         position: 1,
         name: 'До 8 анкет',
         minProfiles: 1,
@@ -63,23 +72,27 @@ export async function seedAgencyTariffDefaults(prisma: PrismaClient): Promise<vo
         isDefault: true,
         isActive: true,
         prices: {
-          create: PLAN_TERMS.map((term) => ({ term, gc: defaults.prices.agency[term] })),
+          create: PLAN_TERMS.map((term) => ({ term, gc: agencyPrices[term] })),
         },
       },
       update: {},
     });
     await tx.company.updateMany({
-      where: { kind: 'agency', tariffTierId: null },
-      data: { tariffTierId: DEFAULT_TIER_ID },
+      where: { kind: 'agency', tariffTierId: null, countryId },
+      data: { tariffTierId: tierId },
     });
   });
 }
 
-export async function loadAgencyTariffGrid(prisma: PrismaClient): Promise<AgencyTariffGrid> {
-  const count = await prisma.agencyTariffTier.count();
-  if (count === 0) await seedAgencyTariffDefaults(prisma);
+export async function loadAgencyTariffGrid(
+  prisma: PrismaClient,
+  countryId: string,
+): Promise<AgencyTariffGrid> {
+  const count = await prisma.agencyTariffTier.count({ where: { countryId } });
+  if (count === 0) await seedAgencyTariffDefaults(prisma, countryId);
 
   const rows = await prisma.agencyTariffTier.findMany({
+    where: { countryId },
     orderBy: { position: 'asc' },
     include: { prices: true },
   });
@@ -89,45 +102,57 @@ export async function loadAgencyTariffGrid(prisma: PrismaClient): Promise<Agency
 /** Тариф, на который садится новая компания при заведении. Сеет сетку, если
  *  до сих пор пуста — заведение агентства не должно ждать первого чтения
  *  админки. */
-export async function resolveDefaultAgencyTierId(prisma: PrismaClient): Promise<string> {
+export async function resolveDefaultAgencyTierId(
+  prisma: PrismaClient,
+  countryId: string,
+): Promise<string> {
   const existing = await prisma.agencyTariffTier.findFirst({
-    where: { isDefault: true },
+    where: { isDefault: true, countryId },
     select: { id: true },
   });
   if (existing) return existing.id;
 
-  await seedAgencyTariffDefaults(prisma);
+  await seedAgencyTariffDefaults(prisma, countryId);
   const seeded = await prisma.agencyTariffTier.findFirst({
-    where: { isDefault: true },
+    where: { isDefault: true, countryId },
     select: { id: true },
   });
   if (!seeded) throw new Error('Не удалось определить тариф агентства по умолчанию');
   return seeded.id;
 }
 
-async function nextPosition(tx: Prisma.TransactionClient): Promise<number> {
-  const max = await tx.agencyTariffTier.aggregate({ _max: { position: true } });
+async function nextPosition(tx: Prisma.TransactionClient, countryId: string): Promise<number> {
+  const max = await tx.agencyTariffTier.aggregate({
+    where: { countryId },
+    _max: { position: true },
+  });
   return (max._max.position ?? 0) + 1;
 }
 
 /** Ровно один тариф — тариф по умолчанию: выставляя флаг у одного, снимаем
  *  его со всех остальных в той же транзакции. */
-async function clearOtherDefaults(tx: Prisma.TransactionClient, exceptId?: string): Promise<void> {
+async function clearOtherDefaults(
+  tx: Prisma.TransactionClient,
+  countryId: string,
+  exceptId?: string,
+): Promise<void> {
   await tx.agencyTariffTier.updateMany({
-    where: { isDefault: true, ...(exceptId ? { id: { not: exceptId } } : {}) },
+    where: { isDefault: true, countryId, ...(exceptId ? { id: { not: exceptId } } : {}) },
     data: { isDefault: false },
   });
 }
 
 export async function createAgencyTariffTier(
   prisma: PrismaClient,
+  countryId: string,
   input: AgencyTariffTierInput,
 ): Promise<AgencyTariffTier> {
   return prisma.$transaction(async (tx) => {
-    if (input.isDefault) await clearOtherDefaults(tx);
-    const position = await nextPosition(tx);
+    if (input.isDefault) await clearOtherDefaults(tx, countryId);
+    const position = await nextPosition(tx, countryId);
     const created = await tx.agencyTariffTier.create({
       data: {
+        countryId,
         position,
         name: input.name,
         minProfiles: input.minProfiles,
@@ -155,10 +180,13 @@ export async function updateAgencyTariffTier(
   input: AgencyTariffTierInput,
 ): Promise<AgencyTariffTier> {
   return prisma.$transaction(async (tx) => {
-    const existing = await tx.agencyTariffTier.findUnique({ where: { id }, select: { id: true } });
+    const existing = await tx.agencyTariffTier.findUnique({
+      where: { id },
+      select: { id: true, countryId: true },
+    });
     if (!existing) throw new TariffTierNotFoundError();
 
-    if (input.isDefault) await clearOtherDefaults(tx, id);
+    if (input.isDefault) await clearOtherDefaults(tx, existing.countryId, id);
     // Цены переписываются целиком: точечное обновление оставило бы срок,
     // удалённый в форме, если бы форма такое допускала.
     await tx.agencyTariffPrice.deleteMany({ where: { tierId: id } });
@@ -198,6 +226,7 @@ export async function deleteAgencyTariffTier(prisma: PrismaClient, id: string): 
 export const companyTariffSelect = {
   id: true,
   ownerId: true,
+  countryId: true,
   name: true,
   customProfileLimit: true,
   customPriceM1Gc: true,
@@ -254,6 +283,7 @@ export async function presentCompanyTariffState(
     companyName: row.name,
     hasCompany: true,
     profileCount,
+    countryId: await companyCountryId(prisma, row.countryId),
     tariffTier: tariffOf(row),
     customProfileLimit: row.customProfileLimit,
     customPrices: customPricesOf(row),
@@ -324,6 +354,7 @@ async function upgradeCostFor(
     ownerId: string;
     targetPriceGc: number;
     term: PlanTerm;
+    fallbackPriceGc: number;
   },
 ): Promise<number> {
   const { periodDays, remainingDays } = await listingPeriod(prisma, params.ownerId);
@@ -333,7 +364,7 @@ async function upgradeCostFor(
       params.term,
       params.company ? tariffOf(params.company) : null,
       params.company ? customPricesOf(params.company) : { m1: null, m6: null, m12: null },
-      DEFAULT_BILLING_CONFIG.prices.agency[params.term],
+      params.fallbackPriceGc,
     ),
     periodDays,
     remainingDays,
@@ -352,7 +383,9 @@ async function computeCandidateTiers(
   params: { company: CompanyTariffRow | null; ownerId: string; existingCount: number },
 ): Promise<AgencyTariffCandidate[]> {
   const { company, ownerId, existingCount } = params;
-  const grid = await loadAgencyTariffGrid(prisma);
+  const countryId = await companyCountryId(prisma, company?.countryId ?? null);
+  const grid = await loadAgencyTariffGrid(prisma, countryId);
+  const fallback = (await getCountryMonetization(prisma, countryId)).prices.agency;
   const candidates = candidateTiersFor(grid, existingCount);
 
   return Promise.all(
@@ -367,6 +400,7 @@ async function computeCandidateTiers(
               ownerId,
               targetPriceGc: tier.prices[term],
               term,
+              fallbackPriceGc: fallback[term],
             }),
           ]),
         ),
@@ -411,7 +445,9 @@ export async function computeAgencyUpgrade(
   prisma: PrismaClient,
   params: { company: CompanyTariffRow; ownerId: string; input: AgencyTariffUpgradeInput },
 ): Promise<{ targetTier: AgencyTariffTier; costGc: number }> {
-  const grid = await loadAgencyTariffGrid(prisma);
+  const countryId = await companyCountryId(prisma, params.company.countryId);
+  const grid = await loadAgencyTariffGrid(prisma, countryId);
+  const fallback = (await getCountryMonetization(prisma, countryId)).prices.agency;
   const targetTier = grid.find((tier) => tier.id === params.input.tierId && tier.isActive);
   if (!targetTier) throw new TariffTierNotFoundError();
 
@@ -427,6 +463,7 @@ export async function computeAgencyUpgrade(
     ownerId: params.ownerId,
     targetPriceGc: targetTier.prices[params.input.term],
     term: params.input.term,
+    fallbackPriceGc: fallback[params.input.term],
   });
   return { targetTier, costGc };
 }
@@ -446,10 +483,22 @@ export async function resolveAgencyListingPriceGc(
     select: companyTariffSelect,
   });
 
+  const countryId = await companyCountryId(prisma, company?.countryId ?? null);
+  const fallback = (await getCountryMonetization(prisma, countryId)).prices.agency;
   return effectiveTierPriceGc(
     params.term,
     company ? tariffOf(company) : null,
     company ? customPricesOf(company) : { m1: null, m6: null, m12: null },
-    DEFAULT_BILLING_CONFIG.prices.agency[params.term],
+    fallback[params.term],
   );
+}
+
+/** Страна компании; у компании без страны — страна по умолчанию. */
+export async function companyCountryId(
+  prisma: PrismaClient,
+  countryId: string | null,
+): Promise<string> {
+  const resolved = countryId ?? (await defaultCountryId(prisma));
+  if (!resolved) throw new Error('В справочнике нет ни одной страны');
+  return resolved;
 }

@@ -123,6 +123,10 @@ export async function buildApp(): Promise<FastifyInstance> {
       error: status >= 500 ? 'Internal Server Error' : error.name,
       message: status >= 500 ? 'Внутренняя ошибка сервера' : error.message,
       statusCode: status,
+      // Код для интерфейса: текст по-русски, а показывать надо на языке пользователя.
+      ...((error as { appCode?: string }).appCode
+        ? { code: (error as { appCode?: string }).appCode }
+        : {}),
     });
   });
 

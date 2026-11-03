@@ -16,8 +16,8 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
-import { loadBillingConfig } from '../modules/billing/config.js';
 import { activateListing } from '../modules/billing/listing.js';
+import { ownerPlace, resolvePlacementPrices } from '../modules/billing/scoped.js';
 import { applyTransaction } from '../modules/billing/wallet.js';
 
 const connectionString = process.env.DATABASE_URL;
@@ -36,8 +36,6 @@ const NOTE: Record<string, string> = {
 };
 
 async function main() {
-  const config = await loadBillingConfig(prisma);
-
   const advertisers = await prisma.user.findMany({
     where: {
       role: 'advertiser',
@@ -55,7 +53,12 @@ async function main() {
   let granted = 0;
   for (const user of advertisers) {
     if (!user.advertiserKind) continue;
-    const priceGc = config.prices[user.advertiserKind].m12;
+    const place = await ownerPlace(prisma, user.id, user.advertiserKind);
+    if (!place) {
+      console.log(`✗ ${user.email}: нет ни одной страны в справочнике`);
+      continue;
+    }
+    const priceGc = (await resolvePlacementPrices(prisma, place))[user.advertiserKind].m12;
 
     try {
       await applyTransaction(prisma, {

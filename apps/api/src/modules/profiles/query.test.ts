@@ -4,6 +4,7 @@ import {
   buildProfileWhere,
   decodeCursor,
   decodeRelevanceCursor,
+  effectiveSort,
   encodeCursor,
   encodeRelevanceCursor,
   isTopSlot,
@@ -64,9 +65,21 @@ describe('построитель фильтров каталога', () => {
     expect(buildProfileWhere(query({ heightMin: 165 }))).toMatchObject({
       heightCm: { gte: 165 },
     });
-    expect(buildProfileWhere(query({ maxPriceCents: 20000 }))).toMatchObject({
+    expect(buildProfileWhere(query({ country: 'DE', maxPriceCents: 20000 }))).toMatchObject({
       fromPriceCents: { lte: 20000 },
     });
+  });
+
+  it('цену фильтрует и сортирует только внутри страны или города', () => {
+    // Суммы лежат в валютах стран: без среза «до 100» смешало бы евро и кроны.
+    expect(buildProfileWhere(query({ maxPriceCents: 20000 }))).not.toHaveProperty('fromPriceCents');
+    expect(effectiveSort(query({ sort: 'price_asc' }))).toBe('relevance');
+    for (const scope of [{ country: 'DE' }, { city: 'berlin' }, { cities: ['berlin'] }]) {
+      expect(buildProfileWhere(query({ ...scope, minPriceCents: 1 }))).toHaveProperty(
+        'fromPriceCents',
+      );
+      expect(effectiveSort(query({ ...scope, sort: 'price_desc' }))).toBe('price_desc');
+    }
   });
 
   it('различает отсутствие признака и значение false', () => {

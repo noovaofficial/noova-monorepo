@@ -3,9 +3,10 @@
 import type { CityAdmin, Translated } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { AgencyTariffs } from '@/modules/billing/components/AgencyTariffs';
 import {
   createCity,
   fetchCities,
@@ -17,7 +18,9 @@ import { Link } from '@/shared/i18n/navigation';
 import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
-import { EntityRow, emptyNames, NameFields, useRunner } from '../shared';
+import { PlacementRules } from '../PlacementRules';
+import { CountryMonetization } from '../ScopeMonetization';
+import { EntityRow, emptyNames, NameFields, type TabDef, Tabs, useRunner, useTab } from '../shared';
 
 /** Второй уровень: одна страна — её данные и её города (N-32). */
 export function CountryDetail({ code }: { code: string }) {
@@ -46,6 +49,18 @@ export function CountryDetail({ code }: { code: string }) {
     void queryClient.invalidateQueries({ queryKey: ['admin-cities'], exact: false });
   });
 
+  const tabs: TabDef[] = useMemo(
+    () => [
+      { key: 'info', label: t('countryInfo') },
+      { key: 'placement', label: t('placementTitle') },
+      { key: 'monetization', label: t('monetizationBlock') },
+      { key: 'tariffs', label: t('agencyTariffsBlock') },
+      { key: 'cities', label: t('cities'), badge: country?.cityCount },
+    ],
+    [t, country?.cityCount],
+  );
+  const [tab, setTab] = useTab(tabs);
+
   if (status === 'loading' || countries.isLoading) return <p className={styles.empty}>…</p>;
   if (!isAdmin) return <p className={styles.empty}>{t('onlyAdmins')}</p>;
   if (!country) return <p className={styles.empty}>{t('countryNotFound')}</p>;
@@ -65,21 +80,43 @@ export function CountryDetail({ code }: { code: string }) {
 
       {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{error}</p> : null}
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('countryInfo')}</h2>
-        <CountryForm country={country} run={run} t={t} />
-      </section>
+      <Tabs tabs={tabs} active={tab} onSelect={setTab} />
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('cities')}</h2>
-        <div className={styles.list}>
-          {(cities.data ?? []).map((city) => (
-            <CityRow key={city.id} city={city} countryCode={code} run={run} t={t} />
-          ))}
-          {cities.data?.length === 0 ? <p className={styles.empty}>{t('noCities')}</p> : null}
-        </div>
-        <CityForm countryId={country.id} run={run} t={t} />
-      </section>
+      {tab === 'info' ? (
+        <section className={styles.section}>
+          <CountryForm country={country} run={run} t={t} />
+        </section>
+      ) : null}
+
+      {tab === 'placement' ? (
+        <section className={styles.section}>
+          <PlacementRules scope={{ countryId: country.id }} run={run} t={t} />
+        </section>
+      ) : null}
+
+      {tab === 'monetization' ? (
+        <section className={styles.section}>
+          <CountryMonetization countryId={country.id} />
+        </section>
+      ) : null}
+
+      {tab === 'tariffs' ? (
+        <section className={styles.section}>
+          <AgencyTariffs countryId={country.id} />
+        </section>
+      ) : null}
+
+      {tab === 'cities' ? (
+        <section className={styles.section}>
+          <div className={styles.list}>
+            {(cities.data ?? []).map((city) => (
+              <CityRow key={city.id} city={city} countryCode={code} run={run} t={t} />
+            ))}
+            {cities.data?.length === 0 ? <p className={styles.empty}>{t('noCities')}</p> : null}
+          </div>
+          <CityForm countryId={country.id} run={run} t={t} />
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -93,6 +130,7 @@ function CountryForm({ country, run, t }: { country: Country; run: Runner; t: Tr
   const [name, setName] = useState<Translated>(country.name);
   const [isActive, setIsActive] = useState(country.isActive);
   const [isDefault, setIsDefault] = useState(country.isDefault);
+  const [currency, setCurrency] = useState(country.currency);
 
   // Данные приходят запросом: до его завершения полей ещё нет, и без
   // синхронизации форма осталась бы с пустыми названиями.
@@ -100,10 +138,19 @@ function CountryForm({ country, run, t }: { country: Country; run: Runner; t: Tr
     setName(country.name);
     setIsActive(country.isActive);
     setIsDefault(country.isDefault);
+    setCurrency(country.currency);
   }, [country]);
 
   const save = useMutation({
-    mutationFn: () => run(() => updateCountry(country.id, { name, isActive, isDefault })),
+    mutationFn: () =>
+      run(() =>
+        updateCountry(country.id, {
+          name,
+          isActive,
+          isDefault,
+          currency,
+        }),
+      ),
   });
 
   return (
@@ -118,6 +165,22 @@ function CountryForm({ country, run, t }: { country: Country; run: Runner; t: Tr
         <div className={styles.field}>
           <span className={styles.label}>{t('code')}</span>
           <input className={styles.input} value={country.code} readOnly />
+        </div>
+      </div>
+      <div className={styles.formRow}>
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor={`cur-${country.id}`}>
+            {t('currency')}
+          </label>
+          <input
+            className={styles.input}
+            id={`cur-${country.id}`}
+            value={currency}
+            maxLength={3}
+            pattern="[A-Za-z]{3}"
+            onChange={(event) => setCurrency(event.target.value.toUpperCase())}
+            required
+          />
         </div>
       </div>
       <NameFields value={name} onChange={setName} idPrefix={`c-${country.id}`} />

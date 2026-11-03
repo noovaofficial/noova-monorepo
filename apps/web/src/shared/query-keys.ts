@@ -13,6 +13,7 @@ export const queryKeys = {
   /** Кабинет владельца. */
   ownProfiles: () => ['own-profiles'] as const,
   ownCompany: () => ['own-company'] as const,
+  countries: (locale: string) => ['countries', locale] as const,
   ownCompanyTariff: () => ['own-company-tariff'] as const,
   ownProfile: (id: string) => ['own-profile', id] as const,
   // Локаль — часть ключа: названия переведены на стороне API, и без неё
@@ -47,12 +48,15 @@ export const queryKeys = {
     ] as const,
   staff: () => ['staff'] as const,
   adminCountries: () => ['admin-countries'] as const,
+  placementRules: () => ['placement-rules'] as const,
   adminCities: (countryId?: string) => ['admin-cities', countryId ?? 'all'] as const,
   adminServices: () => ['admin-services'] as const,
   // Локаль в ключе: названия городов приходят с сервера переведёнными.
   campaigns: (locale: string) => ['campaigns', locale] as const,
   billingConfig: () => ['billing-config'] as const,
-  agencyTariffGrid: () => ['agency-tariff-grid'] as const,
+  agencyTariffGrid: (countryId: string) => ['agency-tariff-grid', countryId] as const,
+  countryMonetization: (id: string) => ['country-monetization', id] as const,
+  cityMonetization: (id: string) => ['city-monetization', id] as const,
   companyTariff: (id: string) => ['company-tariff', id] as const,
   companyTop: (id: string) => ['company-top', id] as const,
   /** Свой предел корректировки баланса. Зависит от роли, но роль на сессии одна. */
@@ -64,7 +68,6 @@ export const queryKeys = {
   listing: () => ['listing'] as const,
   topupOrder: (id: string) => ['topup-order', id] as const,
   top: () => ['top'] as const,
-  cityTop: () => ['city-top'] as const,
   agencyTop: () => ['agency-top'] as const,
   billingOperations: (query: string) => ['billing-operations', query] as const,
   /** Период — часть ключа: иначе переключение отдавало бы прежний отчёт. */

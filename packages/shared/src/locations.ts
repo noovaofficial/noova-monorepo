@@ -80,6 +80,13 @@ export const countryInputSchema = z.object({
   /** Куда ведёт корень сайта без запомненного выбора (N-42). Ровно у одной
    *  активной страны — сервер сам снимает флаг с прежней при установке новой. */
   isDefault: z.boolean().default(false),
+  /** ISO 4217. Не задано — валюта страны не меняется (у новой — евро). */
+  currency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Za-z]{3}$/)
+    .transform((value) => value.toUpperCase())
+    .optional(),
 });
 export type CountryInput = z.infer<typeof countryInputSchema>;
 
@@ -89,6 +96,7 @@ export const countrySchema = z.object({
   name: translatedSchema,
   isActive: z.boolean(),
   isDefault: z.boolean(),
+  currency: z.string().length(3),
   cityCount: z.number().int().nonnegative(),
 });
 export type Country = z.infer<typeof countrySchema>;

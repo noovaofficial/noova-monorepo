@@ -67,7 +67,8 @@ describe('разделы словаря для браузера', () => {
       account: /^modules\/account\//,
       analytics: /^modules\/(analytics|moderation)\//,
       settings: /^modules\/account\//,
-      billing: /^modules\/billing\//,
+      // Блоки монетизации и тарифов агентств встроены в страницы страны и города.
+      billing: /^modules\/(billing|locations)\//,
       campaigns: /^modules\/(campaigns|billing)\//,
       admin: /^modules\/moderation\//,
       moderation: /^modules\/moderation\//,

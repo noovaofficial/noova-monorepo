@@ -4,8 +4,7 @@ import {
   adjustBalanceInputSchema,
   adjustBalanceResultSchema,
   adjustLimitSchema,
-  adminBillingConfigSchema,
-  adminPriceBookSchema,
+  adminGlobalBillingSchema,
   agencyTopStateSchema,
   billingOperationsSchema,
   buyAgencyTopResultSchema,
@@ -14,8 +13,12 @@ import {
   createTopupInputSchema,
   createTopupResultSchema,
   currentListingSchema,
+  DEFAULT_BILLING_CONFIG,
+  globalBillingConfigSchema,
   isAdjustWithinLimit,
+  type PlanTerm,
   priceBookSchema,
+  toAdminGlobalBilling,
   toPriceBook,
   topStateSchema,
   topupOrderSchema,
@@ -24,6 +27,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { env } from '../../env.js';
+import type { PrismaClient } from '../../generated/prisma/client.js';
 import { BILLING_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { resolveAgencyListingPriceGc } from './agency-tariffs.js';
@@ -43,6 +47,7 @@ import {
   PaymentoError,
   parseCallback,
 } from './paymento.js';
+import { buildPriceBook, ownerPlace, resolvePlacementPrices } from './scoped.js';
 import {
   buyTop,
   TopAlreadyActiveError,
@@ -71,6 +76,22 @@ import {
  * секретного — витрина показывает цены, кабинет показывает лестницу. Разница
  * только в праве записи.
  */
+/**
+ * Цена размещения индивидуалки и салона: город их самой свежей анкеты, иначе
+ * страна по умолчанию. Считается в момент покупки и больше не пересчитывается
+ * — переезд в другой город не меняет уже оплаченное.
+ */
+async function individualOrSalonPriceGc(
+  prisma: PrismaClient,
+  userId: string,
+  kind: 'individual' | 'salon',
+  term: PlanTerm,
+): Promise<number> {
+  const place = await ownerPlace(prisma, userId, kind);
+  const grid = place ? await resolvePlacementPrices(prisma, place) : DEFAULT_BILLING_CONFIG.prices;
+  return grid[kind][term];
+}
+
 export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
   const guard = fastify.requireRole('admin');
 
@@ -79,10 +100,57 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     {
       schema: {
         tags: ['billing'],
+        querystring: z.object({
+          country: z.string().length(2).optional(),
+          city: z.string().min(1).optional(),
+        }),
         response: { 200: priceBookSchema },
       },
     },
-    async () => toPriceBook(await loadBillingConfig(fastify.prisma)),
+    async (request) => {
+      const { country: code, city: slug } = request.query;
+      // Место необязательно: без него — страна по умолчанию (страница «Реклама»
+      // на сайте без выбранного города).
+      const cityRow = slug
+        ? await fastify.prisma.city.findUnique({
+            where: { slug },
+            select: { id: true, countryId: true },
+          })
+        : null;
+      const countryRow =
+        !cityRow && code
+          ? await fastify.prisma.country.findUnique({
+              where: { code: code.toUpperCase() },
+              select: { id: true },
+            })
+          : null;
+      const place = cityRow
+        ? { countryId: cityRow.countryId, cityId: cityRow.id }
+        : countryRow
+          ? { countryId: countryRow.id, cityId: null }
+          : null;
+      const global = await loadBillingConfig(fastify.prisma);
+      return toPriceBook(await buildPriceBook(fastify.prisma, global, place));
+    },
+  );
+
+  /** Прайс для места владельца аккаунта: город его анкеты или страна компании. */
+  fastify.get(
+    '/billing/my-price-book',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['billing'], response: { 200: priceBookSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { advertiserKind: true },
+      });
+      const place = await ownerPlace(fastify.prisma, userId, user?.advertiserKind ?? null);
+      const global = await loadBillingConfig(fastify.prisma);
+      return toPriceBook(await buildPriceBook(fastify.prisma, global, place));
+    },
   );
 
   /**
@@ -96,13 +164,10 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       config: { rateLimit: false },
       schema: {
         tags: ['admin'],
-        response: { 200: adminPriceBookSchema },
+        response: { 200: adminGlobalBillingSchema },
       },
     },
-    async () => {
-      const config = await loadBillingConfig(fastify.prisma);
-      return { ...toPriceBook(config), moderatorAdjustLimitGc: config.moderatorAdjustLimitGc };
-    },
+    async () => toAdminGlobalBilling(await loadBillingConfig(fastify.prisma)),
   );
 
   fastify.put(
@@ -112,8 +177,8 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       config: { rateLimit: false },
       schema: {
         tags: ['admin'],
-        body: adminBillingConfigSchema,
-        response: { 200: adminPriceBookSchema },
+        body: globalBillingConfigSchema,
+        response: { 200: adminGlobalBillingSchema },
       },
     },
     async (request) => {
@@ -121,7 +186,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Витрина кэшируется: без сброса новая цена доехала бы до посетителя
       // с опозданием, и админ решил бы, что сохранение не сработало.
       fastify.revalidate([BILLING_TAG]);
-      return { ...toPriceBook(saved), moderatorAdjustLimitGc: saved.moderatorAdjustLimitGc };
+      return toAdminGlobalBilling(saved);
     },
   );
 
@@ -214,9 +279,12 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
               ownerId: userId,
               term: request.body.term,
             })
-          : (await loadBillingConfig(fastify.prisma)).prices[user.advertiserKind][
-              request.body.term
-            ];
+          : await individualOrSalonPriceGc(
+              fastify.prisma,
+              userId,
+              user.advertiserKind,
+              request.body.term,
+            );
 
       try {
         const { result, restoredSlugs } = await activateListing(fastify.prisma, {
@@ -253,8 +321,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId, role } = requireSession(request);
       if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
-      const config = await loadBillingConfig(fastify.prisma);
-      return topState(fastify.prisma, userId, config.top);
+      return topState(fastify.prisma, userId);
     },
   );
 
@@ -276,13 +343,11 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId, role } = requireSession(request);
       if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
-      const config = await loadBillingConfig(fastify.prisma);
 
       try {
         const result = await buyTop(fastify.prisma, {
           userId,
           profileId: request.body.profileId,
-          defaults: config.top,
         });
         const profile = await fastify.prisma.profile.findUnique({
           where: { id: request.body.profileId },
@@ -324,8 +389,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId, role } = requireSession(request);
       if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
-      const config = await loadBillingConfig(fastify.prisma);
-      return agencyTopState(fastify.prisma, userId, config.agencyTop);
+      return agencyTopState(fastify.prisma, userId);
     },
   );
 
@@ -342,14 +406,9 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId, role } = requireSession(request);
       if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
-      const config = await loadBillingConfig(fastify.prisma);
 
       try {
-        const result = await buyAgencyTop(fastify.prisma, {
-          userId,
-          priceGc: config.agencyTop.weekGc,
-          slots: config.agencyTop.slots,
-        });
+        const result = await buyAgencyTop(fastify.prisma, { userId });
         // Агентство видно в подборке на главной сразу.
         fastify.revalidate([PROFILES_TAG]);
         return result;

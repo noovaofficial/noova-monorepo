@@ -6,11 +6,19 @@
 import {
   type CityAdmin,
   type CityInput,
+  type CityMonetization,
+  type CityMonetizationInput,
   type Country,
   type CountryInput,
+  type CountryMonetization,
+  cityMonetizationSchema,
   citySchemaAdmin,
+  countryMonetizationSchema,
   countrySchema,
   type DistrictInput,
+  type PlacementRule,
+  type PlacementRuleInput,
+  placementRuleSchema,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -20,6 +28,8 @@ export class LocationsError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** Код причины от сервера — по нему интерфейс подбирает перевод. */
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'LocationsError';
@@ -38,11 +48,12 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
   });
 
   if (!response.ok) {
-    const message = await response
-      .json()
-      .then((body) => String(body?.message ?? ''))
-      .catch(() => '');
-    throw new LocationsError(message, response.status);
+    const body = await response.json().catch(() => null);
+    throw new LocationsError(
+      String(body?.message ?? ''),
+      response.status,
+      typeof body?.code === 'string' ? body.code : undefined,
+    );
   }
 
   return schema.parse(await response.json());
@@ -62,6 +73,17 @@ export function createCountry(input: CountryInput): Promise<Country> {
 export function updateCountry(id: string, input: Omit<CountryInput, 'code'>): Promise<Country> {
   return call(`/admin/countries/${id}`, countrySchema, {
     method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export function fetchPlacementRules(): Promise<PlacementRule[]> {
+  return call('/admin/placement-rules', z.array(placementRuleSchema));
+}
+
+export function savePlacementRule(input: PlacementRuleInput): Promise<PlacementRule[]> {
+  return call('/admin/placement-rules', z.array(placementRuleSchema), {
+    method: 'PUT',
     body: JSON.stringify(input),
   });
 }
@@ -95,6 +117,36 @@ export function addDistrict(cityId: string, input: DistrictInput): Promise<CityA
 export function updateDistrict(id: string, input: Omit<DistrictInput, 'slug'>): Promise<CityAdmin> {
   return call(`/admin/districts/${id}`, citySchemaAdmin, {
     method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+// --- Монетизация: цены размещения, ТОП ------------------------------------
+
+export function fetchCountryMonetization(countryId: string): Promise<CountryMonetization> {
+  return call(`/admin/countries/${countryId}/monetization`, countryMonetizationSchema);
+}
+
+export function saveCountryMonetization(
+  countryId: string,
+  input: CountryMonetization,
+): Promise<CountryMonetization> {
+  return call(`/admin/countries/${countryId}/monetization`, countryMonetizationSchema, {
+    method: 'PUT',
+    body: JSON.stringify(input),
+  });
+}
+
+export function fetchCityMonetization(cityId: string): Promise<CityMonetization> {
+  return call(`/admin/cities/${cityId}/monetization`, cityMonetizationSchema);
+}
+
+export function saveCityMonetization(
+  cityId: string,
+  input: CityMonetizationInput,
+): Promise<CityMonetization> {
+  return call(`/admin/cities/${cityId}/monetization`, cityMonetizationSchema, {
+    method: 'PUT',
     body: JSON.stringify(input),
   });
 }

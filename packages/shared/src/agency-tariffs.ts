@@ -71,6 +71,8 @@ export const companyTariffStateSchema = z.object({
    *  показывает по нему подсказку заполнить компанию, а не отказ. */
   hasCompany: z.boolean(),
   profileCount: z.number().int().nonnegative(),
+  /** Страна компании: из сетки её тарифов выбирается тариф. */
+  countryId: z.string().nullable(),
   tariffTier: agencyTariffTierSchema.nullable(),
   customProfileLimit: z.number().int().nullable(),
   customPrices: agencyTariffCustomPricesSchema,

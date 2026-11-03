@@ -1622,10 +1622,6 @@ export type NullableEnumPubicHairFieldUpdateOperationsInput = {
   set?: $Enums.PubicHair | null
 }
 
-export type NullableBoolFieldUpdateOperationsInput = {
-  set?: boolean | null
-}
-
 export type NullableEnumAppearanceTypeFieldUpdateOperationsInput = {
   set?: $Enums.AppearanceType | null
 }

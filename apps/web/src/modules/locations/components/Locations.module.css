@@ -204,3 +204,69 @@
 .crumbs a:hover {
   color: var(--primary);
 }
+
+/* Вкладки страницы страны и города: в одной вкладке — одна тема, чтобы
+   формы цен не лежали вплотную к правилам размещения и списку городов. */
+.tabs {
+  display: flex;
+  gap: var(--space1);
+  overflow-x: auto;
+  margin-bottom: var(--space6);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space2);
+  padding: var(--space3) var(--space4);
+  margin-bottom: -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--secondaryText);
+  font: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--primaryText);
+}
+
+.tabActive {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.tabBadge {
+  border-radius: var(--radiusSm);
+  padding: 0 var(--space2);
+  background: var(--surfaceMuted);
+  color: var(--secondaryText);
+  font-size: var(--textXs);
+}
+
+/* Карточка внутри вкладки: отдельная настройка — отдельная рамка. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  margin-bottom: var(--space5);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  padding: var(--space5);
+  background: var(--surface);
+}
+
+.cardTitle {
+  font-weight: 600;
+  font-size: var(--textLg);
+}
+
+.cardLead {
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+  line-height: var(--leadingNormal);
+}

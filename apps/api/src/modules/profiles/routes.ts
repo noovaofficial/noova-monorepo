@@ -25,6 +25,7 @@ import {
   buildProfileWhere,
   decodeCursor,
   decodeRelevanceCursor,
+  effectiveSort,
   encodeCursor,
   encodeRelevanceCursor,
   isTopSlot,
@@ -51,7 +52,7 @@ export const cardSelect = (locale: Locale) =>
       select: {
         slug: true,
         name: true,
-        country: { select: { code: true } },
+        country: { select: { code: true, currency: true } },
         translations: translationSelect(locale),
       },
     },
@@ -101,28 +102,26 @@ async function relevancePage(
   const select = cardSelect(query.locale);
   const subOrder = orderByFor('newest');
 
-  let featuredNeeded = 0;
-  for (let i = 0; i < query.limit; i += 1) {
-    if (isTopSlot(cursorState.pos + i)) featuredNeeded += 1;
-  }
-  const organicNeeded = query.limit - featuredNeeded;
-  // Небольшой запас с каждой стороны: дешевле взять на несколько строк
-  // больше, чем высчитывать точно, чей «лишний» слот попадёт за границу
-  // страницы — именно этот запас и даёт знать, есть ли ещё страница дальше.
-  const buffer = 3;
+  // Каждый источник читаем с запасом на всю страницу: если ТОП кончился
+  // (или его мало), его слоты занимает органика, и наоборот. Берём по
+  // `limit + 1` — лишняя строка и говорит, есть ли страница дальше. Раньше
+  // брали только «плановое» число слотов + 3: при пустом ТОП органики не
+  // хватало на полную страницу, строки заканчивались и «Показать ещё»
+  // пропадало, хотя анкеты ещё были.
+  const take = query.limit + 1;
 
   const [featuredRows, organicRows] = await Promise.all([
     prisma.profile.findMany({
       where: { ...where, isFeatured: true },
       orderBy: subOrder,
-      take: featuredNeeded + buffer,
+      take,
       ...(cursorState.featuredId ? { cursor: { id: cursorState.featuredId }, skip: 1 } : {}),
       select,
     }),
     prisma.profile.findMany({
       where: { ...where, isFeatured: false },
       orderBy: subOrder,
-      take: organicNeeded + buffer,
+      take,
       ...(cursorState.organicId ? { cursor: { id: cursorState.organicId }, skip: 1 } : {}),
       select,
     }),
@@ -176,6 +175,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const query = request.query;
       const where = buildProfileWhere(query);
+      const sort = effectiveSort(query);
 
       // Страница и курсор взаимоисключающи: страница даёт постоянный адрес
       // для обхода ботом, курсор — устойчивую подгрузку для человека.
@@ -192,11 +192,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
        * прыжок по номеру, а не история курсора, которую при таком прыжке
        * взять неоткуда.
        */
-      if (
-        query.sort === 'relevance' &&
-        (offset === undefined || offset === 0) &&
-        !query.featuredOnly
-      ) {
+      if (sort === 'relevance' && (offset === undefined || offset === 0) && !query.featuredOnly) {
         return relevancePage(fastify.prisma, where, query);
       }
 
@@ -205,7 +201,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Берём на одну запись больше запрошенного, чтобы узнать, есть ли следующая страница.
       const rows = await fastify.prisma.profile.findMany({
         where,
-        orderBy: orderByFor(query.sort),
+        orderBy: orderByFor(sort),
         take: query.limit + 1,
         ...(offset !== undefined
           ? { skip: offset }
@@ -567,6 +563,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           approxLng: true,
           isVerified: true,
           fromPriceCents: true,
+          country: { select: { currency: true } },
           photos: {
             where: { isApproved: true, deletedAt: null },
             orderBy: { position: 'asc' },
@@ -596,7 +593,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
             displayName: row.displayName,
             age: row.age,
             photoUrl: key0 ? publicUrl(`${key0}/card.webp`) : null,
-            fromPrice: toMoney(row.fromPriceCents),
+            fromPrice: toMoney(row.fromPriceCents, row.country.currency),
             isVerified: row.isVerified,
           });
         }
@@ -637,12 +634,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         // Мест немного (§3.4): берём все и тасуем — так выборка честная,
         // а не «первые N по дате». У городов свои лимиты мест, поэтому на
-        // срезе «страна»/«всё» их может быть больше общего `top.slots` —
-        // потолок с запасом, а не по общему числу.
-        take: Math.max(config.top.slots, config.top.shown, 500),
+        // срезе «страна»/«всё» их может быть много — потолок с запасом.
+        take: Math.max(config.topShown, 500),
         select: cardSelect(request.query.locale),
       });
-      const picked = shuffle(rows).slice(0, config.top.shown);
+      const picked = shuffle(rows).slice(0, config.topShown);
       return { items: picked.map(toProfileCard), nextCursor: null, total: rows.length };
     },
   );

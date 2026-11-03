@@ -4,7 +4,7 @@ import { type CreateTopupInput, gcToEur } from '@noova/shared';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { BillingError, createTopup, fetchPriceBook, fetchWallet } from '@/modules/billing/api';
+import { BillingError, createTopup, fetchMyPriceBook, fetchWallet } from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { GlowCoinIcon } from '../GlowCoinIcon';
@@ -32,7 +32,7 @@ export function GlowCoinWallet() {
   const isAdvertiser = user?.role === 'advertiser';
   const book = useQuery({
     queryKey: queryKeys.priceBook(),
-    queryFn: fetchPriceBook,
+    queryFn: fetchMyPriceBook,
     enabled: isAdvertiser,
     staleTime: 60 * 1000,
   });

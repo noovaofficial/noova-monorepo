@@ -90,9 +90,7 @@ export const FULL_MAX_BYTES = 1024 * 1024;
  * повторяем. Разрешение оригинала при этом сохраняется, пока хватает
  * качества.
  */
-async function encodeFull(
-  input: Buffer,
-): Promise<{ data: Buffer; width: number; height: number }> {
+async function encodeFull(input: Buffer): Promise<{ data: Buffer; width: number; height: number }> {
   const oriented = await sharp(input, { failOn: 'error' })
     .rotate()
     .png()

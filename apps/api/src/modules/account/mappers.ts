@@ -8,7 +8,7 @@ type OwnProfileRow = {
   status: OwnProfile['status'];
   displayName: string;
   description: string;
-  city: { slug: string; name: string };
+  city: { slug: string; name: string; country: { currency: string } };
   district: { slug: string; name: string } | null;
   age: number | null;
   heightCm: number | null;
@@ -77,7 +77,7 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     payments: row.payments,
     amenities: row.amenities,
     hours: row.hours,
-    city: { slug: row.city.slug, name: row.city.name },
+    city: { slug: row.city.slug, name: row.city.name, currency: row.city.country.currency },
     district: row.district ? { slug: row.district.slug, name: row.district.name } : null,
     age: row.age,
     heightCm: row.heightCm,
@@ -98,7 +98,7 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
         ? { lat: row.approxLat, lng: row.approxLng }
         : null,
     hasManualLocation: row.hasManualLocation,
-    fromPrice: toMoney(row.fromPriceCents),
+    fromPrice: toMoney(row.fromPriceCents, row.city.country.currency),
     prices: row.prices.map((p) => ({
       durationMinutes: p.durationMinutes,
       incallCents: p.incallCents,
@@ -147,7 +147,7 @@ export const ownProfileSelect = {
   needsEditBeforeResubmit: true,
   publishedAt: true,
   updatedAt: true,
-  city: { select: { slug: true, name: true } },
+  city: { select: { slug: true, name: true, country: { select: { currency: true } } } },
   district: { select: { slug: true, name: true } },
   prices: {
     orderBy: { durationMinutes: 'asc' },

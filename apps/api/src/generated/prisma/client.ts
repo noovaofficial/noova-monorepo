@@ -84,6 +84,14 @@ export type CountryTranslation = Prisma.CountryTranslationModel
  */
 export type City = Prisma.CityModel
 /**
+ * Model PlacementRule
+ * Правило размещения для типа рекламодателя в стране или городе. Ровно одно
+ * из `countryId`/`cityId` задано. Пустое поле — «не переопределено»: значение
+ * берётся у страны, а если и там пусто — по умолчанию (платно, разрешено).
+ * Город сильнее страны, и каждое поле решается отдельно.
+ */
+export type PlacementRule = Prisma.PlacementRuleModel
+/**
  * Model CityTopSetting
  * Свои цена и число мест ТОПа анкет для города. Пустое поле — «как по
  * умолчанию» из BillingSettings (`topWeekGc`, `topSlots`): у города без строки
@@ -91,6 +99,25 @@ export type City = Prisma.CityModel
  * анкета в своём городе и считается только среди анкет этого города.
  */
 export type CityTopSetting = Prisma.CityTopSettingModel
+/**
+ * Model CountryTopSetting
+ * ТОП страны. Общих значений нет: у каждой страны свои цена недели и число
+ * мест — для ТОПа анкет и для ТОПа агентств. Город может переопределить
+ * только ТОП анкет (`CityTopSetting`); пустое поле города — «как у страны».
+ * ТОП агентств привязан к стране компании (`Company.countryId`).
+ */
+export type CountryTopSetting = Prisma.CountryTopSettingModel
+/**
+ * Model CountryPlacementPrice
+ * Цена размещения по типу и сроку в стране (payments.md §5). Общего прайса
+ * нет: у страны полная сетка, у города — только переопределённые ячейки.
+ */
+export type CountryPlacementPrice = Prisma.CountryPlacementPriceModel
+/**
+ * Model CityPlacementPrice
+ * 
+ */
+export type CityPlacementPrice = Prisma.CityPlacementPriceModel
 /**
  * Model CityTranslation
  * Переводы названий справочников вынесены в отдельные таблицы, а не в
@@ -287,11 +314,6 @@ export type PromoSlot = Prisma.PromoSlotModel
  * и предел анкет меняются из админки без выката.
  */
 export type BillingSettings = Prisma.BillingSettingsModel
-/**
- * Model PriceBookEntry
- * Цена размещения по типу и сроку — PriceBook из payments.md §5.
- */
-export type PriceBookEntry = Prisma.PriceBookEntryModel
 /**
  * Model AgencyTariffTier
  * Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет

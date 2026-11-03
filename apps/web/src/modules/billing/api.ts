@@ -3,8 +3,7 @@ import {
   type AdjustBalanceInput,
   type AdjustBalanceResult,
   type AdjustLimit,
-  type AdminBillingConfig,
-  type AdminPriceBook,
+  type AdminGlobalBilling,
   type AgencyTariffGrid,
   type AgencyTariffTier,
   type AgencyTariffTierInput,
@@ -12,7 +11,7 @@ import {
   activateListingResultSchema,
   adjustBalanceResultSchema,
   adjustLimitSchema,
-  adminPriceBookSchema,
+  adminGlobalBillingSchema,
   agencyTariffGridSchema,
   agencyTariffTierSchema,
   agencyTopStateSchema,
@@ -22,13 +21,11 @@ import {
   billingOperationsSchema,
   buyAgencyTopResultSchema,
   buyTopResultSchema,
-  type CityTopInput,
-  type CityTopList,
   type CreateTopupInput,
   type CreateTopupResult,
-  cityTopListSchema,
   createTopupResultSchema,
   currentListingSchema,
+  type GlobalBillingConfig,
   type Listing,
   type PlanTerm,
   type PriceBook,
@@ -83,15 +80,20 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
 export const fetchPriceBook = (): Promise<PriceBook> =>
   call('/billing/price-book', priceBookSchema);
 
-/**
- * Конфигурация для админки. Шире публичного прайса: сюда входит потолок
- * корректировки для модератора, которому на витрине делать нечего.
- */
-export const fetchBillingConfig = (): Promise<AdminPriceBook> =>
-  call('/admin/billing/config', adminPriceBookSchema);
+/** Прайс для места владельца: город его анкеты или страна компании. */
+export const fetchMyPriceBook = (): Promise<PriceBook> =>
+  call('/billing/my-price-book', priceBookSchema);
 
-export const saveBillingConfig = (input: AdminBillingConfig): Promise<AdminPriceBook> =>
-  call('/admin/billing/config', adminPriceBookSchema, {
+/**
+ * Общие настройки монетизации для админки: курс, лестница пополнений,
+ * потолок корректировки для модератора. Цены размещения, ТОП и тарифы
+ * агентств живут в стране и городе.
+ */
+export const fetchBillingConfig = (): Promise<AdminGlobalBilling> =>
+  call('/admin/billing/config', adminGlobalBillingSchema);
+
+export const saveBillingConfig = (input: GlobalBillingConfig): Promise<AdminGlobalBilling> =>
+  call('/admin/billing/config', adminGlobalBillingSchema, {
     method: 'PUT',
     body: JSON.stringify(input),
   });
@@ -151,16 +153,6 @@ export async function downloadTransactionsCsv(from: string, to: string): Promise
 /** ТОП: цена и места по городам, где есть анкеты, и свои анкеты в нём. */
 export const fetchTopState = (): Promise<TopState> => call('/billing/top', topStateSchema);
 
-/** Админ: цена и число мест ТОПа по городам. */
-export const fetchCityTop = (): Promise<CityTopList> => call('/admin/city-top', cityTopListSchema);
-
-/** Админ: свои условия города; оба поля пустые — вернуть значения по умолчанию. */
-export const saveCityTop = (cityId: string, input: CityTopInput): Promise<CityTopList> =>
-  call(`/admin/city-top/${encodeURIComponent(cityId)}`, cityTopListSchema, {
-    method: 'PUT',
-    body: JSON.stringify(input),
-  });
-
 /** Неделя в ТОПе для анкеты — покупка или продление. */
 export const buyTop = (profileId: string): Promise<BuyTopResult> =>
   call('/billing/top', buyTopResultSchema, {
@@ -178,12 +170,15 @@ export const buyAgencyTop = (): Promise<BuyAgencyTopResult> =>
 
 // --- Тарифы агентств по числу анкет (payments.md §3.3, D-13) ---------------
 
-/** Общая сетка тарифов — по возрастанию `position`. */
-export const fetchAgencyTariffGrid = (): Promise<AgencyTariffGrid> =>
-  call('/admin/agency-tariffs', agencyTariffGridSchema);
+/** Сетка тарифов страны — по возрастанию `position`. */
+export const fetchAgencyTariffGrid = (countryId: string): Promise<AgencyTariffGrid> =>
+  call(`/admin/countries/${encodeURIComponent(countryId)}/agency-tariffs`, agencyTariffGridSchema);
 
-export const createAgencyTariffTier = (input: AgencyTariffTierInput): Promise<AgencyTariffTier> =>
-  call('/admin/agency-tariffs', agencyTariffTierSchema, {
+export const createAgencyTariffTier = (
+  countryId: string,
+  input: AgencyTariffTierInput,
+): Promise<AgencyTariffTier> =>
+  call(`/admin/countries/${encodeURIComponent(countryId)}/agency-tariffs`, agencyTariffTierSchema, {
     method: 'POST',
     body: JSON.stringify(input),
   });

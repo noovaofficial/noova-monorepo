@@ -22,7 +22,7 @@ import { purgeUserById } from '../../jobs/retention.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { assertComplete } from '../account/routes.js';
-import { hasVisibleListing } from '../billing/listing.js';
+import { publishVerdict } from '../billing/placement.js';
 import { applyFirstProfileCampaign } from '../campaigns/service.js';
 import { approvePhoto, rejectPhoto } from '../photos/moderation.js';
 import {
@@ -825,7 +825,16 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: {
           id: true,
           profileId: true,
-          profile: { select: { slug: true, ownerId: true, status: true } },
+          profile: {
+            select: {
+              slug: true,
+              ownerId: true,
+              status: true,
+              cityId: true,
+              countryId: true,
+              owner: { select: { advertiserKind: true } },
+            },
+          },
         },
       });
       if (!item) throw fastify.httpErrors.notFound('Заявка не найдена');
@@ -840,7 +849,12 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // за владельцем.
       const canAutoPublish =
         profileStatus === 'pending_verification' &&
-        (!env.PAYWALL_ENABLED || (await hasVisibleListing(fastify.prisma, item.profile.ownerId)));
+        (await publishVerdict(
+          fastify.prisma,
+          { userId: item.profile.ownerId, kind: item.profile.owner.advertiserKind },
+          item.profile,
+          { paywallEnabled: env.PAYWALL_ENABLED },
+        )) === 'ok';
 
       await fastify.prisma.$transaction([
         fastify.prisma.verificationCase.update({
@@ -1018,6 +1032,9 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: true,
           ownerId: true,
           status: true,
+          cityId: true,
+          countryId: true,
+          owner: { select: { advertiserKind: true } },
           verification: { select: { status: true } },
         },
       });
@@ -1031,13 +1048,18 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (profile.verification?.status !== 'verified') {
         throw fastify.httpErrors.forbidden('Публикация возможна только после проверки анкеты');
       }
-      if (
-        role !== 'admin' &&
-        env.PAYWALL_ENABLED &&
-        !(await hasVisibleListing(fastify.prisma, profile.ownerId))
-      ) {
-        throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
+      // Админ обходит оплату (но не закрытие размещения): для него проверяем
+      // с выключенным пейволом.
+      const verdict = await publishVerdict(
+        fastify.prisma,
+        { userId: profile.ownerId, kind: profile.owner.advertiserKind },
+        profile,
+        { paywallEnabled: env.PAYWALL_ENABLED && role !== 'admin' },
+      );
+      if (verdict === 'forbidden') {
+        throw fastify.httpErrors.forbidden('Размещение этого типа в городе анкеты недоступно');
       }
+      if (verdict === 'unpaid') throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
 
       await fastify.prisma.profile.update({
         where: { id: profile.id },

@@ -70,15 +70,10 @@ export const STAFF_SECTIONS: StaffSection[] = [
   { key: 'allUsers', href: '/moderation/users', group: 'people' },
   { key: 'locations', href: '/admin/locations', adminOnly: true, group: 'reference' },
   { key: 'serviceCatalog', href: '/admin/services', adminOnly: true, group: 'reference' },
-  // Цены и бонусы — деньги проекта, а не операционная работа очереди:
-  // модератор их не видит и не меняет.
+  // Курс и бонусы пополнения — деньги проекта, а не операционная работа
+  // очереди: модератор их не видит и не меняет. Цены размещения, ТОП и тарифы
+  // агентств правятся в странах и городах (раздел «Локации»).
   { key: 'monetization', href: '/admin/monetization', adminOnly: true, group: 'reference' },
-  // Сетка тарифов агентств по числу анкет (D-13) — то же решение владельца
-  // продукта о деньгах, только своя страница: тарифов несколько, и правка
-  // одной строкой в форме монетизации не поместилась бы.
-  { key: 'agencyTariffs', href: '/admin/agency-tariffs', adminOnly: true, group: 'reference' },
-  // Цена и число мест ТОПа у каждого города свои — деньги проекта, только админ.
-  { key: 'cityTop', href: '/admin/city-top', adminOnly: true, group: 'reference' },
   // Акции раздают размещения и монеты — то же решение владельца продукта,
   // что и цены, и той же ролью.
   { key: 'campaigns', href: '/admin/campaigns', adminOnly: true, group: 'reference' },

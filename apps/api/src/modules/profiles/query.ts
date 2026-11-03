@@ -18,6 +18,21 @@ export function decodeCursor(cursor: string | undefined): string | undefined {
 
 const ONLINE_WINDOW_MS = 10 * 60 * 1000;
 
+/** Цена анкеты хранится в валюте её страны (`Country.currency`) без пересчёта,
+ *  поэтому сравнивать суммы можно только внутри одной страны. Срез задан, если
+ *  выбран город, несколько городов или страна; без него в выдаче смешались бы
+ *  разные валюты, и «до 100» значило бы 100 евро и 100 крон одновременно. */
+export function hasPriceScope(query: ProfileQuery): boolean {
+  return Boolean(query.city || query.cities?.length || query.country);
+}
+
+/** Сортировка по цене вне среза страны невозможна — откатываемся к релевантности. */
+export function effectiveSort(query: ProfileQuery): ProfileSort {
+  return (query.sort === 'price_asc' || query.sort === 'price_desc') && !hasPriceScope(query)
+    ? 'relevance'
+    : query.sort;
+}
+
 // Возвращаемый объект скармливается Prisma как `where`; форму держим совместимой
 // с ProfileWhereInput, но не тянем сгенерированный тип, чтобы не связывать
 // модуль запросов с артефактами кодогенерации.
@@ -58,7 +73,11 @@ export function buildProfileWhere(query: ProfileQuery): Record<string, unknown> 
   }
   if (query.onlineOnly) where.lastSeenAt = { gte: new Date(Date.now() - ONLINE_WINDOW_MS) };
 
-  if (query.minPriceCents !== undefined || query.maxPriceCents !== undefined) {
+  // Вне среза страны диапазон цены игнорируем — см. `hasPriceScope`.
+  if (
+    hasPriceScope(query) &&
+    (query.minPriceCents !== undefined || query.maxPriceCents !== undefined)
+  ) {
     where.fromPriceCents = {
       ...(query.minPriceCents !== undefined ? { gte: query.minPriceCents } : {}),
       ...(query.maxPriceCents !== undefined ? { lte: query.maxPriceCents } : {}),

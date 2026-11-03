@@ -18,6 +18,7 @@ export * from './locales';
 export * from './locations';
 export * from './map';
 export * from './moderation';
+export * from './placement';
 export * from './profile';
 export * from './promo';
 export * from './report';

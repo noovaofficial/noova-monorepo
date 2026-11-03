@@ -62,6 +62,7 @@ export function HeaderFilters({
   // когда конкретный город ещё не выбран: внутри одного города выбирать
   // город незачем.
   const countryCode = matchedCity?.country.code ?? matchedCountry?.code ?? defaultCountry?.code;
+  const currency = countries.find((item) => item.code === countryCode)?.currency ?? 'EUR';
   const countryCities = matchedCity
     ? []
     : cities.filter((item) => item.country.code === countryCode);
@@ -108,6 +109,7 @@ export function HeaderFilters({
           kind={kind}
           catalog={catalog}
           countryCities={countryCities}
+          currency={currency}
           initial={onCatalog ? searchParams.toString() : ''}
           onClose={() => setOpen(false)}
           targetPath={targetPath}

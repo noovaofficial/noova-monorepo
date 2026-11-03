@@ -45,6 +45,7 @@ export type AgencyTariffTierSumAggregateOutputType = {
 export type AgencyTariffTierMinAggregateOutputType = {
   id: string | null
   name: string | null
+  countryId: string | null
   position: number | null
   minProfiles: number | null
   maxProfiles: number | null
@@ -57,6 +58,7 @@ export type AgencyTariffTierMinAggregateOutputType = {
 export type AgencyTariffTierMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  countryId: string | null
   position: number | null
   minProfiles: number | null
   maxProfiles: number | null
@@ -69,6 +71,7 @@ export type AgencyTariffTierMaxAggregateOutputType = {
 export type AgencyTariffTierCountAggregateOutputType = {
   id: number
   name: number
+  countryId: number
   position: number
   minProfiles: number
   maxProfiles: number
@@ -95,6 +98,7 @@ export type AgencyTariffTierSumAggregateInputType = {
 export type AgencyTariffTierMinAggregateInputType = {
   id?: true
   name?: true
+  countryId?: true
   position?: true
   minProfiles?: true
   maxProfiles?: true
@@ -107,6 +111,7 @@ export type AgencyTariffTierMinAggregateInputType = {
 export type AgencyTariffTierMaxAggregateInputType = {
   id?: true
   name?: true
+  countryId?: true
   position?: true
   minProfiles?: true
   maxProfiles?: true
@@ -119,6 +124,7 @@ export type AgencyTariffTierMaxAggregateInputType = {
 export type AgencyTariffTierCountAggregateInputType = {
   id?: true
   name?: true
+  countryId?: true
   position?: true
   minProfiles?: true
   maxProfiles?: true
@@ -218,6 +224,7 @@ export type AgencyTariffTierGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type AgencyTariffTierGroupByOutputType = {
   id: string
   name: string
+  countryId: string
   position: number
   minProfiles: number
   maxProfiles: number
@@ -253,6 +260,7 @@ export type AgencyTariffTierWhereInput = {
   NOT?: Prisma.AgencyTariffTierWhereInput | Prisma.AgencyTariffTierWhereInput[]
   id?: Prisma.StringFilter<"AgencyTariffTier"> | string
   name?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  countryId?: Prisma.StringFilter<"AgencyTariffTier"> | string
   position?: Prisma.IntFilter<"AgencyTariffTier"> | number
   minProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
   maxProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
@@ -260,6 +268,7 @@ export type AgencyTariffTierWhereInput = {
   isActive?: Prisma.BoolFilter<"AgencyTariffTier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   prices?: Prisma.AgencyTariffPriceListRelationFilter
   companies?: Prisma.CompanyListRelationFilter
 }
@@ -267,6 +276,7 @@ export type AgencyTariffTierWhereInput = {
 export type AgencyTariffTierOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   minProfiles?: Prisma.SortOrder
   maxProfiles?: Prisma.SortOrder
@@ -274,30 +284,35 @@ export type AgencyTariffTierOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  country?: Prisma.CountryOrderByWithRelationInput
   prices?: Prisma.AgencyTariffPriceOrderByRelationAggregateInput
   companies?: Prisma.CompanyOrderByRelationAggregateInput
 }
 
 export type AgencyTariffTierWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  position?: number
+  countryId_position?: Prisma.AgencyTariffTierCountryIdPositionCompoundUniqueInput
   AND?: Prisma.AgencyTariffTierWhereInput | Prisma.AgencyTariffTierWhereInput[]
   OR?: Prisma.AgencyTariffTierWhereInput[]
   NOT?: Prisma.AgencyTariffTierWhereInput | Prisma.AgencyTariffTierWhereInput[]
   name?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  countryId?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  position?: Prisma.IntFilter<"AgencyTariffTier"> | number
   minProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
   maxProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
   isDefault?: Prisma.BoolFilter<"AgencyTariffTier"> | boolean
   isActive?: Prisma.BoolFilter<"AgencyTariffTier"> | boolean
   createdAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
+  country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
   prices?: Prisma.AgencyTariffPriceListRelationFilter
   companies?: Prisma.CompanyListRelationFilter
-}, "id" | "position">
+}, "id" | "countryId_position">
 
 export type AgencyTariffTierOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   minProfiles?: Prisma.SortOrder
   maxProfiles?: Prisma.SortOrder
@@ -318,6 +333,7 @@ export type AgencyTariffTierScalarWhereWithAggregatesInput = {
   NOT?: Prisma.AgencyTariffTierScalarWhereWithAggregatesInput | Prisma.AgencyTariffTierScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AgencyTariffTier"> | string
   name?: Prisma.StringWithAggregatesFilter<"AgencyTariffTier"> | string
+  countryId?: Prisma.StringWithAggregatesFilter<"AgencyTariffTier"> | string
   position?: Prisma.IntWithAggregatesFilter<"AgencyTariffTier"> | number
   minProfiles?: Prisma.IntWithAggregatesFilter<"AgencyTariffTier"> | number
   maxProfiles?: Prisma.IntWithAggregatesFilter<"AgencyTariffTier"> | number
@@ -337,6 +353,7 @@ export type AgencyTariffTierCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutTariffTiersInput
   prices?: Prisma.AgencyTariffPriceCreateNestedManyWithoutTierInput
   companies?: Prisma.CompanyCreateNestedManyWithoutTariffTierInput
 }
@@ -344,6 +361,7 @@ export type AgencyTariffTierCreateInput = {
 export type AgencyTariffTierUncheckedCreateInput = {
   id?: string
   name: string
+  countryId: string
   position: number
   minProfiles: number
   maxProfiles: number
@@ -365,6 +383,7 @@ export type AgencyTariffTierUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutTariffTiersNestedInput
   prices?: Prisma.AgencyTariffPriceUpdateManyWithoutTierNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutTariffTierNestedInput
 }
@@ -372,6 +391,7 @@ export type AgencyTariffTierUpdateInput = {
 export type AgencyTariffTierUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
   maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
@@ -386,6 +406,7 @@ export type AgencyTariffTierUncheckedUpdateInput = {
 export type AgencyTariffTierCreateManyInput = {
   id?: string
   name: string
+  countryId: string
   position: number
   minProfiles: number
   maxProfiles: number
@@ -410,6 +431,7 @@ export type AgencyTariffTierUpdateManyMutationInput = {
 export type AgencyTariffTierUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
   maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
@@ -419,14 +441,30 @@ export type AgencyTariffTierUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type AgencyTariffTierListRelationFilter = {
+  every?: Prisma.AgencyTariffTierWhereInput
+  some?: Prisma.AgencyTariffTierWhereInput
+  none?: Prisma.AgencyTariffTierWhereInput
+}
+
+export type AgencyTariffTierOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type AgencyTariffTierNullableScalarRelationFilter = {
   is?: Prisma.AgencyTariffTierWhereInput | null
   isNot?: Prisma.AgencyTariffTierWhereInput | null
 }
 
+export type AgencyTariffTierCountryIdPositionCompoundUniqueInput = {
+  countryId: string
+  position: number
+}
+
 export type AgencyTariffTierCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   minProfiles?: Prisma.SortOrder
   maxProfiles?: Prisma.SortOrder
@@ -445,6 +483,7 @@ export type AgencyTariffTierAvgOrderByAggregateInput = {
 export type AgencyTariffTierMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   minProfiles?: Prisma.SortOrder
   maxProfiles?: Prisma.SortOrder
@@ -457,6 +496,7 @@ export type AgencyTariffTierMaxOrderByAggregateInput = {
 export type AgencyTariffTierMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
   position?: Prisma.SortOrder
   minProfiles?: Prisma.SortOrder
   maxProfiles?: Prisma.SortOrder
@@ -475,6 +515,48 @@ export type AgencyTariffTierSumOrderByAggregateInput = {
 export type AgencyTariffTierScalarRelationFilter = {
   is?: Prisma.AgencyTariffTierWhereInput
   isNot?: Prisma.AgencyTariffTierWhereInput
+}
+
+export type AgencyTariffTierCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput> | Prisma.AgencyTariffTierCreateWithoutCountryInput[] | Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput | Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.AgencyTariffTierCreateManyCountryInputEnvelope
+  connect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+}
+
+export type AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput> | Prisma.AgencyTariffTierCreateWithoutCountryInput[] | Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput | Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.AgencyTariffTierCreateManyCountryInputEnvelope
+  connect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+}
+
+export type AgencyTariffTierUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput> | Prisma.AgencyTariffTierCreateWithoutCountryInput[] | Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput | Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.AgencyTariffTierUpsertWithWhereUniqueWithoutCountryInput | Prisma.AgencyTariffTierUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.AgencyTariffTierCreateManyCountryInputEnvelope
+  set?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  disconnect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  delete?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  connect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  update?: Prisma.AgencyTariffTierUpdateWithWhereUniqueWithoutCountryInput | Prisma.AgencyTariffTierUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.AgencyTariffTierUpdateManyWithWhereWithoutCountryInput | Prisma.AgencyTariffTierUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.AgencyTariffTierScalarWhereInput | Prisma.AgencyTariffTierScalarWhereInput[]
+}
+
+export type AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput> | Prisma.AgencyTariffTierCreateWithoutCountryInput[] | Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput | Prisma.AgencyTariffTierCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.AgencyTariffTierUpsertWithWhereUniqueWithoutCountryInput | Prisma.AgencyTariffTierUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.AgencyTariffTierCreateManyCountryInputEnvelope
+  set?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  disconnect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  delete?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  connect?: Prisma.AgencyTariffTierWhereUniqueInput | Prisma.AgencyTariffTierWhereUniqueInput[]
+  update?: Prisma.AgencyTariffTierUpdateWithWhereUniqueWithoutCountryInput | Prisma.AgencyTariffTierUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.AgencyTariffTierUpdateManyWithWhereWithoutCountryInput | Prisma.AgencyTariffTierUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.AgencyTariffTierScalarWhereInput | Prisma.AgencyTariffTierScalarWhereInput[]
 }
 
 export type AgencyTariffTierCreateNestedOneWithoutCompaniesInput = {
@@ -507,7 +589,7 @@ export type AgencyTariffTierUpdateOneRequiredWithoutPricesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AgencyTariffTierUpdateToOneWithWhereWithoutPricesInput, Prisma.AgencyTariffTierUpdateWithoutPricesInput>, Prisma.AgencyTariffTierUncheckedUpdateWithoutPricesInput>
 }
 
-export type AgencyTariffTierCreateWithoutCompaniesInput = {
+export type AgencyTariffTierCreateWithoutCountryInput = {
   id?: string
   name: string
   position: number
@@ -518,11 +600,83 @@ export type AgencyTariffTierCreateWithoutCompaniesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   prices?: Prisma.AgencyTariffPriceCreateNestedManyWithoutTierInput
+  companies?: Prisma.CompanyCreateNestedManyWithoutTariffTierInput
+}
+
+export type AgencyTariffTierUncheckedCreateWithoutCountryInput = {
+  id?: string
+  name: string
+  position: number
+  minProfiles: number
+  maxProfiles: number
+  isDefault?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  prices?: Prisma.AgencyTariffPriceUncheckedCreateNestedManyWithoutTierInput
+  companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutTariffTierInput
+}
+
+export type AgencyTariffTierCreateOrConnectWithoutCountryInput = {
+  where: Prisma.AgencyTariffTierWhereUniqueInput
+  create: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput>
+}
+
+export type AgencyTariffTierCreateManyCountryInputEnvelope = {
+  data: Prisma.AgencyTariffTierCreateManyCountryInput | Prisma.AgencyTariffTierCreateManyCountryInput[]
+  skipDuplicates?: boolean
+}
+
+export type AgencyTariffTierUpsertWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.AgencyTariffTierWhereUniqueInput
+  update: Prisma.XOR<Prisma.AgencyTariffTierUpdateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedUpdateWithoutCountryInput>
+  create: Prisma.XOR<Prisma.AgencyTariffTierCreateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedCreateWithoutCountryInput>
+}
+
+export type AgencyTariffTierUpdateWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.AgencyTariffTierWhereUniqueInput
+  data: Prisma.XOR<Prisma.AgencyTariffTierUpdateWithoutCountryInput, Prisma.AgencyTariffTierUncheckedUpdateWithoutCountryInput>
+}
+
+export type AgencyTariffTierUpdateManyWithWhereWithoutCountryInput = {
+  where: Prisma.AgencyTariffTierScalarWhereInput
+  data: Prisma.XOR<Prisma.AgencyTariffTierUpdateManyMutationInput, Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryInput>
+}
+
+export type AgencyTariffTierScalarWhereInput = {
+  AND?: Prisma.AgencyTariffTierScalarWhereInput | Prisma.AgencyTariffTierScalarWhereInput[]
+  OR?: Prisma.AgencyTariffTierScalarWhereInput[]
+  NOT?: Prisma.AgencyTariffTierScalarWhereInput | Prisma.AgencyTariffTierScalarWhereInput[]
+  id?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  name?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  countryId?: Prisma.StringFilter<"AgencyTariffTier"> | string
+  position?: Prisma.IntFilter<"AgencyTariffTier"> | number
+  minProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
+  maxProfiles?: Prisma.IntFilter<"AgencyTariffTier"> | number
+  isDefault?: Prisma.BoolFilter<"AgencyTariffTier"> | boolean
+  isActive?: Prisma.BoolFilter<"AgencyTariffTier"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"AgencyTariffTier"> | Date | string
+}
+
+export type AgencyTariffTierCreateWithoutCompaniesInput = {
+  id?: string
+  name: string
+  position: number
+  minProfiles: number
+  maxProfiles: number
+  isDefault?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutTariffTiersInput
+  prices?: Prisma.AgencyTariffPriceCreateNestedManyWithoutTierInput
 }
 
 export type AgencyTariffTierUncheckedCreateWithoutCompaniesInput = {
   id?: string
   name: string
+  countryId: string
   position: number
   minProfiles: number
   maxProfiles: number
@@ -559,12 +713,14 @@ export type AgencyTariffTierUpdateWithoutCompaniesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutTariffTiersNestedInput
   prices?: Prisma.AgencyTariffPriceUpdateManyWithoutTierNestedInput
 }
 
 export type AgencyTariffTierUncheckedUpdateWithoutCompaniesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
   minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
   maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
@@ -585,12 +741,14 @@ export type AgencyTariffTierCreateWithoutPricesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  country: Prisma.CountryCreateNestedOneWithoutTariffTiersInput
   companies?: Prisma.CompanyCreateNestedManyWithoutTariffTierInput
 }
 
 export type AgencyTariffTierUncheckedCreateWithoutPricesInput = {
   id?: string
   name: string
+  countryId: string
   position: number
   minProfiles: number
   maxProfiles: number
@@ -627,10 +785,37 @@ export type AgencyTariffTierUpdateWithoutPricesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneRequiredWithoutTariffTiersNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutTariffTierNestedInput
 }
 
 export type AgencyTariffTierUncheckedUpdateWithoutPricesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  companies?: Prisma.CompanyUncheckedUpdateManyWithoutTariffTierNestedInput
+}
+
+export type AgencyTariffTierCreateManyCountryInput = {
+  id?: string
+  name: string
+  position: number
+  minProfiles: number
+  maxProfiles: number
+  isDefault?: boolean
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AgencyTariffTierUpdateWithoutCountryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
@@ -640,7 +825,34 @@ export type AgencyTariffTierUncheckedUpdateWithoutPricesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  prices?: Prisma.AgencyTariffPriceUpdateManyWithoutTierNestedInput
+  companies?: Prisma.CompanyUpdateManyWithoutTariffTierNestedInput
+}
+
+export type AgencyTariffTierUncheckedUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  prices?: Prisma.AgencyTariffPriceUncheckedUpdateManyWithoutTierNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutTariffTierNestedInput
+}
+
+export type AgencyTariffTierUncheckedUpdateManyWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  minProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  maxProfiles?: Prisma.IntFieldUpdateOperationsInput | number
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -686,6 +898,7 @@ export type AgencyTariffTierCountOutputTypeCountCompaniesArgs<ExtArgs extends ru
 export type AgencyTariffTierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  countryId?: boolean
   position?: boolean
   minProfiles?: boolean
   maxProfiles?: boolean
@@ -693,6 +906,7 @@ export type AgencyTariffTierSelect<ExtArgs extends runtime.Types.Extensions.Inte
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   prices?: boolean | Prisma.AgencyTariffTier$pricesArgs<ExtArgs>
   companies?: boolean | Prisma.AgencyTariffTier$companiesArgs<ExtArgs>
   _count?: boolean | Prisma.AgencyTariffTierCountOutputTypeDefaultArgs<ExtArgs>
@@ -701,6 +915,7 @@ export type AgencyTariffTierSelect<ExtArgs extends runtime.Types.Extensions.Inte
 export type AgencyTariffTierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  countryId?: boolean
   position?: boolean
   minProfiles?: boolean
   maxProfiles?: boolean
@@ -708,11 +923,13 @@ export type AgencyTariffTierSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agencyTariffTier"]>
 
 export type AgencyTariffTierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  countryId?: boolean
   position?: boolean
   minProfiles?: boolean
   maxProfiles?: boolean
@@ -720,11 +937,13 @@ export type AgencyTariffTierSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["agencyTariffTier"]>
 
 export type AgencyTariffTierSelectScalar = {
   id?: boolean
   name?: boolean
+  countryId?: boolean
   position?: boolean
   minProfiles?: boolean
   maxProfiles?: boolean
@@ -734,24 +953,35 @@ export type AgencyTariffTierSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AgencyTariffTierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "position" | "minProfiles" | "maxProfiles" | "isDefault" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["agencyTariffTier"]>
+export type AgencyTariffTierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "countryId" | "position" | "minProfiles" | "maxProfiles" | "isDefault" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["agencyTariffTier"]>
 export type AgencyTariffTierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
   prices?: boolean | Prisma.AgencyTariffTier$pricesArgs<ExtArgs>
   companies?: boolean | Prisma.AgencyTariffTier$companiesArgs<ExtArgs>
   _count?: boolean | Prisma.AgencyTariffTierCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type AgencyTariffTierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type AgencyTariffTierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AgencyTariffTierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
+}
+export type AgencyTariffTierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
+}
 
 export type $AgencyTariffTierPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AgencyTariffTier"
   objects: {
+    country: Prisma.$CountryPayload<ExtArgs>
     prices: Prisma.$AgencyTariffPricePayload<ExtArgs>[]
     companies: Prisma.$CompanyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    /**
+     * Сетка тарифов принадлежит стране: компания берёт тариф из сетки своей
+     * страны (`Company.countryId`).
+     */
+    countryId: string
     /**
      * Порядок в интерфейсе и при выборе «следующего» тарифа в пейволе — не
      * по minProfiles: диапазоны могут пересекаться (акционный тариф на тот
@@ -1162,6 +1392,7 @@ readonly fields: AgencyTariffTierFieldRefs;
  */
 export interface Prisma__AgencyTariffTierClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  country<T extends Prisma.CountryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CountryDefaultArgs<ExtArgs>>): Prisma.Prisma__CountryClient<runtime.Types.Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   prices<T extends Prisma.AgencyTariffTier$pricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AgencyTariffTier$pricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgencyTariffPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   companies<T extends Prisma.AgencyTariffTier$companiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AgencyTariffTier$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1195,6 +1426,7 @@ export interface Prisma__AgencyTariffTierClient<T, Null = never, ExtArgs extends
 export interface AgencyTariffTierFieldRefs {
   readonly id: Prisma.FieldRef<"AgencyTariffTier", 'String'>
   readonly name: Prisma.FieldRef<"AgencyTariffTier", 'String'>
+  readonly countryId: Prisma.FieldRef<"AgencyTariffTier", 'String'>
   readonly position: Prisma.FieldRef<"AgencyTariffTier", 'Int'>
   readonly minProfiles: Prisma.FieldRef<"AgencyTariffTier", 'Int'>
   readonly maxProfiles: Prisma.FieldRef<"AgencyTariffTier", 'Int'>
@@ -1456,6 +1688,10 @@ export type AgencyTariffTierCreateManyAndReturnArgs<ExtArgs extends runtime.Type
    */
   data: Prisma.AgencyTariffTierCreateManyInput | Prisma.AgencyTariffTierCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgencyTariffTierIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1526,6 +1762,10 @@ export type AgencyTariffTierUpdateManyAndReturnArgs<ExtArgs extends runtime.Type
    * Limit how many AgencyTariffTiers to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AgencyTariffTierIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

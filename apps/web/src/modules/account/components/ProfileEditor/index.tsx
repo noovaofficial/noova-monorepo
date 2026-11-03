@@ -118,7 +118,10 @@ const toHhmm = (minutes: number): string =>
  * контактами, и владелец правил не то. Теперь причина берётся из разбора по
  * полям, который сервер и так присылает.
  */
-function saveErrorKey(error: unknown): 'hoursInvalid' | 'contactInvalid' | 'saveFailed' {
+function saveErrorKey(
+  error: unknown,
+): 'hoursInvalid' | 'contactInvalid' | 'saveFailed' | 'countryLocked' {
+  if (error instanceof AccountError && error.code === 'country_locked') return 'countryLocked';
   if (!(error instanceof AccountError) || error.status !== 400) return 'saveFailed';
 
   const fields = error.issues.map((issue) => issue.field);
@@ -332,6 +335,12 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
     );
   }
 
+  // Страну анкеты менять нельзя (цены лежат в её валюте) — предлагаем только
+  // города той же страны.
+  const profileCountry = cities.find((c) => c.slug === profile?.city.slug)?.country.code;
+  const sameCountryCities = profileCountry
+    ? cities.filter((c) => c.country.code === profileCountry)
+    : cities;
   const districts = cities.find((c) => c.slug === citySlug)?.districts ?? [];
 
   function onSave(event: React.FormEvent<HTMLFormElement>) {
@@ -482,7 +491,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                   value={citySlug}
                   onChange={(e) => setCitySlug(e.target.value)}
                 >
-                  {cities.map((city) => (
+                  {sameCountryCities.map((city) => (
                     <option key={city.slug} value={city.slug}>
                       {city.name}
                     </option>
@@ -894,7 +903,11 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>{t('prices')}</h2>
 
-            <PriceSlotsEditor prices={prices} onChange={setPrices} />
+            <PriceSlotsEditor
+              prices={prices}
+              onChange={setPrices}
+              currency={profile.city.currency}
+            />
           </div>
 
           {/* Карта после адреса: сначала город и район, потом уточнение

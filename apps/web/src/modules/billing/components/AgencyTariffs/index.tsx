@@ -11,7 +11,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { useSession } from '@/modules/auth/components/SessionProvider';
 import {
   BillingError,
   createAgencyTariffTier,
@@ -19,7 +18,6 @@ import {
   fetchAgencyTariffGrid,
   updateAgencyTariffTier,
 } from '@/modules/billing/api';
-import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import sharedStyles from '../MonetizationSettings/MonetizationSettings.module.css';
 import styles from './AgencyTariffs.module.css';
@@ -94,31 +92,28 @@ function toInput(row: TierRow): AgencyTariffTierInput {
  * на них ссылаются компании, и слепой replace-all снял бы у агентств тариф
  * молча.
  */
-export function AgencyTariffs() {
+export function AgencyTariffs({ countryId }: { countryId: string }) {
   const t = useTranslations('billing');
-  const { user, status } = useSession();
-  const router = useRouter();
 
-  const isAdmin = user?.role === 'admin';
+  // Родитель (страница страны) уже пускает только админа.
   const grid = useQuery({
-    queryKey: queryKeys.agencyTariffGrid(),
-    queryFn: fetchAgencyTariffGrid,
-    enabled: status === 'authenticated' && isAdmin,
+    queryKey: queryKeys.agencyTariffGrid(countryId),
+    queryFn: () => fetchAgencyTariffGrid(countryId),
   });
 
-  if (status === 'loading') return <p className={sharedStyles.empty}>{t('loading')}</p>;
-  if (status === 'anonymous') {
-    router.replace('/login');
-    return null;
-  }
-  if (!isAdmin) return <p className={sharedStyles.empty}>{t('onlyAdmins')}</p>;
   if (grid.isError) return <p className={sharedStyles.empty}>{t('loadFailed')}</p>;
   if (!grid.data) return <p className={sharedStyles.empty}>{t('loading')}</p>;
 
-  return <AgencyTariffsForm key={grid.dataUpdatedAt} initial={grid.data} />;
+  return <AgencyTariffsForm key={grid.dataUpdatedAt} countryId={countryId} initial={grid.data} />;
 }
 
-function AgencyTariffsForm({ initial }: { initial: AgencyTariffTier[] }) {
+function AgencyTariffsForm({
+  countryId,
+  initial,
+}: {
+  countryId: string;
+  initial: AgencyTariffTier[];
+}) {
   const t = useTranslations('billing');
   const queryClient = useQueryClient();
 
@@ -126,11 +121,13 @@ function AgencyTariffsForm({ initial }: { initial: AgencyTariffTier[] }) {
   const [invalidKey, setInvalidKey] = useState<string | null>(null);
 
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: queryKeys.agencyTariffGrid() });
+    queryClient.invalidateQueries({ queryKey: queryKeys.agencyTariffGrid(countryId) });
 
   const save = useMutation({
     mutationFn: (row: TierRow) =>
-      row.id ? updateAgencyTariffTier(row.id, toInput(row)) : createAgencyTariffTier(toInput(row)),
+      row.id
+        ? updateAgencyTariffTier(row.id, toInput(row))
+        : createAgencyTariffTier(countryId, toInput(row)),
     onSuccess: invalidate,
   });
 
@@ -156,10 +153,9 @@ function AgencyTariffsForm({ initial }: { initial: AgencyTariffTier[] }) {
   return (
     <div className={sharedStyles.wrap}>
       <div className={sharedStyles.head}>
-        <h1 className={sharedStyles.title}>{t('agencyTariffsTitle')}</h1>
         <Button onClick={() => setRows((prev) => [...prev, blankTier()])}>{t('addTier')}</Button>
       </div>
-      <p className={sharedStyles.lead}>{t('agencyTariffsLead')}</p>
+      <p className={sharedStyles.hint}>{t('agencyTariffsLead')}</p>
 
       {removeFailed ? (
         <p className={`${sharedStyles.notice} ${sharedStyles.noticeError}`}>{t('tierInUse')}</p>

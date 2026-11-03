@@ -58,7 +58,11 @@ export const ModelName = {
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
   City: 'City',
+  PlacementRule: 'PlacementRule',
   CityTopSetting: 'CityTopSetting',
+  CountryTopSetting: 'CountryTopSetting',
+  CountryPlacementPrice: 'CountryPlacementPrice',
+  CityPlacementPrice: 'CityPlacementPrice',
   CityTranslation: 'CityTranslation',
   District: 'District',
   DistrictTranslation: 'DistrictTranslation',
@@ -86,7 +90,6 @@ export const ModelName = {
   VerificationCase: 'VerificationCase',
   PromoSlot: 'PromoSlot',
   BillingSettings: 'BillingSettings',
-  PriceBookEntry: 'PriceBookEntry',
   AgencyTariffTier: 'AgencyTariffTier',
   AgencyTariffPrice: 'AgencyTariffPrice',
   TopupTier: 'TopupTier',
@@ -183,7 +186,8 @@ export const CountryScalarFieldEnum = {
   code: 'code',
   name: 'name',
   isActive: 'isActive',
-  isDefault: 'isDefault'
+  isDefault: 'isDefault',
+  currency: 'currency'
 } as const
 
 export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
@@ -213,6 +217,19 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const PlacementRuleScalarFieldEnum = {
+  id: 'id',
+  countryId: 'countryId',
+  cityId: 'cityId',
+  kind: 'kind',
+  paid: 'paid',
+  allowed: 'allowed',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlacementRuleScalarFieldEnum = (typeof PlacementRuleScalarFieldEnum)[keyof typeof PlacementRuleScalarFieldEnum]
+
+
 export const CityTopSettingScalarFieldEnum = {
   cityId: 'cityId',
   weekGc: 'weekGc',
@@ -221,6 +238,40 @@ export const CityTopSettingScalarFieldEnum = {
 } as const
 
 export type CityTopSettingScalarFieldEnum = (typeof CityTopSettingScalarFieldEnum)[keyof typeof CityTopSettingScalarFieldEnum]
+
+
+export const CountryTopSettingScalarFieldEnum = {
+  countryId: 'countryId',
+  weekGc: 'weekGc',
+  slots: 'slots',
+  agencyWeekGc: 'agencyWeekGc',
+  agencySlots: 'agencySlots',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CountryTopSettingScalarFieldEnum = (typeof CountryTopSettingScalarFieldEnum)[keyof typeof CountryTopSettingScalarFieldEnum]
+
+
+export const CountryPlacementPriceScalarFieldEnum = {
+  countryId: 'countryId',
+  kind: 'kind',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CountryPlacementPriceScalarFieldEnum = (typeof CountryPlacementPriceScalarFieldEnum)[keyof typeof CountryPlacementPriceScalarFieldEnum]
+
+
+export const CityPlacementPriceScalarFieldEnum = {
+  cityId: 'cityId',
+  kind: 'kind',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CityPlacementPriceScalarFieldEnum = (typeof CityPlacementPriceScalarFieldEnum)[keyof typeof CityPlacementPriceScalarFieldEnum]
 
 
 export const CityTranslationScalarFieldEnum = {
@@ -390,6 +441,7 @@ export const CompanyScalarFieldEnum = {
   bannedAt: 'bannedAt',
   banReason: 'banReason',
   isFeatured: 'isFeatured',
+  countryId: 'countryId',
   ownerId: 'ownerId',
   tariffTierId: 'tariffTierId',
   customProfileLimit: 'customProfileLimit',
@@ -618,11 +670,7 @@ export const BillingSettingsScalarFieldEnum = {
   id: 'id',
   gcPerEur: 'gcPerEur',
   agencyProfileLimit: 'agencyProfileLimit',
-  topWeekGc: 'topWeekGc',
-  topSlots: 'topSlots',
   topShown: 'topShown',
-  agencyTopWeekGc: 'agencyTopWeekGc',
-  agencyTopSlots: 'agencyTopSlots',
   moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
@@ -630,19 +678,10 @@ export const BillingSettingsScalarFieldEnum = {
 export type BillingSettingsScalarFieldEnum = (typeof BillingSettingsScalarFieldEnum)[keyof typeof BillingSettingsScalarFieldEnum]
 
 
-export const PriceBookEntryScalarFieldEnum = {
-  kind: 'kind',
-  term: 'term',
-  gc: 'gc',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PriceBookEntryScalarFieldEnum = (typeof PriceBookEntryScalarFieldEnum)[keyof typeof PriceBookEntryScalarFieldEnum]
-
-
 export const AgencyTariffTierScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  countryId: 'countryId',
   position: 'position',
   minProfiles: 'minProfiles',
   maxProfiles: 'maxProfiles',

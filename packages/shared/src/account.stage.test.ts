@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  isProfileComplete,
-  isReadyToSubmit,
-  profileStage,
-} from './account';
+import { isProfileComplete, isReadyToSubmit, profileStage } from './account';
 
 const full = { age: 25, photosCount: 3, pricesCount: 2, contactsCount: 1 };
 

@@ -404,7 +404,11 @@ export const ModelName = {
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
   City: 'City',
+  PlacementRule: 'PlacementRule',
   CityTopSetting: 'CityTopSetting',
+  CountryTopSetting: 'CountryTopSetting',
+  CountryPlacementPrice: 'CountryPlacementPrice',
+  CityPlacementPrice: 'CityPlacementPrice',
   CityTranslation: 'CityTranslation',
   District: 'District',
   DistrictTranslation: 'DistrictTranslation',
@@ -432,7 +436,6 @@ export const ModelName = {
   VerificationCase: 'VerificationCase',
   PromoSlot: 'PromoSlot',
   BillingSettings: 'BillingSettings',
-  PriceBookEntry: 'PriceBookEntry',
   AgencyTariffTier: 'AgencyTariffTier',
   AgencyTariffPrice: 'AgencyTariffPrice',
   TopupTier: 'TopupTier',
@@ -459,7 +462,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "cityTopSetting" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "priceBookEntry" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "placementRule" | "cityTopSetting" | "countryTopSetting" | "countryPlacementPrice" | "cityPlacementPrice" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -981,6 +984,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlacementRule: {
+      payload: Prisma.$PlacementRulePayload<ExtArgs>
+      fields: Prisma.PlacementRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlacementRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlacementRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        findFirst: {
+          args: Prisma.PlacementRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlacementRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        findMany: {
+          args: Prisma.PlacementRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>[]
+        }
+        create: {
+          args: Prisma.PlacementRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        createMany: {
+          args: Prisma.PlacementRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlacementRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>[]
+        }
+        delete: {
+          args: Prisma.PlacementRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        update: {
+          args: Prisma.PlacementRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.PlacementRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlacementRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlacementRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.PlacementRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlacementRulePayload>
+        }
+        aggregate: {
+          args: Prisma.PlacementRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlacementRule>
+        }
+        groupBy: {
+          args: Prisma.PlacementRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlacementRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlacementRuleCountAggregateOutputType> | number
+        }
+      }
+    }
     CityTopSetting: {
       payload: Prisma.$CityTopSettingPayload<ExtArgs>
       fields: Prisma.CityTopSettingFieldRefs
@@ -1052,6 +1129,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CityTopSettingCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CityTopSettingCountAggregateOutputType> | number
+        }
+      }
+    }
+    CountryTopSetting: {
+      payload: Prisma.$CountryTopSettingPayload<ExtArgs>
+      fields: Prisma.CountryTopSettingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CountryTopSettingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CountryTopSettingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        findFirst: {
+          args: Prisma.CountryTopSettingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CountryTopSettingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        findMany: {
+          args: Prisma.CountryTopSettingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>[]
+        }
+        create: {
+          args: Prisma.CountryTopSettingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        createMany: {
+          args: Prisma.CountryTopSettingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CountryTopSettingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>[]
+        }
+        delete: {
+          args: Prisma.CountryTopSettingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        update: {
+          args: Prisma.CountryTopSettingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        deleteMany: {
+          args: Prisma.CountryTopSettingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CountryTopSettingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CountryTopSettingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>[]
+        }
+        upsert: {
+          args: Prisma.CountryTopSettingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryTopSettingPayload>
+        }
+        aggregate: {
+          args: Prisma.CountryTopSettingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCountryTopSetting>
+        }
+        groupBy: {
+          args: Prisma.CountryTopSettingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryTopSettingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CountryTopSettingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryTopSettingCountAggregateOutputType> | number
+        }
+      }
+    }
+    CountryPlacementPrice: {
+      payload: Prisma.$CountryPlacementPricePayload<ExtArgs>
+      fields: Prisma.CountryPlacementPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CountryPlacementPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CountryPlacementPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        findFirst: {
+          args: Prisma.CountryPlacementPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CountryPlacementPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        findMany: {
+          args: Prisma.CountryPlacementPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>[]
+        }
+        create: {
+          args: Prisma.CountryPlacementPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        createMany: {
+          args: Prisma.CountryPlacementPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CountryPlacementPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>[]
+        }
+        delete: {
+          args: Prisma.CountryPlacementPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        update: {
+          args: Prisma.CountryPlacementPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.CountryPlacementPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CountryPlacementPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CountryPlacementPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.CountryPlacementPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CountryPlacementPricePayload>
+        }
+        aggregate: {
+          args: Prisma.CountryPlacementPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCountryPlacementPrice>
+        }
+        groupBy: {
+          args: Prisma.CountryPlacementPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryPlacementPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CountryPlacementPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CountryPlacementPriceCountAggregateOutputType> | number
+        }
+      }
+    }
+    CityPlacementPrice: {
+      payload: Prisma.$CityPlacementPricePayload<ExtArgs>
+      fields: Prisma.CityPlacementPriceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CityPlacementPriceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CityPlacementPriceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        findFirst: {
+          args: Prisma.CityPlacementPriceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CityPlacementPriceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        findMany: {
+          args: Prisma.CityPlacementPriceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>[]
+        }
+        create: {
+          args: Prisma.CityPlacementPriceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        createMany: {
+          args: Prisma.CityPlacementPriceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CityPlacementPriceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>[]
+        }
+        delete: {
+          args: Prisma.CityPlacementPriceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        update: {
+          args: Prisma.CityPlacementPriceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        deleteMany: {
+          args: Prisma.CityPlacementPriceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CityPlacementPriceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CityPlacementPriceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>[]
+        }
+        upsert: {
+          args: Prisma.CityPlacementPriceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CityPlacementPricePayload>
+        }
+        aggregate: {
+          args: Prisma.CityPlacementPriceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCityPlacementPrice>
+        }
+        groupBy: {
+          args: Prisma.CityPlacementPriceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityPlacementPriceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CityPlacementPriceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CityPlacementPriceCountAggregateOutputType> | number
         }
       }
     }
@@ -3053,80 +3352,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    PriceBookEntry: {
-      payload: Prisma.$PriceBookEntryPayload<ExtArgs>
-      fields: Prisma.PriceBookEntryFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.PriceBookEntryFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.PriceBookEntryFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        findFirst: {
-          args: Prisma.PriceBookEntryFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.PriceBookEntryFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        findMany: {
-          args: Prisma.PriceBookEntryFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>[]
-        }
-        create: {
-          args: Prisma.PriceBookEntryCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        createMany: {
-          args: Prisma.PriceBookEntryCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.PriceBookEntryCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>[]
-        }
-        delete: {
-          args: Prisma.PriceBookEntryDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        update: {
-          args: Prisma.PriceBookEntryUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        deleteMany: {
-          args: Prisma.PriceBookEntryDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.PriceBookEntryUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PriceBookEntryUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>[]
-        }
-        upsert: {
-          args: Prisma.PriceBookEntryUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PriceBookEntryPayload>
-        }
-        aggregate: {
-          args: Prisma.PriceBookEntryAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePriceBookEntry>
-        }
-        groupBy: {
-          args: Prisma.PriceBookEntryGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PriceBookEntryGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.PriceBookEntryCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PriceBookEntryCountAggregateOutputType> | number
-        }
-      }
-    }
     AgencyTariffTier: {
       payload: Prisma.$AgencyTariffTierPayload<ExtArgs>
       fields: Prisma.AgencyTariffTierFieldRefs
@@ -4047,7 +4272,8 @@ export const CountryScalarFieldEnum = {
   code: 'code',
   name: 'name',
   isActive: 'isActive',
-  isDefault: 'isDefault'
+  isDefault: 'isDefault',
+  currency: 'currency'
 } as const
 
 export type CountryScalarFieldEnum = (typeof CountryScalarFieldEnum)[keyof typeof CountryScalarFieldEnum]
@@ -4077,6 +4303,19 @@ export const CityScalarFieldEnum = {
 export type CityScalarFieldEnum = (typeof CityScalarFieldEnum)[keyof typeof CityScalarFieldEnum]
 
 
+export const PlacementRuleScalarFieldEnum = {
+  id: 'id',
+  countryId: 'countryId',
+  cityId: 'cityId',
+  kind: 'kind',
+  paid: 'paid',
+  allowed: 'allowed',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlacementRuleScalarFieldEnum = (typeof PlacementRuleScalarFieldEnum)[keyof typeof PlacementRuleScalarFieldEnum]
+
+
 export const CityTopSettingScalarFieldEnum = {
   cityId: 'cityId',
   weekGc: 'weekGc',
@@ -4085,6 +4324,40 @@ export const CityTopSettingScalarFieldEnum = {
 } as const
 
 export type CityTopSettingScalarFieldEnum = (typeof CityTopSettingScalarFieldEnum)[keyof typeof CityTopSettingScalarFieldEnum]
+
+
+export const CountryTopSettingScalarFieldEnum = {
+  countryId: 'countryId',
+  weekGc: 'weekGc',
+  slots: 'slots',
+  agencyWeekGc: 'agencyWeekGc',
+  agencySlots: 'agencySlots',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CountryTopSettingScalarFieldEnum = (typeof CountryTopSettingScalarFieldEnum)[keyof typeof CountryTopSettingScalarFieldEnum]
+
+
+export const CountryPlacementPriceScalarFieldEnum = {
+  countryId: 'countryId',
+  kind: 'kind',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CountryPlacementPriceScalarFieldEnum = (typeof CountryPlacementPriceScalarFieldEnum)[keyof typeof CountryPlacementPriceScalarFieldEnum]
+
+
+export const CityPlacementPriceScalarFieldEnum = {
+  cityId: 'cityId',
+  kind: 'kind',
+  term: 'term',
+  gc: 'gc',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CityPlacementPriceScalarFieldEnum = (typeof CityPlacementPriceScalarFieldEnum)[keyof typeof CityPlacementPriceScalarFieldEnum]
 
 
 export const CityTranslationScalarFieldEnum = {
@@ -4254,6 +4527,7 @@ export const CompanyScalarFieldEnum = {
   bannedAt: 'bannedAt',
   banReason: 'banReason',
   isFeatured: 'isFeatured',
+  countryId: 'countryId',
   ownerId: 'ownerId',
   tariffTierId: 'tariffTierId',
   customProfileLimit: 'customProfileLimit',
@@ -4482,11 +4756,7 @@ export const BillingSettingsScalarFieldEnum = {
   id: 'id',
   gcPerEur: 'gcPerEur',
   agencyProfileLimit: 'agencyProfileLimit',
-  topWeekGc: 'topWeekGc',
-  topSlots: 'topSlots',
   topShown: 'topShown',
-  agencyTopWeekGc: 'agencyTopWeekGc',
-  agencyTopSlots: 'agencyTopSlots',
   moderatorAdjustLimitGc: 'moderatorAdjustLimitGc',
   updatedAt: 'updatedAt'
 } as const
@@ -4494,19 +4764,10 @@ export const BillingSettingsScalarFieldEnum = {
 export type BillingSettingsScalarFieldEnum = (typeof BillingSettingsScalarFieldEnum)[keyof typeof BillingSettingsScalarFieldEnum]
 
 
-export const PriceBookEntryScalarFieldEnum = {
-  kind: 'kind',
-  term: 'term',
-  gc: 'gc',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PriceBookEntryScalarFieldEnum = (typeof PriceBookEntryScalarFieldEnum)[keyof typeof PriceBookEntryScalarFieldEnum]
-
-
 export const AgencyTariffTierScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  countryId: 'countryId',
   position: 'position',
   minProfiles: 'minProfiles',
   maxProfiles: 'maxProfiles',
@@ -4864,6 +5125,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'PlanTerm'
+ */
+export type EnumPlanTermFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanTerm'>
+    
+
+
+/**
+ * Reference to a field of type 'PlanTerm[]'
+ */
+export type ListEnumPlanTermFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanTerm[]'>
+    
+
+
+/**
  * Reference to a field of type 'ListingKind'
  */
 export type EnumListingKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ListingKind'>
@@ -5116,20 +5391,6 @@ export type ListEnumVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
- * Reference to a field of type 'PlanTerm'
- */
-export type EnumPlanTermFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanTerm'>
-    
-
-
-/**
- * Reference to a field of type 'PlanTerm[]'
- */
-export type ListEnumPlanTermFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanTerm[]'>
-    
-
-
-/**
  * Reference to a field of type 'BillingTransactionKind'
  */
 export type EnumBillingTransactionKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BillingTransactionKind'>
@@ -5370,7 +5631,11 @@ export type GlobalOmitConfig = {
   country?: Prisma.CountryOmit
   countryTranslation?: Prisma.CountryTranslationOmit
   city?: Prisma.CityOmit
+  placementRule?: Prisma.PlacementRuleOmit
   cityTopSetting?: Prisma.CityTopSettingOmit
+  countryTopSetting?: Prisma.CountryTopSettingOmit
+  countryPlacementPrice?: Prisma.CountryPlacementPriceOmit
+  cityPlacementPrice?: Prisma.CityPlacementPriceOmit
   cityTranslation?: Prisma.CityTranslationOmit
   district?: Prisma.DistrictOmit
   districtTranslation?: Prisma.DistrictTranslationOmit
@@ -5398,7 +5663,6 @@ export type GlobalOmitConfig = {
   verificationCase?: Prisma.VerificationCaseOmit
   promoSlot?: Prisma.PromoSlotOmit
   billingSettings?: Prisma.BillingSettingsOmit
-  priceBookEntry?: Prisma.PriceBookEntryOmit
   agencyTariffTier?: Prisma.AgencyTariffTierOmit
   agencyTariffPrice?: Prisma.AgencyTariffPriceOmit
   topupTier?: Prisma.TopupTierOmit

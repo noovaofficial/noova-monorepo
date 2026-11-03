@@ -16,8 +16,9 @@ export function photoUrl(storageKey: string, variant: 'thumb' | 'card' | 'full' 
   return mediaUrl(`${storageKey}/${variant}.webp`);
 }
 
-export function toMoney(cents: number | null): Money | null {
-  return cents === null ? null : { amountCents: cents, currency: 'EUR' };
+/** Валюта — страны анкеты (Country.currency); без неё по умолчанию евро. */
+export function toMoney(cents: number | null, currency = 'EUR'): Money | null {
+  return cents === null ? null : { amountCents: cents, currency };
 }
 
 type PhotoRow = {
@@ -47,7 +48,7 @@ type CityRow = {
   slug: string;
   name: string;
   /// Код страны приходит связью: с N-32 страна — сущность, а не поле города.
-  country: { code: string };
+  country: { code: string; currency?: string };
   translations?: Translations;
 };
 
@@ -102,7 +103,7 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
       key: s.service.key,
       name: localized(s.service.translations, s.service.key),
     })),
-    fromPrice: toMoney(row.fromPriceCents),
+    fromPrice: toMoney(row.fromPriceCents, row.city.country.currency),
     isVerified: row.isVerified,
     isFeatured: row.isFeatured,
     isOnline: isOnline(row.lastSeenAt),
@@ -173,8 +174,8 @@ export function toProfileDetail(
     },
     prices: row.prices.map((p) => ({
       durationMinutes: p.durationMinutes,
-      incall: toMoney(p.incallCents),
-      outcall: toMoney(p.outcallCents),
+      incall: toMoney(p.incallCents, row.city.country.currency),
+      outcall: toMoney(p.outcallCents, row.city.country.currency),
     })),
     address: row.address,
     directions: row.directions,

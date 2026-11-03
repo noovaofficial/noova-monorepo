@@ -9,6 +9,7 @@ import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import type { Mail } from '../auth/mailer.js';
 import { localeOf } from '../auth/mailer.js';
 import { listingExpiredMail, listingGraceMail, listingReminderMail } from './mails.js';
+import { placementFor } from './placement.js';
 import { applyMovement, toListing } from './wallet.js';
 
 /**
@@ -248,10 +249,24 @@ export async function expireListings(
     const unpublished = await prisma.$transaction(async (tx) => {
       await tx.listing.update({ where: { id: listing.id }, data: { status: next } });
       if (next !== 'expired') return [] as string[];
-      const published = await tx.profile.findMany({
+      const candidates = await tx.profile.findMany({
         where: { ownerId: listing.userId, status: 'published' },
-        select: { id: true, slug: true },
+        select: {
+          id: true,
+          slug: true,
+          cityId: true,
+          countryId: true,
+          owner: { select: { advertiserKind: true } },
+        },
       });
+      // Анкеты в городах с бесплатным размещением остаются: срок вышел у
+      // платного размещения, а они его не требовали.
+      const published: typeof candidates = [];
+      for (const profile of candidates) {
+        const kind = profile.owner.advertiserKind;
+        const placement = kind ? await placementFor(tx, profile, kind) : null;
+        if (placement === null || placement.paid) published.push(profile);
+      }
       if (published.length > 0) {
         await tx.profile.updateMany({
           where: { id: { in: published.map((profile) => profile.id) } },

@@ -290,9 +290,20 @@ model Country {
   /// прежней», а не годится под partial unique index.
   isDefault Boolean @default(false)
 
-  cities       City[]
-  profiles     Profile[]
-  translations CountryTranslation[]
+  /// Валюта цен анкет в этой стране (ISO 4217). Анкета хранит сумму в
+  /// минорных единицах именно этой валюты, без пересчёта: рекламодатель
+  /// вводит цену так, как её видит клиент. Оплата размещения от неё не
+  /// зависит и всегда идёт в евро.
+  currency String @default("EUR") @db.Char(3)
+
+  cities          City[]
+  profiles        Profile[]
+  translations    CountryTranslation[]
+  placementRules  PlacementRule[]
+  placementPrices CountryPlacementPrice[]
+  topSetting      CountryTopSetting?
+  tariffTiers     AgencyTariffTier[]
+  companies       Company[]
 }
 
 model CountryTranslation {
@@ -317,13 +328,36 @@ model City {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  districts    District[]
-  profiles     Profile[]
-  translations CityTranslation[]
-  campaigns    Campaign[]
-  topSetting   CityTopSetting?
+  districts       District[]
+  profiles        Profile[]
+  translations    CityTranslation[]
+  campaigns       Campaign[]
+  topSetting      CityTopSetting?
+  placementRules  PlacementRule[]
+  placementPrices CityPlacementPrice[]
 
   @@index([countryId])
+}
+
+/// Правило размещения для типа рекламодателя в стране или городе. Ровно одно
+/// из `countryId`/`cityId` задано. Пустое поле — «не переопределено»: значение
+/// берётся у страны, а если и там пусто — по умолчанию (платно, разрешено).
+/// Город сильнее страны, и каждое поле решается отдельно.
+model PlacementRule {
+  id        String         @id @default(cuid())
+  countryId String?
+  country   Country?       @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  cityId    String?
+  city      City?          @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  kind      AdvertiserKind
+  /// false — размещение бесплатное: активный Listing для публикации не нужен.
+  paid      Boolean?
+  /// false — публиковать новые анкеты этого типа здесь нельзя.
+  allowed   Boolean?
+  updatedAt DateTime       @updatedAt
+
+  @@unique([countryId, kind])
+  @@unique([cityId, kind])
 }
 
 /// Свои цена и число мест ТОПа анкет для города. Пустое поле — «как по
@@ -336,6 +370,44 @@ model CityTopSetting {
   weekGc    Int?
   slots     Int?
   updatedAt DateTime @updatedAt
+}
+
+/// ТОП страны. Общих значений нет: у каждой страны свои цена недели и число
+/// мест — для ТОПа анкет и для ТОПа агентств. Город может переопределить
+/// только ТОП анкет (`CityTopSetting`); пустое поле города — «как у страны».
+/// ТОП агентств привязан к стране компании (`Company.countryId`).
+model CountryTopSetting {
+  countryId    String   @id
+  country      Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  weekGc       Int
+  slots        Int
+  agencyWeekGc Int
+  agencySlots  Int
+  updatedAt    DateTime @updatedAt
+}
+
+/// Цена размещения по типу и сроку в стране (payments.md §5). Общего прайса
+/// нет: у страны полная сетка, у города — только переопределённые ячейки.
+model CountryPlacementPrice {
+  countryId String
+  country   Country        @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  kind      AdvertiserKind
+  term      PlanTerm
+  gc        Int
+  updatedAt DateTime       @updatedAt
+
+  @@id([countryId, kind, term])
+}
+
+model CityPlacementPrice {
+  cityId    String
+  city      City           @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  kind      AdvertiserKind
+  term      PlanTerm
+  gc        Int
+  updatedAt DateTime       @updatedAt
+
+  @@id([cityId, kind, term])
 }
 
 /// Переводы названий справочников вынесены в отдельные таблицы, а не в
@@ -712,6 +784,11 @@ model Company {
   /// Производная от AgencyTopPlacement: ставится покупкой, снимается
   /// задачей `top-expiry` — тем же принципом, что Profile.isFeatured.
   isFeatured Boolean @default(false)
+
+  /// Страна компании: по ней выбираются сетка тарифов и цена ТОПа агентств.
+  /// Задаётся при создании и дальше не меняется (как и страна анкеты).
+  countryId String?
+  country   Country? @relation(fields: [countryId], references: [id], onDelete: SetNull)
 
   ownerId String @unique
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
@@ -1149,15 +1226,9 @@ model BillingSettings {
   /// норме не должен срабатывать: миграция и создание компании назначают
   /// тариф сразу.
   agencyProfileLimit     Int
-  /// ТОП (payments.md §3.4): цена недели, всего мест и сколько показывать на главной.
-  topWeekGc              Int      @default(300)
-  topSlots               Int      @default(16)
+  /// Сколько анкет ТОПа показывать на главной. Цена недели и число мест — не
+  /// здесь, а в `CountryTopSetting`/`CityTopSetting`: они зависят от места.
   topShown               Int      @default(8)
-  /// ТОП агентств (payments.md §3.5, D-14): свой пул мест и цена, отдельные
-  /// от ТОПа анкет. Сколько показывать в ряду на главной — не здесь: это
-  /// фиксированные 4 (продуктовое решение, не в админке), см. AGENCY_TOP_SHOWN.
-  agencyTopWeekGc        Int      @default(300)
-  agencyTopSlots         Int      @default(8)
   /// Потолок разовой корректировки баланса для модератора — по модулю, то есть
   /// и на начисление, и на списание. Нужен, потому что модератор правит баланс
   /// по обращениям в поддержку, а не распоряжается деньгами проекта: годовой
@@ -1166,16 +1237,6 @@ model BillingSettings {
   /// живым обращениям, и менять её выкатом неправильно.
   moderatorAdjustLimitGc Int      @default(500)
   updatedAt              DateTime @updatedAt
-}
-
-/// Цена размещения по типу и сроку — PriceBook из payments.md §5.
-model PriceBookEntry {
-  kind      AdvertiserKind
-  term      PlanTerm
-  gc        Int
-  updatedAt DateTime       @updatedAt
-
-  @@id([kind, term])
 }
 
 /// Тариф агентства по числу анкет (payments.md §3.3, D-13 — заменяет
@@ -1187,10 +1248,15 @@ model AgencyTariffTier {
   id   String @id @default(cuid())
   name String
 
+  /// Сетка тарифов принадлежит стране: компания берёт тариф из сетки своей
+  /// страны (`Company.countryId`).
+  countryId String
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
   /// Порядок в интерфейсе и при выборе «следующего» тарифа в пейволе — не
   /// по minProfiles: диапазоны могут пересекаться (акционный тариф на тот
   /// же охват анкет), и выбор кандидата должен решаться однозначно.
-  position    Int @unique
+  position    Int
   minProfiles Int
   maxProfiles Int
 
@@ -1205,6 +1271,7 @@ model AgencyTariffTier {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([countryId, position])
   @@index([minProfiles, maxProfiles])
 }
 

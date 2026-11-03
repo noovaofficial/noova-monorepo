@@ -182,7 +182,12 @@ export const ownProfileSchema = z.object({
   status: profileStatusSchema,
   displayName: z.string(),
   description: z.string(),
-  city: z.object({ slug: slugSchema, name: z.string() }),
+  city: z.object({
+    slug: slugSchema,
+    name: z.string(),
+    /** Валюта, в которой владелец вводит цены (валюта страны города). */
+    currency: z.string().length(3).default('EUR'),
+  }),
   district: z.object({ slug: z.string(), name: z.string() }).nullable(),
   age: z.number().int().nullable(),
   heightCm: z.number().int().nullable(),
@@ -328,5 +333,7 @@ export const countryOptionSchema = z.object({
   code: z.string(),
   name: z.string(),
   isDefault: z.boolean(),
+  /** ISO 4217: валюта цен анкет страны. */
+  currency: z.string().length(3).default('EUR'),
 });
 export type CountryOption = z.infer<typeof countryOptionSchema>;

@@ -2,7 +2,7 @@
 
 import { LOCALES, type Translated } from '@noova/shared';
 import type { useTranslations } from 'next-intl';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { LocationsError } from '@/modules/locations/api';
 import { Link } from '@/shared/i18n/navigation';
@@ -32,7 +32,13 @@ export function useRunner(t: Translate, refresh: () => void) {
         return result;
       })
       .catch((cause: unknown) => {
-        setError(cause instanceof LocationsError && cause.message ? cause.message : t('failed'));
+        setError(
+          cause instanceof LocationsError && cause.code === 'city_has_profiles'
+            ? t('cityHasProfiles')
+            : cause instanceof LocationsError && cause.message
+              ? cause.message
+              : t('failed'),
+        );
         return undefined;
       });
   };
@@ -116,6 +122,61 @@ export function EntityRow({
           {isActive ? t('disable') : t('enable')}
         </Button>
       </div>
+    </div>
+  );
+}
+
+export type TabDef = { key: string; label: string; badge?: string | number };
+
+/**
+ * Вкладки страницы страны и города. Активная хранится в `?tab=`: так после
+ * сохранения и перезагрузки остаёшься там же, а ссылкой можно поделиться.
+ * Адрес правим через history, а не роутером — без повторной загрузки страницы.
+ */
+export function useTab(tabs: TabDef[]): [string, (key: string) => void] {
+  const first = tabs[0]?.key ?? '';
+  const [active, setActive] = useState(first);
+
+  // Читаем адрес после монтирования: на сервере его нет, и расхождение
+  // разметки сломало бы гидратацию.
+  useEffect(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get('tab');
+    if (fromUrl && tabs.some((tab) => tab.key === fromUrl)) setActive(fromUrl);
+  }, [tabs]);
+
+  const select = (key: string) => {
+    setActive(key);
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', key);
+    window.history.replaceState(null, '', url);
+  };
+  return [active, select];
+}
+
+export function Tabs({
+  tabs,
+  active,
+  onSelect,
+}: {
+  tabs: TabDef[];
+  active: string;
+  onSelect: (key: string) => void;
+}) {
+  return (
+    <div className={styles.tabs} role="tablist">
+      {tabs.map((tab) => (
+        <button
+          key={tab.key}
+          type="button"
+          role="tab"
+          aria-selected={tab.key === active}
+          className={`${styles.tab} ${tab.key === active ? styles.tabActive : ''}`}
+          onClick={() => onSelect(tab.key)}
+        >
+          {tab.label}
+          {tab.badge !== undefined ? <span className={styles.tabBadge}>{tab.badge}</span> : null}
+        </button>
+      ))}
     </div>
   );
 }

@@ -1,5 +1,33 @@
 import type { Locale, Money } from '@noova/shared';
 
+/** Сколько минорных единиц в основной: 100 для EUR/CZK, 1 для JPY/HUF и т. п. (ISO 4217). */
+export function minorFactor(currency: string): number {
+  try {
+    const digits = new Intl.NumberFormat('en', { style: 'currency', currency }).resolvedOptions()
+      .maximumFractionDigits;
+    return 10 ** (digits ?? 2);
+  } catch {
+    return 100;
+  }
+}
+
+/** Знак валюты на языке интерфейса: «€», «Kč», «zł». */
+export function currencySymbol(currency: string, locale: string): string {
+  try {
+    return (
+      new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+        currencyDisplay: 'narrowSymbol',
+      })
+        .formatToParts(0)
+        .find((part) => part.type === 'currency')?.value ?? currency
+    );
+  } catch {
+    return currency;
+  }
+}
+
 /** Цены хранятся в центах — форматируем через Intl, а не делением в разметке. */
 export function formatMoney(money: Money | null, locale: Locale): string | null {
   if (!money) return null;
@@ -7,7 +35,7 @@ export function formatMoney(money: Money | null, locale: Locale): string | null 
     style: 'currency',
     currency: money.currency,
     maximumFractionDigits: 0,
-  }).format(money.amountCents / 100);
+  }).format(money.amountCents / minorFactor(money.currency));
 }
 
 /** 60 → «1 час», 720 → «ночь». Ключ отдаём наружу, перевод делает next-intl. */

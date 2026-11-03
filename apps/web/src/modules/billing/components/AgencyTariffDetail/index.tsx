@@ -73,10 +73,11 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
   });
   // Сетка тарифов и ТОП агентства — денежные решения, только админу: у
   // модератора запрос отключён, а не просто спрятан результат.
+  const countryId = state.data?.countryId ?? null;
   const grid = useQuery({
-    queryKey: queryKeys.agencyTariffGrid(),
-    queryFn: fetchAgencyTariffGrid,
-    enabled: isAdmin,
+    queryKey: queryKeys.agencyTariffGrid(countryId ?? ''),
+    queryFn: () => fetchAgencyTariffGrid(countryId as string),
+    enabled: isAdmin && countryId !== null,
   });
   const top = useQuery({
     queryKey: queryKeys.companyTop(companyId),

@@ -6,7 +6,7 @@
  *
  * Запуск: node dist/scripts/diagnose-sharp.js /путь/к/папке/photos
  */
-import { readFile, readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { processImage } from '../modules/photos/images.js';
 
@@ -19,7 +19,9 @@ async function main(dir: string) {
     process.stdout.write(`${file} (${buffer.byteLength} байт): `);
     try {
       const result = await processImage(buffer);
-      console.log(`OK, ${result.width}x${result.height}, варианты: ${Object.keys(result.variants).join(',')}`);
+      console.log(
+        `OK, ${result.width}x${result.height}, варианты: ${Object.keys(result.variants).join(',')}`,
+      );
     } catch (err) {
       console.log('ПАДАЕТ');
       console.error(err);

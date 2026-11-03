@@ -32,7 +32,8 @@ export type Page<T> = {
 export const moneySchema = z.object({
   /** Всегда в минорных единицах (центах), чтобы не ловить ошибки округления. */
   amountCents: z.number().int().nonnegative(),
-  currency: z.literal('EUR').default('EUR'),
+  /** ISO 4217: валюта страны анкеты (Country.currency). */
+  currency: z.string().length(3).default('EUR'),
 });
 export type Money = z.infer<typeof moneySchema>;
 

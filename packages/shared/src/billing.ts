@@ -120,6 +120,99 @@ export const topupTierSchema = topupTierInputSchema.extend({
 });
 export type TopupTier = z.infer<typeof topupTierSchema>;
 
+/**
+ * Общие настройки монетизации: то, что не зависит от места. Оплата всегда в
+ * евро, поэтому курс GC и лестница пополнений одни на сайт; цены размещения,
+ * ТОП и тарифы агентств живут в стране и городе (см. ниже).
+ */
+export const globalBillingConfigSchema = z.object({
+  gcPerEur: z.number().positive().max(10_000),
+  topupTiers: z
+    .array(topupTierInputSchema)
+    .min(1)
+    .max(12)
+    .refine(isAscending, { message: 'Пороги пополнения должны идти по возрастанию' }),
+  /** Устарело (см. `agencyProfileLimit` в `billingConfigInputSchema`). */
+  agencyProfileLimit: z.number().int().min(1).max(100),
+  /** Сколько анкет ТОПа показывать на главной. */
+  topShown: z.number().int().min(1).max(50),
+  moderatorAdjustLimitGc: z.number().int().min(0).max(GC_ADJUST_LIMIT),
+});
+export type GlobalBillingConfig = z.infer<typeof globalBillingConfigSchema>;
+
+/** Общие настройки для админки: плюс начисления по ступеням пополнения. */
+export const adminGlobalBillingSchema = globalBillingConfigSchema.extend({
+  topupTiers: z.array(topupTierSchema),
+});
+export type AdminGlobalBilling = z.infer<typeof adminGlobalBillingSchema>;
+
+const topSlotsSchema = z.number().int().min(1).max(200);
+
+/** Цена недели и число мест ТОПа. */
+export const topTermsSchema = z.object({ weekGc: gcPriceSchema, slots: topSlotsSchema });
+export type TopTerms = z.infer<typeof topTermsSchema>;
+
+/**
+ * Монетизация страны: полный набор значений, без пропусков. Общих значений
+ * нет — страну нельзя оставить без цен.
+ */
+export const countryMonetizationSchema = z.object({
+  prices: priceGridSchema,
+  top: topTermsSchema,
+  agencyTop: topTermsSchema,
+});
+export type CountryMonetization = z.infer<typeof countryMonetizationSchema>;
+
+/** Ячейки города: пусто — «как в стране». */
+export const cityPriceOverridesSchema = z.record(
+  planKindSchema,
+  z.record(planTermSchema, gcPriceSchema.nullable()),
+);
+export type CityPriceOverrides = z.infer<typeof cityPriceOverridesSchema>;
+
+export const cityMonetizationInputSchema = z.object({
+  prices: cityPriceOverridesSchema,
+  top: z.object({ weekGc: gcPriceSchema.nullable(), slots: topSlotsSchema.nullable() }),
+});
+export type CityMonetizationInput = z.infer<typeof cityMonetizationInputSchema>;
+
+/** Монетизация города: свои значения и то, что он наследует от страны. */
+export const cityMonetizationSchema = cityMonetizationInputSchema.extend({
+  inherited: z.object({ prices: priceGridSchema, top: topTermsSchema }),
+});
+export type CityMonetization = z.infer<typeof cityMonetizationSchema>;
+
+/** Городу — пустые переопределения: всё как в стране. */
+export function emptyCityPriceOverrides(): CityPriceOverrides {
+  return Object.fromEntries(
+    PLAN_KINDS.map((kind) => [kind, Object.fromEntries(PLAN_TERMS.map((term) => [term, null]))]),
+  ) as CityPriceOverrides;
+}
+
+/** Сетка города поверх сетки страны: заданная ячейка сильнее, пустая — как в стране. */
+export function overlayPrices(country: PriceGrid, city: CityPriceOverrides | undefined): PriceGrid {
+  const result = JSON.parse(JSON.stringify(country)) as PriceGrid;
+  if (!city) return result;
+  for (const kind of PLAN_KINDS) {
+    for (const term of PLAN_TERMS) {
+      const own = city[kind]?.[term];
+      if (own != null) result[kind][term] = own;
+    }
+  }
+  return result;
+}
+
+/** Общие настройки для админки: с начислениями по ступеням. */
+export function toAdminGlobalBilling(config: GlobalBillingConfig): AdminGlobalBilling {
+  return {
+    ...config,
+    topupTiers: config.topupTiers.map((tier) => ({
+      ...tier,
+      grantedGc: grantedGc(tier.eur, tier.bonusPercent, config.gcPerEur),
+    })),
+  };
+}
+
 /** Прайс, каким его видят кабинет и витрина: конфигурация плюс начисления. */
 export const priceBookSchema = billingConfigInputSchema.extend({
   topupTiers: z.array(topupTierSchema),
@@ -362,7 +455,7 @@ export type TopPlacement = z.infer<typeof topPlacementSchema>;
 
 /**
  * ТОП считается по городу анкеты: у каждого города свои цена и число мест
- * (`CityTopSetting`, по умолчанию — общие из настроек монетизации). Кабинету
+ * (`CityTopSetting`, по умолчанию — значения страны). Кабинету
  * нужны условия по каждому городу, где у рекламодателя есть анкеты, и его
  * места в ТОПе.
  */
@@ -661,34 +754,3 @@ export const overviewSchema = z.object({
   total: z.number().int().nonnegative(),
 });
 export type Overview = z.infer<typeof overviewSchema>;
-
-/* --- ТОП по городам: настройки для админа ------------------------------------- */
-
-export const cityTopRowSchema = z.object({
-  cityId: z.string(),
-  slug: z.string(),
-  name: z.string(),
-  countryCode: z.string(),
-  /** Действующие значения: своё, если задано, иначе общие по умолчанию. */
-  weekGc: z.number().int().positive(),
-  slots: z.number().int().positive(),
-  /** Своё значение города; `null` — действует значение по умолчанию. */
-  weekGcOverride: z.number().int().positive().nullable(),
-  slotsOverride: z.number().int().positive().nullable(),
-  /** Сколько мест занято прямо сейчас. */
-  taken: z.number().int().nonnegative(),
-});
-export type CityTopRow = z.infer<typeof cityTopRowSchema>;
-
-export const cityTopListSchema = z.object({
-  defaults: z.object({ weekGc: z.number().int().positive(), slots: z.number().int().positive() }),
-  cities: z.array(cityTopRowSchema),
-});
-export type CityTopList = z.infer<typeof cityTopListSchema>;
-
-/** Оба поля пустые — вернуть городу значения по умолчанию. */
-export const cityTopInputSchema = z.object({
-  weekGc: gcPriceSchema.nullable(),
-  slots: z.number().int().min(1).max(200).nullable(),
-});
-export type CityTopInput = z.infer<typeof cityTopInputSchema>;

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/design-system/components/Button';
 import styles from '../Account.module.css';
 
-/** Цены в форме — в евро, в контракте — в центах. Конвертируем на границе. */
+/** Цены в форме — в валюте страны, в контракте — в минорных единицах. Конвертируем на границе. */
 const toEuro = (cents: number | null) => (cents === null ? '' : String(cents / 100));
 const toCents = (euro: string) => {
   const value = Number(euro.replace(',', '.'));
@@ -17,11 +17,13 @@ const MAX_PRICE_ROWS = 8;
 type Props = {
   prices: PriceSlotInput[];
   onChange: (next: PriceSlotInput[]) => void;
+  /** Валюта страны анкеты; у компании без города — евро. */
+  currency?: string;
 };
 
 /** Строки прайса: длительность, цена у себя и на выезде. Общий у анкеты и
  *  у компании — прайс агентства копируется в новые анкеты, форма одна. */
-export function PriceSlotsEditor({ prices, onChange }: Props) {
+export function PriceSlotsEditor({ prices, onChange, currency = 'EUR' }: Props) {
   const t = useTranslations('account');
 
   const update = (index: number, patch: Partial<PriceSlotInput>) =>
@@ -44,7 +46,9 @@ export function PriceSlotsEditor({ prices, onChange }: Props) {
             />
           </div>
           <div className={styles.field}>
-            <span className={styles.label}>{t('incall')}</span>
+            <span className={styles.label}>
+              {t('incall')}, {currency}
+            </span>
             <input
               className={styles.input}
               inputMode="decimal"
@@ -53,7 +57,9 @@ export function PriceSlotsEditor({ prices, onChange }: Props) {
             />
           </div>
           <div className={styles.field}>
-            <span className={styles.label}>{t('outcall')}</span>
+            <span className={styles.label}>
+              {t('outcall')}, {currency}
+            </span>
             <input
               className={styles.input}
               inputMode="decimal"

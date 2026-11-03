@@ -13,12 +13,13 @@ import {
   type ServiceGroup,
   SPOKEN_LANGUAGES,
 } from '@noova/shared';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { track } from '@/modules/analytics/tracker';
 import { clearFilters, setValue, toggleValue } from '@/modules/filters/params';
 import { Overlay } from '@/overlays/Overlay';
+import { currencySymbol, minorFactor } from '@/shared/format';
 import { useRouter } from '@/shared/i18n/navigation';
 import { ChipGroup } from '../ChipGroup';
 import styles from '../FilterPanel.module.css';
@@ -33,6 +34,8 @@ type Props = {
    * выбирать город из списка одного смысла не имеет.
    */
   countryCities?: CityOption[];
+  /** ISO 4217 страны выдачи: цены анкет лежат в ней, и сравнивать их можно только внутри страны. */
+  currency?: string;
   initial: string;
   onClose: () => void;
   /**
@@ -58,6 +61,7 @@ export function FilterPanel({
   kind,
   catalog,
   countryCities = [],
+  currency = 'EUR',
   initial,
   onClose,
   targetPath,
@@ -73,6 +77,9 @@ export function FilterPanel({
   const tLang = useTranslations('languageNames');
 
   const router = useRouter();
+  const locale = useLocale();
+  const factor = minorFactor(currency);
+  const symbol = currencySymbol(currency, locale);
   const [params, setParams] = useState(() => new URLSearchParams(initial));
 
   const apply = () => {
@@ -178,39 +185,43 @@ export function FilterPanel({
               <span className={styles.groupTitle}>{t('price')}</span>
               <div className={styles.range}>
                 <div className={styles.field}>
-                  <span className={styles.label}>{t('priceFrom')}</span>
+                  <span className={styles.label}>{t('priceFrom', { currency: symbol })}</span>
                   <input
                     className={styles.input}
                     type="number"
                     inputMode="numeric"
                     defaultValue={
                       params.get('minPriceCents')
-                        ? String(Number(params.get('minPriceCents')) / 100)
+                        ? String(Number(params.get('minPriceCents')) / factor)
                         : ''
                     }
                     onBlur={(event) =>
                       set(
                         'minPriceCents',
-                        event.target.value ? String(Number(event.target.value) * 100) : '',
+                        event.target.value
+                          ? String(Math.round(Number(event.target.value) * factor))
+                          : '',
                       )
                     }
                   />
                 </div>
                 <div className={styles.field}>
-                  <span className={styles.label}>{t('priceTo')}</span>
+                  <span className={styles.label}>{t('priceTo', { currency: symbol })}</span>
                   <input
                     className={styles.input}
                     type="number"
                     inputMode="numeric"
                     defaultValue={
                       params.get('maxPriceCents')
-                        ? String(Number(params.get('maxPriceCents')) / 100)
+                        ? String(Number(params.get('maxPriceCents')) / factor)
                         : ''
                     }
                     onBlur={(event) =>
                       set(
                         'maxPriceCents',
-                        event.target.value ? String(Number(event.target.value) * 100) : '',
+                        event.target.value
+                          ? String(Math.round(Number(event.target.value) * factor))
+                          : '',
                       )
                     }
                   />

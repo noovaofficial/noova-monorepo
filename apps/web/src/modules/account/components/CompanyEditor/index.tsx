@@ -4,6 +4,7 @@ import type {
   Company,
   CompanyInput,
   ContactInput,
+  Locale,
   PaymentMethod,
   PriceSlotInput,
 } from '@noova/shared';
@@ -15,6 +16,7 @@ import { Button } from '@/design-system/components/Button';
 import {
   AccountError,
   deleteCompanyLogo,
+  fetchCountries,
   fetchOwnCompany,
   saveOwnCompany,
   syncCompanyToProfiles,
@@ -95,7 +97,7 @@ export function CompanyEditor() {
   const tAccount = useTranslations('account');
   const tLang = useTranslations('languageNames');
   const tf = useTranslations('filters');
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const { user, status } = useSession();
   const queryClient = useQueryClient();
 
@@ -109,6 +111,7 @@ export function CompanyEditor() {
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
+  const [countryCode, setCountryCode] = useState('');
   const [description, setDescription] = useState('');
   const [website, setWebsite] = useState('');
   const [languages, setLanguages] = useState<string[]>([]);
@@ -126,12 +129,22 @@ export function CompanyEditor() {
     profileCount: number;
   } | null>(null);
 
+  const countries = useQuery({
+    queryKey: queryKeys.countries(locale),
+    queryFn: () => fetchCountries(locale),
+    enabled: allowed,
+  });
+  // Страна задаётся при создании и дальше не меняется: от неё зависят тарифы
+  // и цена ТОПа. У существующей компании показываем её, не давая менять.
+  const countryLocked = Boolean(query.data?.countryCode);
+
   // Данные приходят запросом: до его завершения полей нет, и без синхронизации
   // форма осталась бы пустой поверх уже заведённой компании.
   useEffect(() => {
     const company = query.data;
     if (!company) return;
     setSlug(company.slug);
+    setCountryCode(company.countryCode ?? '');
     setName(company.name);
     setDescription(company.description ?? '');
     setWebsite(company.website ?? '');
@@ -146,6 +159,7 @@ export function CompanyEditor() {
       const input: CompanyInput = companyInputSchema.parse({
         slug,
         kind: 'agency',
+        countryCode: countryLocked ? undefined : countryCode || undefined,
         name,
         description: description.trim() || undefined,
         website: website.trim() || undefined,
@@ -327,6 +341,28 @@ export function CompanyEditor() {
                 maxLength={120}
               />
               <span className={styles.hint}>{t('nameHint')}</span>
+            </div>
+
+            <div className={styles.field}>
+              <label className={styles.label} htmlFor="company-country">
+                {t('country')}
+              </label>
+              <select
+                className={styles.input}
+                id="company-country"
+                value={
+                  countryCode || (countries.data ?? []).find((item) => item.isDefault)?.code || ''
+                }
+                disabled={countryLocked}
+                onChange={(event) => setCountryCode(event.target.value)}
+              >
+                {(countries.data ?? []).map((item) => (
+                  <option key={item.code} value={item.code}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <span className={styles.hint}>{t('countryHint')}</span>
             </div>
 
             <div className={styles.field}>

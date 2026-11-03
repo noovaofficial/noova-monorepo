@@ -1,16 +1,11 @@
 'use client';
 
 import {
-  type AdminBillingConfig,
-  type AdminPriceBook,
-  adminBillingConfigSchema,
+  type AdminGlobalBilling,
+  type GlobalBillingConfig,
   gcToEur,
+  globalBillingConfigSchema,
   grantedGc,
-  PLAN_KINDS,
-  PLAN_TERMS,
-  type PlanKind,
-  type PlanTerm,
-  TERM_MONTHS,
 } from '@noova/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
@@ -18,30 +13,9 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { BillingError, fetchBillingConfig, saveBillingConfig } from '@/modules/billing/api';
-import { Link, useRouter } from '@/shared/i18n/navigation';
+import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './MonetizationSettings.module.css';
-
-/** Агентство здесь не редактируется: цена зависит от тарифа, назначенного
- *  компании (payments.md §3.3, D-13, заменяет плоский D-07) — правится на
- *  отдельной странице. Строка в этой сетке была бы декоративной и вводила
- *  бы в заблуждение, будто одно число касается всех агентств сразу. */
-const EDITABLE_PLAN_KINDS = PLAN_KINDS.filter((kind) => kind !== 'agency');
-
-const TERM_LABEL: Record<PlanTerm, 'term1' | 'term6' | 'term12'> = {
-  m1: 'term1',
-  m6: 'term6',
-  m12: 'term12',
-};
-
-const KIND_LABEL: Record<
-  PlanKind,
-  'advertiserIndividual' | 'advertiserSalon' | 'advertiserAgency'
-> = {
-  individual: 'advertiserIndividual',
-  salon: 'advertiserSalon',
-  agency: 'advertiserAgency',
-};
 
 /** Поля держим строками: очищенный инпут — это пустая строка, а не ноль,
  *  и подставлять в него ноль на каждом стирании символа невозможно. */
@@ -50,61 +24,41 @@ const num = (value: string): number => Number(value.replace(',', '.')) || 0;
 type FormState = {
   rate: string;
   tiers: { eur: string; bonus: string }[];
-  prices: Record<PlanKind, Record<PlanTerm, string>>;
   /** Устаревшее поле (D-07 заменён сеткой тарифов агентств — см. страницу
    *  «Тарифы агентств», D-13). Здесь только для round-trip: схема сервера
    *  всё ещё требует его как аварийный fallback, но в форме его не видно. */
   agencyLimit: string;
-  topWeek: string;
-  topSlots: string;
   topShown: string;
-  agencyTopWeek: string;
-  agencyTopSlots: string;
   moderatorAdjustLimit: string;
 };
 
-function fromBook(book: AdminPriceBook): FormState {
+function fromBook(book: AdminGlobalBilling): FormState {
   return {
     rate: String(book.gcPerEur),
     tiers: book.topupTiers.map((tier) => ({
       eur: String(tier.eur),
       bonus: String(tier.bonusPercent),
     })),
-    prices: Object.fromEntries(
-      PLAN_KINDS.map((kind) => [
-        kind,
-        Object.fromEntries(PLAN_TERMS.map((term) => [term, String(book.prices[kind][term])])),
-      ]),
-    ) as FormState['prices'],
     agencyLimit: String(book.agencyProfileLimit),
-    topWeek: String(book.top.weekGc),
-    topSlots: String(book.top.slots),
-    topShown: String(book.top.shown),
-    agencyTopWeek: String(book.agencyTop.weekGc),
-    agencyTopSlots: String(book.agencyTop.slots),
+    topShown: String(book.topShown),
     moderatorAdjustLimit: String(book.moderatorAdjustLimitGc),
   };
 }
 
-function toInput(form: FormState): AdminBillingConfig {
+function toInput(form: FormState): GlobalBillingConfig {
   return {
     gcPerEur: num(form.rate),
     topupTiers: form.tiers.map((tier) => ({ eur: num(tier.eur), bonusPercent: num(tier.bonus) })),
-    prices: Object.fromEntries(
-      PLAN_KINDS.map((kind) => [
-        kind,
-        Object.fromEntries(PLAN_TERMS.map((term) => [term, num(form.prices[kind][term])])),
-      ]),
-    ) as AdminBillingConfig['prices'],
     agencyProfileLimit: num(form.agencyLimit),
-    top: { weekGc: num(form.topWeek), slots: num(form.topSlots), shown: num(form.topShown) },
-    agencyTop: { weekGc: num(form.agencyTopWeek), slots: num(form.agencyTopSlots) },
+    topShown: num(form.topShown),
     moderatorAdjustLimitGc: num(form.moderatorAdjustLimit),
   };
 }
 
 /**
- * Настройки монетизации: курс, бонусная лестница и прайс размещения.
+ * Общие настройки монетизации: курс, бонусная лестница и права сотрудников.
+ * Цены размещения, ТОП и тарифы агентств заданы в стране и городе
+ * (раздел «Локации»).
  *
  * По payments.md §5 это конфигурация (`PriceBook`, `TopupTier`), а не
  * константы в коде: курс, пороги и бонусы должны меняться без деплоя —
@@ -145,11 +99,8 @@ export function MonetizationSettings() {
   return <MonetizationForm key={config.dataUpdatedAt} initial={config.data} />;
 }
 
-function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
+function MonetizationForm({ initial }: { initial: AdminGlobalBilling }) {
   const t = useTranslations('billing');
-  // Типы размещения подписаны так же, как при регистрации и в настройках:
-  // это один и тот же выбор, и синонимы читались бы как разные тарифы.
-  const ta = useTranslations('auth');
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState<FormState>(() => fromBook(initial));
@@ -166,22 +117,6 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
 
   const gcPerEur = num(form.rate);
 
-  /** €-цена месяца для срока: цена в GC → евро по курсу → делим на месяцы. */
-  const monthlyEur = (gc: string, term: PlanTerm): string => {
-    if (gcPerEur <= 0) return '—';
-    return t('perMonthShort', { amount: num(gc) / gcPerEur / TERM_MONTHS[term] });
-  };
-
-  /** €-эквивалент недели по курсу — чтобы цена ТОПа читалась рядом с тарифами. */
-  const monthlyEurFlat = (gc: string): string =>
-    gcPerEur <= 0 ? '—' : t('eurShort', { amount: num(gc) / gcPerEur });
-
-  const setPrice = (kind: PlanKind, term: PlanTerm, value: string) =>
-    setForm((prev) => ({
-      ...prev,
-      prices: { ...prev.prices, [kind]: { ...prev.prices[kind], [term]: value } },
-    }));
-
   const setTier = (index: number, field: 'eur' | 'bonus', value: string) =>
     setForm((prev) => ({
       ...prev,
@@ -192,7 +127,7 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
     event.preventDefault();
     // Проверяем той же схемой, что и сервер: ошибка называется до запроса,
     // а не приходит обратно безликим 400.
-    const parsed = adminBillingConfigSchema.safeParse(toInput(form));
+    const parsed = globalBillingConfigSchema.safeParse(toInput(form));
     setInvalid(!parsed.success);
     if (parsed.success) save.mutate(parsed.data);
   }
@@ -300,42 +235,6 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
         </div>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('pricesSection')}</h2>
-        <p className={styles.hint}>
-          {t('pricesHint')} {t('agencyPricesMoved')}{' '}
-          <Link href="/admin/agency-tariffs">{t('agencyPricesMovedLink')}</Link>.
-        </p>
-
-        <div className={`${styles.grid} ${styles.prices}`}>
-          <div className={styles.gridHead}>{t('colKind')}</div>
-          {PLAN_TERMS.map((term) => (
-            <div className={styles.gridHead} key={term}>
-              {t(TERM_LABEL[term])}
-            </div>
-          ))}
-
-          {EDITABLE_PLAN_KINDS.map((kind) => (
-            <div className={styles.rowGroup} key={kind}>
-              <div className={styles.kind}>{ta(KIND_LABEL[kind])}</div>
-              {PLAN_TERMS.map((term) => (
-                <div className={styles.field} key={term}>
-                  <span className={styles.cellLabel}>{t(TERM_LABEL[term])}</span>
-                  <input
-                    className={styles.input}
-                    inputMode="numeric"
-                    aria-label={`${ta(KIND_LABEL[kind])} — ${t(TERM_LABEL[term])}`}
-                    value={form.prices[kind][term]}
-                    onChange={(event) => setPrice(kind, term, event.target.value)}
-                  />
-                  <span className={styles.sub}>{monthlyEur(form.prices[kind][term], term)}</span>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Права сотрудников — не тариф, поэтому отдельным разделом, а не
           строкой среди цен: правят его по другому поводу и заметно реже. */}
       <section className={styles.section}>
@@ -364,86 +263,19 @@ function MonetizationForm({ initial }: { initial: AdminPriceBook }) {
       </section>
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('topSection')}</h2>
-        <p className={styles.hint}>{t('topHint')}</p>
+        <p className={styles.hint}>{t('topShownHint')}</p>
 
-        <div className={styles.currencyRow}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="top-week">
-              {t('topWeekLabel')}
-            </label>
-            <input
-              className={styles.input}
-              id="top-week"
-              inputMode="numeric"
-              value={form.topWeek}
-              onChange={(event) => setForm((prev) => ({ ...prev, topWeek: event.target.value }))}
-            />
-            <span className={styles.sub}>{monthlyEurFlat(form.topWeek)}</span>
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="top-slots">
-              {t('topSlotsLabel')}
-            </label>
-            <input
-              className={styles.input}
-              id="top-slots"
-              inputMode="numeric"
-              value={form.topSlots}
-              onChange={(event) => setForm((prev) => ({ ...prev, topSlots: event.target.value }))}
-            />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="top-shown">
-              {t('topShownLabel')}
-            </label>
-            <input
-              className={styles.input}
-              id="top-shown"
-              inputMode="numeric"
-              value={form.topShown}
-              onChange={(event) => setForm((prev) => ({ ...prev, topShown: event.target.value }))}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Отдельный пул от ТОПа анкет (payments.md §3.5, D-14): своя цена и
-          лимит мест. «Показывать на главной» здесь нет — в ряду «Агентства»
-          это зафиксированные 4 карточки, продуктовое решение, не в админке. */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t('agencyTopSection')}</h2>
-        <p className={styles.hint}>{t('agencyTopHint')}</p>
-
-        <div className={styles.currencyRow}>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="agency-top-week">
-              {t('topWeekLabel')}
-            </label>
-            <input
-              className={styles.input}
-              id="agency-top-week"
-              inputMode="numeric"
-              value={form.agencyTopWeek}
-              onChange={(event) =>
-                setForm((prev) => ({ ...prev, agencyTopWeek: event.target.value }))
-              }
-            />
-            <span className={styles.sub}>{monthlyEurFlat(form.agencyTopWeek)}</span>
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="agency-top-slots">
-              {t('topSlotsLabel')}
-            </label>
-            <input
-              className={styles.input}
-              id="agency-top-slots"
-              inputMode="numeric"
-              value={form.agencyTopSlots}
-              onChange={(event) =>
-                setForm((prev) => ({ ...prev, agencyTopSlots: event.target.value }))
-              }
-            />
-          </div>
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="top-shown">
+            {t('topShownLabel')}
+          </label>
+          <input
+            className={`${styles.input} ${styles.narrow}`}
+            id="top-shown"
+            inputMode="numeric"
+            value={form.topShown}
+            onChange={(event) => setForm((prev) => ({ ...prev, topShown: event.target.value }))}
+          />
         </div>
       </section>
     </form>

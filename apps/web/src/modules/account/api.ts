@@ -7,10 +7,12 @@ import {
   type Company,
   type CompanyInput,
   type CompanySyncInput,
+  type CountryOption,
   type CreateProfileInput,
   cityOptionSchema,
   companySchema,
   companySyncResultSchema,
+  countryOptionSchema,
   type Locale,
   type OwnPhoto,
   type OwnProfile,
@@ -39,6 +41,8 @@ export class AccountError extends Error {
      * ошибку в часах работы показывала как ошибку в контактах.
      */
     readonly issues: ValidationIssue[] = [],
+    /** Код причины от сервера — по нему интерфейс подбирает перевод. */
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'AccountError';
@@ -67,7 +71,12 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
   if (!response.ok) {
     const body = await response.json().catch(() => null);
     const issues = Array.isArray(body?.issues) ? (body.issues as ValidationIssue[]) : [];
-    throw new AccountError(String(body?.message ?? ''), response.status, issues);
+    throw new AccountError(
+      String(body?.message ?? ''),
+      response.status,
+      issues,
+      typeof body?.code === 'string' ? body.code : undefined,
+    );
   }
 
   // 204 приходит без тела: `response.json()` на нём падает разбором.
@@ -83,6 +92,11 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
  */
 export function fetchCities(locale: Locale): Promise<CityOption[]> {
   return call(`/cities?locale=${locale}`, z.array(cityOptionSchema));
+}
+
+/** Активные страны на языке запроса — для выбора страны компании. */
+export function fetchCountries(locale: Locale): Promise<CountryOption[]> {
+  return call(`/countries?locale=${locale}`, z.array(countryOptionSchema));
 }
 
 export function fetchServiceCatalog(

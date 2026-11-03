@@ -13,7 +13,12 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
-import { activateListing, fetchListing, fetchPriceBook, fetchWallet } from '@/modules/billing/api';
+import {
+  activateListing,
+  fetchListing,
+  fetchMyPriceBook,
+  fetchWallet,
+} from '@/modules/billing/api';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './SubscriptionPanel.module.css';
@@ -64,7 +69,7 @@ export function SubscriptionPanel() {
   });
   const book = useQuery({
     queryKey: queryKeys.priceBook(),
-    queryFn: fetchPriceBook,
+    queryFn: fetchMyPriceBook,
     enabled: isAdvertiser,
     staleTime: 60 * 1000,
   });

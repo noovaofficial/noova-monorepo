@@ -331,6 +331,53 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
+export type EnumAdvertiserKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
+  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel> | $Enums.AdvertiserKind
+}
+
+export type BoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type EnumAdvertiserKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
+  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel> | $Enums.AdvertiserKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
+}
+
+export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+}
+
+export type EnumPlanTermFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlanTermFilter<$PrismaModel> | $Enums.PlanTerm
+}
+
+export type EnumPlanTermWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlanTermWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
+}
+
 export type EnumListingKindFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingKind | Prisma.EnumListingKindFieldRefInput<$PrismaModel>
   in?: $Enums.ListingKind[] | Prisma.ListEnumListingKindFieldRefInput<$PrismaModel>
@@ -392,11 +439,6 @@ export type EnumPubicHairNullableFilter<$PrismaModel = never> = {
   in?: $Enums.PubicHair[] | Prisma.ListEnumPubicHairFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.PubicHair[] | Prisma.ListEnumPubicHairFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel> | $Enums.PubicHair | null
-}
-
-export type BoolNullableFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
 }
 
 export type EnumAppearanceTypeNullableFilter<$PrismaModel = never> = {
@@ -494,14 +536,6 @@ export type EnumPubicHairNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel>
-}
-
-export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
 export type EnumAppearanceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -709,40 +743,6 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
-}
-
-export type EnumAdvertiserKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
-  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel> | $Enums.AdvertiserKind
-}
-
-export type EnumPlanTermFilter<$PrismaModel = never> = {
-  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
-  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPlanTermFilter<$PrismaModel> | $Enums.PlanTerm
-}
-
-export type EnumAdvertiserKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
-  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel> | $Enums.AdvertiserKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
-}
-
-export type EnumPlanTermWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
-  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPlanTermWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
 }
 
 export type EnumBillingTransactionKindFilter<$PrismaModel = never> = {
@@ -1183,6 +1183,53 @@ export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
+export type NestedEnumAdvertiserKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
+  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel> | $Enums.AdvertiserKind
+}
+
+export type NestedBoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
+  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel> | $Enums.AdvertiserKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
+}
+
+export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumPlanTermFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlanTermFilter<$PrismaModel> | $Enums.PlanTerm
+}
+
+export type NestedEnumPlanTermWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
+  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlanTermWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
+}
+
 export type NestedEnumListingKindFilter<$PrismaModel = never> = {
   equals?: $Enums.ListingKind | Prisma.EnumListingKindFieldRefInput<$PrismaModel>
   in?: $Enums.ListingKind[] | Prisma.ListEnumListingKindFieldRefInput<$PrismaModel>
@@ -1244,11 +1291,6 @@ export type NestedEnumPubicHairNullableFilter<$PrismaModel = never> = {
   in?: $Enums.PubicHair[] | Prisma.ListEnumPubicHairFieldRefInput<$PrismaModel> | null
   notIn?: $Enums.PubicHair[] | Prisma.ListEnumPubicHairFieldRefInput<$PrismaModel> | null
   not?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel> | $Enums.PubicHair | null
-}
-
-export type NestedBoolNullableFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
 }
 
 export type NestedEnumAppearanceTypeNullableFilter<$PrismaModel = never> = {
@@ -1346,14 +1388,6 @@ export type NestedEnumPubicHairNullableWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPubicHairNullableFilter<$PrismaModel>
-}
-
-export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumAppearanceTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -1523,40 +1557,6 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
-}
-
-export type NestedEnumAdvertiserKindFilter<$PrismaModel = never> = {
-  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
-  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel> | $Enums.AdvertiserKind
-}
-
-export type NestedEnumPlanTermFilter<$PrismaModel = never> = {
-  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
-  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPlanTermFilter<$PrismaModel> | $Enums.PlanTerm
-}
-
-export type NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.AdvertiserKind | Prisma.EnumAdvertiserKindFieldRefInput<$PrismaModel>
-  in?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  notIn?: $Enums.AdvertiserKind[] | Prisma.ListEnumAdvertiserKindFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumAdvertiserKindWithAggregatesFilter<$PrismaModel> | $Enums.AdvertiserKind
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumAdvertiserKindFilter<$PrismaModel>
-}
-
-export type NestedEnumPlanTermWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PlanTerm | Prisma.EnumPlanTermFieldRefInput<$PrismaModel>
-  in?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PlanTerm[] | Prisma.ListEnumPlanTermFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPlanTermWithAggregatesFilter<$PrismaModel> | $Enums.PlanTerm
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPlanTermFilter<$PrismaModel>
 }
 
 export type NestedEnumBillingTransactionKindFilter<$PrismaModel = never> = {
