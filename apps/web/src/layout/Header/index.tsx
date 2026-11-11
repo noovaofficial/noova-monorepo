@@ -3,8 +3,8 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 import { Logo } from '@/design-system/components/Logo';
 import { CityLink } from '@/modules/locations/components/CityLink';
-import { CitySwitcher } from '@/modules/locations/components/CitySwitcher';
-import { CountrySwitcher } from '@/modules/locations/components/CountrySwitcher';
+import { LocationHint } from '@/modules/locations/components/LocationHint';
+import { LocationSwitcher } from '@/modules/locations/components/LocationSwitcher';
 import { fetchCities, fetchCountries, fetchServiceCatalogPublic, safely } from '@/shared/api';
 import { Link } from '@/shared/i18n/navigation';
 import styles from '../Header.module.css';
@@ -43,24 +43,24 @@ export async function Header() {
   const countryCodes = countries.map((country) => country.code.toLowerCase());
 
   return (
-    <header className={styles.header}>
-      <a href="#main" className={styles.skip}>
-        {t('skipToContent')}
-      </a>
-      <div className="container">
-        <div className={`${styles.row} ${styles.row1}`}>
-          <Link href="/" className={styles.logo}>
-            <Logo />
-          </Link>
-          <div className={styles.actions}>
-            <CountrySwitcher cities={cities} countries={countries} />
-            <CitySwitcher cities={cities} countries={countries} />
-            <HeaderActions />
+    <>
+      <header className={styles.header}>
+        <a href="#main" className={styles.skip}>
+          {t('skipToContent')}
+        </a>
+        <div className="container">
+          <div className={`${styles.row} ${styles.row1}`}>
+            <Link href="/" className={styles.logo}>
+              <Logo />
+            </Link>
+            <div className={styles.actions}>
+              <LocationSwitcher cities={cities} countries={countries} />
+              <HeaderActions />
+            </div>
           </div>
-        </div>
 
-        <div className={`${styles.row} ${styles.row2}`}>
-          {/* Персонал и рекламодатель сюда не попадают вовсе — у них свой
+          <div className={`${styles.row} ${styles.row2}`}>
+            {/* Персонал и рекламодатель сюда не попадают вовсе — у них свой
               сайдбар (см. AppShell, SidebarLayout). Здесь остались только
               гость и клиент, которым нужны фильтры каталога.
 
@@ -70,54 +70,56 @@ export async function Header() {
               иначе ссылки на карту нет в серверной разметке и она
               появляется рывком после гидрации. Здесь она без текущих
               фильтров — клиентская версия заменит её на ту, что их несёт. */}
-          <Suspense
-            fallback={
-              <>
-                <span className={styles.filterBtn}>
-                  <FilterIcon />
-                  <span className={styles.btnLabel}>{t('filters')}</span>
-                </span>
+            <Suspense
+              fallback={
+                <>
+                  <span className={styles.filterBtn}>
+                    <FilterIcon />
+                    <span className={styles.btnLabel}>{t('filters')}</span>
+                  </span>
+                  <CityLink
+                    className={styles.filterBtn}
+                    href="/catalog/escort/map"
+                    citySlugs={citySlugs}
+                    countryCodes={countryCodes}
+                  >
+                    <MapIcon />
+                    <span className={styles.btnLabel}>{t('mapView')}</span>
+                    <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
+                  </CityLink>
+                </>
+              }
+            >
+              <HeaderFilters catalog={catalog} cities={cities} countries={countries} />
+            </Suspense>
+
+            {/* Второй класс — только ради телефона: на широком экране полоса
+              фильтров и так помещается вместе с быстрыми срезами. */}
+            <div className={`${styles.quickFilters} ${styles.quickChips}`}>
+              {QUICK_FILTERS.map((item) => (
                 <CityLink
-                  className={styles.filterBtn}
-                  href="/catalog/escort/map"
+                  key={item.key}
+                  href={item.href}
                   citySlugs={citySlugs}
                   countryCodes={countryCodes}
+                  className={styles.chip}
                 >
-                  <MapIcon />
-                  <span className={styles.btnLabel}>{t('mapView')}</span>
-                  <span className={styles.btnLabelSm}>{t('mapViewShort')}</span>
+                  {tf(item.key)}
                 </CityLink>
-              </>
-            }
-          >
-            <HeaderFilters catalog={catalog} cities={cities} countries={countries} />
-          </Suspense>
+              ))}
+            </div>
 
-          {/* Второй класс — только ради телефона: на широком экране полоса
-              фильтров и так помещается вместе с быстрыми срезами. */}
-          <div className={`${styles.quickFilters} ${styles.quickChips}`}>
-            {QUICK_FILTERS.map((item) => (
-              <CityLink
-                key={item.key}
-                href={item.href}
-                citySlugs={citySlugs}
-                countryCodes={countryCodes}
-                className={styles.chip}
-              >
-                {tf(item.key)}
-              </CityLink>
-            ))}
-          </div>
-
-          {/* Язык и тема прижаты вправо. На широком экране их отодвигала
+            {/* Язык и тема прижаты вправо. На широком экране их отодвигала
               растянутая полоса чипов, но на телефоне она скрыта, и без
               своего отступа переключатели липли к кнопке карты. */}
-          <div className={styles.rowEnd}>
-            <LocaleSwitcher />
-            <ThemeToggle />
+            <div className={styles.rowEnd}>
+              <LocaleSwitcher />
+              <ThemeToggle />
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      <LocationHint cities={cities} countries={countries} />
+    </>
   );
 }

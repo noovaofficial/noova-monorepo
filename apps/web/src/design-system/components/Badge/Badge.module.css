@@ -19,6 +19,11 @@
   color: var(--featured);
 }
 
+.premium {
+  background: var(--premiumSubtle);
+  color: var(--premium);
+}
+
 .neutral {
   background: var(--surfaceMuted);
   color: var(--secondaryText);

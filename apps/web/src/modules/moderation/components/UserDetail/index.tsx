@@ -18,6 +18,7 @@ import {
   unblockUser,
   verifyUserEmail,
 } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { ActionCard } from '../ActionCard';
@@ -55,6 +56,7 @@ type TopTarget = {
  */
 export function UserDetail({ userId }: { userId: string }) {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   // Подписи типов размещения — те же, что при регистрации и в кабинете.
   const ta = useTranslations('auth');
   const format = useFormatter();
@@ -182,7 +184,8 @@ export function UserDetail({ userId }: { userId: string }) {
   }
 
   if (!isStaff) return <p className={styles.empty}>{t('onlyStaff')}</p>;
-  if (detail.isError) return <p className={styles.empty}>{t('loadFailed')}</p>;
+  if (detail.isError)
+    return <p className={styles.empty}>{explain(detail.error, t('loadFailed'))}</p>;
   if (!detail.data) return <p className={styles.empty}>{t('loading')}</p>;
 
   const data = detail.data;
@@ -377,9 +380,13 @@ export function UserDetail({ userId }: { userId: string }) {
                   </Button>
                 ) : null}
               </div>
-              {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}
+              {grantTop.isError ? (
+                <span className={styles.hint}>{explain(grantTop.error, t('topGrantFailed'))}</span>
+              ) : null}
               {revokeTop.isError ? (
-                <span className={styles.hint}>{t('topRevokeFailed')}</span>
+                <span className={styles.hint}>
+                  {explain(revokeTop.error, t('topRevokeFailed'))}
+                </span>
               ) : null}
             </ActionCard>
           ) : null}

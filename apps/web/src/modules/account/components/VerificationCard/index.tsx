@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { AccountError, fetchOwnVerification, submitVerification } from '@/modules/account/api';
+import { useErrorText } from '@/shared/error-text';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 
@@ -28,6 +29,7 @@ export function VerificationCard({
   published: boolean;
 }) {
   const t = useTranslations('account');
+  const explain = useErrorText();
   const queryClient = useQueryClient();
   const [files, setFiles] = useState<Files>({});
   const [open, setOpen] = useState(false);
@@ -88,7 +90,7 @@ export function VerificationCard({
 
       {errorKey ? (
         <p className={`${styles.notice} ${styles.noticeError}`} style={{ margin: 0 }}>
-          {t(errorKey)}
+          {errorKey === 'verifyFailed' ? explain(send.error, t(errorKey)) : t(errorKey)}
         </p>
       ) : null}
 

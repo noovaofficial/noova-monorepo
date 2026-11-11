@@ -29,6 +29,7 @@ import {
   encodeCursor,
   encodeRelevanceCursor,
   isTopSlot,
+  ORGANIC_ORDER,
   orderByFor,
 } from './query.js';
 
@@ -46,6 +47,7 @@ export const cardSelect = (locale: Locale) =>
     fromPriceCents: true,
     isVerified: true,
     isFeatured: true,
+    isPremium: true,
     lastSeenAt: true,
     publishedAt: true,
     city: {
@@ -120,7 +122,7 @@ async function relevancePage(
     }),
     prisma.profile.findMany({
       where: { ...where, isFeatured: false },
-      orderBy: subOrder,
+      orderBy: ORGANIC_ORDER,
       take,
       ...(cursorState.organicId ? { cursor: { id: cursorState.organicId }, skip: 1 } : {}),
       select,
@@ -492,6 +494,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
             orderBy: { service: { position: 'asc' } },
             select: {
               isExtra: true,
+              extraPriceCents: true,
               service: {
                 select: {
                   key: true,

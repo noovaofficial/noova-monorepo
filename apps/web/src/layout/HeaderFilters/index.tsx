@@ -4,11 +4,12 @@ import type { CityOption, CountryOption } from '@noova/shared';
 import { cityFromPath, type ServiceGroup } from '@noova/shared';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FilterIcon, MapIcon } from '@/layout/Header/icons';
 import { FilterPanel } from '@/modules/filters/components/FilterPanel';
 import { countActiveFilters } from '@/modules/filters/params';
 import { Link, usePathname } from '@/shared/i18n/navigation';
+import { LOCATION_COOKIE } from '@/shared/location-cookie';
 import styles from '../Header.module.css';
 
 /**
@@ -38,21 +39,48 @@ export function HeaderFilters({
   // N-43) или ничего из этого (анкета, кабинет и т.п.). `cityFromPath` сам
   // не отличает их друг от друга — сверяем со справочниками.
   const rawFirst = cityFromPath(pathname);
-  const matchedCity = rawFirst ? cities.find((item) => item.slug === rawFirst) : undefined;
-  const matchedCountry = matchedCity
+  const pathCity = rawFirst ? cities.find((item) => item.slug === rawFirst) : undefined;
+  const pathCountry = pathCity
     ? undefined
     : rawFirst
       ? countries.find((item) => item.code.toLowerCase() === rawFirst.toLowerCase())
       : undefined;
+  const pathLocation = pathCity?.slug ?? (pathCountry ? rawFirst : null);
+
+  // На странице анкеты, в кабинете и т.п. локации в адресе нет. Тогда берём
+  // последнюю посещённую (cookie пишет прокси) — иначе панель показала бы
+  // страну по умолчанию, хотя человек выбирал другую.
+  const [remembered, setRemembered] = useState<string | null>(null);
+  useEffect(() => {
+    if (pathLocation) return;
+    const match = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(`${LOCATION_COOKIE}=`))
+      ?.slice(LOCATION_COOKIE.length + 1);
+    setRemembered(match ? decodeURIComponent(match) : null);
+  }, [pathLocation]);
+
+  const lastCity = pathLocation ? undefined : cities.find((item) => item.slug === remembered);
+  const lastCountry =
+    pathLocation || lastCity
+      ? undefined
+      : countries.find((item) => item.code.toLowerCase() === remembered?.toLowerCase());
+
+  const matchedCity = pathCity ?? lastCity;
+  const matchedCountry = pathCountry ?? lastCountry;
 
   // Куда ведут «Карта» и «Показать» без конкретного города — на каталог/карту
-  // той же страны, если она известна из адреса, иначе на страну по умолчанию.
-  // Ни разу не нужно гадать город: у страны теперь есть свой каталог (N-43).
+  // той же страны, если она известна из адреса или из последнего визита,
+  // иначе на страну по умолчанию.
   const defaultCountry = countries.find((item) => item.isDefault) ?? countries[0];
-  const location = matchedCity?.slug ?? (matchedCountry ? rawFirst : null);
-  const targetLocation = location ?? defaultCountry?.code.toLowerCase() ?? null;
+  const targetLocation =
+    pathLocation ??
+    lastCity?.slug ??
+    (lastCountry ? lastCountry.code.toLowerCase() : null) ??
+    defaultCountry?.code.toLowerCase() ??
+    null;
 
-  const inLocation = location ? pathname.slice(location.length + 1) : pathname;
+  const inLocation = pathLocation ? pathname.slice(pathLocation.length + 1) : pathname;
   const onCatalog = inLocation.startsWith('/catalog');
   const kind = inLocation.startsWith('/catalog/massage') ? 'massage' : 'escort';
   const active = onCatalog ? countActiveFilters(new URLSearchParams(searchParams.toString())) : 0;

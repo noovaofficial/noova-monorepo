@@ -150,3 +150,23 @@ export function saveCityMonetization(
     body: JSON.stringify(input),
   });
 }
+
+// --- Снятие анкет при выключении публикации -------------------------------
+
+type PlacementScope = { countryId: string } | { cityId: string };
+
+export function fetchPublishedCount(scope: PlacementScope, kind: string): Promise<number> {
+  const params = new URLSearchParams({ ...scope, kind });
+  return call(
+    `/admin/placement-rules/published-count?${params}`,
+    z.object({ count: z.number().int().nonnegative() }),
+  ).then((result) => result.count);
+}
+
+export function pausePublished(scope: PlacementScope, kind: string): Promise<number> {
+  return call(
+    '/admin/placement-rules/pause-published',
+    z.object({ paused: z.number().int().nonnegative() }),
+    { method: 'POST', body: JSON.stringify({ ...scope, kind }) },
+  ).then((result) => result.paused);
+}

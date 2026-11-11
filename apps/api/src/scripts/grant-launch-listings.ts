@@ -33,6 +33,7 @@ const NOTE: Record<string, string> = {
   de: 'Startangebot: 12 Monate Platzierung inklusive',
   en: 'Launch offer: 12 months of listing included',
   ru: 'Стартовое предложение: 12 месяцев размещения включены',
+  pl: 'Oferta startowa: 12 miesięcy publikacji w cenie',
 };
 
 async function main() {

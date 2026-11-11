@@ -13,12 +13,14 @@ import {
   ModerationError,
   setStaffBlocked,
 } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
 
 export function StaffManager() {
   const t = useTranslations('admin');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -99,7 +101,13 @@ export function StaffManager() {
         {!showForm ? <Button onClick={() => setShowForm(true)}>{t('add')}</Button> : null}
       </div>
 
-      {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
+      {error ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {error === 'createFailed'
+            ? explain(create.error ?? block.error ?? remove.error ?? list.error, t(error))
+            : t(error)}
+        </p>
+      ) : null}
 
       {showForm ? (
         <form className={styles.form} onSubmit={onCreate}>

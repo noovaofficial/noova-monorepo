@@ -241,3 +241,44 @@
   font-size: var(--textSm);
   background: var(--surface);
 }
+
+/* Хлебные крошки над именем: страна › город › анкета. */
+.crumbs {
+  padding-top: var(--space5);
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}
+
+.crumbList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crumbList li + li::before {
+  content: '›';
+  margin-right: var(--space2);
+  color: var(--tertiaryText);
+}
+
+.crumbList a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.crumbList a:hover {
+  color: var(--primary);
+}
+
+.crumbList [aria-current='page'] {
+  color: var(--primaryText);
+}
+
+.crumbs + .header {
+  padding-top: var(--space3);
+}

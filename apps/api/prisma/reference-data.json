@@ -8,10 +8,12 @@
         "de": "Deutschland",
         "es": "Alemania",
         "fr": "Allemagne",
-        "ru": "Германия"
+        "ru": "Германия",
+        "pl": "Niemcy"
       },
       "isActive": true,
-      "isDefault": true
+      "isDefault": true,
+      "currency": "EUR"
     },
     {
       "id": "cmtabb17j000052b0xtqs4jq4",
@@ -21,9 +23,26 @@
         "de": "Niederlande",
         "es": "Países Bajos",
         "fr": "Pays-Bas",
-        "ru": "Нидерланды"
+        "ru": "Нидерланды",
+        "pl": "Holandia"
       },
-      "isActive": true
+      "isActive": true,
+      "currency": "EUR"
+    },
+    {
+      "id": "cmpl0country00000000000001",
+      "code": "PL",
+      "name": {
+        "en": "Poland",
+        "de": "Polen",
+        "es": "Polonia",
+        "fr": "Pologne",
+        "ru": "Польша",
+        "pl": "Polska"
+      },
+      "isActive": true,
+      "isDefault": false,
+      "currency": "PLN"
     }
   ],
   "cities": [
@@ -35,7 +54,8 @@
         "de": "Amsterdam",
         "es": "Ámsterdam",
         "fr": "Amsterdam",
-        "ru": "Амстердам"
+        "ru": "Амстердам",
+        "pl": "Amsterdam"
       },
       "countryCode": "NL",
       "lat": 52.37403,
@@ -50,7 +70,8 @@
             "de": "Centrum",
             "es": "Centrum",
             "fr": "Centrum",
-            "ru": "Центр"
+            "ru": "Центр",
+            "pl": "Centrum"
           },
           "lat": 52.3682393,
           "lng": 4.9006605,
@@ -64,7 +85,8 @@
             "de": "De Pijp",
             "es": "De Pijp",
             "fr": "De Pijp",
-            "ru": "Де-Пейп"
+            "ru": "Де-Пейп",
+            "pl": "De Pijp"
           },
           "lat": 52.3533455,
           "lng": 4.8969623,
@@ -78,7 +100,8 @@
             "de": "Jordaan",
             "es": "Jordaan",
             "fr": "Jordaan",
-            "ru": "Йордан"
+            "ru": "Йордан",
+            "pl": "Jordaan"
           },
           "lat": 52.3754157,
           "lng": 4.8810958,
@@ -92,7 +115,8 @@
             "de": "Noord",
             "es": "Noord",
             "fr": "Noord",
-            "ru": "Норд"
+            "ru": "Норд",
+            "pl": "Noord"
           },
           "lat": 52.402572,
           "lng": 4.935327,
@@ -106,7 +130,8 @@
             "de": "Oost",
             "es": "Oost",
             "fr": "Oost",
-            "ru": "Ост"
+            "ru": "Ост",
+            "pl": "Oost"
           },
           "lat": 52.3518137,
           "lng": 4.9305528,
@@ -120,7 +145,8 @@
             "de": "Oud-West",
             "es": "Oud-West",
             "fr": "Oud-West",
-            "ru": "Ауд-Вест"
+            "ru": "Ауд-Вест",
+            "pl": "Oud-West"
           },
           "lat": 52.3648147,
           "lng": 4.8697619,
@@ -134,7 +160,8 @@
             "de": "Zuid",
             "es": "Zuid",
             "fr": "Zuid",
-            "ru": "Зёйд"
+            "ru": "Зёйд",
+            "pl": "Zuid"
           },
           "lat": 52.3373435,
           "lng": 4.8948052,
@@ -150,7 +177,8 @@
         "de": "Berlin",
         "es": "Berlín",
         "fr": "Berlin",
-        "ru": "Берлин"
+        "ru": "Берлин",
+        "pl": "Berlin"
       },
       "countryCode": "DE",
       "lat": 52.52,
@@ -165,7 +193,8 @@
             "de": "Charlottenburg",
             "es": "Charlottenburg",
             "fr": "Charlottenburg",
-            "ru": "Шарлоттенбург"
+            "ru": "Шарлоттенбург",
+            "pl": "Charlottenburg"
           },
           "lat": 52.505,
           "lng": 13.304,
@@ -179,7 +208,8 @@
             "de": "Friedrichshain",
             "es": "Friedrichshain",
             "fr": "Friedrichshain",
-            "ru": "Фридрихсхайн"
+            "ru": "Фридрихсхайн",
+            "pl": "Friedrichshain"
           },
           "lat": 52.515,
           "lng": 13.454,
@@ -193,7 +223,8 @@
             "de": "Kreuzberg",
             "es": "Kreuzberg",
             "fr": "Kreuzberg",
-            "ru": "Кройцберг"
+            "ru": "Кройцберг",
+            "pl": "Kreuzberg"
           },
           "lat": 52.498,
           "lng": 13.403,
@@ -207,7 +238,8 @@
             "de": "Mitte",
             "es": "Mitte",
             "fr": "Mitte",
-            "ru": "Митте"
+            "ru": "Митте",
+            "pl": "Mitte"
           },
           "lat": 52.5244,
           "lng": 13.4105,
@@ -221,7 +253,8 @@
             "de": "Neukölln",
             "es": "Neukölln",
             "fr": "Neukölln",
-            "ru": "Нойкёльн"
+            "ru": "Нойкёльн",
+            "pl": "Neukölln"
           },
           "lat": 52.481,
           "lng": 13.435,
@@ -235,7 +268,8 @@
             "de": "Prenzlauer Berg",
             "es": "Prenzlauer Berg",
             "fr": "Prenzlauer Berg",
-            "ru": "Пренцлауэр-Берг"
+            "ru": "Пренцлауэр-Берг",
+            "pl": "Prenzlauer Berg"
           },
           "lat": 52.539,
           "lng": 13.424,
@@ -249,7 +283,8 @@
             "de": "Schöneberg",
             "es": "Schöneberg",
             "fr": "Schöneberg",
-            "ru": "Шёнеберг"
+            "ru": "Шёнеберг",
+            "pl": "Schöneberg"
           },
           "lat": 52.483,
           "lng": 13.355,
@@ -263,7 +298,8 @@
             "de": "Tiergarten",
             "es": "Tiergarten",
             "fr": "Tiergarten",
-            "ru": "Тиргартен"
+            "ru": "Тиргартен",
+            "pl": "Tiergarten"
           },
           "lat": 52.514,
           "lng": 13.35,
@@ -279,7 +315,8 @@
         "de": "Bremen",
         "es": "Bremen",
         "fr": "Brême",
-        "ru": "Бремен"
+        "ru": "Бремен",
+        "pl": "Brema"
       },
       "countryCode": "DE",
       "lat": 53.0793,
@@ -294,7 +331,8 @@
             "de": "Findorff",
             "es": "Findorff",
             "fr": "Findorff",
-            "ru": "Финдорф"
+            "ru": "Финдорф",
+            "pl": "Findorff"
           },
           "lat": 53.094685,
           "lng": 8.808282,
@@ -308,7 +346,8 @@
             "de": "Horn-Lehe",
             "es": "Horn-Lehe",
             "fr": "Horn-Lehe",
-            "ru": "Хорн-Лее"
+            "ru": "Хорн-Лее",
+            "pl": "Horn-Lehe"
           },
           "lat": 53.103623,
           "lng": 8.8818799,
@@ -322,7 +361,8 @@
             "de": "Mitte",
             "es": "Mitte",
             "fr": "Mitte",
-            "ru": "Митте"
+            "ru": "Митте",
+            "pl": "Mitte"
           },
           "lat": 53.0786741,
           "lng": 8.8109045,
@@ -336,7 +376,8 @@
             "de": "Neustadt",
             "es": "Neustadt",
             "fr": "Neustadt",
-            "ru": "Нойштадт"
+            "ru": "Нойштадт",
+            "pl": "Nowe Miasto"
           },
           "lat": 53.0695355,
           "lng": 8.7928381,
@@ -350,7 +391,8 @@
             "de": "Schwachhausen",
             "es": "Schwachhausen",
             "fr": "Schwachhausen",
-            "ru": "Швахгаузен"
+            "ru": "Швахгаузен",
+            "pl": "Schwachhausen"
           },
           "lat": 53.0854265,
           "lng": 8.8363055,
@@ -364,7 +406,8 @@
             "de": "Vegesack",
             "es": "Vegesack",
             "fr": "Vegesack",
-            "ru": "Фегезак"
+            "ru": "Фегезак",
+            "pl": "Vegesack"
           },
           "lat": 53.1705249,
           "lng": 8.6238803,
@@ -378,7 +421,8 @@
             "de": "Walle",
             "es": "Walle",
             "fr": "Walle",
-            "ru": "Валле"
+            "ru": "Валле",
+            "pl": "Walle"
           },
           "lat": 53.1028746,
           "lng": 8.783049,
@@ -394,7 +438,8 @@
         "de": "Den Haag",
         "es": "La Haya",
         "fr": "La Haye",
-        "ru": "Гаага"
+        "ru": "Гаага",
+        "pl": "Haga"
       },
       "countryCode": "NL",
       "lat": 52.0705,
@@ -409,7 +454,8 @@
             "de": "Centrum",
             "es": "Centrum",
             "fr": "Centrum",
-            "ru": "Центр"
+            "ru": "Центр",
+            "pl": "Centrum"
           },
           "lat": 52.0775985,
           "lng": 4.3151231,
@@ -423,7 +469,8 @@
             "de": "Escamp",
             "es": "Escamp",
             "fr": "Escamp",
-            "ru": "Эскамп"
+            "ru": "Эскамп",
+            "pl": "Escamp"
           },
           "lat": 52.0442339,
           "lng": 4.2812835,
@@ -437,7 +484,8 @@
             "de": "Haagse Hout",
             "es": "Haagse Hout",
             "fr": "Haagse Hout",
-            "ru": "Хагсе-Хаут"
+            "ru": "Хагсе-Хаут",
+            "pl": "Haagse Hout"
           },
           "lat": 52.0922914,
           "lng": 4.3304322,
@@ -451,7 +499,8 @@
             "de": "Laak",
             "es": "Laak",
             "fr": "Laak",
-            "ru": "Лаак"
+            "ru": "Лаак",
+            "pl": "Laak"
           },
           "lat": 52.0631617,
           "lng": 4.32146,
@@ -465,7 +514,8 @@
             "de": "Loosduinen",
             "es": "Loosduinen",
             "fr": "Loosduinen",
-            "ru": "Лосдёйнен"
+            "ru": "Лосдёйнен",
+            "pl": "Loosduinen"
           },
           "lat": 52.0531565,
           "lng": 4.2348285,
@@ -479,7 +529,8 @@
             "de": "Scheveningen",
             "es": "Scheveningen",
             "fr": "Scheveningen",
-            "ru": "Схевенинген"
+            "ru": "Схевенинген",
+            "pl": "Scheveningen"
           },
           "lat": 52.1067449,
           "lng": 4.2736937,
@@ -493,7 +544,8 @@
             "de": "Segbroek",
             "es": "Segbroek",
             "fr": "Segbroek",
-            "ru": "Сегбрук"
+            "ru": "Сегбрук",
+            "pl": "Segbroek"
           },
           "lat": 52.0770088,
           "lng": 4.2674089,
@@ -509,7 +561,8 @@
         "de": "Dortmund",
         "es": "Dortmund",
         "fr": "Dortmund",
-        "ru": "Дортмунд"
+        "ru": "Дортмунд",
+        "pl": "Dortmund"
       },
       "countryCode": "DE",
       "lat": 51.5136,
@@ -524,7 +577,8 @@
             "de": "Aplerbeck",
             "es": "Aplerbeck",
             "fr": "Aplerbeck",
-            "ru": "Аплербек"
+            "ru": "Аплербек",
+            "pl": "Aplerbeck"
           },
           "lat": 51.4896852,
           "lng": 7.5623082,
@@ -538,7 +592,8 @@
             "de": "Brackel",
             "es": "Brackel",
             "fr": "Brackel",
-            "ru": "Бракель"
+            "ru": "Бракель",
+            "pl": "Brackel"
           },
           "lat": 51.5279321,
           "lng": 7.5490138,
@@ -552,7 +607,8 @@
             "de": "Eving",
             "es": "Eving",
             "fr": "Eving",
-            "ru": "Эвинг"
+            "ru": "Эвинг",
+            "pl": "Eving"
           },
           "lat": 51.5558445,
           "lng": 7.476573,
@@ -566,7 +622,8 @@
             "de": "Hörde",
             "es": "Hörde",
             "fr": "Hörde",
-            "ru": "Хёрде"
+            "ru": "Хёрде",
+            "pl": "Hörde"
           },
           "lat": 51.4884311,
           "lng": 7.4972451,
@@ -580,7 +637,8 @@
             "de": "Hombruch",
             "es": "Hombruch",
             "fr": "Hombruch",
-            "ru": "Хомбрух"
+            "ru": "Хомбрух",
+            "pl": "Hombruch"
           },
           "lat": 51.4647031,
           "lng": 7.43704,
@@ -594,7 +652,8 @@
             "de": "Huckarde",
             "es": "Huckarde",
             "fr": "Huckarde",
-            "ru": "Хукарде"
+            "ru": "Хукарде",
+            "pl": "Huckarde"
           },
           "lat": 51.5317893,
           "lng": 7.4156554,
@@ -608,7 +667,8 @@
             "de": "Innenstadt",
             "es": "Innenstadt",
             "fr": "Innenstadt",
-            "ru": "Инненштадт"
+            "ru": "Инненштадт",
+            "pl": "Śródmieście"
           },
           "lat": 51.5090745,
           "lng": 7.491317,
@@ -624,7 +684,8 @@
         "de": "Dresden",
         "es": "Dresde",
         "fr": "Dresde",
-        "ru": "Дрезден"
+        "ru": "Дрезден",
+        "pl": "Drezno"
       },
       "countryCode": "DE",
       "lat": 51.0504,
@@ -639,7 +700,8 @@
             "de": "Altstadt",
             "es": "Altstadt",
             "fr": "Altstadt",
-            "ru": "Альтштадт"
+            "ru": "Альтштадт",
+            "pl": "Stare Miasto"
           },
           "lat": 51.0523842,
           "lng": 13.7381876,
@@ -653,7 +715,8 @@
             "de": "Blasewitz",
             "es": "Blasewitz",
             "fr": "Blasewitz",
-            "ru": "Блазевиц"
+            "ru": "Блазевиц",
+            "pl": "Blasewitz"
           },
           "lat": 51.0521778,
           "lng": 13.7990205,
@@ -667,7 +730,8 @@
             "de": "Löbtau",
             "es": "Löbtau",
             "fr": "Löbtau",
-            "ru": "Лёбтау"
+            "ru": "Лёбтау",
+            "pl": "Löbtau"
           },
           "lat": 51.0413452,
           "lng": 13.6984581,
@@ -681,7 +745,8 @@
             "de": "Neustadt",
             "es": "Neustadt",
             "fr": "Neustadt",
-            "ru": "Нойштадт"
+            "ru": "Нойштадт",
+            "pl": "Nowe Miasto"
           },
           "lat": 51.0755656,
           "lng": 13.7682546,
@@ -695,7 +760,8 @@
             "de": "Pieschen",
             "es": "Pieschen",
             "fr": "Pieschen",
-            "ru": "Пишен"
+            "ru": "Пишен",
+            "pl": "Pieschen"
           },
           "lat": 51.0831018,
           "lng": 13.7225624,
@@ -709,7 +775,8 @@
             "de": "Plauen",
             "es": "Plauen",
             "fr": "Plauen",
-            "ru": "Плауэн"
+            "ru": "Плауэн",
+            "pl": "Plauen"
           },
           "lat": 51.026885,
           "lng": 13.7081376,
@@ -723,7 +790,8 @@
             "de": "Striesen",
             "es": "Striesen",
             "fr": "Striesen",
-            "ru": "Штризен"
+            "ru": "Штризен",
+            "pl": "Striesen"
           },
           "lat": 51.0434696,
           "lng": 13.7860506,
@@ -739,7 +807,8 @@
         "de": "Düsseldorf",
         "es": "Düsseldorf",
         "fr": "Düsseldorf",
-        "ru": "Дюссельдорф"
+        "ru": "Дюссельдорф",
+        "pl": "Düsseldorf"
       },
       "countryCode": "DE",
       "lat": 51.2277,
@@ -754,7 +823,8 @@
             "de": "Altstadt",
             "es": "Altstadt",
             "fr": "Altstadt",
-            "ru": "Альтштадт"
+            "ru": "Альтштадт",
+            "pl": "Stare Miasto"
           },
           "lat": 51.2259125,
           "lng": 6.7735672,
@@ -768,7 +838,8 @@
             "de": "Bilk",
             "es": "Bilk",
             "fr": "Bilk",
-            "ru": "Бильк"
+            "ru": "Бильк",
+            "pl": "Bilk"
           },
           "lat": 51.2027583,
           "lng": 6.7851015,
@@ -782,7 +853,8 @@
             "de": "Derendorf",
             "es": "Derendorf",
             "fr": "Derendorf",
-            "ru": "Дерендорф"
+            "ru": "Дерендорф",
+            "pl": "Derendorf"
           },
           "lat": 51.2445487,
           "lng": 6.7922488,
@@ -796,7 +868,8 @@
             "de": "Flingern",
             "es": "Flingern",
             "fr": "Flingern",
-            "ru": "Флингерн"
+            "ru": "Флингерн",
+            "pl": "Flingern"
           },
           "lat": 51.2313815,
           "lng": 6.8132378,
@@ -810,7 +883,8 @@
             "de": "Friedrichstadt",
             "es": "Friedrichstadt",
             "fr": "Friedrichstadt",
-            "ru": "Фридрихштадт"
+            "ru": "Фридрихштадт",
+            "pl": "Friedrichstadt"
           },
           "lat": 51.2135645,
           "lng": 6.7816997,
@@ -824,7 +898,8 @@
             "de": "Oberkassel",
             "es": "Oberkassel",
             "fr": "Oberkassel",
-            "ru": "Оберкассель"
+            "ru": "Оберкассель",
+            "pl": "Oberkassel"
           },
           "lat": 51.2295816,
           "lng": 6.7554498,
@@ -838,7 +913,8 @@
             "de": "Pempelfort",
             "es": "Pempelfort",
             "fr": "Pempelfort",
-            "ru": "Пемпельфорт"
+            "ru": "Пемпельфорт",
+            "pl": "Pempelfort"
           },
           "lat": 51.2396009,
           "lng": 6.7796845,
@@ -854,7 +930,8 @@
         "de": "Duisburg",
         "es": "Duisburgo",
         "fr": "Duisbourg",
-        "ru": "Дуйсбург"
+        "ru": "Дуйсбург",
+        "pl": "Duisburg"
       },
       "countryCode": "DE",
       "lat": 51.4344,
@@ -869,7 +946,8 @@
             "de": "Hamborn",
             "es": "Hamborn",
             "fr": "Hamborn",
-            "ru": "Хамборн"
+            "ru": "Хамборн",
+            "pl": "Hamborn"
           },
           "lat": 51.492381,
           "lng": 6.7732976,
@@ -883,7 +961,8 @@
             "de": "Hochfeld",
             "es": "Hochfeld",
             "fr": "Hochfeld",
-            "ru": "Хохфельд"
+            "ru": "Хохфельд",
+            "pl": "Hochfeld"
           },
           "lat": 51.4191438,
           "lng": 6.7550194,
@@ -897,7 +976,8 @@
             "de": "Meiderich",
             "es": "Meiderich",
             "fr": "Meiderich",
-            "ru": "Майдерих"
+            "ru": "Майдерих",
+            "pl": "Meiderich"
           },
           "lat": 51.4682939,
           "lng": 6.7748552,
@@ -911,7 +991,8 @@
             "de": "Duisburg-Mitte",
             "es": "Duisburg-Mitte",
             "fr": "Duisburg-Mitte",
-            "ru": "Митте"
+            "ru": "Митте",
+            "pl": "Duisburg-Mitte"
           },
           "lat": 51.4186953,
           "lng": 6.7719389,
@@ -925,7 +1006,8 @@
             "de": "Neudorf",
             "es": "Neudorf",
             "fr": "Neudorf",
-            "ru": "Нойдорф"
+            "ru": "Нойдорф",
+            "pl": "Neudorf"
           },
           "lat": 51.4218258,
           "lng": 6.7858042,
@@ -939,7 +1021,8 @@
             "de": "Rheinhausen",
             "es": "Rheinhausen",
             "fr": "Rheinhausen",
-            "ru": "Райнхаузен"
+            "ru": "Райнхаузен",
+            "pl": "Rheinhausen"
           },
           "lat": 51.4029342,
           "lng": 6.7070812,
@@ -953,7 +1036,8 @@
             "de": "Ruhrort",
             "es": "Ruhrort",
             "fr": "Ruhrort",
-            "ru": "Рурорт"
+            "ru": "Рурорт",
+            "pl": "Ruhrort"
           },
           "lat": 51.450016,
           "lng": 6.7488702,
@@ -969,7 +1053,8 @@
         "de": "Essen",
         "es": "Essen",
         "fr": "Essen",
-        "ru": "Эссен"
+        "ru": "Эссен",
+        "pl": "Essen"
       },
       "countryCode": "DE",
       "lat": 51.4556,
@@ -984,7 +1069,8 @@
             "de": "Altenessen",
             "es": "Altenessen",
             "fr": "Altenessen",
-            "ru": "Альтенэссен"
+            "ru": "Альтенэссен",
+            "pl": "Altenessen"
           },
           "lat": 51.4912248,
           "lng": 7.0082355,
@@ -998,7 +1084,8 @@
             "de": "Borbeck",
             "es": "Borbeck",
             "fr": "Borbeck",
-            "ru": "Борбек"
+            "ru": "Борбек",
+            "pl": "Borbeck"
           },
           "lat": 51.4729243,
           "lng": 6.9490832,
@@ -1012,7 +1099,8 @@
             "de": "Kettwig",
             "es": "Kettwig",
             "fr": "Kettwig",
-            "ru": "Кеттвиг"
+            "ru": "Кеттвиг",
+            "pl": "Kettwig"
           },
           "lat": 51.3635478,
           "lng": 6.9540871,
@@ -1026,7 +1114,8 @@
             "de": "Rüttenscheid",
             "es": "Rüttenscheid",
             "fr": "Rüttenscheid",
-            "ru": "Рюттеншайд"
+            "ru": "Рюттеншайд",
+            "pl": "Rüttenscheid"
           },
           "lat": 51.4353172,
           "lng": 7.0069854,
@@ -1040,7 +1129,8 @@
             "de": "Stadtkern",
             "es": "Stadtkern",
             "fr": "Stadtkern",
-            "ru": "Штадткерн"
+            "ru": "Штадткерн",
+            "pl": "Centrum miasta"
           },
           "lat": 51.4568812,
           "lng": 7.0114658,
@@ -1054,7 +1144,8 @@
             "de": "Steele",
             "es": "Steele",
             "fr": "Steele",
-            "ru": "Штеле"
+            "ru": "Штеле",
+            "pl": "Steele"
           },
           "lat": 51.4477081,
           "lng": 7.0771986,
@@ -1068,7 +1159,8 @@
             "de": "Werden",
             "es": "Werden",
             "fr": "Werden",
-            "ru": "Верден"
+            "ru": "Верден",
+            "pl": "Werden"
           },
           "lat": 51.3882195,
           "lng": 7.0028334,
@@ -1084,7 +1176,8 @@
         "de": "Frankfurt am Main",
         "es": "Fráncfort del Meno",
         "fr": "Francfort-sur-le-Main",
-        "ru": "Франкфурт-на-Майне"
+        "ru": "Франкфурт-на-Майне",
+        "pl": "Frankfurt nad Menem"
       },
       "countryCode": "DE",
       "lat": 50.1109,
@@ -1099,7 +1192,8 @@
             "de": "Bahnhofsviertel",
             "es": "Bahnhofsviertel",
             "fr": "Bahnhofsviertel",
-            "ru": "Банхофсфиртель"
+            "ru": "Банхофсфиртель",
+            "pl": "Bahnhofsviertel"
           },
           "lat": 50.1084107,
           "lng": 8.6681512,
@@ -1113,7 +1207,8 @@
             "de": "Bockenheim",
             "es": "Bockenheim",
             "fr": "Bockenheim",
-            "ru": "Бокенхайм"
+            "ru": "Бокенхайм",
+            "pl": "Bockenheim"
           },
           "lat": 50.1233115,
           "lng": 8.6460563,
@@ -1127,7 +1222,8 @@
             "de": "Bornheim",
             "es": "Bornheim",
             "fr": "Bornheim",
-            "ru": "Борнхайм"
+            "ru": "Борнхайм",
+            "pl": "Bornheim"
           },
           "lat": 50.1297313,
           "lng": 8.7106117,
@@ -1141,7 +1237,8 @@
             "de": "Innenstadt",
             "es": "Innenstadt",
             "fr": "Innenstadt",
-            "ru": "Инненштадт"
+            "ru": "Инненштадт",
+            "pl": "Śródmieście"
           },
           "lat": 50.1145581,
           "lng": 8.6835914,
@@ -1155,7 +1252,8 @@
             "de": "Nordend",
             "es": "Nordend",
             "fr": "Nordend",
-            "ru": "Нордэнд"
+            "ru": "Нордэнд",
+            "pl": "Nordend"
           },
           "lat": 50.1249136,
           "lng": 8.67795,
@@ -1169,7 +1267,8 @@
             "de": "Sachsenhausen",
             "es": "Sachsenhausen",
             "fr": "Sachsenhausen",
-            "ru": "Заксенхаузен"
+            "ru": "Заксенхаузен",
+            "pl": "Sachsenhausen"
           },
           "lat": 50.1002618,
           "lng": 8.6835988,
@@ -1183,7 +1282,8 @@
             "de": "Westend",
             "es": "Westend",
             "fr": "Westend",
-            "ru": "Вестэнд"
+            "ru": "Вестэнд",
+            "pl": "Westend"
           },
           "lat": 50.118164,
           "lng": 8.6625889,
@@ -1199,7 +1299,8 @@
         "de": "Hamburg",
         "es": "Hamburgo",
         "fr": "Hambourg",
-        "ru": "Гамбург"
+        "ru": "Гамбург",
+        "pl": "Hamburg"
       },
       "countryCode": "DE",
       "lat": 53.551086,
@@ -1214,7 +1315,8 @@
             "de": "Altona",
             "es": "Altona",
             "fr": "Altona",
-            "ru": "Альтона"
+            "ru": "Альтона",
+            "pl": "Altona"
           },
           "lat": 53.5496598,
           "lng": 9.945352,
@@ -1228,7 +1330,8 @@
             "de": "Eimsbüttel",
             "es": "Eimsbüttel",
             "fr": "Eimsbüttel",
-            "ru": "Эймсбюттель"
+            "ru": "Эймсбюттель",
+            "pl": "Eimsbüttel"
           },
           "lat": 53.5729372,
           "lng": 9.9582607,
@@ -1242,7 +1345,8 @@
             "de": "HafenCity",
             "es": "HafenCity",
             "fr": "HafenCity",
-            "ru": "Хафенсити"
+            "ru": "Хафенсити",
+            "pl": "HafenCity"
           },
           "lat": 53.5429127,
           "lng": 9.9958346,
@@ -1256,7 +1360,8 @@
             "de": "Harburg",
             "es": "Harburg",
             "fr": "Harburg",
-            "ru": "Харбург"
+            "ru": "Харбург",
+            "pl": "Harburg"
           },
           "lat": 53.4562216,
           "lng": 9.9872112,
@@ -1270,7 +1375,8 @@
             "de": "St. Georg",
             "es": "St. Georg",
             "fr": "St. Georg",
-            "ru": "Санкт-Георг"
+            "ru": "Санкт-Георг",
+            "pl": "St. Georg"
           },
           "lat": 53.5571491,
           "lng": 10.0142558,
@@ -1284,7 +1390,8 @@
             "de": "St. Pauli",
             "es": "St. Pauli",
             "fr": "St. Pauli",
-            "ru": "Санкт-Паули"
+            "ru": "Санкт-Паули",
+            "pl": "St. Pauli"
           },
           "lat": 53.5539347,
           "lng": 9.9594316,
@@ -1298,7 +1405,8 @@
             "de": "Wandsbek",
             "es": "Wandsbek",
             "fr": "Wandsbek",
-            "ru": "Вандсбек"
+            "ru": "Вандсбек",
+            "pl": "Wandsbek"
           },
           "lat": 53.5760029,
           "lng": 10.0755348,
@@ -1314,7 +1422,8 @@
         "de": "Hannover",
         "es": "Hanóver",
         "fr": "Hanovre",
-        "ru": "Ганновер"
+        "ru": "Ганновер",
+        "pl": "Hanower"
       },
       "countryCode": "DE",
       "lat": 52.3759,
@@ -1329,7 +1438,8 @@
             "de": "Kleefeld",
             "es": "Kleefeld",
             "fr": "Kleefeld",
-            "ru": "Клеефельд"
+            "ru": "Клеефельд",
+            "pl": "Kleefeld"
           },
           "lat": 52.375679,
           "lng": 9.7957755,
@@ -1343,7 +1453,8 @@
             "de": "Linden",
             "es": "Linden",
             "fr": "Linden",
-            "ru": "Линден"
+            "ru": "Линден",
+            "pl": "Linden"
           },
           "lat": 52.3571986,
           "lng": 9.7063547,
@@ -1357,7 +1468,8 @@
             "de": "List",
             "es": "List",
             "fr": "List",
-            "ru": "Лист"
+            "ru": "Лист",
+            "pl": "List"
           },
           "lat": 52.3961351,
           "lng": 9.7570513,
@@ -1371,7 +1483,8 @@
             "de": "Mitte",
             "es": "Mitte",
             "fr": "Mitte",
-            "ru": "Митте"
+            "ru": "Митте",
+            "pl": "Mitte"
           },
           "lat": 52.3756854,
           "lng": 9.749101,
@@ -1385,7 +1498,8 @@
             "de": "Nordstadt",
             "es": "Nordstadt",
             "fr": "Nordstadt",
-            "ru": "Нордштадт"
+            "ru": "Нордштадт",
+            "pl": "Nordstadt"
           },
           "lat": 52.3851317,
           "lng": 9.7187507,
@@ -1399,7 +1513,8 @@
             "de": "Südstadt",
             "es": "Südstadt",
             "fr": "Südstadt",
-            "ru": "Зюдштадт"
+            "ru": "Зюдштадт",
+            "pl": "Südstadt"
           },
           "lat": 52.3600544,
           "lng": 9.7553948,
@@ -1413,7 +1528,8 @@
             "de": "Vahrenwald",
             "es": "Vahrenwald",
             "fr": "Vahrenwald",
-            "ru": "Фаренвальд"
+            "ru": "Фаренвальд",
+            "pl": "Vahrenwald"
           },
           "lat": 52.3972264,
           "lng": 9.7381952,
@@ -1429,7 +1545,8 @@
         "de": "Köln",
         "es": "Colonia",
         "fr": "Cologne",
-        "ru": "Кёльн"
+        "ru": "Кёльн",
+        "pl": "Kolonia"
       },
       "countryCode": "DE",
       "lat": 50.9375,
@@ -1444,7 +1561,8 @@
             "de": "Altstadt",
             "es": "Altstadt",
             "fr": "Altstadt",
-            "ru": "Альтштадт"
+            "ru": "Альтштадт",
+            "pl": "Stare Miasto"
           },
           "lat": 50.9384798,
           "lng": 6.9605148,
@@ -1458,7 +1576,8 @@
             "de": "Deutz",
             "es": "Deutz",
             "fr": "Deutz",
-            "ru": "Дойц"
+            "ru": "Дойц",
+            "pl": "Deutz"
           },
           "lat": 50.9367586,
           "lng": 6.9730461,
@@ -1472,7 +1591,8 @@
             "de": "Ehrenfeld",
             "es": "Ehrenfeld",
             "fr": "Ehrenfeld",
-            "ru": "Эренфельд"
+            "ru": "Эренфельд",
+            "pl": "Ehrenfeld"
           },
           "lat": 50.9488643,
           "lng": 6.9198935,
@@ -1486,7 +1606,8 @@
             "de": "Lindenthal",
             "es": "Lindenthal",
             "fr": "Lindenthal",
-            "ru": "Линденталь"
+            "ru": "Линденталь",
+            "pl": "Lindenthal"
           },
           "lat": 50.9298969,
           "lng": 6.9143995,
@@ -1500,7 +1621,8 @@
             "de": "Mülheim",
             "es": "Mülheim",
             "fr": "Mülheim",
-            "ru": "Мюльхайм"
+            "ru": "Мюльхайм",
+            "pl": "Mülheim"
           },
           "lat": 50.9659028,
           "lng": 7.0077998,
@@ -1514,7 +1636,8 @@
             "de": "Nippes",
             "es": "Nippes",
             "fr": "Nippes",
-            "ru": "Ниппес"
+            "ru": "Ниппес",
+            "pl": "Nippes"
           },
           "lat": 50.988649,
           "lng": 6.9357275,
@@ -1528,7 +1651,8 @@
             "de": "Sülz",
             "es": "Sülz",
             "fr": "Sülz",
-            "ru": "Зюльц"
+            "ru": "Зюльц",
+            "pl": "Sülz"
           },
           "lat": 50.9189277,
           "lng": 6.9240929,
@@ -1544,7 +1668,8 @@
         "de": "Leipzig",
         "es": "Leipzig",
         "fr": "Leipzig",
-        "ru": "Лейпциг"
+        "ru": "Лейпциг",
+        "pl": "Lipsk"
       },
       "countryCode": "DE",
       "lat": 51.3397,
@@ -1559,7 +1684,8 @@
             "de": "Connewitz",
             "es": "Connewitz",
             "fr": "Connewitz",
-            "ru": "Конневиц"
+            "ru": "Конневиц",
+            "pl": "Connewitz"
           },
           "lat": 51.3032502,
           "lng": 12.3720368,
@@ -1573,7 +1699,8 @@
             "de": "Gohlis",
             "es": "Gohlis",
             "fr": "Gohlis",
-            "ru": "Голис"
+            "ru": "Голис",
+            "pl": "Gohlis"
           },
           "lat": 51.36706,
           "lng": 12.3766732,
@@ -1587,7 +1714,8 @@
             "de": "Plagwitz",
             "es": "Plagwitz",
             "fr": "Plagwitz",
-            "ru": "Плагвиц"
+            "ru": "Плагвиц",
+            "pl": "Plagwitz"
           },
           "lat": 51.3281994,
           "lng": 12.3382998,
@@ -1601,7 +1729,8 @@
             "de": "Reudnitz",
             "es": "Reudnitz",
             "fr": "Reudnitz",
-            "ru": "Ройдниц"
+            "ru": "Ройдниц",
+            "pl": "Reudnitz"
           },
           "lat": 51.335919,
           "lng": 12.3995116,
@@ -1615,7 +1744,8 @@
             "de": "Schleußig",
             "es": "Schleußig",
             "fr": "Schleußig",
-            "ru": "Шлойсиг"
+            "ru": "Шлойсиг",
+            "pl": "Schleußig"
           },
           "lat": 51.3237026,
           "lng": 12.3416294,
@@ -1629,7 +1759,8 @@
             "de": "Südvorstadt",
             "es": "Südvorstadt",
             "fr": "Südvorstadt",
-            "ru": "Зюдфорштадт"
+            "ru": "Зюдфорштадт",
+            "pl": "Südvorstadt"
           },
           "lat": 51.3225214,
           "lng": 12.3746133,
@@ -1643,7 +1774,8 @@
             "de": "Zentrum",
             "es": "Zentrum",
             "fr": "Zentrum",
-            "ru": "Центр"
+            "ru": "Центр",
+            "pl": "Centrum"
           },
           "lat": 51.3402743,
           "lng": 12.376417,
@@ -1659,7 +1791,8 @@
         "de": "München",
         "es": "Múnich",
         "fr": "Munich",
-        "ru": "Мюнхен"
+        "ru": "Мюнхен",
+        "pl": "Monachium"
       },
       "countryCode": "DE",
       "lat": 48.1374,
@@ -1674,7 +1807,8 @@
             "de": "Altstadt-Lehel",
             "es": "Altstadt-Lehel",
             "fr": "Altstadt-Lehel",
-            "ru": "Альтштадт-Лехель"
+            "ru": "Альтштадт-Лехель",
+            "pl": "Altstadt-Lehel"
           },
           "lat": 48.1378285,
           "lng": 11.5745823,
@@ -1688,7 +1822,8 @@
             "de": "Bogenhausen",
             "es": "Bogenhausen",
             "fr": "Bogenhausen",
-            "ru": "Богенхаузен"
+            "ru": "Богенхаузен",
+            "pl": "Bogenhausen"
           },
           "lat": 48.1452222,
           "lng": 11.6149771,
@@ -1702,7 +1837,8 @@
             "de": "Haidhausen",
             "es": "Haidhausen",
             "fr": "Haidhausen",
-            "ru": "Хайдхаузен"
+            "ru": "Хайдхаузен",
+            "pl": "Haidhausen"
           },
           "lat": 48.1326627,
           "lng": 11.6011221,
@@ -1716,7 +1852,8 @@
             "de": "Maxvorstadt",
             "es": "Maxvorstadt",
             "fr": "Maxvorstadt",
-            "ru": "Максфорштадт"
+            "ru": "Максфорштадт",
+            "pl": "Maxvorstadt"
           },
           "lat": 48.1510916,
           "lng": 11.5624179,
@@ -1730,7 +1867,8 @@
             "de": "Neuhausen",
             "es": "Neuhausen",
             "fr": "Neuhausen",
-            "ru": "Нойхаузен"
+            "ru": "Нойхаузен",
+            "pl": "Neuhausen"
           },
           "lat": 48.1542217,
           "lng": 11.5315172,
@@ -1744,7 +1882,8 @@
             "de": "Schwabing",
             "es": "Schwabing",
             "fr": "Schwabing",
-            "ru": "Швабинг"
+            "ru": "Швабинг",
+            "pl": "Schwabing"
           },
           "lat": 48.168926,
           "lng": 11.5899503,
@@ -1758,7 +1897,8 @@
             "de": "Sendling",
             "es": "Sendling",
             "fr": "Sendling",
-            "ru": "Зендлинг"
+            "ru": "Зендлинг",
+            "pl": "Sendling"
           },
           "lat": 48.1180125,
           "lng": 11.5390832,
@@ -1774,7 +1914,8 @@
         "de": "Nürnberg",
         "es": "Núremberg",
         "fr": "Nuremberg",
-        "ru": "Нюрнберг"
+        "ru": "Нюрнберг",
+        "pl": "Norymberga"
       },
       "countryCode": "DE",
       "lat": 49.4521,
@@ -1789,7 +1930,8 @@
             "de": "Altstadt",
             "es": "Altstadt",
             "fr": "Altstadt",
-            "ru": "Альтштадт"
+            "ru": "Альтштадт",
+            "pl": "Stare Miasto"
           },
           "lat": 49.4514045,
           "lng": 11.0747163,
@@ -1803,7 +1945,8 @@
             "de": "Gostenhof",
             "es": "Gostenhof",
             "fr": "Gostenhof",
-            "ru": "Гостенхоф"
+            "ru": "Гостенхоф",
+            "pl": "Gostenhof"
           },
           "lat": 49.4476663,
           "lng": 11.0581931,
@@ -1817,7 +1960,8 @@
             "de": "Maxfeld",
             "es": "Maxfeld",
             "fr": "Maxfeld",
-            "ru": "Максфельд"
+            "ru": "Максфельд",
+            "pl": "Maxfeld"
           },
           "lat": 49.4633221,
           "lng": 11.0849499,
@@ -1831,7 +1975,8 @@
             "de": "St. Johannis",
             "es": "St. Johannis",
             "fr": "St. Johannis",
-            "ru": "Санкт-Йоханнис"
+            "ru": "Санкт-Йоханнис",
+            "pl": "St. Johannis"
           },
           "lat": 49.4585661,
           "lng": 11.0663398,
@@ -1845,7 +1990,8 @@
             "de": "Steinbühl",
             "es": "Steinbühl",
             "fr": "Steinbühl",
-            "ru": "Штайнбюль"
+            "ru": "Штайнбюль",
+            "pl": "Steinbühl"
           },
           "lat": 49.4401403,
           "lng": 11.0685445,
@@ -1859,7 +2005,8 @@
             "de": "Südstadt",
             "es": "Südstadt",
             "fr": "Südstadt",
-            "ru": "Зюдштадт"
+            "ru": "Зюдштадт",
+            "pl": "Südstadt"
           },
           "lat": 49.4257629,
           "lng": 11.0596819,
@@ -1873,7 +2020,8 @@
             "de": "Wöhrd",
             "es": "Wöhrd",
             "fr": "Wöhrd",
-            "ru": "Вёрд"
+            "ru": "Вёрд",
+            "pl": "Wöhrd"
           },
           "lat": 49.453549,
           "lng": 11.0948927,
@@ -1889,7 +2037,8 @@
         "de": "Rotterdam",
         "es": "Róterdam",
         "fr": "Rotterdam",
-        "ru": "Роттердам"
+        "ru": "Роттердам",
+        "pl": "Rotterdam"
       },
       "countryCode": "NL",
       "lat": 51.9244,
@@ -1904,7 +2053,8 @@
             "de": "Centrum",
             "es": "Centrum",
             "fr": "Centrum",
-            "ru": "Центр"
+            "ru": "Центр",
+            "pl": "Centrum"
           },
           "lat": 51.9199618,
           "lng": 4.4798986,
@@ -1918,7 +2068,8 @@
             "de": "Charlois",
             "es": "Charlois",
             "fr": "Charlois",
-            "ru": "Шарлуа"
+            "ru": "Шарлуа",
+            "pl": "Charlois"
           },
           "lat": 51.8835701,
           "lng": 4.4778129,
@@ -1932,7 +2083,8 @@
             "de": "Delfshaven",
             "es": "Delfshaven",
             "fr": "Delfshaven",
-            "ru": "Делфсхавен"
+            "ru": "Делфсхавен",
+            "pl": "Delfshaven"
           },
           "lat": 51.9081039,
           "lng": 4.4483726,
@@ -1946,7 +2098,8 @@
             "de": "Feijenoord",
             "es": "Feijenoord",
             "fr": "Feijenoord",
-            "ru": "Фейеноорд"
+            "ru": "Фейеноорд",
+            "pl": "Feijenoord"
           },
           "lat": 51.9072468,
           "lng": 4.5068656,
@@ -1960,7 +2113,8 @@
             "de": "Hillegersberg",
             "es": "Hillegersberg",
             "fr": "Hillegersberg",
-            "ru": "Хиллегерсберг"
+            "ru": "Хиллегерсберг",
+            "pl": "Hillegersberg"
           },
           "lat": 51.9549095,
           "lng": 4.4928642,
@@ -1974,7 +2128,8 @@
             "de": "Kralingen",
             "es": "Kralingen",
             "fr": "Kralingen",
-            "ru": "Кралинген"
+            "ru": "Кралинген",
+            "pl": "Kralingen"
           },
           "lat": 51.9259546,
           "lng": 4.5083405,
@@ -1988,7 +2143,8 @@
             "de": "Noord",
             "es": "Noord",
             "fr": "Noord",
-            "ru": "Норд"
+            "ru": "Норд",
+            "pl": "Noord"
           },
           "lat": 51.9330231,
           "lng": 4.4722707,
@@ -2004,7 +2160,8 @@
         "de": "Stuttgart",
         "es": "Stuttgart",
         "fr": "Stuttgart",
-        "ru": "Штутгарт"
+        "ru": "Штутгарт",
+        "pl": "Stuttgart"
       },
       "countryCode": "DE",
       "lat": 48.7758,
@@ -2019,7 +2176,8 @@
             "de": "Bad Cannstatt",
             "es": "Bad Cannstatt",
             "fr": "Bad Cannstatt",
-            "ru": "Бад-Каннштатт"
+            "ru": "Бад-Каннштатт",
+            "pl": "Bad Cannstatt"
           },
           "lat": 48.8048828,
           "lng": 9.2146797,
@@ -2033,7 +2191,8 @@
             "de": "Mitte",
             "es": "Mitte",
             "fr": "Mitte",
-            "ru": "Митте"
+            "ru": "Митте",
+            "pl": "Mitte"
           },
           "lat": 48.7759,
           "lng": 9.1798,
@@ -2047,7 +2206,8 @@
             "de": "Nord",
             "es": "Nord",
             "fr": "Nord",
-            "ru": "Норд"
+            "ru": "Норд",
+            "pl": "Północ"
           },
           "lat": 48.7978226,
           "lng": 9.1917133,
@@ -2061,7 +2221,8 @@
             "de": "Ost",
             "es": "Ost",
             "fr": "Ost",
-            "ru": "Ост"
+            "ru": "Ост",
+            "pl": "Wschód"
           },
           "lat": 48.7821428,
           "lng": 9.2079413,
@@ -2075,7 +2236,8 @@
             "de": "Süd",
             "es": "Süd",
             "fr": "Süd",
-            "ru": "Зюд"
+            "ru": "Зюд",
+            "pl": "Południe"
           },
           "lat": 48.764201,
           "lng": 9.1679265,
@@ -2089,7 +2251,8 @@
             "de": "Vaihingen",
             "es": "Vaihingen",
             "fr": "Vaihingen",
-            "ru": "Файхинген"
+            "ru": "Файхинген",
+            "pl": "Vaihingen"
           },
           "lat": 48.7314075,
           "lng": 9.1097281,
@@ -2103,7 +2266,8 @@
             "de": "West",
             "es": "West",
             "fr": "West",
-            "ru": "Вест"
+            "ru": "Вест",
+            "pl": "Zachód"
           },
           "lat": 48.7739006,
           "lng": 9.1632873,
@@ -2119,7 +2283,8 @@
         "de": "Utrecht",
         "es": "Utrecht",
         "fr": "Utrecht",
-        "ru": "Утрехт"
+        "ru": "Утрехт",
+        "pl": "Utrecht"
       },
       "countryCode": "NL",
       "lat": 52.0907,
@@ -2134,7 +2299,8 @@
             "de": "Binnenstad",
             "es": "Binnenstad",
             "fr": "Binnenstad",
-            "ru": "Биннестад"
+            "ru": "Биннестад",
+            "pl": "Śródmieście"
           },
           "lat": 52.0886017,
           "lng": 5.116184,
@@ -2148,7 +2314,8 @@
             "de": "Leidsche Rijn",
             "es": "Leidsche Rijn",
             "fr": "Leidsche Rijn",
-            "ru": "Лейдсе-Рейн"
+            "ru": "Лейдсе-Рейн",
+            "pl": "Leidsche Rijn"
           },
           "lat": 52.0827104,
           "lng": 5.0378431,
@@ -2162,7 +2329,8 @@
             "de": "Lombok",
             "es": "Lombok",
             "fr": "Lombok",
-            "ru": "Ломбок"
+            "ru": "Ломбок",
+            "pl": "Lombok"
           },
           "lat": 52.0912231,
           "lng": 5.099599,
@@ -2176,7 +2344,8 @@
             "de": "Noordoost",
             "es": "Noordoost",
             "fr": "Noordoost",
-            "ru": "Нордост"
+            "ru": "Нордост",
+            "pl": "Noordoost"
           },
           "lat": 52.1051288,
           "lng": 5.1355489,
@@ -2190,7 +2359,8 @@
             "de": "Oost",
             "es": "Oost",
             "fr": "Oost",
-            "ru": "Ост"
+            "ru": "Ост",
+            "pl": "Oost"
           },
           "lat": 52.0775687,
           "lng": 5.143016,
@@ -2204,7 +2374,8 @@
             "de": "Overvecht",
             "es": "Overvecht",
             "fr": "Overvecht",
-            "ru": "Овервехт"
+            "ru": "Овервехт",
+            "pl": "Overvecht"
           },
           "lat": 52.1205408,
           "lng": 5.1096366,
@@ -2218,10 +2389,659 @@
             "de": "Zuid",
             "es": "Zuid",
             "fr": "Zuid",
-            "ru": "Зёйд"
+            "ru": "Зёйд",
+            "pl": "Zuid"
           },
           "lat": 52.0642612,
           "lng": 5.1297577,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0lodz000000000001",
+      "slug": "lodz",
+      "name": {
+        "en": "Łódź",
+        "de": "Lodz",
+        "es": "Lodz",
+        "fr": "Łódź",
+        "ru": "Лодзь",
+        "pl": "Łódź"
+      },
+      "countryCode": "PL",
+      "lat": 51.7592,
+      "lng": 19.456,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dlodzsrodmiescie0000",
+          "slug": "srodmiescie",
+          "name": {
+            "en": "Śródmieście",
+            "de": "Śródmieście",
+            "es": "Śródmieście",
+            "fr": "Śródmieście",
+            "ru": "Средместье",
+            "pl": "Śródmieście"
+          },
+          "lat": 51.7592,
+          "lng": 19.456,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dlodzbaluty000000000",
+          "slug": "baluty",
+          "name": {
+            "en": "Bałuty",
+            "de": "Bałuty",
+            "es": "Bałuty",
+            "fr": "Bałuty",
+            "ru": "Балуты",
+            "pl": "Bałuty"
+          },
+          "lat": 51.79,
+          "lng": 19.45,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dlodzgorna0000000000",
+          "slug": "gorna",
+          "name": {
+            "en": "Górna",
+            "de": "Górna",
+            "es": "Górna",
+            "fr": "Górna",
+            "ru": "Гурна",
+            "pl": "Górna"
+          },
+          "lat": 51.74,
+          "lng": 19.48,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dlodzpolesie00000000",
+          "slug": "polesie",
+          "name": {
+            "en": "Polesie",
+            "de": "Polesie",
+            "es": "Polesie",
+            "fr": "Polesie",
+            "ru": "Полесье",
+            "pl": "Polesie"
+          },
+          "lat": 51.75,
+          "lng": 19.42,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dlodzwidzew000000000",
+          "slug": "widzew",
+          "name": {
+            "en": "Widzew",
+            "de": "Widzew",
+            "es": "Widzew",
+            "fr": "Widzew",
+            "ru": "Видзев",
+            "pl": "Widzew"
+          },
+          "lat": 51.77,
+          "lng": 19.52,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0wroclaw00000000001",
+      "slug": "wroclaw",
+      "name": {
+        "en": "Wrocław",
+        "de": "Breslau",
+        "es": "Breslavia",
+        "fr": "Wrocław",
+        "ru": "Вроцлав",
+        "pl": "Wrocław"
+      },
+      "countryCode": "PL",
+      "lat": 51.1079,
+      "lng": 17.0385,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dwrocstaremiasto0000",
+          "slug": "stare-miasto",
+          "name": {
+            "en": "Stare Miasto",
+            "de": "Stare Miasto",
+            "es": "Stare Miasto",
+            "fr": "Stare Miasto",
+            "ru": "Старе-Място",
+            "pl": "Stare Miasto"
+          },
+          "lat": 51.11,
+          "lng": 17.033,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwrocsrodmiescie0000",
+          "slug": "srodmiescie",
+          "name": {
+            "en": "Śródmieście",
+            "de": "Śródmieście",
+            "es": "Śródmieście",
+            "fr": "Śródmieście",
+            "ru": "Средместье",
+            "pl": "Śródmieście"
+          },
+          "lat": 51.107,
+          "lng": 17.01,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwrockrzyki000000000",
+          "slug": "krzyki",
+          "name": {
+            "en": "Krzyki",
+            "de": "Krzyki",
+            "es": "Krzyki",
+            "fr": "Krzyki",
+            "ru": "Кшики",
+            "pl": "Krzyki"
+          },
+          "lat": 51.08,
+          "lng": 17.03,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwrocfabryczna000000",
+          "slug": "fabryczna",
+          "name": {
+            "en": "Fabryczna",
+            "de": "Fabryczna",
+            "es": "Fabryczna",
+            "fr": "Fabryczna",
+            "ru": "Фабрична",
+            "pl": "Fabryczna"
+          },
+          "lat": 51.115,
+          "lng": 16.97,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwrocpsiepole0000000",
+          "slug": "psie-pole",
+          "name": {
+            "en": "Psie Pole",
+            "de": "Psie Pole",
+            "es": "Psie Pole",
+            "fr": "Psie Pole",
+            "ru": "Псе-Поле",
+            "pl": "Psie Pole"
+          },
+          "lat": 51.14,
+          "lng": 17.11,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0warszawa0000000001",
+      "slug": "warszawa",
+      "name": {
+        "en": "Warsaw",
+        "de": "Warschau",
+        "es": "Varsovia",
+        "fr": "Varsovie",
+        "ru": "Варшава",
+        "pl": "Warszawa"
+      },
+      "countryCode": "PL",
+      "lat": 52.2297,
+      "lng": 21.0122,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dwarssrodmiescie0000",
+          "slug": "srodmiescie",
+          "name": {
+            "en": "Śródmieście",
+            "de": "Śródmieście",
+            "es": "Śródmieście",
+            "fr": "Śródmieście",
+            "ru": "Средместье",
+            "pl": "Śródmieście"
+          },
+          "lat": 52.2297,
+          "lng": 21.0122,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarsmokotow00000000",
+          "slug": "mokotow",
+          "name": {
+            "en": "Mokotów",
+            "de": "Mokotów",
+            "es": "Mokotów",
+            "fr": "Mokotów",
+            "ru": "Мокотув",
+            "pl": "Mokotów"
+          },
+          "lat": 52.1936,
+          "lng": 21.0036,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarspragapolnoc0000",
+          "slug": "praga-polnoc",
+          "name": {
+            "en": "Praga-Północ",
+            "de": "Praga-Północ",
+            "es": "Praga-Północ",
+            "fr": "Praga-Północ",
+            "ru": "Прага-Полночь",
+            "pl": "Praga-Północ"
+          },
+          "lat": 52.254,
+          "lng": 21.042,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarspragapoludnie00",
+          "slug": "praga-poludnie",
+          "name": {
+            "en": "Praga-Południe",
+            "de": "Praga-Południe",
+            "es": "Praga-Południe",
+            "fr": "Praga-Południe",
+            "ru": "Прага-Полудне",
+            "pl": "Praga-Południe"
+          },
+          "lat": 52.24,
+          "lng": 21.085,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarswola00000000000",
+          "slug": "wola",
+          "name": {
+            "en": "Wola",
+            "de": "Wola",
+            "es": "Wola",
+            "fr": "Wola",
+            "ru": "Воля",
+            "pl": "Wola"
+          },
+          "lat": 52.237,
+          "lng": 20.965,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarsochota000000000",
+          "slug": "ochota",
+          "name": {
+            "en": "Ochota",
+            "de": "Ochota",
+            "es": "Ochota",
+            "fr": "Ochota",
+            "ru": "Охота",
+            "pl": "Ochota"
+          },
+          "lat": 52.215,
+          "lng": 20.976,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarszoliborz0000000",
+          "slug": "zoliborz",
+          "name": {
+            "en": "Żoliborz",
+            "de": "Żoliborz",
+            "es": "Żoliborz",
+            "fr": "Żoliborz",
+            "ru": "Жолибож",
+            "pl": "Żoliborz"
+          },
+          "lat": 52.269,
+          "lng": 20.983,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dwarsursynow00000000",
+          "slug": "ursynow",
+          "name": {
+            "en": "Ursynów",
+            "de": "Ursynów",
+            "es": "Ursynów",
+            "fr": "Ursynów",
+            "ru": "Урсынув",
+            "pl": "Ursynów"
+          },
+          "lat": 52.145,
+          "lng": 21.047,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0poznan00000000001",
+      "slug": "poznan",
+      "name": {
+        "en": "Poznań",
+        "de": "Posen",
+        "es": "Poznań",
+        "fr": "Poznań",
+        "ru": "Познань",
+        "pl": "Poznań"
+      },
+      "countryCode": "PL",
+      "lat": 52.4064,
+      "lng": 16.9252,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dpoznstaremiasto0000",
+          "slug": "stare-miasto",
+          "name": {
+            "en": "Stare Miasto",
+            "de": "Stare Miasto",
+            "es": "Stare Miasto",
+            "fr": "Stare Miasto",
+            "ru": "Старе-Място",
+            "pl": "Stare Miasto"
+          },
+          "lat": 52.4082,
+          "lng": 16.9335,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dpoznjezyce000000000",
+          "slug": "jezyce",
+          "name": {
+            "en": "Jeżyce",
+            "de": "Jeżyce",
+            "es": "Jeżyce",
+            "fr": "Jeżyce",
+            "ru": "Ежице",
+            "pl": "Jeżyce"
+          },
+          "lat": 52.414,
+          "lng": 16.9,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dpoznwilda0000000000",
+          "slug": "wilda",
+          "name": {
+            "en": "Wilda",
+            "de": "Wilda",
+            "es": "Wilda",
+            "fr": "Wilda",
+            "ru": "Вильда",
+            "pl": "Wilda"
+          },
+          "lat": 52.393,
+          "lng": 16.91,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dpoznlazarz000000000",
+          "slug": "lazarz",
+          "name": {
+            "en": "Łazarz",
+            "de": "Łazarz",
+            "es": "Łazarz",
+            "fr": "Łazarz",
+            "ru": "Лазаж",
+            "pl": "Łazarz"
+          },
+          "lat": 52.397,
+          "lng": 16.91,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dpozngrunwald0000000",
+          "slug": "grunwald",
+          "name": {
+            "en": "Grunwald",
+            "de": "Grunwald",
+            "es": "Grunwald",
+            "fr": "Grunwald",
+            "ru": "Грюнвальд",
+            "pl": "Grunwald"
+          },
+          "lat": 52.398,
+          "lng": 16.86,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dpoznnowemiasto00000",
+          "slug": "nowe-miasto",
+          "name": {
+            "en": "Nowe Miasto",
+            "de": "Nowe Miasto",
+            "es": "Nowe Miasto",
+            "fr": "Nowe Miasto",
+            "ru": "Нове-Място",
+            "pl": "Nowe Miasto"
+          },
+          "lat": 52.4,
+          "lng": 16.96,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0krakow00000000001",
+      "slug": "krakow",
+      "name": {
+        "en": "Kraków",
+        "de": "Krakau",
+        "es": "Cracovia",
+        "fr": "Cracovie",
+        "ru": "Краков",
+        "pl": "Kraków"
+      },
+      "countryCode": "PL",
+      "lat": 50.0647,
+      "lng": 19.945,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dkrakstaremiasto0000",
+          "slug": "stare-miasto",
+          "name": {
+            "en": "Stare Miasto",
+            "de": "Stare Miasto",
+            "es": "Stare Miasto",
+            "fr": "Stare Miasto",
+            "ru": "Старе-Място",
+            "pl": "Stare Miasto"
+          },
+          "lat": 50.0614,
+          "lng": 19.9372,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dkrakkazimierz000000",
+          "slug": "kazimierz",
+          "name": {
+            "en": "Kazimierz",
+            "de": "Kazimierz",
+            "es": "Kazimierz",
+            "fr": "Kazimierz",
+            "ru": "Казимеж",
+            "pl": "Kazimierz"
+          },
+          "lat": 50.051,
+          "lng": 19.945,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dkrakpodgorze0000000",
+          "slug": "podgorze",
+          "name": {
+            "en": "Podgórze",
+            "de": "Podgórze",
+            "es": "Podgórze",
+            "fr": "Podgórze",
+            "ru": "Подгуже",
+            "pl": "Podgórze"
+          },
+          "lat": 50.042,
+          "lng": 19.95,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dkraknowahuta0000000",
+          "slug": "nowa-huta",
+          "name": {
+            "en": "Nowa Huta",
+            "de": "Nowa Huta",
+            "es": "Nowa Huta",
+            "fr": "Nowa Huta",
+            "ru": "Нова-Хута",
+            "pl": "Nowa Huta"
+          },
+          "lat": 50.072,
+          "lng": 20.037,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dkrakkrowodrza000000",
+          "slug": "krowodrza",
+          "name": {
+            "en": "Krowodrza",
+            "de": "Krowodrza",
+            "es": "Krowodrza",
+            "fr": "Krowodrza",
+            "ru": "Кроводжа",
+            "pl": "Krowodrza"
+          },
+          "lat": 50.083,
+          "lng": 19.92,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dkrakgrzegorzki00000",
+          "slug": "grzegorzki",
+          "name": {
+            "en": "Grzegórzki",
+            "de": "Grzegórzki",
+            "es": "Grzegórzki",
+            "fr": "Grzegórzki",
+            "ru": "Гжегужки",
+            "pl": "Grzegórzki"
+          },
+          "lat": 50.056,
+          "lng": 19.956,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "id": "cmpl0city0gdansk00000000001",
+      "slug": "gdansk",
+      "name": {
+        "en": "Gdańsk",
+        "de": "Danzig",
+        "es": "Gdansk",
+        "fr": "Gdańsk",
+        "ru": "Гданьск",
+        "pl": "Gdańsk"
+      },
+      "countryCode": "PL",
+      "lat": 54.352,
+      "lng": 18.6466,
+      "isActive": true,
+      "districts": [
+        {
+          "id": "cmpl0dgdansrodmiescie0000",
+          "slug": "srodmiescie",
+          "name": {
+            "en": "Śródmieście",
+            "de": "Śródmieście",
+            "es": "Śródmieście",
+            "fr": "Śródmieście",
+            "ru": "Средместье",
+            "pl": "Śródmieście"
+          },
+          "lat": 54.35,
+          "lng": 18.65,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dgdanwrzeszcz0000000",
+          "slug": "wrzeszcz",
+          "name": {
+            "en": "Wrzeszcz",
+            "de": "Wrzeszcz",
+            "es": "Wrzeszcz",
+            "fr": "Wrzeszcz",
+            "ru": "Вжещ",
+            "pl": "Wrzeszcz"
+          },
+          "lat": 54.38,
+          "lng": 18.6,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dgdanoliwa0000000000",
+          "slug": "oliwa",
+          "name": {
+            "en": "Oliwa",
+            "de": "Oliwa",
+            "es": "Oliwa",
+            "fr": "Oliwa",
+            "ru": "Олива",
+            "pl": "Oliwa"
+          },
+          "lat": 54.41,
+          "lng": 18.56,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dgdanzaspa0000000000",
+          "slug": "zaspa",
+          "name": {
+            "en": "Zaspa",
+            "de": "Zaspa",
+            "es": "Zaspa",
+            "fr": "Zaspa",
+            "ru": "Заспа",
+            "pl": "Zaspa"
+          },
+          "lat": 54.39,
+          "lng": 18.59,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dgdanprzymorze000000",
+          "slug": "przymorze",
+          "name": {
+            "en": "Przymorze",
+            "de": "Przymorze",
+            "es": "Przymorze",
+            "fr": "Przymorze",
+            "ru": "Пшиморже",
+            "pl": "Przymorze"
+          },
+          "lat": 54.4,
+          "lng": 18.58,
+          "isActive": true
+        },
+        {
+          "id": "cmpl0dgdanorunia000000000",
+          "slug": "orunia",
+          "name": {
+            "en": "Orunia",
+            "de": "Orunia",
+            "es": "Orunia",
+            "fr": "Orunia",
+            "ru": "Оруня",
+            "pl": "Orunia"
+          },
+          "lat": 54.33,
+          "lng": 18.62,
           "isActive": true
         }
       ]
@@ -2235,7 +3055,8 @@
         "de": "Begleitung",
         "es": "Compañía",
         "fr": "Accompagnement",
-        "ru": "Сопровождение"
+        "ru": "Сопровождение",
+        "pl": "Towarzystwo"
       }
     },
     {
@@ -2245,7 +3066,8 @@
         "de": "Cosplay",
         "es": "Cosplay",
         "fr": "Cosplay",
-        "ru": "Косплей"
+        "ru": "Косплей",
+        "pl": "Cosplay"
       }
     },
     {
@@ -2255,7 +3077,8 @@
         "de": "Sex",
         "es": "Sexo",
         "fr": "Sexe",
-        "ru": "Секс"
+        "ru": "Секс",
+        "pl": "Seks"
       }
     },
     {
@@ -2265,7 +3088,8 @@
         "de": "Massage",
         "es": "Masaje",
         "fr": "Massage",
-        "ru": "Массаж"
+        "ru": "Массаж",
+        "pl": "Masaż"
       }
     },
     {
@@ -2275,7 +3099,8 @@
         "de": "Extrem",
         "es": "Extremo",
         "fr": "Extrême",
-        "ru": "Экстрим"
+        "ru": "Экстрим",
+        "pl": "Ekstremalne"
       }
     },
     {
@@ -2285,7 +3110,8 @@
         "de": "Striptease",
         "es": "Striptease",
         "fr": "Striptease",
-        "ru": "Стриптиз"
+        "ru": "Стриптиз",
+        "pl": "Striptiz"
       }
     },
     {
@@ -2295,7 +3121,8 @@
         "de": "BDSM",
         "es": "BDSM",
         "fr": "BDSM",
-        "ru": "Садо-мазо"
+        "ru": "Садо-мазо",
+        "pl": "BDSM"
       }
     },
     {
@@ -2305,7 +3132,8 @@
         "de": "Format",
         "es": "Formato",
         "fr": "Format",
-        "ru": "Формат встречи"
+        "ru": "Формат встречи",
+        "pl": "Format"
       }
     }
   ],
@@ -2324,7 +3152,8 @@
         "de": "Dinner-Date",
         "es": "Cena romántica",
         "fr": "Dîner en tête-à-tête",
-        "ru": "Ужин"
+        "ru": "Ужин",
+        "pl": "Kolacja we dwoje"
       }
     },
     {
@@ -2341,7 +3170,8 @@
         "de": "Anime",
         "es": "Anime",
         "fr": "Anime",
-        "ru": "Аниме"
+        "ru": "Аниме",
+        "pl": "Anime"
       }
     },
     {
@@ -2358,7 +3188,8 @@
         "de": "Veranstaltungen",
         "es": "Eventos",
         "fr": "Événements",
-        "ru": "Мероприятия"
+        "ru": "Мероприятия",
+        "pl": "Wydarzenia"
       }
     },
     {
@@ -2375,7 +3206,8 @@
         "de": "Fotoshootings",
         "es": "Sesiones de fotos",
         "fr": "Séances photo",
-        "ru": "Фотосессии"
+        "ru": "Фотосессии",
+        "pl": "Sesje zdjęciowe"
       }
     },
     {
@@ -2392,7 +3224,8 @@
         "de": "Reisebegleitung",
         "es": "Acompañante de viaje",
         "fr": "Accompagnement en voyage",
-        "ru": "Сопровождение в поездках"
+        "ru": "Сопровождение в поездках",
+        "pl": "Towarzyszka podróży"
       }
     },
     {
@@ -2409,7 +3242,8 @@
         "de": "Auslandsreisen",
         "es": "Viajes al extranjero",
         "fr": "Voyages à l'étranger",
-        "ru": "Поездки за границу"
+        "ru": "Поездки за границу",
+        "pl": "Wyjazdy za granicę"
       }
     },
     {
@@ -2426,7 +3260,8 @@
         "de": "Über Nacht",
         "es": "Toda la noche",
         "fr": "Nuit complète",
-        "ru": "Ночь"
+        "ru": "Ночь",
+        "pl": "Cała noc"
       }
     },
     {
@@ -2443,7 +3278,8 @@
         "de": "Klassischer Sex",
         "es": "Sexo clásico",
         "fr": "Rapport classique",
-        "ru": "Секс классический"
+        "ru": "Секс классический",
+        "pl": "Seks klasyczny"
       }
     },
     {
@@ -2460,7 +3296,8 @@
         "de": "Analsex",
         "es": "Sexo anal",
         "fr": "Rapport anal",
-        "ru": "Секс анальный"
+        "ru": "Секс анальный",
+        "pl": "Seks analny"
       }
     },
     {
@@ -2477,7 +3314,8 @@
         "de": "Gruppensex",
         "es": "Sexo en grupo",
         "fr": "Rapport en groupe",
-        "ru": "Секс групповой"
+        "ru": "Секс групповой",
+        "pl": "Seks grupowy"
       }
     },
     {
@@ -2494,7 +3332,8 @@
         "de": "Lesbischer Sex",
         "es": "Sexo lésbico",
         "fr": "Rapport lesbien",
-        "ru": "Секс лесбийский"
+        "ru": "Секс лесбийский",
+        "pl": "Seks lesbijski"
       }
     },
     {
@@ -2511,7 +3350,8 @@
         "de": "Spider-Man",
         "es": "Spider-Man",
         "fr": "Spider-Man",
-        "ru": "Человек-паук"
+        "ru": "Человек-паук",
+        "pl": "Spider-Man"
       }
     },
     {
@@ -2528,7 +3368,8 @@
         "de": "Für Paare",
         "es": "Para parejas",
         "fr": "Pour couples",
-        "ru": "Семейной паре"
+        "ru": "Семейной паре",
+        "pl": "Dla par"
       }
     },
     {
@@ -2545,7 +3386,8 @@
         "de": "Blowjob",
         "es": "Felación",
         "fr": "Fellation",
-        "ru": "Минет"
+        "ru": "Минет",
+        "pl": "Seks oralny"
       }
     },
     {
@@ -2562,7 +3404,8 @@
         "de": "Latex",
         "es": "Látex",
         "fr": "Latex",
-        "ru": "Латексный костюм"
+        "ru": "Латексный костюм",
+        "pl": "Lateks"
       }
     },
     {
@@ -2579,7 +3422,8 @@
         "de": "Lederanzug",
         "es": "Conjunto de cuero",
         "fr": "Tenue en cuir",
-        "ru": "Кожаный костюм"
+        "ru": "Кожаный костюм",
+        "pl": "Skórzany strój"
       }
     },
     {
@@ -2596,7 +3440,8 @@
         "de": "Deep Throat",
         "es": "Garganta profunda",
         "fr": "Gorge profonde",
-        "ru": "Минет глубокий"
+        "ru": "Минет глубокий",
+        "pl": "Głębokie gardło"
       }
     },
     {
@@ -2613,7 +3458,8 @@
         "de": "Krankenschwester",
         "es": "Enfermera",
         "fr": "Infirmière",
-        "ru": "Медсестра"
+        "ru": "Медсестра",
+        "pl": "Pielęgniarka"
       }
     },
     {
@@ -2630,7 +3476,8 @@
         "de": "Kehlenoral",
         "es": "Oral profundo",
         "fr": "Oral profond",
-        "ru": "Минет горловой"
+        "ru": "Минет горловой",
+        "pl": "Oral do gardła"
       }
     },
     {
@@ -2647,7 +3494,8 @@
         "de": "Katze",
         "es": "Gatita",
         "fr": "Chatte",
-        "ru": "Кошка"
+        "ru": "Кошка",
+        "pl": "Kotka"
       }
     },
     {
@@ -2664,7 +3512,8 @@
         "de": "Oral im Auto",
         "es": "Oral en el coche",
         "fr": "Oral en voiture",
-        "ru": "Минет в машине"
+        "ru": "Минет в машине",
+        "pl": "Oral w samochodzie"
       }
     },
     {
@@ -2681,7 +3530,8 @@
         "de": "Zimmermädchen",
         "es": "Sirvienta",
         "fr": "Soubrette",
-        "ru": "Горничная"
+        "ru": "Горничная",
+        "pl": "Pokojówka"
       }
     },
     {
@@ -2698,7 +3548,8 @@
         "de": "Schulmädchen",
         "es": "Colegiala",
         "fr": "Écolière",
-        "ru": "Школьница"
+        "ru": "Школьница",
+        "pl": "Uczennica"
       }
     },
     {
@@ -2715,7 +3566,8 @@
         "de": "Cunnilingus",
         "es": "Cunnilingus",
         "fr": "Cunnilingus",
-        "ru": "Куннилингус"
+        "ru": "Куннилингус",
+        "pl": "Cunnilingus"
       }
     },
     {
@@ -2732,7 +3584,8 @@
         "de": "Polizistin",
         "es": "Policía",
         "fr": "Policière",
-        "ru": "Полицейский"
+        "ru": "Полицейский",
+        "pl": "Policjantka"
       }
     },
     {
@@ -2749,7 +3602,8 @@
         "de": "Küssen",
         "es": "Besos",
         "fr": "Baisers",
-        "ru": "Целуюсь"
+        "ru": "Целуюсь",
+        "pl": "Pocałunki"
       }
     },
     {
@@ -2766,7 +3620,8 @@
         "de": "Teufelin",
         "es": "Diablesa",
         "fr": "Diablesse",
-        "ru": "Дьяволица"
+        "ru": "Дьяволица",
+        "pl": "Diablica"
       }
     },
     {
@@ -2783,7 +3638,8 @@
         "de": "Spielzeug",
         "es": "Juguetes",
         "fr": "Jouets",
-        "ru": "Игрушки"
+        "ru": "Игрушки",
+        "pl": "Zabawki erotyczne"
       }
     },
     {
@@ -2800,7 +3656,8 @@
         "de": "Abschluss auf die Brust",
         "es": "Final en los pechos",
         "fr": "Finition sur la poitrine",
-        "ru": "Окончание на грудь"
+        "ru": "Окончание на грудь",
+        "pl": "Zakończenie na piersi"
       }
     },
     {
@@ -2817,7 +3674,8 @@
         "de": "Abschluss ins Gesicht",
         "es": "Final en la cara",
         "fr": "Finition sur le visage",
-        "ru": "Окончание на лицо"
+        "ru": "Окончание на лицо",
+        "pl": "Zakończenie na twarz"
       }
     },
     {
@@ -2834,7 +3692,8 @@
         "de": "Abschluss in den Mund",
         "es": "Final en la boca",
         "fr": "Finition dans la bouche",
-        "ru": "Окончание в рот"
+        "ru": "Окончание в рот",
+        "pl": "Zakończenie w usta"
       }
     },
     {
@@ -2851,7 +3710,8 @@
         "de": "69er-Stellung",
         "es": "Postura 69",
         "fr": "Position 69",
-        "ru": "Поза 69"
+        "ru": "Поза 69",
+        "pl": "Pozycja 69"
       }
     },
     {
@@ -2868,7 +3728,8 @@
         "de": "Squirting",
         "es": "Squirting",
         "fr": "Squirting",
-        "ru": "Сквирт"
+        "ru": "Сквирт",
+        "pl": "Squirting"
       }
     },
     {
@@ -2883,7 +3744,8 @@
         "de": "Klassische Massage",
         "es": "Masaje clásico",
         "fr": "Massage classique",
-        "ru": "Массаж классический"
+        "ru": "Массаж классический",
+        "pl": "Masaż klasyczny"
       }
     },
     {
@@ -2898,7 +3760,8 @@
         "de": "Professionelle Massage",
         "es": "Masaje profesional",
         "fr": "Massage professionnel",
-        "ru": "Массаж профессиональный"
+        "ru": "Массаж профессиональный",
+        "pl": "Masaż profesjonalny"
       }
     },
     {
@@ -2913,7 +3776,8 @@
         "de": "Entspannungsmassage",
         "es": "Masaje relajante",
         "fr": "Massage relaxant",
-        "ru": "Массаж расслабляющий"
+        "ru": "Массаж расслабляющий",
+        "pl": "Masaż relaksacyjny"
       }
     },
     {
@@ -2928,7 +3792,8 @@
         "de": "Urologische Massage",
         "es": "Masaje urológico",
         "fr": "Massage urologique",
-        "ru": "Массаж урологический"
+        "ru": "Массаж урологический",
+        "pl": "Masaż urologiczny"
       }
     },
     {
@@ -2943,7 +3808,8 @@
         "de": "Erotische Massage",
         "es": "Masaje erótico",
         "fr": "Massage érotique",
-        "ru": "Массаж эротический"
+        "ru": "Массаж эротический",
+        "pl": "Masaż erotyczny"
       }
     },
     {
@@ -2958,7 +3824,8 @@
         "de": "Massage für Paare",
         "es": "Masaje para parejas",
         "fr": "Massage pour couples",
-        "ru": "Массаж семейной паре"
+        "ru": "Массаж семейной паре",
+        "pl": "Masaż dla par"
       }
     },
     {
@@ -2973,7 +3840,8 @@
         "de": "Massagetisch",
         "es": "Camilla de masaje",
         "fr": "Table de massage",
-        "ru": "Массажный стол"
+        "ru": "Массажный стол",
+        "pl": "Stół do masażu"
       }
     },
     {
@@ -2990,7 +3858,8 @@
         "de": "Strapon für den Kunden",
         "es": "Arnés al cliente",
         "fr": "Gode-ceinture au client",
-        "ru": "Страпон клиенту"
+        "ru": "Страпон клиенту",
+        "pl": "Strap-on dla klienta"
       }
     },
     {
@@ -3007,7 +3876,8 @@
         "de": "Strapon für mich",
         "es": "Arnés a mí",
         "fr": "Gode-ceinture sur moi",
-        "ru": "Страпон мне"
+        "ru": "Страпон мне",
+        "pl": "Strap-on dla mnie"
       }
     },
     {
@@ -3024,7 +3894,8 @@
         "de": "Fingern des Kunden",
         "es": "Estimulación manual al cliente",
         "fr": "Doigté au client",
-        "ru": "Фингеринг клиенту"
+        "ru": "Фингеринг клиенту",
+        "pl": "Palcówka dla klienta"
       }
     },
     {
@@ -3041,7 +3912,8 @@
         "de": "Fingern bei mir",
         "es": "Estimulación manual a mí",
         "fr": "Doigté sur moi",
-        "ru": "Фингеринг мне"
+        "ru": "Фингеринг мне",
+        "pl": "Palcówka dla mnie"
       }
     },
     {
@@ -3058,7 +3930,8 @@
         "de": "Profi-Striptease",
         "es": "Striptease profesional",
         "fr": "Striptease professionnel",
-        "ru": "Стриптиз профи"
+        "ru": "Стриптиз профи",
+        "pl": "Striptiz profesjonalny"
       }
     },
     {
@@ -3075,7 +3948,8 @@
         "de": "Amateur-Striptease",
         "es": "Striptease amateur",
         "fr": "Striptease amateur",
-        "ru": "Стриптиз не профи"
+        "ru": "Стриптиз не профи",
+        "pl": "Striptiz amatorski"
       }
     },
     {
@@ -3092,7 +3966,8 @@
         "de": "Leichte Lesbenshow",
         "es": "Show lésbico suave",
         "fr": "Show lesbien soft",
-        "ru": "Лесби-шоу лёгкое"
+        "ru": "Лесби-шоу лёгкое",
+        "pl": "Pokaz lesbijski light"
       }
     },
     {
@@ -3109,7 +3984,8 @@
         "de": "Explizite Lesbenshow",
         "es": "Show lésbico explícito",
         "fr": "Show lesbien explicite",
-        "ru": "Лесби откровенное"
+        "ru": "Лесби откровенное",
+        "pl": "Pokaz lesbijski explicit"
       }
     },
     {
@@ -3126,7 +4002,8 @@
         "de": "Anilingus für den Kunden",
         "es": "Anilingus al cliente",
         "fr": "Anulingus au client",
-        "ru": "Анилингус клиенту"
+        "ru": "Анилингус клиенту",
+        "pl": "Anilingus dla klienta"
       }
     },
     {
@@ -3143,7 +4020,8 @@
         "de": "Anilingus für mich",
         "es": "Anilingus a mí",
         "fr": "Anulingus sur moi",
-        "ru": "Анилингус мне"
+        "ru": "Анилингус мне",
+        "pl": "Anilingus dla mnie"
       }
     },
     {
@@ -3160,7 +4038,8 @@
         "de": "Doppelpenetration",
         "es": "Doble penetración",
         "fr": "Double pénétration",
-        "ru": "Двойное проникновение"
+        "ru": "Двойное проникновение",
+        "pl": "Podwójna penetracja"
       }
     },
     {
@@ -3177,7 +4056,8 @@
         "de": "Ballbusting",
         "es": "Ballbusting",
         "fr": "Ballbusting",
-        "ru": "Боллбастинг"
+        "ru": "Боллбастинг",
+        "pl": "Ballbusting"
       }
     },
     {
@@ -3194,7 +4074,8 @@
         "de": "Herrin",
         "es": "Ama",
         "fr": "Maîtresse",
-        "ru": "Госпожа"
+        "ru": "Госпожа",
+        "pl": "Pani"
       }
     },
     {
@@ -3211,7 +4092,8 @@
         "de": "Dominanz",
         "es": "Dominación",
         "fr": "Domination",
-        "ru": "Доминирование"
+        "ru": "Доминирование",
+        "pl": "Dominacja"
       }
     },
     {
@@ -3228,7 +4110,8 @@
         "de": "Sklavin",
         "es": "Esclava",
         "fr": "Esclave",
-        "ru": "Рабыня"
+        "ru": "Рабыня",
+        "pl": "Niewolnica"
       }
     },
     {
@@ -3245,7 +4128,8 @@
         "de": "Unterwerfung",
         "es": "Sumisión",
         "fr": "Soumission",
-        "ru": "Подчинение"
+        "ru": "Подчинение",
+        "pl": "Uległość"
       }
     },
     {
@@ -3262,7 +4146,8 @@
         "de": "Bondage",
         "es": "Bondage",
         "fr": "Bondage",
-        "ru": "Бондаж"
+        "ru": "Бондаж",
+        "pl": "Bondage"
       }
     },
     {
@@ -3279,7 +4164,8 @@
         "de": "Spanking",
         "es": "Azotes",
         "fr": "Fessée",
-        "ru": "Порка"
+        "ru": "Порка",
+        "pl": "Klapsy"
       }
     },
     {
@@ -3296,7 +4182,8 @@
         "de": "Fetisch",
         "es": "Fetiche",
         "fr": "Fétichisme",
-        "ru": "Фетиш"
+        "ru": "Фетиш",
+        "pl": "Fetysze"
       }
     },
     {
@@ -3313,7 +4200,8 @@
         "de": "Trampling",
         "es": "Trampling",
         "fr": "Trampling",
-        "ru": "Трамплинг"
+        "ru": "Трамплинг",
+        "pl": "Deptanie"
       }
     },
     {
@@ -3330,7 +4218,8 @@
         "de": "Shibari",
         "es": "Shibari",
         "fr": "Shibari",
-        "ru": "Шибари"
+        "ru": "Шибари",
+        "pl": "Shibari"
       }
     },
     {
@@ -3347,7 +4236,8 @@
         "de": "Facesitting",
         "es": "Facesitting",
         "fr": "Facesitting",
-        "ru": "Фейсситтинг"
+        "ru": "Фейсситтинг",
+        "pl": "Facesitting"
       }
     },
     {
@@ -3362,7 +4252,8 @@
         "de": "Bei mir",
         "es": "En mi lugar",
         "fr": "Chez moi",
-        "ru": "У себя"
+        "ru": "У себя",
+        "pl": "U mnie"
       }
     },
     {
@@ -3377,7 +4268,8 @@
         "de": "Hausbesuch",
         "es": "A domicilio",
         "fr": "Chez vous",
-        "ru": "Выезд"
+        "ru": "Выезд",
+        "pl": "Dojazd"
       }
     },
     {
@@ -3394,7 +4286,8 @@
         "de": "Hotelbesuch",
         "es": "Visita al hotel",
         "fr": "Visite à l'hôtel",
-        "ru": "Визит в отель"
+        "ru": "Визит в отель",
+        "pl": "Wizyta w hotelu"
       }
     },
     {
@@ -3411,7 +4304,8 @@
         "de": "Freundinnenerlebnis (GFE)",
         "es": "Experiencia de novia (GFE)",
         "fr": "Expérience petite amie (GFE)",
-        "ru": "Опыт девушки (GFE)"
+        "ru": "Опыт девушки (GFE)",
+        "pl": "Doświadczenie dziewczyny (GFE)"
       }
     },
     {
@@ -3428,7 +4322,8 @@
         "de": "Gemeinsam duschen",
         "es": "Ducha juntos",
         "fr": "Douche ensemble",
-        "ru": "Душ вместе"
+        "ru": "Душ вместе",
+        "pl": "Wspólny prysznic"
       }
     },
     {
@@ -3445,7 +4340,8 @@
         "de": "Rollenspiel / Uniform",
         "es": "Juego de roles / uniforme",
         "fr": "Jeu de rôle / uniforme",
-        "ru": "Ролевые игры / униформа"
+        "ru": "Ролевые игры / униформа",
+        "pl": "Odgrywanie ról / mundurki"
       }
     },
     {
@@ -3462,7 +4358,8 @@
         "de": "Handjob",
         "es": "Masturbación manual",
         "fr": "Masturbation manuelle",
-        "ru": "Хэндджоб"
+        "ru": "Хэндджоб",
+        "pl": "Masaż ręką"
       }
     },
     {
@@ -3479,7 +4376,8 @@
         "de": "Sex zwischen den Brüsten",
         "es": "Sexo entre los pechos",
         "fr": "Sexe entre les seins",
-        "ru": "Секс между грудей"
+        "ru": "Секс между грудей",
+        "pl": "Seks między piersiami"
       }
     },
     {
@@ -3496,7 +4394,8 @@
         "de": "Kamasutra",
         "es": "Kamasutra",
         "fr": "Kamasutra",
-        "ru": "Камасутра"
+        "ru": "Камасутра",
+        "pl": "Kamasutra"
       }
     },
     {
@@ -3513,7 +4412,8 @@
         "de": "Masturbationsshow",
         "es": "Show de masturbación",
         "fr": "Spectacle de masturbation",
-        "ru": "Мастурбация"
+        "ru": "Мастурбация",
+        "pl": "Pokaz masturbacji"
       }
     },
     {
@@ -3530,7 +4430,8 @@
         "de": "Fußfetisch",
         "es": "Fetichismo de pies",
         "fr": "Fétichisme des pieds",
-        "ru": "Фут-фетишизм"
+        "ru": "Фут-фетишизм",
+        "pl": "Fetysz stóp"
       }
     },
     {
@@ -3547,7 +4448,8 @@
         "de": "Fotos während des Treffens",
         "es": "Fotos durante la cita",
         "fr": "Photos pendant le rendez-vous",
-        "ru": "Обычные фотографии"
+        "ru": "Обычные фотографии",
+        "pl": "Zdjęcia podczas spotkania"
       }
     },
     {
@@ -3564,7 +4466,8 @@
         "de": "Erotische Fotos",
         "es": "Fotos eróticas",
         "fr": "Photos érotiques",
-        "ru": "Эротические фотографии"
+        "ru": "Эротические фотографии",
+        "pl": "Zdjęcia erotyczne"
       }
     },
     {
@@ -3581,7 +4484,8 @@
         "de": "Zusatzrunde",
         "es": "Ronda extra",
         "fr": "Tour supplémentaire",
-        "ru": "Экстрабол"
+        "ru": "Экстрабол",
+        "pl": "Dodatkowa runda"
       }
     },
     {
@@ -3598,7 +4502,8 @@
         "de": "Pornostar-Erlebnis (PSE)",
         "es": "Experiencia porno (PSE)",
         "fr": "Expérience actrice porno (PSE)",
-        "ru": "Порнозвезда на час (PSE)"
+        "ru": "Порнозвезда на час (PSE)",
+        "pl": "Doświadczenie gwiazdy porno (PSE)"
       }
     },
     {
@@ -3615,7 +4520,8 @@
         "de": "Dirty Talk",
         "es": "Conversación subida de tono",
         "fr": "Paroles coquines",
-        "ru": "Грязный разговор"
+        "ru": "Грязный разговор",
+        "pl": "Rozmowy na ostro"
       }
     },
     {
@@ -3632,7 +4538,8 @@
         "de": "Golden Shower (geben)",
         "es": "Lluvia dorada (dar)",
         "fr": "Douche dorée (donner)",
-        "ru": "Золотой дождь давать"
+        "ru": "Золотой дождь давать",
+        "pl": "Złoty deszcz (aktywny)"
       }
     },
     {
@@ -3649,7 +4556,8 @@
         "de": "Golden Shower (empfangen)",
         "es": "Lluvia dorada (recibir)",
         "fr": "Douche dorée (recevoir)",
-        "ru": "Золотой дождь получить"
+        "ru": "Золотой дождь получить",
+        "pl": "Złoty deszcz (pasywny)"
       }
     },
     {
@@ -3666,7 +4574,8 @@
         "de": "Finanzielle Dominanz (Findom)",
         "es": "Dominación financiera (findom)",
         "fr": "Domination financière (findom)",
-        "ru": "Финансовое доминирование (Findom)"
+        "ru": "Финансовое доминирование (Findom)",
+        "pl": "Dominacja finansowa (findom)"
       }
     }
   ]

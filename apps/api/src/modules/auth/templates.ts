@@ -64,6 +64,14 @@ const VERIFY: Record<Locale, Copy> = {
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'Ссылка действует 24 часа. Если вы не регистрировались, просто удалите это письмо.',
   },
+  pl: {
+    subject: 'Noova — potwierdź swój adres e-mail',
+    heading: 'Witaj w Noova',
+    intro: 'Potwierdź swój adres e-mail, aby dokończyć rejestrację.',
+    button: 'Potwierdź adres e-mail',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Link jest ważny przez 24 godziny. Jeśli to nie Ty się rejestrowałeś, zignoruj tę wiadomość.',
+  },
 };
 
 const RESET: Record<Locale, Copy> = {
@@ -106,6 +114,14 @@ const RESET: Record<Locale, Copy> = {
     button: 'Задать новый пароль',
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'Ссылка действует час. Если вы не запрашивали сброс, просто удалите это письмо — пароль останется прежним.',
+  },
+  pl: {
+    subject: 'Noova — resetowanie hasła',
+    heading: 'Ustaw nowe hasło',
+    intro: 'Poprosiłeś o ustawienie nowego hasła do konta Noova.',
+    button: 'Zresetuj hasło',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Link jest ważny przez godzinę. Jeśli to nie Ty o to prosiłeś, zignoruj tę wiadomość — hasło pozostanie bez zmian.',
   },
 };
 
@@ -152,6 +168,13 @@ const TAKEN: Record<Locale, Copy> = {
     intro: 'На этот адрес уже зарегистрирована учётная запись.',
     fallback: '',
     note: 'Если это были вы — просто войдите или восстановите пароль. Если нет — делать ничего не нужно.',
+  },
+  pl: {
+    subject: 'Noova — próba rejestracji',
+    heading: 'Konto już istnieje',
+    intro: 'Na ten adres jest już zarejestrowane konto.',
+    fallback: '',
+    note: 'Jeśli to byłeś Ty, po prostu zaloguj się lub zresetuj hasło. W przeciwnym razie nic nie musisz robić.',
   },
 };
 
@@ -232,6 +255,19 @@ const WELCOME_INDIVIDUAL: Record<Locale, Copy> = {
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'Проверка обычно занимает немного времени.',
   },
+  pl: {
+    subject: 'Noova — jak opublikować profil',
+    heading: 'Jesteś u nas. Opublikujmy Twój profil.',
+    intro: 'Witaj w Noova. Oto jak zacząć:',
+    steps: [
+      'Uzupełnij profil',
+      'Przejdź szybką weryfikację treści',
+      'Opublikuj profil i pojaw się w katalogu',
+    ],
+    button: 'Uzupełnij mój profil',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Weryfikacja zwykle nie trwa długo.',
+  },
 };
 
 const WELCOME_AGENCY: Record<Locale, Copy> = {
@@ -304,6 +340,20 @@ const WELCOME_AGENCY: Record<Locale, Copy> = {
     button: 'Заполнить профиль',
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'Проверка обычно занимает немного времени.',
+  },
+  pl: {
+    subject: 'Noova — jak opublikować profile',
+    heading: 'Jesteś u nas. Opublikujmy Wasze profile.',
+    intro: 'Witaj w Noova. Oto jak zacząć:',
+    steps: [
+      'Uzupełnij profil agencji',
+      'Dodaj pierwszy profil modelki',
+      'Przejdź szybką weryfikację treści',
+      'Opublikuj profil i pojaw się w katalogu',
+    ],
+    button: 'Uzupełnij mój profil',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Weryfikacja zwykle nie trwa długo.',
   },
 };
 

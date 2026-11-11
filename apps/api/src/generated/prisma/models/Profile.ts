@@ -68,6 +68,7 @@ export type ProfileMinAggregateOutputType = {
   hasManualLocation: boolean | null
   fromPriceCents: number | null
   isFeatured: boolean | null
+  isPremium: boolean | null
   isVerified: boolean | null
   lastSeenAt: Date | null
   publishedAt: Date | null
@@ -113,6 +114,7 @@ export type ProfileMaxAggregateOutputType = {
   hasManualLocation: boolean | null
   fromPriceCents: number | null
   isFeatured: boolean | null
+  isPremium: boolean | null
   isVerified: boolean | null
   lastSeenAt: Date | null
   publishedAt: Date | null
@@ -160,6 +162,7 @@ export type ProfileCountAggregateOutputType = {
   hasManualLocation: number
   fromPriceCents: number
   isFeatured: number
+  isPremium: number
   isVerified: number
   lastSeenAt: number
   publishedAt: number
@@ -228,6 +231,7 @@ export type ProfileMinAggregateInputType = {
   hasManualLocation?: true
   fromPriceCents?: true
   isFeatured?: true
+  isPremium?: true
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
@@ -273,6 +277,7 @@ export type ProfileMaxAggregateInputType = {
   hasManualLocation?: true
   fromPriceCents?: true
   isFeatured?: true
+  isPremium?: true
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
@@ -320,6 +325,7 @@ export type ProfileCountAggregateInputType = {
   hasManualLocation?: true
   fromPriceCents?: true
   isFeatured?: true
+  isPremium?: true
   isVerified?: true
   lastSeenAt?: true
   publishedAt?: true
@@ -455,6 +461,7 @@ export type ProfileGroupByOutputType = {
   hasManualLocation: boolean
   fromPriceCents: number | null
   isFeatured: boolean
+  isPremium: boolean
   isVerified: boolean
   lastSeenAt: Date | null
   publishedAt: Date | null
@@ -526,6 +533,7 @@ export type ProfileWhereInput = {
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
   fromPriceCents?: Prisma.IntNullableFilter<"Profile"> | number | null
   isFeatured?: Prisma.BoolFilter<"Profile"> | boolean
+  isPremium?: Prisma.BoolFilter<"Profile"> | boolean
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
@@ -593,6 +601,7 @@ export type ProfileOrderByWithRelationInput = {
   hasManualLocation?: Prisma.SortOrder
   fromPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  isPremium?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -663,6 +672,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
   fromPriceCents?: Prisma.IntNullableFilter<"Profile"> | number | null
   isFeatured?: Prisma.BoolFilter<"Profile"> | boolean
+  isPremium?: Prisma.BoolFilter<"Profile"> | boolean
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
@@ -730,6 +740,7 @@ export type ProfileOrderByWithAggregationInput = {
   hasManualLocation?: Prisma.SortOrder
   fromPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  isPremium?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -786,6 +797,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   hasManualLocation?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   fromPriceCents?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
+  isPremium?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   isVerified?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
@@ -829,6 +841,7 @@ export type ProfileCreateInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -896,6 +909,7 @@ export type ProfileUncheckedCreateInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -953,6 +967,7 @@ export type ProfileUpdateInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1020,6 +1035,7 @@ export type ProfileUncheckedUpdateInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1082,6 +1098,7 @@ export type ProfileCreateManyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -1125,6 +1142,7 @@ export type ProfileUpdateManyMutationInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1173,6 +1191,7 @@ export type ProfileUncheckedUpdateManyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1247,6 +1266,7 @@ export type ProfileCountOrderByAggregateInput = {
   hasManualLocation?: Prisma.SortOrder
   fromPriceCents?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  isPremium?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -1303,6 +1323,7 @@ export type ProfileMaxOrderByAggregateInput = {
   hasManualLocation?: Prisma.SortOrder
   fromPriceCents?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  isPremium?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -1348,6 +1369,7 @@ export type ProfileMinOrderByAggregateInput = {
   hasManualLocation?: Prisma.SortOrder
   fromPriceCents?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
+  isPremium?: Prisma.SortOrder
   isVerified?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -1887,6 +1909,7 @@ export type ProfileCreateWithoutOwnerInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -1952,6 +1975,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2043,6 +2067,7 @@ export type ProfileScalarWhereInput = {
   hasManualLocation?: Prisma.BoolFilter<"Profile"> | boolean
   fromPriceCents?: Prisma.IntNullableFilter<"Profile"> | number | null
   isFeatured?: Prisma.BoolFilter<"Profile"> | boolean
+  isPremium?: Prisma.BoolFilter<"Profile"> | boolean
   isVerified?: Prisma.BoolFilter<"Profile"> | boolean
   lastSeenAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   publishedAt?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
@@ -2086,6 +2111,7 @@ export type ProfileCreateWithoutCountryInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2151,6 +2177,7 @@ export type ProfileUncheckedCreateWithoutCountryInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2234,6 +2261,7 @@ export type ProfileCreateWithoutCityInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2299,6 +2327,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2382,6 +2411,7 @@ export type ProfileCreateWithoutDistrictInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2447,6 +2477,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2530,6 +2561,7 @@ export type ProfileCreateWithoutPhotosInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2596,6 +2628,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2668,6 +2701,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2734,6 +2768,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2790,6 +2825,7 @@ export type ProfileCreateWithoutReportsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2856,6 +2892,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -2928,6 +2965,7 @@ export type ProfileUpdateWithoutReportsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2994,6 +3032,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3050,6 +3089,7 @@ export type ProfileCreateWithoutCommentsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3116,6 +3156,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3188,6 +3229,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3254,6 +3296,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3310,6 +3353,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3376,6 +3420,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3448,6 +3493,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3514,6 +3560,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3570,6 +3617,7 @@ export type ProfileCreateWithoutCompanyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3635,6 +3683,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3718,6 +3767,7 @@ export type ProfileCreateWithoutHoursInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3784,6 +3834,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -3856,6 +3907,7 @@ export type ProfileUpdateWithoutHoursInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3922,6 +3974,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3978,6 +4031,7 @@ export type ProfileCreateWithoutContactsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4044,6 +4098,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4116,6 +4171,7 @@ export type ProfileUpdateWithoutContactsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4182,6 +4238,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4238,6 +4295,7 @@ export type ProfileCreateWithoutEventsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4304,6 +4362,7 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4376,6 +4435,7 @@ export type ProfileUpdateWithoutEventsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4442,6 +4502,7 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4498,6 +4559,7 @@ export type ProfileCreateWithoutEventsDailyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4564,6 +4626,7 @@ export type ProfileUncheckedCreateWithoutEventsDailyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4636,6 +4699,7 @@ export type ProfileUpdateWithoutEventsDailyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4702,6 +4766,7 @@ export type ProfileUncheckedUpdateWithoutEventsDailyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4758,6 +4823,7 @@ export type ProfileCreateWithoutPricesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4824,6 +4890,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -4896,6 +4963,7 @@ export type ProfileUpdateWithoutPricesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4962,6 +5030,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5018,6 +5087,7 @@ export type ProfileCreateWithoutServicesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5084,6 +5154,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5156,6 +5227,7 @@ export type ProfileUpdateWithoutServicesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5222,6 +5294,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5278,6 +5351,7 @@ export type ProfileCreateWithoutVerificationInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5344,6 +5418,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5416,6 +5491,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5482,6 +5558,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5538,6 +5615,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5604,6 +5682,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5676,6 +5755,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5742,6 +5822,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5798,6 +5879,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5864,6 +5946,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -5936,6 +6019,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6002,6 +6086,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6058,6 +6143,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -6124,6 +6210,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -6196,6 +6283,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6262,6 +6350,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6322,6 +6411,7 @@ export type ProfileCreateManyOwnerInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -6365,6 +6455,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6430,6 +6521,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6491,6 +6583,7 @@ export type ProfileUncheckedUpdateManyWithoutOwnerInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6538,6 +6631,7 @@ export type ProfileCreateManyCountryInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -6581,6 +6675,7 @@ export type ProfileUpdateWithoutCountryInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6646,6 +6741,7 @@ export type ProfileUncheckedUpdateWithoutCountryInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6707,6 +6803,7 @@ export type ProfileUncheckedUpdateManyWithoutCountryInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6754,6 +6851,7 @@ export type ProfileCreateManyCityInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -6797,6 +6895,7 @@ export type ProfileUpdateWithoutCityInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6862,6 +6961,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6923,6 +7023,7 @@ export type ProfileUncheckedUpdateManyWithoutCityInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6970,6 +7071,7 @@ export type ProfileCreateManyDistrictInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -7013,6 +7115,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7078,6 +7181,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7139,6 +7243,7 @@ export type ProfileUncheckedUpdateManyWithoutDistrictInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7186,6 +7291,7 @@ export type ProfileCreateManyCompanyInput = {
   hasManualLocation?: boolean
   fromPriceCents?: number | null
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: Date | string | null
   publishedAt?: Date | string | null
@@ -7229,6 +7335,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7294,6 +7401,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7355,6 +7463,7 @@ export type ProfileUncheckedUpdateManyWithoutCompanyInput = {
   hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7533,6 +7642,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   hasManualLocation?: boolean
   fromPriceCents?: boolean
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
@@ -7601,6 +7711,7 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   hasManualLocation?: boolean
   fromPriceCents?: boolean
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
@@ -7654,6 +7765,7 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   hasManualLocation?: boolean
   fromPriceCents?: boolean
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
@@ -7707,6 +7819,7 @@ export type ProfileSelectScalar = {
   hasManualLocation?: boolean
   fromPriceCents?: boolean
   isFeatured?: boolean
+  isPremium?: boolean
   isVerified?: boolean
   lastSeenAt?: boolean
   publishedAt?: boolean
@@ -7731,7 +7844,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "countryId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "needsEditBeforeResubmit" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "slug" | "kind" | "status" | "displayName" | "description" | "companyId" | "address" | "directions" | "minSessionMinutes" | "bookingPolicy" | "website" | "payments" | "amenities" | "ownerId" | "cityId" | "districtId" | "countryId" | "approxLat" | "approxLng" | "hasManualLocation" | "fromPriceCents" | "isFeatured" | "isPremium" | "isVerified" | "lastSeenAt" | "publishedAt" | "unpaidAt" | "age" | "heightCm" | "weightKg" | "languages" | "hairColor" | "eyeColor" | "breastSize" | "breastType" | "bodyType" | "pubicHair" | "hasPiercing" | "hasTattoos" | "appearanceType" | "smoker" | "moderationNote" | "needsEditBeforeResubmit" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.Profile$companyArgs<ExtArgs>
   hours?: boolean | Prisma.Profile$hoursArgs<ExtArgs>
@@ -7862,6 +7975,13 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
      * фильтра «ТОП» без джойна.
      */
     isFeatured: boolean
+    /**
+     * Premium: подписка действует в месте с бесплатным размещением — там она
+     * необязательный буст, а не условие публикации. Производная: пересчитывается
+     * `syncPremium` при смене подписки, правил размещения и места анкеты. Значок
+     * отличается от ТОПа; даёт приоритет в выдаче.
+     */
+    isPremium: boolean
     isVerified: boolean
     lastSeenAt: Date | null
     publishedAt: Date | null
@@ -8373,6 +8493,7 @@ export interface ProfileFieldRefs {
   readonly hasManualLocation: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly fromPriceCents: Prisma.FieldRef<"Profile", 'Int'>
   readonly isFeatured: Prisma.FieldRef<"Profile", 'Boolean'>
+  readonly isPremium: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly isVerified: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly lastSeenAt: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly publishedAt: Prisma.FieldRef<"Profile", 'DateTime'>

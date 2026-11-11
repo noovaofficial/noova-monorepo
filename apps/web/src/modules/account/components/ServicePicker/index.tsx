@@ -1,21 +1,27 @@
 'use client';
 
 import type { ProfileServiceInput, ServiceGroup } from '@noova/shared';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { currencySymbol, minorFactor } from '@/shared/format';
 import styles from '../Account.module.css';
 
 type Props = {
   catalog: ServiceGroup[];
   selected: ProfileServiceInput[];
   onChange: (next: ProfileServiceInput[]) => void;
+  /** Валюта страны анкеты (ISO 4217): доплата вводится в ней. */
+  currency?: string;
 };
 
 /**
  * Выбор услуг из справочника. Свободного ввода нет намеренно: набранные руками
  * названия расходятся в написании, не переводятся и не годятся для фильтров.
  */
-export function ServicePicker({ catalog, selected, onChange }: Props) {
+export function ServicePicker({ catalog, selected, onChange, currency = 'EUR' }: Props) {
   const t = useTranslations('account');
+  const locale = useLocale();
+  const factor = minorFactor(currency);
+  const symbol = currencySymbol(currency, locale);
 
   const byKey = new Map(selected.map((s) => [s.key, s]));
 
@@ -28,7 +34,21 @@ export function ServicePicker({ catalog, selected, onChange }: Props) {
   };
 
   const toggleExtra = (key: string) => {
-    onChange(selected.map((s) => (s.key === key ? { ...s, isExtra: !s.isExtra } : s)));
+    // Снятая доплата забирает с собой и цену: она без неё не имеет смысла.
+    onChange(
+      selected.map((s) =>
+        s.key === key ? { ...s, isExtra: !s.isExtra, extraPriceCents: null } : s,
+      ),
+    );
+  };
+
+  const setPrice = (key: string, value: string) => {
+    const normalized = value.replace(',', '.').trim();
+    const cents =
+      normalized === '' || Number.isNaN(Number(normalized))
+        ? null
+        : Math.max(0, Math.round(Number(normalized) * factor));
+    onChange(selected.map((s) => (s.key === key ? { ...s, extraPriceCents: cents } : s)));
   };
 
   return (
@@ -57,6 +77,26 @@ export function ServicePicker({ catalog, selected, onChange }: Props) {
                     />
                     <span className={styles.serviceName}>{service.name}</span>
                   </label>
+
+                  {picked?.isExtra ? (
+                    <label className={styles.extraPrice}>
+                      <span className="visually-hidden">
+                        {t('extraPriceLabel', { service: service.name, currency: symbol })}
+                      </span>
+                      <input
+                        className={styles.extraPriceInput}
+                        inputMode="decimal"
+                        placeholder={t('extraPricePlaceholder')}
+                        value={
+                          picked.extraPriceCents == null
+                            ? ''
+                            : String(picked.extraPriceCents / factor)
+                        }
+                        onChange={(event) => setPrice(service.key, event.target.value)}
+                      />
+                      <span className={styles.extraPriceCurrency}>{symbol}</span>
+                    </label>
+                  ) : null}
 
                   {picked ? (
                     <button

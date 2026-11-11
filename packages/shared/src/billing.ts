@@ -213,6 +213,19 @@ export function toAdminGlobalBilling(config: GlobalBillingConfig): AdminGlobalBi
   };
 }
 
+/**
+ * Правило размещения для аккаунта рекламодателя (страна × тип): кабинет по нему
+ * решает, что говорить о подписке — она обязательна, необязательна (бесплатное
+ * место, подписка даёт бусты) или публикация здесь закрыта.
+ */
+export const placementStateSchema = z.object({
+  paid: z.boolean(),
+  allowed: z.boolean(),
+  /** Конец льготного срока после перехода «бесплатно → платно»; иначе `null`. */
+  graceEndsAt: z.string().datetime().nullable(),
+});
+export type PlacementState = z.infer<typeof placementStateSchema>;
+
 /** Прайс, каким его видят кабинет и витрина: конфигурация плюс начисления. */
 export const priceBookSchema = billingConfigInputSchema.extend({
   topupTiers: z.array(topupTierSchema),

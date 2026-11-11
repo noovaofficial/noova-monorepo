@@ -17,6 +17,7 @@ import {
   rejectVerification,
   resolveReport,
 } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys, queryPrefixes } from '@/shared/query-keys';
 import { BlockedProfiles } from '../BlockedProfiles';
@@ -71,6 +72,7 @@ const INFO_TABS: ReadonlySet<Tab> = new Set<Tab>(['blockedProfiles', 'blocked'])
 
 export function ModerationQueue() {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -181,7 +183,11 @@ export function ModerationQueue() {
         })}
       </div>
 
-      {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
+      {error ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(decision.error ?? queue.error, t(error))}
+        </p>
+      ) : null}
 
       {tab === 'identity' ? (
         <VerificationRequests />

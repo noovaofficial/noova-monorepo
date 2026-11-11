@@ -3,7 +3,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { CatalogResults } from '@/modules/catalog/components/CatalogResults';
-import { parseFilters } from '@/modules/filters/params';
+import { EmptyResults } from '@/modules/catalog/components/EmptyResults';
+import { countActiveFilters, parseFilters } from '@/modules/filters/params';
 import { fetchProfileCount, fetchProfiles, safely } from '@/shared/api';
 import { requireLocation } from '@/shared/city';
 import { socialMeta } from '@/shared/metadata';
@@ -147,10 +148,19 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       </div>
 
       {page.items.length === 0 ? (
-        <div className={styles.empty}>
-          <p className={styles.emptyTitle}>{t('empty')}</p>
-          <p>{t('emptyHint')}</p>
-        </div>
+        <EmptyResults
+          // С активными фильтрами пусто, скорее всего, из-за них, а не из-за
+          // города: совет «посмотрите страну» был бы не по делу.
+          city={
+            resolved.type === 'city' && countActiveFilters(queryString) === 0
+              ? {
+                  cityName: resolved.city.name,
+                  countryName: resolved.city.country.name,
+                  countryHref: `/${resolved.city.country.code.toLowerCase()}/catalog/${kind}`,
+                }
+              : undefined
+          }
+        />
       ) : (
         <CatalogResults
           locale={locale as never}

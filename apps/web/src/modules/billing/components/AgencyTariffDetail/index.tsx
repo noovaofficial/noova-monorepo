@@ -39,6 +39,7 @@ import {
 } from '@/modules/moderation/components/icons';
 import moderationStyles from '@/modules/moderation/components/Moderation.module.css';
 import { ProfileSummaryList } from '@/modules/moderation/components/ProfileSummaryList';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import sharedStyles from '../MonetizationSettings/MonetizationSettings.module.css';
@@ -59,6 +60,7 @@ const NO_TIER = '';
  */
 export function AgencyTariffDetail({ companyId }: { companyId: string }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
   const { user } = useSession();
   const router = useRouter();
@@ -181,7 +183,8 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
   const [customLimit, setCustomLimit] = useState<string | null>(null);
   const [customPrices, setCustomPrices] = useState<Record<PlanTerm, string> | null>(null);
 
-  if (state.isError) return <p className={sharedStyles.empty}>{t('loadFailed')}</p>;
+  if (state.isError)
+    return <p className={sharedStyles.empty}>{explain(state.error, t('loadFailed'))}</p>;
   if (!state.data) return <p className={sharedStyles.empty}>{t('loading')}</p>;
   const data = state.data;
 
@@ -347,7 +350,9 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
               </Button>
             </div>
             {grantTop.isError ? (
-              <span className={sharedStyles.hint}>{t('topGrantFailed')}</span>
+              <span className={sharedStyles.hint}>
+                {explain(grantTop.error, t('topGrantFailed'))}
+              </span>
             ) : null}
           </ActionCard>
         ) : null}
@@ -503,7 +508,7 @@ export function AgencyTariffDetail({ companyId }: { companyId: string }) {
           ) : null}
           {save.isError ? (
             <p className={`${sharedStyles.notice} ${sharedStyles.noticeError}`}>
-              {t('saveFailed')}
+              {explain(save.error, t('saveFailed'))}
             </p>
           ) : null}
 

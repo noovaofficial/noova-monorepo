@@ -83,6 +83,7 @@ type ProfileCardRow = {
   fromPriceCents: number | null;
   isVerified: boolean;
   isFeatured: boolean;
+  isPremium: boolean;
   lastSeenAt: Date | null;
 };
 
@@ -106,6 +107,7 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
     fromPrice: toMoney(row.fromPriceCents, row.city.country.currency),
     isVerified: row.isVerified,
     isFeatured: row.isFeatured,
+    isPremium: row.isPremium,
     isOnline: isOnline(row.lastSeenAt),
   };
 }
@@ -140,6 +142,7 @@ type ProfileDetailRow = Omit<ProfileCardRow, 'services'> & {
   prices: { durationMinutes: number; incallCents: number | null; outcallCents: number | null }[];
   services: {
     isExtra: boolean;
+    extraPriceCents: number | null;
     service: { key: string; group: string; translations?: Translations };
   }[];
   verification: { reviewedAt: Date | null; status: string } | null;
@@ -193,6 +196,7 @@ export function toProfileDetail(
       // Service и переводом группы нет — группа хранится строкой.
       groupName: groupNames?.get(s.service.group) ?? s.service.group,
       extra: s.isExtra,
+      extraPrice: s.isExtra ? toMoney(s.extraPriceCents, row.city.country.currency) : null,
     })),
     // Дубли убираем здесь: два номера WhatsApp дают одну строку в интерфейсе.
     contactTypes: [...new Set(row.contacts.map((c) => c.type))],

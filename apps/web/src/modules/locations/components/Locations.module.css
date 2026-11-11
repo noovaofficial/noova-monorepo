@@ -235,6 +235,11 @@
   color: var(--primaryText);
 }
 
+.tab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .tabActive {
   color: var(--primary);
   border-bottom-color: var(--primary);
@@ -269,4 +274,46 @@
   color: var(--secondaryText);
   font-size: var(--textSm);
   line-height: var(--leadingNormal);
+}
+
+/* Диалог подтверждения (снять анкеты с публикации). */
+.dialogWrap {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space4);
+}
+
+.dialogBackdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 0.5);
+  cursor: default;
+}
+
+.dialogCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space3);
+  width: min(480px, 100%);
+  padding: var(--space5);
+  border-radius: var(--radiusLg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.dialogTitle {
+  font-weight: 600;
+  font-size: var(--textLg);
+}
+
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space2);
 }

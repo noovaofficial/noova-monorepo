@@ -1,9 +1,10 @@
 'use client';
 
-import type { CurrentUser } from '@noova/shared';
+import type { CurrentUser, Locale } from '@noova/shared';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { createContext, type ReactNode, useCallback, useContext, useEffect } from 'react';
-import { fetchCurrentUser, logout as logoutRequest } from '@/modules/auth/api';
+import { useLocale } from 'next-intl';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useRef } from 'react';
+import { fetchCurrentUser, logout as logoutRequest, saveLocale } from '@/modules/auth/api';
 import {
   applyStoredSessionHint,
   clearSessionHint,
@@ -48,6 +49,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const user = session.data ?? null;
+
+  // Язык писем следует за языком сайта: если человек вошёл и видит сайт на
+  // другом языке, чем сохранён у него, запоминаем текущий. Раз на расхождение —
+  // ответ сервера обновит кэш сессии, и условие перестанет выполняться.
+  const siteLocale = useLocale() as Locale;
+  const syncedLocale = useRef<string | null>(null);
+  useEffect(() => {
+    if (!user || user.locale === siteLocale || syncedLocale.current === siteLocale) return;
+    syncedLocale.current = siteLocale;
+    void saveLocale(siteLocale).then(() =>
+      queryClient.setQueryData(queryKeys.session(), { ...user, locale: siteLocale }),
+    );
+  }, [user, siteLocale, queryClient]);
   const status: SessionStatus = session.isPending
     ? 'loading'
     : user

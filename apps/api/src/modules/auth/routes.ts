@@ -7,12 +7,14 @@ import {
   passwordResetConfirmSchema,
   passwordResetRequestSchema,
   registerSchema,
+  updateLocaleSchema,
   verifyEmailSchema,
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { resolveAccountLocation, throwLocationProblem } from '../locations/account-location.js';
 import { MailQueue } from './mail-queue.js';
 import { createMailer, localeOf, mailLink } from './mailer.js';
 import { toCurrentUser } from './mappers.js';
@@ -21,6 +23,13 @@ import { emailTakenMail, resetPasswordMail, verifyEmailMail, welcomeMail } from 
 import { EMAIL_TOKEN_TTL_MS, generateToken, hashToken, RESET_TOKEN_TTL_MS } from './tokens.js';
 
 const ACK = { ok: true } as const;
+
+/** Всё, из чего собирается `CurrentUser`: профиль клиента и место рекламодателя. */
+const USER_INCLUDE = {
+  clientProfile: true,
+  country: { select: { code: true } },
+  city: { select: { slug: true } },
+} as const;
 
 export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
   const mailer = createMailer(fastify.log);
@@ -55,6 +64,20 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         if (taken) throw fastify.httpErrors.conflict('Никнейм занят');
       }
 
+      // Место проверяем до всего остального: в закрытой для типа стране
+      // аккаунт не заводится. Ответ не зависит от email, поэтому оракулом
+      // «есть ли такая учётка» он не становится.
+      let location: { countryId: string; cityId: string | null } | null = null;
+      if (input.role === 'advertiser') {
+        const resolved = await resolveAccountLocation(fastify.prisma, {
+          kind: input.advertiserKind,
+          countryCode: input.countryCode,
+          citySlug: input.citySlug,
+        });
+        if ('problem' in resolved) throwLocationProblem(fastify, resolved.problem);
+        location = resolved.location;
+      }
+
       const existing = await fastify.prisma.user.findUnique({
         where: { email: input.email },
         select: { id: true, locale: true },
@@ -65,7 +88,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (existing) {
         // Письмо уходит настоящему владельцу адреса, поэтому язык берём его,
         // а не того, кто сейчас заполнял форму.
-        mails.enqueue({ to: input.email, ...emailTakenMail(localeOf(existing.locale)) });
+        mails.enqueue({ to: input.email, ...emailTakenMail(locale) });
         return ACK;
       }
 
@@ -78,7 +101,13 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
           passwordHash,
           role: input.role,
           locale,
-          ...(input.role === 'advertiser' ? { advertiserKind: input.advertiserKind } : {}),
+          ...(input.role === 'advertiser'
+            ? {
+                advertiserKind: input.advertiserKind,
+                countryId: location?.countryId ?? null,
+                cityId: location?.cityId ?? null,
+              }
+            : {}),
           ...(input.role === 'client'
             ? {
                 clientProfile: {
@@ -125,7 +154,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const user = await fastify.prisma.user.findUnique({
         where: { email },
-        include: { clientProfile: true },
+        include: USER_INCLUDE,
       });
 
       if (!user) {
@@ -157,6 +186,26 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       await fastify.createSession(reply, { userId: user.id, role: user.role });
       return toCurrentUser(user);
+    },
+  );
+
+  /**
+   * Язык писем следует за языком сайта: сохранённый при регистрации устаревает,
+   * как только человек переключил сайт, и письма продолжали бы идти на старом.
+   * Клиент зовёт это, когда видит расхождение после входа.
+   */
+  fastify.put(
+    '/auth/locale',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['auth'], body: updateLocaleSchema, response: { 200: acknowledgedSchema } },
+    },
+    async (request) => {
+      await fastify.prisma.user.update({
+        where: { id: requireSession(request).userId },
+        data: { locale: request.body.locale },
+      });
+      return ACK;
     },
   );
 
@@ -229,7 +278,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const user = await fastify.prisma.user.findUnique({
         where: { id: requireSession(request).userId },
-        include: { clientProfile: true },
+        include: USER_INCLUDE,
       });
       if (!user) throw fastify.httpErrors.unauthorized('Сессия недействительна');
       return toCurrentUser(user);
@@ -258,7 +307,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const user = await fastify.prisma.user.findUnique({
         where: { id: userId },
-        include: { clientProfile: true },
+        include: USER_INCLUDE,
       });
       if (!user) throw fastify.httpErrors.unauthorized('Сессия недействительна');
 
@@ -275,7 +324,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         fastify.prisma.user.update({
           where: { id: user.id },
           data: { deletionRequestedAt: new Date() },
-          include: { clientProfile: true },
+          include: USER_INCLUDE,
         }),
         // Из каталога анкеты уходят немедленно: обработка прекращается
         // сразу, а физическое удаление — вопрос срока.
@@ -308,7 +357,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const updated = await fastify.prisma.user.update({
         where: { id: userId },
         data: { deletionRequestedAt: null },
-        include: { clientProfile: true },
+        include: USER_INCLUDE,
       });
       return toCurrentUser(updated);
     },
@@ -380,7 +429,9 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       // Отсутствие учётки не подтверждаем — ответ одинаковый в обоих случаях.
       if (user) {
-        const locale = localeOf(user.locale);
+        // Язык сайта, с которого просят сброс, важнее сохранённого при
+        // регистрации: человек читает письмо на том языке, на котором его просил.
+        const locale = localeOf(request.body.locale ?? user.locale);
         const { token, tokenHash } = generateToken();
         await fastify.prisma.authToken.create({
           data: {

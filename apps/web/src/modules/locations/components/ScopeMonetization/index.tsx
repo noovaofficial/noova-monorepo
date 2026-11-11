@@ -23,6 +23,7 @@ import {
   saveCityMonetization,
   saveCountryMonetization,
 } from '@/modules/locations/api';
+import { useErrorText } from '@/shared/error-text';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Locations.module.css';
 
@@ -150,12 +151,15 @@ function Notices({
   saved,
   invalid,
   failed,
+  cause,
 }: {
   saved: boolean;
   invalid: boolean;
   failed: boolean;
+  cause?: unknown;
 }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   return (
     <>
       {saved ? <p className={`${billing.notice} ${billing.noticeOk}`}>{t('savedScope')}</p> : null}
@@ -163,7 +167,9 @@ function Notices({
         <p className={`${billing.notice} ${billing.noticeError}`}>{t('invalidScope')}</p>
       ) : null}
       {failed ? (
-        <p className={`${billing.notice} ${billing.noticeError}`}>{t('saveFailed')}</p>
+        <p className={`${billing.notice} ${billing.noticeError}`}>
+          {explain(cause, t('saveFailed'))}
+        </p>
       ) : null}
     </>
   );
@@ -172,12 +178,13 @@ function Notices({
 /** Монетизация страны: цены размещения, ТОП анкет, ТОП агентств. Пустых значений нет. */
 export function CountryMonetization({ countryId }: { countryId: string }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const data = useQuery({
     queryKey: queryKeys.countryMonetization(countryId),
     queryFn: () => fetchCountryMonetization(countryId),
   });
 
-  if (data.isError) return <p className={billing.empty}>{t('loadFailed')}</p>;
+  if (data.isError) return <p className={billing.empty}>{explain(data.error, t('loadFailed'))}</p>;
   if (!data.data) return <p className={billing.empty}>{t('loading')}</p>;
   return <CountryForm key={data.dataUpdatedAt} countryId={countryId} initial={data.data} />;
 }
@@ -242,7 +249,12 @@ function CountryForm({
 
   return (
     <form onSubmit={onSubmit}>
-      <Notices saved={save.isSuccess && !save.isPending} invalid={invalid} failed={save.isError} />
+      <Notices
+        saved={save.isSuccess && !save.isPending}
+        invalid={invalid}
+        failed={save.isError}
+        cause={save.error}
+      />
 
       <Card title={t('pricesSection')} lead={t('scopePricesHint')}>
         <PriceTable cells={cells} onChange={setCell} rate={rate} />
@@ -320,12 +332,13 @@ function TopFields({
  */
 export function CityMonetization({ cityId }: { cityId: string }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const data = useQuery({
     queryKey: queryKeys.cityMonetization(cityId),
     queryFn: () => fetchCityMonetization(cityId),
   });
 
-  if (data.isError) return <p className={billing.empty}>{t('loadFailed')}</p>;
+  if (data.isError) return <p className={billing.empty}>{explain(data.error, t('loadFailed'))}</p>;
   if (!data.data) return <p className={billing.empty}>{t('loading')}</p>;
   return <CityForm key={data.dataUpdatedAt} cityId={cityId} initial={data.data} />;
 }
@@ -380,7 +393,12 @@ function CityForm({ cityId, initial }: { cityId: string; initial: CityMonetizati
 
   return (
     <form onSubmit={onSubmit}>
-      <Notices saved={save.isSuccess && !save.isPending} invalid={invalid} failed={save.isError} />
+      <Notices
+        saved={save.isSuccess && !save.isPending}
+        invalid={invalid}
+        failed={save.isError}
+        cause={save.error}
+      />
 
       <Card title={t('pricesSection')} lead={t('scopeCityHint')}>
         <PriceTable

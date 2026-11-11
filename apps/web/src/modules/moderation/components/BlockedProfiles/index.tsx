@@ -4,6 +4,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import { useTranslations } from 'next-intl';
 import { Button } from '@/design-system/components/Button';
 import { fetchBlockedProfiles, unblockProfile } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { LoadMore } from '../LoadMore';
@@ -16,6 +17,7 @@ import styles from '../Moderation.module.css';
  */
 export function BlockedProfiles() {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const queryClient = useQueryClient();
 
   const list = useInfiniteQuery({
@@ -37,7 +39,7 @@ export function BlockedProfiles() {
   const total = list.data?.pages[0]?.total ?? null;
 
   if (list.isError) {
-    return <p className={styles.empty}>{t('loadFailed')}</p>;
+    return <p className={styles.empty}>{explain(list.error, t('loadFailed'))}</p>;
   }
 
   if (items === null) return <p className={styles.empty}>{t('loading')}</p>;

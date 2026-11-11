@@ -14,6 +14,7 @@ const LABELS: Record<Locale, string> = {
   es: 'Español',
   fr: 'Français',
   ru: 'Русский',
+  pl: 'Polski',
 };
 
 export function LocaleSwitcher() {

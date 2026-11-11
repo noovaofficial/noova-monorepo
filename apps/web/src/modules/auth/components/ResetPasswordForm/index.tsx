@@ -1,6 +1,7 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import type { Locale } from '@noova/shared';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { errorKeyFor, requestPasswordReset } from '@/modules/auth/api';
@@ -9,6 +10,7 @@ import styles from '../AuthForm.module.css';
 
 export function ResetPasswordForm() {
   const t = useTranslations('auth');
+  const locale = useLocale() as Locale;
   const [pending, setPending] = useState(false);
   const [sent, setSent] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function ResetPasswordForm() {
 
     const data = new FormData(event.currentTarget);
     try {
-      await requestPasswordReset(String(data.get('email')));
+      await requestPasswordReset(String(data.get('email')), locale);
       // Показываем один и тот же текст независимо от результата: он не должен
       // подсказывать, зарегистрирован адрес или нет.
       setSent(true);

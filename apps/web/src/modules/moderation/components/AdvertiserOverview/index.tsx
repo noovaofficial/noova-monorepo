@@ -16,6 +16,7 @@ import { DailyChart } from '@/modules/analytics/components/DailyChart';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchOverview } from '@/modules/moderation/api';
 import { fillSeries } from '@/modules/moderation/overview-chart';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './AdvertiserOverview.module.css';
@@ -30,6 +31,7 @@ const KINDS: AdvertiserKind[] = ['agency', 'individual', 'salon'];
  */
 export function AdvertiserOverview() {
   const t = useTranslations('analytics');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
   const isAdmin = user?.role === 'admin';
@@ -93,7 +95,9 @@ export function AdvertiserOverview() {
       <p className={styles.lead}>{t('ovLead')}</p>
 
       {overview.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {overview.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {overview.isError ? (
+        <p className={styles.err}>{explain(overview.error, t('loadFailed'))}</p>
+      ) : null}
 
       {data ? (
         <>

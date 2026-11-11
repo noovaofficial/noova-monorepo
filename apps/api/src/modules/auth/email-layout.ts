@@ -79,6 +79,7 @@ const SECURITY: Record<Locale, string> = {
   es: 'Noova nunca pide tu contraseña por correo ni te escribe primero en mensajería. Si recibes un mensaje así, es una estafa.',
   fr: "Noova ne demande jamais votre mot de passe par e-mail et ne vous écrit jamais en premier sur une messagerie. Si vous recevez un tel message, c'est une escroquerie.",
   ru: 'Noova никогда не спрашивает пароль в письмах и не пишет первой в мессенджерах. Если вам пришло такое сообщение — это мошенники.',
+  pl: 'Noova nigdy nie prosi o hasło w e-mailach i nigdy nie pisze pierwsza w komunikatorach. Jeśli dostaniesz taką wiadomość, to oszustwo.',
 };
 
 /**
@@ -98,6 +99,7 @@ const SUPPORT_LABEL: Record<Locale, string> = {
   es: '¿Preguntas? Escríbenos:',
   fr: 'Des questions ? Écrivez-nous :',
   ru: 'Вопросы — пишите нам:',
+  pl: 'Pytania? Napisz do nas:',
 };
 
 /** Подвал. Ответить на письмо нельзя — почтовый ящик только на отправку. */
@@ -107,6 +109,7 @@ const FOOTER: Record<Locale, string> = {
   es: 'Este mensaje se ha enviado automáticamente. No respondas a él.',
   fr: 'Ce message a été envoyé automatiquement. Merci de ne pas y répondre.',
   ru: 'Письмо отправлено автоматически, отвечать на него не нужно.',
+  pl: 'Ta wiadomość została wysłana automatycznie. Prosimy na nią nie odpowiadać.',
 };
 
 export function renderEmail(locale: Locale, content: EmailContent): string {

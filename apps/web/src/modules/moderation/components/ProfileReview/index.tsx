@@ -24,6 +24,7 @@ import {
   setManualVerification,
   unblockProfile,
 } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { ActionCard } from '../ActionCard';
@@ -37,6 +38,7 @@ const euro = (cents: number | null) => (cents === null ? '—' : `${Math.round(c
 
 export function ProfileReview({ profileId }: { profileId: string }) {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
@@ -330,7 +332,9 @@ export function ProfileReview({ profileId }: { profileId: string }) {
               </div>
             )}
             {rejectReview.isError ? (
-              <span className={styles.hint}>{t('verificationSectionFailed')}</span>
+              <span className={styles.hint}>
+                {explain(rejectReview.error, t('verificationSectionFailed'))}
+              </span>
             ) : null}
           </ActionCard>
         ) : null}
@@ -371,7 +375,9 @@ export function ProfileReview({ profileId }: { profileId: string }) {
             {publishNow.error instanceof ModerationError && publishNow.error.status === 402 ? (
               <span className={styles.hint}>{t('publishNowUnpaid')}</span>
             ) : publishNow.isError ? (
-              <span className={styles.hint}>{t('publishNowFailed')}</span>
+              <span className={styles.hint}>
+                {explain(publishNow.error, t('publishNowFailed'))}
+              </span>
             ) : null}
           </ActionCard>
         ) : null}
@@ -527,8 +533,12 @@ export function ProfileReview({ profileId }: { profileId: string }) {
                 </Button>
               ) : null}
             </div>
-            {grantTop.isError ? <span className={styles.hint}>{t('topGrantFailed')}</span> : null}
-            {revokeTop.isError ? <span className={styles.hint}>{t('topRevokeFailed')}</span> : null}
+            {grantTop.isError ? (
+              <span className={styles.hint}>{explain(grantTop.error, t('topGrantFailed'))}</span>
+            ) : null}
+            {revokeTop.isError ? (
+              <span className={styles.hint}>{explain(revokeTop.error, t('topRevokeFailed'))}</span>
+            ) : null}
           </ActionCard>
         ) : null}
 

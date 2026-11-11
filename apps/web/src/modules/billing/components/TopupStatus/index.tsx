@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { fetchTopupOrder } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../GlowCoinWallet/GlowCoinWallet.module.css';
@@ -17,6 +18,7 @@ const TERMINAL = new Set(['paid', 'partial', 'expired', 'canceled', 'failed']);
  */
 export function TopupStatus({ orderId }: { orderId: string }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
 
   const order = useQuery({
@@ -32,7 +34,9 @@ export function TopupStatus({ orderId }: { orderId: string }) {
     <div className={styles.checkout}>
       <h1 className={styles.title}>{t('checkoutTitle')}</h1>
 
-      {order.isError ? <p className={styles.err}>{t('checkoutMissing')}</p> : null}
+      {order.isError ? (
+        <p className={styles.err}>{explain(order.error, t('checkoutMissing'))}</p>
+      ) : null}
       {order.isPending ? <p className={styles.text}>{t('loading')}</p> : null}
 
       {data ? (

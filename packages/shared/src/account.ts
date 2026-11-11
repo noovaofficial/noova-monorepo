@@ -56,7 +56,8 @@ export const MAX_SERVICES_PER_PROFILE = 300;
 
 export const createProfileSchema = z.object({
   displayName: z.string().trim().min(2).max(60),
-  citySlug: slugSchema,
+  /** Не указан — основной город аккаунта (`User.cityId`). */
+  citySlug: slugSchema.optional(),
   districtSlug: slugSchema.optional(),
 });
 export type CreateProfileInput = z.infer<typeof createProfileSchema>;
@@ -85,6 +86,12 @@ export type ServiceGroup = z.infer<typeof serviceGroupSchema>;
 export const profileServiceInputSchema = z.object({
   key: z.string().min(1).max(60),
   isExtra: z.boolean().default(false),
+  /**
+   * Цена доплаты в минорных единицах валюты страны анкеты. Имеет смысл только
+   * для `isExtra`; пусто — «по договорённости». Сервер сам обнуляет её у услуги
+   * без доплаты.
+   */
+  extraPriceCents: z.number().int().min(0).max(10_000_000).nullable().optional(),
 });
 export type ProfileServiceInput = z.infer<typeof profileServiceInputSchema>;
 

@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchTopNow } from '@/modules/moderation/api';
 import { topExpiry } from '@/modules/moderation/top-expiry';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './TopNow.module.css';
@@ -19,6 +20,7 @@ import styles from './TopNow.module.css';
  */
 export function TopNow() {
   const t = useTranslations('auth');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
   const isAdmin = user?.role === 'admin';
@@ -35,7 +37,8 @@ export function TopNow() {
     return null;
   }
   if (!isAdmin) return <p className={styles.empty}>{t('topNowOnlyAdmins')}</p>;
-  if (query.isError) return <p className={styles.empty}>{t('topNowLoadFailed')}</p>;
+  if (query.isError)
+    return <p className={styles.empty}>{explain(query.error, t('topNowLoadFailed'))}</p>;
   if (!query.data) return <p className={styles.empty}>{t('loading')}</p>;
 
   const { agencies, profiles } = query.data;

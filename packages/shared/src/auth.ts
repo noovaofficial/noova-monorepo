@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MIN_AGE } from './common';
+import { MIN_AGE, slugSchema } from './common';
 import { LOCALES } from './locales';
 
 export const userRoleSchema = z.enum(['client', 'advertiser', 'moderator', 'admin']);
@@ -46,6 +46,11 @@ export const birthYearSchema = z
  */
 const localeFieldSchema = z.enum(LOCALES).optional();
 
+const countryCodeSchema = z
+  .string()
+  .length(2)
+  .transform((value) => value.toUpperCase());
+
 export const registerClientSchema = z.object({
   role: z.literal('client'),
   email: emailSchema,
@@ -67,6 +72,17 @@ export const registerAdvertiserSchema = z.object({
   // Выводить это из первой созданной анкеты нельзя — проверять нужно раньше,
   // чем анкета появилась.
   advertiserKind: z.enum(['individual', 'agency', 'salon']),
+  /**
+   * Страна выбирается при регистрации: от неё зависят правила и цена
+   * размещения, и в закрытой стране аккаунт не заводится вовсе.
+   */
+  countryCode: countryCodeSchema,
+  /**
+   * Основной город (в пределах страны): подставляется в новые анкеты и
+   * определяет цену размещения. Обязателен индивидуалке и салону, у агентства
+   * необязателен — анкеты могут быть в разных городах страны.
+   */
+  citySlug: slugSchema.optional(),
   locale: localeFieldSchema,
 });
 export type RegisterAdvertiserInput = z.infer<typeof registerAdvertiserSchema>;
@@ -83,7 +99,22 @@ export const loginSchema = z.object({
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 
-export const passwordResetRequestSchema = z.object({ email: emailSchema });
+/** Смена страны и основного города в настройках. */
+export const updateLocationSchema = z.object({
+  countryCode: countryCodeSchema,
+  citySlug: slugSchema.nullable(),
+});
+export type UpdateLocationInput = z.infer<typeof updateLocationSchema>;
+
+/** Язык сайта, на котором человек сейчас: письма уходят на нём. */
+export const updateLocaleSchema = z.object({ locale: z.enum(LOCALES) });
+
+export const passwordResetRequestSchema = z.object({
+  email: emailSchema,
+  /** Язык сайта, с которого просят сброс: письмо уходит на нём, а не на языке,
+   *  сохранённом при регистрации. */
+  locale: localeFieldSchema,
+});
 
 export const passwordResetConfirmSchema = z.object({
   token: z.string().min(1).max(200),
@@ -107,6 +138,11 @@ export const currentUserSchema = z.object({
   role: userRoleSchema,
   isEmailVerified: z.boolean(),
   advertiserKind: z.enum(['individual', 'agency', 'salon']).nullable(),
+  /** Язык писем: следует за языком сайта, на котором человек вошёл. */
+  locale: z.string(),
+  /** Страна и основной город рекламодателя; у остальных пусто. */
+  countryCode: z.string().nullable(),
+  citySlug: z.string().nullable(),
   clientProfile: clientProfileSchema.nullable(),
   /**
    * Когда запрошено удаление. Не null — учётка в отсрочке: интерфейс должен

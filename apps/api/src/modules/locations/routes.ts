@@ -17,6 +17,7 @@ import {
   countrySchema,
   districtInputSchema,
   LOCALES,
+  placementKindSchema,
   placementRuleInputSchema,
   placementRuleSchema,
   type Translated,
@@ -24,7 +25,11 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { BILLING_TAG, CITIES_TAG, PROFILES_TAG } from '../../plugins/revalidate.js';
+import { env } from '../../env.js';
+import { BILLING_TAG, CITIES_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
+import { pushMail } from '../auth/mail-queue.js';
+import { startPlacementGrace } from '../billing/placement-grace.js';
+import { syncPremiumForPlace } from '../billing/premium.js';
 import {
   getCityMonetization,
   getCountryMonetization,
@@ -95,10 +100,15 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { code, name, isActive, isDefault, currency } = request.body;
 
       const exists = await fastify.prisma.country.findUnique({ where: { code } });
-      if (exists) throw fastify.httpErrors.conflict(`Страна ${code} уже заведена`);
+      if (exists)
+        throw withCode(
+          fastify.httpErrors.conflict(`Страна ${code} уже заведена`),
+          'country_exists',
+        );
       if (isDefault && !isActive) {
-        throw fastify.httpErrors.badRequest(
-          'Отключённая страна не может быть страной по умолчанию',
+        throw withCode(
+          fastify.httpErrors.badRequest('Отключённая страна не может быть страной по умолчанию'),
+          'default_country_inactive',
         );
       }
 
@@ -144,8 +154,9 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { name, isActive, isDefault, currency } = request.body;
       if (isDefault && !isActive) {
-        throw fastify.httpErrors.badRequest(
-          'Отключённая страна не может быть страной по умолчанию',
+        throw withCode(
+          fastify.httpErrors.badRequest('Отключённая страна не может быть страной по умолчанию'),
+          'default_country_inactive',
         );
       }
 
@@ -304,7 +315,8 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { slug, name, countryId, lat, lng, isActive, districts } = request.body;
 
       const exists = await fastify.prisma.city.findUnique({ where: { slug } });
-      if (exists) throw fastify.httpErrors.conflict(`Город ${slug} уже заведён`);
+      if (exists)
+        throw withCode(fastify.httpErrors.conflict(`Город ${slug} уже заведён`), 'city_exists');
 
       // Слуг города делит второй сегмент адреса с кодом страны (N-42):
       // `/de` не может одновременно значить и «Германия», и город «de».
@@ -315,11 +327,15 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           countryCodes.map((c) => c.code),
         )
       ) {
-        throw fastify.httpErrors.conflict(`Адрес ${slug} занят кодом страны`);
+        throw withCode(
+          fastify.httpErrors.conflict(`Адрес ${slug} занят кодом страны`),
+          'city_slug_country_clash',
+        );
       }
 
       const country = await fastify.prisma.country.findUnique({ where: { id: countryId } });
-      if (!country) throw fastify.httpErrors.badRequest('Страна не найдена');
+      if (!country)
+        throw withCode(fastify.httpErrors.badRequest('Страна не найдена'), 'country_not_found');
 
       const created = await fastify.prisma.city.create({
         data: {
@@ -370,7 +386,8 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: request.params.id },
         select: { countryId: true, _count: { select: { profiles: true } } },
       });
-      if (!current) throw fastify.httpErrors.notFound('Город не найден');
+      if (!current)
+        throw withCode(fastify.httpErrors.notFound('Город не найден'), 'city_not_found');
       if (!canMoveCityToCountry(current.countryId, countryId, current._count.profiles)) {
         throw withCode(
           fastify.httpErrors.conflict('В городе есть анкеты — сменить страну нельзя'),
@@ -414,7 +431,8 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: request.params.id },
         select: { id: true },
       });
-      if (!country) throw fastify.httpErrors.notFound('Страна не найдена');
+      if (!country)
+        throw withCode(fastify.httpErrors.notFound('Страна не найдена'), 'country_not_found');
       return getCountryMonetization(fastify.prisma, country.id);
     },
   );
@@ -436,7 +454,8 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: request.params.id },
         select: { id: true },
       });
-      if (!country) throw fastify.httpErrors.notFound('Страна не найдена');
+      if (!country)
+        throw withCode(fastify.httpErrors.notFound('Страна не найдена'), 'country_not_found');
       const saved = await saveCountryMonetization(fastify.prisma, country.id, request.body);
       fastify.revalidate([BILLING_TAG]);
       return saved;
@@ -456,7 +475,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request) => {
       const found = await getCityMonetization(fastify.prisma, request.params.id);
-      if (!found) throw fastify.httpErrors.notFound('Город не найден');
+      if (!found) throw withCode(fastify.httpErrors.notFound('Город не найден'), 'city_not_found');
       return found;
     },
   );
@@ -475,7 +494,7 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
     async (request) => {
       const saved = await saveCityMonetization(fastify.prisma, request.params.id, request.body);
-      if (!saved) throw fastify.httpErrors.notFound('Город не найден');
+      if (!saved) throw withCode(fastify.httpErrors.notFound('Город не найден'), 'city_not_found');
       fastify.revalidate([BILLING_TAG]);
       return saved;
     },
@@ -502,7 +521,11 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const clash = await fastify.prisma.district.findUnique({
         where: { cityId_slug: { cityId, slug } },
       });
-      if (clash) throw fastify.httpErrors.conflict(`Район ${slug} в этом городе уже есть`);
+      if (clash)
+        throw withCode(
+          fastify.httpErrors.conflict(`Район ${slug} в этом городе уже есть`),
+          'district_exists',
+        );
 
       await fastify.prisma.district.create({
         data: {
@@ -559,6 +582,65 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       return present(city);
     },
   );
+  // Выключили публикацию — админ решает, что делать с уже опубликованными
+  // анкетами этого типа в стране/городе: сколько их и снять ли.
+  const scopeQuery = z
+    .object({
+      countryId: z.string().min(1).optional(),
+      cityId: z.string().min(1).optional(),
+      kind: placementKindSchema,
+    })
+    .refine((value) => (value.countryId === undefined) !== (value.cityId === undefined), {
+      message: 'Нужно указать ровно одно: страну или город',
+    });
+
+  const publishedWhere = (q: z.infer<typeof scopeQuery>) => ({
+    status: 'published' as const,
+    owner: { advertiserKind: q.kind },
+    ...(q.countryId ? { countryId: q.countryId } : { cityId: q.cityId }),
+  });
+
+  fastify.get(
+    '/admin/placement-rules/published-count',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        querystring: scopeQuery,
+        response: { 200: z.object({ count: z.number().int().nonnegative() }) },
+      },
+    },
+    async (request) => ({
+      count: await fastify.prisma.profile.count({ where: publishedWhere(request.query) }),
+    }),
+  );
+
+  /** Снять с публикации (в «паузу») все опубликованные анкеты этого типа в месте. */
+  fastify.post(
+    '/admin/placement-rules/pause-published',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        body: scopeQuery,
+        response: { 200: z.object({ paused: z.number().int().nonnegative() }) },
+      },
+    },
+    async (request) => {
+      const where = publishedWhere(request.body);
+      const rows = await fastify.prisma.profile.findMany({ where, select: { slug: true } });
+      const { count } = await fastify.prisma.profile.updateMany({
+        where,
+        data: { status: 'paused' },
+      });
+      // Анкеты пропадают из каталога сразу, а не по истечении кэша.
+      fastify.revalidate([PROFILES_TAG, ...rows.map((row) => profileTag(row.slug))]);
+      return { paused: count };
+    },
+  );
+
   // ------------------------------------------------- правила размещения
 
   fastify.get(
@@ -596,16 +678,18 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       if (countryId) {
         const exists = await fastify.prisma.country.findUnique({ where: { id: countryId } });
-        if (!exists) throw fastify.httpErrors.notFound('Страна не найдена');
+        if (!exists)
+          throw withCode(fastify.httpErrors.notFound('Страна не найдена'), 'country_not_found');
       } else if (cityId) {
         const exists = await fastify.prisma.city.findUnique({ where: { id: cityId } });
-        if (!exists) throw fastify.httpErrors.notFound('Город не найден');
+        if (!exists)
+          throw withCode(fastify.httpErrors.notFound('Город не найден'), 'city_not_found');
       }
 
       const scope = countryId ? { countryId } : { cityId };
       const existing = await fastify.prisma.placementRule.findFirst({
         where: { ...scope, kind },
-        select: { id: true },
+        select: { id: true, paid: true },
       });
 
       if (paid === null && allowed === null) {
@@ -617,6 +701,23 @@ export const locationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         });
       } else {
         await fastify.prisma.placementRule.create({ data: { ...scope, kind, paid, allowed } });
+      }
+
+      // Правило могло сделать место бесплатным (или платным): Premium меняется.
+      await syncPremiumForPlace(fastify.prisma, scope, kind);
+
+      // Бесплатно → платно: владельцам без подписки даём льготный срок, а не
+      // снимаем анкеты в тот же миг. Обратный переход льготу снимает.
+      if (countryId) {
+        const wasPaid = existing?.paid ?? true;
+        const isPaid = paid ?? true;
+        await startPlacementGrace(fastify.prisma, { countryId }, kind, {
+          // Выдаём льготу только при самом переходе: правка другого поля
+          // правила не должна давать новый срок.
+          grant: !wasPaid && isPaid,
+          graceDays: env.LISTING_GRACE_DAYS,
+          notify: (mail) => pushMail(fastify.redis, mail),
+        });
       }
 
       return fastify.prisma.placementRule.findMany({

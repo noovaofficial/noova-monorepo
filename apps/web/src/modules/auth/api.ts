@@ -3,6 +3,7 @@ import {
   type CurrentUser,
   currentUserSchema,
   type DeleteAccountInput,
+  type Locale,
   type LoginInput,
   type RegisterInput,
 } from '@noova/shared';
@@ -21,6 +22,8 @@ export class AuthError extends Error {
     readonly status: number,
     /** Разбор ошибок валидации по полям, если сервер его прислал. */
     readonly issues: ApiIssue[] = [],
+    /** Код причины от сервера — по нему подбирается перевод. */
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'AuthError';
@@ -43,11 +46,14 @@ async function post<T>(path: string, body: unknown, schema?: { parse: (v: unknow
   if (!response.ok) {
     // Тело ошибки может быть не-JSON (например, при отказе прокси) — тогда
     // просто нет разбора по полям, но сам код ответа всё равно осмысленный.
-    const issues = await response
-      .json()
-      .then((body) => (Array.isArray(body?.issues) ? (body.issues as ApiIssue[]) : []))
-      .catch(() => [] as ApiIssue[]);
-    throw new AuthError(`Запрос ${path} завершился ошибкой`, response.status, issues);
+    const body = await response.json().catch(() => null);
+    const issues = Array.isArray(body?.issues) ? (body.issues as ApiIssue[]) : [];
+    throw new AuthError(
+      `Запрос ${path} завершился ошибкой`,
+      response.status,
+      issues,
+      typeof body?.code === 'string' ? body.code : undefined,
+    );
   }
 
   const json = await response.json();
@@ -62,8 +68,19 @@ export function register(input: RegisterInput): Promise<{ ok: true }> {
   return post('/auth/register', input);
 }
 
-export function requestPasswordReset(email: string): Promise<{ ok: true }> {
-  return post('/auth/password-reset/request', { email });
+/** Запомнить язык сайта как язык писем. */
+export async function saveLocale(locale: Locale): Promise<void> {
+  await fetch(`${BASE}/api/v1/auth/locale`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    credentials: 'include',
+    cache: 'no-store',
+    body: JSON.stringify({ locale }),
+  });
+}
+
+export function requestPasswordReset(email: string, locale: Locale): Promise<{ ok: true }> {
+  return post('/auth/password-reset/request', { email, locale });
 }
 
 export function confirmPasswordReset(token: string, password: string): Promise<{ ok: true }> {
@@ -104,7 +121,13 @@ export async function fetchCurrentUser(): Promise<CurrentUser | null> {
 
 /** Переводит HTTP-код в ключ словаря: тексты ошибок приходят из i18n, не с бэка. */
 export function errorKeyFor(error: unknown): string {
+  // fetch отвергается TypeError-ом, когда до сервера не дошли вовсе.
+  if (error instanceof TypeError) return 'errorNetwork';
   if (!(error instanceof AuthError)) return 'errorGeneric';
+  // Причины с кодом важнее статуса: 403 бывает и баном, и закрытой страной.
+  if (error.code === 'placement_forbidden') return 'errorPlacementForbidden';
+  if (error.code === 'city_required') return 'errorCityRequired';
+  if (error.code === 'city_not_found') return 'errorCityNotFound';
   switch (error.status) {
     case 401:
       return 'errorInvalidCredentials';
@@ -114,7 +137,10 @@ export function errorKeyFor(error: unknown): string {
       return 'errorNicknameTaken';
     case 429:
       return 'errorRateLimited';
+    case 400:
+    case 422:
+      return 'errorInvalid';
     default:
-      return 'errorGeneric';
+      return error.status >= 500 ? 'errorServer' : 'errorGeneric';
   }
 }

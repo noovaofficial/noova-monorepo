@@ -53,6 +53,9 @@
   --verifiedSubtle: #e0f0f3;
   --featured: #c29a33;
   --featuredSubtle: #f7efd7;
+  /* Premium: фиолетовый, чтобы не путать с золотым ТОПом. */
+  --premium: #6b3fa0;
+  --premiumSubtle: #efe7f8;
   --online: #3e9e7a;
 
   /* Тени */
@@ -154,6 +157,8 @@
   --verifiedSubtle: #14282c;
   --featured: #d8b048;
   --featuredSubtle: #2c2413;
+  --premium: #c3a2ee;
+  --premiumSubtle: #2a2036;
   --online: #4fb48c;
 
   --shadowSm: 0 1px 2px rgba(0, 0, 0, 0.4);

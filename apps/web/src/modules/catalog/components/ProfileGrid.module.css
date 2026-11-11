@@ -18,3 +18,9 @@
   color: var(--primaryText);
   margin-bottom: var(--space2);
 }
+
+/* Название страны в ссылке «Посмотреть всю страну» — акцентным цветом. */
+.accent {
+  color: var(--primary);
+  font-weight: 600;
+}

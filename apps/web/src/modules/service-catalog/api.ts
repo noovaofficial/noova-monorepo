@@ -19,6 +19,8 @@ export class ServiceCatalogError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** Код причины от сервера — по нему интерфейс подбирает перевод. */
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'ServiceCatalogError';
@@ -39,11 +41,12 @@ async function call(path: string, init: RequestInit = {}): Promise<AdminServiceG
   });
 
   if (!response.ok) {
-    const message = await response
-      .json()
-      .then((body) => String(body?.message ?? ''))
-      .catch(() => '');
-    throw new ServiceCatalogError(message, response.status);
+    const body = await response.json().catch(() => null);
+    throw new ServiceCatalogError(
+      String(body?.message ?? ''),
+      response.status,
+      typeof body?.code === 'string' ? body.code : undefined,
+    );
   }
 
   return listSchema.parse(await response.json());

@@ -13,6 +13,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { type ReactNode, useState } from 'react';
 import { fetchAnalytics, fetchOwnMoney } from '@/modules/analytics/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { DailyChart } from '../DailyChart';
@@ -62,6 +63,7 @@ export function AnalyticsPanel() {
       data={analytics.data ?? null}
       isPending={analytics.isPending}
       isError={analytics.isError}
+      error={analytics.error}
       extra={money.data ? <OwnMoney data={money.data} /> : null}
     />
   );
@@ -74,6 +76,8 @@ type ReportProps = {
   data: Analytics | null;
   isPending: boolean;
   isError: boolean;
+  /** Исходная ошибка загрузки — по ней к сообщению добавляется причина. */
+  error?: unknown;
   /** Дополнительные блоки над карточками трафика (у админа — деньги). */
   extra?: ReactNode;
 };
@@ -90,9 +94,11 @@ export function AnalyticsReport({
   data,
   isPending,
   isError,
+  error,
   extra,
 }: ReportProps) {
   const t = useTranslations('analytics');
+  const explain = useErrorText();
   const tc = useTranslations('contacts');
   const format = useFormatter();
 
@@ -122,7 +128,7 @@ export function AnalyticsReport({
       </div>
 
       {isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {isError ? <p className={styles.err}>{explain(error, t('loadFailed'))}</p> : null}
 
       {extra}
 

@@ -3,10 +3,16 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import de from '../messages/de.json';
 import en from '../messages/en.json';
+import pl from '../messages/pl.json';
 import ru from '../messages/ru.json';
 
 type Dict = Record<string, Record<string, string>>;
-const LOCALES: Record<string, Dict> = { ru: ru as Dict, en: en as Dict, de: de as Dict };
+const LOCALES: Record<string, Dict> = {
+  ru: ru as Dict,
+  en: en as Dict,
+  de: de as Dict,
+  pl: pl as Dict,
+};
 
 function walk(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir)) {
@@ -53,7 +59,7 @@ describe('словари локалей', () => {
       );
 
     const ruKeys = keysOf(LOCALES.ru as Dict);
-    for (const locale of ['en', 'de'] as const) {
+    for (const locale of ['en', 'de', 'pl'] as const) {
       const other = keysOf(LOCALES[locale] as Dict);
       expect(
         [...ruKeys].filter((k) => !other.has(k)),

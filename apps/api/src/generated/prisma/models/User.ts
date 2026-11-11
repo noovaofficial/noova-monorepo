@@ -43,6 +43,9 @@ export type UserMinAggregateOutputType = {
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   advertiserKind: $Enums.AdvertiserKind | null
+  countryId: string | null
+  cityId: string | null
+  placementGraceEndsAt: Date | null
   locale: string | null
   bannedAt: Date | null
   deletionRequestedAt: Date | null
@@ -62,6 +65,9 @@ export type UserMaxAggregateOutputType = {
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   advertiserKind: $Enums.AdvertiserKind | null
+  countryId: string | null
+  cityId: string | null
+  placementGraceEndsAt: Date | null
   locale: string | null
   bannedAt: Date | null
   deletionRequestedAt: Date | null
@@ -81,6 +87,9 @@ export type UserCountAggregateOutputType = {
   emailVerifiedAt: number
   lastLoginAt: number
   advertiserKind: number
+  countryId: number
+  cityId: number
+  placementGraceEndsAt: number
   locale: number
   bannedAt: number
   deletionRequestedAt: number
@@ -110,6 +119,9 @@ export type UserMinAggregateInputType = {
   emailVerifiedAt?: true
   lastLoginAt?: true
   advertiserKind?: true
+  countryId?: true
+  cityId?: true
+  placementGraceEndsAt?: true
   locale?: true
   bannedAt?: true
   deletionRequestedAt?: true
@@ -129,6 +141,9 @@ export type UserMaxAggregateInputType = {
   emailVerifiedAt?: true
   lastLoginAt?: true
   advertiserKind?: true
+  countryId?: true
+  cityId?: true
+  placementGraceEndsAt?: true
   locale?: true
   bannedAt?: true
   deletionRequestedAt?: true
@@ -148,6 +163,9 @@ export type UserCountAggregateInputType = {
   emailVerifiedAt?: true
   lastLoginAt?: true
   advertiserKind?: true
+  countryId?: true
+  cityId?: true
+  placementGraceEndsAt?: true
   locale?: true
   bannedAt?: true
   deletionRequestedAt?: true
@@ -254,6 +272,9 @@ export type UserGroupByOutputType = {
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
   advertiserKind: $Enums.AdvertiserKind | null
+  countryId: string | null
+  cityId: string | null
+  placementGraceEndsAt: Date | null
   locale: string
   bannedAt: Date | null
   deletionRequestedAt: Date | null
@@ -296,6 +317,9 @@ export type UserWhereInput = {
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   advertiserKind?: Prisma.EnumAdvertiserKindNullableFilter<"User"> | $Enums.AdvertiserKind | null
+  countryId?: Prisma.StringNullableFilter<"User"> | string | null
+  cityId?: Prisma.StringNullableFilter<"User"> | string | null
+  placementGraceEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   locale?: Prisma.StringFilter<"User"> | string
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -305,6 +329,8 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
+  country?: Prisma.XOR<Prisma.CountryNullableScalarRelationFilter, Prisma.CountryWhereInput> | null
+  city?: Prisma.XOR<Prisma.CityNullableScalarRelationFilter, Prisma.CityWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
   billingTransactions?: Prisma.BillingTransactionListRelationFilter
   billingAdjustments?: Prisma.BillingTransactionListRelationFilter
@@ -334,6 +360,9 @@ export type UserOrderByWithRelationInput = {
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   advertiserKind?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  cityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  placementGraceEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   locale?: Prisma.SortOrder
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -343,6 +372,8 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   company?: Prisma.CompanyOrderByWithRelationInput
+  country?: Prisma.CountryOrderByWithRelationInput
+  city?: Prisma.CityOrderByWithRelationInput
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   billingTransactions?: Prisma.BillingTransactionOrderByRelationAggregateInput
   billingAdjustments?: Prisma.BillingTransactionOrderByRelationAggregateInput
@@ -375,6 +406,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   advertiserKind?: Prisma.EnumAdvertiserKindNullableFilter<"User"> | $Enums.AdvertiserKind | null
+  countryId?: Prisma.StringNullableFilter<"User"> | string | null
+  cityId?: Prisma.StringNullableFilter<"User"> | string | null
+  placementGraceEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   locale?: Prisma.StringFilter<"User"> | string
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -384,6 +418,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   createdById?: Prisma.StringNullableFilter<"User"> | string | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
+  country?: Prisma.XOR<Prisma.CountryNullableScalarRelationFilter, Prisma.CountryWhereInput> | null
+  city?: Prisma.XOR<Prisma.CityNullableScalarRelationFilter, Prisma.CityWhereInput> | null
   profiles?: Prisma.ProfileListRelationFilter
   billingTransactions?: Prisma.BillingTransactionListRelationFilter
   billingAdjustments?: Prisma.BillingTransactionListRelationFilter
@@ -413,6 +449,9 @@ export type UserOrderByWithAggregationInput = {
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
   advertiserKind?: Prisma.SortOrderInput | Prisma.SortOrder
+  countryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  cityId?: Prisma.SortOrderInput | Prisma.SortOrder
+  placementGraceEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   locale?: Prisma.SortOrder
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -440,6 +479,9 @@ export type UserScalarWhereWithAggregatesInput = {
   emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   advertiserKind?: Prisma.EnumAdvertiserKindNullableWithAggregatesFilter<"User"> | $Enums.AdvertiserKind | null
+  countryId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cityId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  placementGraceEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   locale?: Prisma.StringWithAggregatesFilter<"User"> | string
   bannedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -459,6 +501,7 @@ export type UserCreateInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -467,6 +510,8 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -496,6 +541,9 @@ export type UserUncheckedCreateInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -533,6 +581,7 @@ export type UserUpdateInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -541,6 +590,8 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -570,6 +621,9 @@ export type UserUncheckedUpdateInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -607,6 +661,9 @@ export type UserCreateManyInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -626,6 +683,7 @@ export type UserUpdateManyMutationInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -644,6 +702,9 @@ export type UserUncheckedUpdateManyInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -678,6 +739,9 @@ export type UserCountOrderByAggregateInput = {
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   advertiserKind?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
+  cityId?: Prisma.SortOrder
+  placementGraceEndsAt?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
@@ -701,6 +765,9 @@ export type UserMaxOrderByAggregateInput = {
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   advertiserKind?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
+  cityId?: Prisma.SortOrder
+  placementGraceEndsAt?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
@@ -720,6 +787,9 @@ export type UserMinOrderByAggregateInput = {
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
   advertiserKind?: Prisma.SortOrder
+  countryId?: Prisma.SortOrder
+  cityId?: Prisma.SortOrder
+  placementGraceEndsAt?: Prisma.SortOrder
   locale?: Prisma.SortOrder
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
@@ -875,6 +945,90 @@ export type UserUpdateOneRequiredWithoutAuthTokensNestedInput = {
   upsert?: Prisma.UserUpsertWithoutAuthTokensInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAuthTokensInput, Prisma.UserUpdateWithoutAuthTokensInput>, Prisma.UserUncheckedUpdateWithoutAuthTokensInput>
+}
+
+export type UserCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput> | Prisma.UserCreateWithoutCountryInput[] | Prisma.UserUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCountryInput | Prisma.UserCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.UserCreateManyCountryInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutCountryInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput> | Prisma.UserCreateWithoutCountryInput[] | Prisma.UserUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCountryInput | Prisma.UserCreateOrConnectWithoutCountryInput[]
+  createMany?: Prisma.UserCreateManyCountryInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput> | Prisma.UserCreateWithoutCountryInput[] | Prisma.UserUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCountryInput | Prisma.UserCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutCountryInput | Prisma.UserUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.UserCreateManyCountryInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutCountryInput | Prisma.UserUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutCountryInput | Prisma.UserUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutCountryNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput> | Prisma.UserCreateWithoutCountryInput[] | Prisma.UserUncheckedCreateWithoutCountryInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCountryInput | Prisma.UserCreateOrConnectWithoutCountryInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutCountryInput | Prisma.UserUpsertWithWhereUniqueWithoutCountryInput[]
+  createMany?: Prisma.UserCreateManyCountryInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutCountryInput | Prisma.UserUpdateWithWhereUniqueWithoutCountryInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutCountryInput | Prisma.UserUpdateManyWithWhereWithoutCountryInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedManyWithoutCityInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput> | Prisma.UserCreateWithoutCityInput[] | Prisma.UserUncheckedCreateWithoutCityInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCityInput | Prisma.UserCreateOrConnectWithoutCityInput[]
+  createMany?: Prisma.UserCreateManyCityInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutCityInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput> | Prisma.UserCreateWithoutCityInput[] | Prisma.UserUncheckedCreateWithoutCityInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCityInput | Prisma.UserCreateOrConnectWithoutCityInput[]
+  createMany?: Prisma.UserCreateManyCityInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutCityNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput> | Prisma.UserCreateWithoutCityInput[] | Prisma.UserUncheckedCreateWithoutCityInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCityInput | Prisma.UserCreateOrConnectWithoutCityInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutCityInput | Prisma.UserUpsertWithWhereUniqueWithoutCityInput[]
+  createMany?: Prisma.UserCreateManyCityInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutCityInput | Prisma.UserUpdateWithWhereUniqueWithoutCityInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutCityInput | Prisma.UserUpdateManyWithWhereWithoutCityInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutCityNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput> | Prisma.UserCreateWithoutCityInput[] | Prisma.UserUncheckedCreateWithoutCityInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCityInput | Prisma.UserCreateOrConnectWithoutCityInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutCityInput | Prisma.UserUpsertWithWhereUniqueWithoutCityInput[]
+  createMany?: Prisma.UserCreateManyCityInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutCityInput | Prisma.UserUpdateWithWhereUniqueWithoutCityInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutCityInput | Prisma.UserUpdateManyWithWhereWithoutCityInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
 export type UserCreateNestedOneWithoutProfilesInput = {
@@ -1096,6 +1250,7 @@ export type UserCreateWithoutCreatedByInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1104,6 +1259,8 @@ export type UserCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -1132,6 +1289,9 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1178,6 +1338,7 @@ export type UserCreateWithoutCreatedStaffInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1186,6 +1347,8 @@ export type UserCreateWithoutCreatedStaffInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -1214,6 +1377,9 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1274,6 +1440,9 @@ export type UserScalarWhereInput = {
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   advertiserKind?: Prisma.EnumAdvertiserKindNullableFilter<"User"> | $Enums.AdvertiserKind | null
+  countryId?: Prisma.StringNullableFilter<"User"> | string | null
+  cityId?: Prisma.StringNullableFilter<"User"> | string | null
+  placementGraceEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   locale?: Prisma.StringFilter<"User"> | string
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -1304,6 +1473,7 @@ export type UserUpdateWithoutCreatedStaffInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1312,6 +1482,8 @@ export type UserUpdateWithoutCreatedStaffInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -1340,6 +1512,9 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1376,6 +1551,7 @@ export type UserCreateWithoutClientProfileInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1384,6 +1560,8 @@ export type UserCreateWithoutClientProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -1412,6 +1590,9 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1464,6 +1645,7 @@ export type UserUpdateWithoutClientProfileInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1472,6 +1654,8 @@ export type UserUpdateWithoutClientProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -1500,6 +1684,9 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1536,6 +1723,7 @@ export type UserCreateWithoutModerationActionsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1544,6 +1732,8 @@ export type UserCreateWithoutModerationActionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -1572,6 +1762,9 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1624,6 +1817,7 @@ export type UserUpdateWithoutModerationActionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1632,6 +1826,8 @@ export type UserUpdateWithoutModerationActionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -1660,6 +1856,9 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1696,6 +1895,7 @@ export type UserCreateWithoutAuthTokensInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1704,6 +1904,8 @@ export type UserCreateWithoutAuthTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -1732,6 +1934,9 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1784,6 +1989,7 @@ export type UserUpdateWithoutAuthTokensInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1792,6 +1998,8 @@ export type UserUpdateWithoutAuthTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -1820,6 +2028,9 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1847,6 +2058,214 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
+export type UserCreateWithoutCountryInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutCountryInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCountryInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput>
+}
+
+export type UserCreateManyCountryInputEnvelope = {
+  data: Prisma.UserCreateManyCountryInput | Prisma.UserCreateManyCountryInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCountryInput, Prisma.UserUncheckedUpdateWithoutCountryInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCountryInput, Prisma.UserUncheckedCreateWithoutCountryInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutCountryInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCountryInput, Prisma.UserUncheckedUpdateWithoutCountryInput>
+}
+
+export type UserUpdateManyWithWhereWithoutCountryInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutCountryInput>
+}
+
+export type UserCreateWithoutCityInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutCityInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCityInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput>
+}
+
+export type UserCreateManyCityInputEnvelope = {
+  data: Prisma.UserCreateManyCityInput | Prisma.UserCreateManyCityInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutCityInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCityInput, Prisma.UserUncheckedUpdateWithoutCityInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCityInput, Prisma.UserUncheckedCreateWithoutCityInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutCityInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCityInput, Prisma.UserUncheckedUpdateWithoutCityInput>
+}
+
+export type UserUpdateManyWithWhereWithoutCityInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutCityInput>
+}
+
 export type UserCreateWithoutProfilesInput = {
   id?: string
   email: string
@@ -1856,6 +2275,7 @@ export type UserCreateWithoutProfilesInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1864,6 +2284,8 @@ export type UserCreateWithoutProfilesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
@@ -1892,6 +2314,9 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -1944,6 +2369,7 @@ export type UserUpdateWithoutProfilesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1952,6 +2378,8 @@ export type UserUpdateWithoutProfilesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
@@ -1980,6 +2408,9 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2016,6 +2447,7 @@ export type UserCreateWithoutProfileReportsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2024,6 +2456,8 @@ export type UserCreateWithoutProfileReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -2052,6 +2486,9 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2104,6 +2541,7 @@ export type UserUpdateWithoutProfileReportsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2112,6 +2550,8 @@ export type UserUpdateWithoutProfileReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -2140,6 +2580,9 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2176,6 +2619,7 @@ export type UserCreateWithoutCommentsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2184,6 +2628,8 @@ export type UserCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -2212,6 +2658,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2264,6 +2713,7 @@ export type UserUpdateWithoutCommentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2272,6 +2722,8 @@ export type UserUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -2300,6 +2752,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2336,6 +2791,7 @@ export type UserCreateWithoutCommentReportsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2344,6 +2800,8 @@ export type UserCreateWithoutCommentReportsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -2372,6 +2830,9 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2424,6 +2885,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2432,6 +2894,8 @@ export type UserUpdateWithoutCommentReportsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -2460,6 +2924,9 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2496,6 +2963,7 @@ export type UserCreateWithoutFavoritesInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2504,6 +2972,8 @@ export type UserCreateWithoutFavoritesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -2532,6 +3002,9 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2584,6 +3057,7 @@ export type UserUpdateWithoutFavoritesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2592,6 +3066,8 @@ export type UserUpdateWithoutFavoritesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -2620,6 +3096,9 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2656,6 +3135,7 @@ export type UserCreateWithoutCompanyInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2663,6 +3143,8 @@ export type UserCreateWithoutCompanyInput = {
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -2692,6 +3174,9 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2744,6 +3229,7 @@ export type UserUpdateWithoutCompanyInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2751,6 +3237,8 @@ export type UserUpdateWithoutCompanyInput = {
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -2780,6 +3268,9 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2816,6 +3307,7 @@ export type UserCreateWithoutBillingTransactionsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2824,6 +3316,8 @@ export type UserCreateWithoutBillingTransactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
@@ -2852,6 +3346,9 @@ export type UserUncheckedCreateWithoutBillingTransactionsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2893,6 +3390,7 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2901,6 +3399,8 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   listings?: Prisma.ListingCreateNestedManyWithoutUserInput
@@ -2929,6 +3429,9 @@ export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -2981,6 +3484,7 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2989,6 +3493,8 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
@@ -3017,6 +3523,9 @@ export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3064,6 +3573,7 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3072,6 +3582,8 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
@@ -3100,6 +3612,9 @@ export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3136,6 +3651,7 @@ export type UserCreateWithoutListingsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3144,6 +3660,8 @@ export type UserCreateWithoutListingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3172,6 +3690,9 @@ export type UserUncheckedCreateWithoutListingsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3224,6 +3745,7 @@ export type UserUpdateWithoutListingsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3232,6 +3754,8 @@ export type UserUpdateWithoutListingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -3260,6 +3784,9 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3296,6 +3823,7 @@ export type UserCreateWithoutTopupOrdersInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3304,6 +3832,8 @@ export type UserCreateWithoutTopupOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3332,6 +3862,9 @@ export type UserUncheckedCreateWithoutTopupOrdersInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3384,6 +3917,7 @@ export type UserUpdateWithoutTopupOrdersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3392,6 +3926,8 @@ export type UserUpdateWithoutTopupOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -3420,6 +3956,9 @@ export type UserUncheckedUpdateWithoutTopupOrdersInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3456,6 +3995,7 @@ export type UserCreateWithoutTopPlacementsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3464,6 +4004,8 @@ export type UserCreateWithoutTopPlacementsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3492,6 +4034,9 @@ export type UserUncheckedCreateWithoutTopPlacementsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3544,6 +4089,7 @@ export type UserUpdateWithoutTopPlacementsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3552,6 +4098,8 @@ export type UserUpdateWithoutTopPlacementsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -3580,6 +4128,9 @@ export type UserUncheckedUpdateWithoutTopPlacementsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3616,6 +4167,7 @@ export type UserCreateWithoutAgencyTopPlacementsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3624,6 +4176,8 @@ export type UserCreateWithoutAgencyTopPlacementsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3652,6 +4206,9 @@ export type UserUncheckedCreateWithoutAgencyTopPlacementsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3704,6 +4261,7 @@ export type UserUpdateWithoutAgencyTopPlacementsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3712,6 +4270,8 @@ export type UserUpdateWithoutAgencyTopPlacementsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -3740,6 +4300,9 @@ export type UserUncheckedUpdateWithoutAgencyTopPlacementsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3776,6 +4339,7 @@ export type UserCreateWithoutCreatedCampaignsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3784,6 +4348,8 @@ export type UserCreateWithoutCreatedCampaignsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3812,6 +4378,9 @@ export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3864,6 +4433,7 @@ export type UserUpdateWithoutCreatedCampaignsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3872,6 +4442,8 @@ export type UserUpdateWithoutCreatedCampaignsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -3900,6 +4472,9 @@ export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3936,6 +4511,7 @@ export type UserCreateWithoutCampaignGrantsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -3944,6 +4520,8 @@ export type UserCreateWithoutCampaignGrantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
   billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
   billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
@@ -3972,6 +4550,9 @@ export type UserUncheckedCreateWithoutCampaignGrantsInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -4024,6 +4605,7 @@ export type UserUpdateWithoutCampaignGrantsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4032,6 +4614,8 @@ export type UserUpdateWithoutCampaignGrantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -4060,6 +4644,9 @@ export type UserUncheckedUpdateWithoutCampaignGrantsInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4096,6 +4683,9 @@ export type UserCreateManyCreatedByInput = {
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
   advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
   locale?: string
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
@@ -4114,6 +4704,7 @@ export type UserUpdateWithoutCreatedByInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4122,6 +4713,8 @@ export type UserUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
@@ -4150,6 +4743,9 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4186,6 +4782,9 @@ export type UserUncheckedUpdateManyWithoutCreatedByInput = {
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   locale?: Prisma.StringFieldUpdateOperationsInput | string
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4193,6 +4792,246 @@ export type UserUncheckedUpdateManyWithoutCreatedByInput = {
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserCreateManyCountryInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+}
+
+export type UserUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutCountryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type UserCreateManyCityInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+}
+
+export type UserUpdateWithoutCityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutCityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -4370,6 +5209,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
   advertiserKind?: boolean
+  countryId?: boolean
+  cityId?: boolean
+  placementGraceEndsAt?: boolean
   locale?: boolean
   bannedAt?: boolean
   deletionRequestedAt?: boolean
@@ -4379,6 +5221,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   createdById?: boolean
   company?: boolean | Prisma.User$companyArgs<ExtArgs>
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
   billingTransactions?: boolean | Prisma.User$billingTransactionsArgs<ExtArgs>
   billingAdjustments?: boolean | Prisma.User$billingAdjustmentsArgs<ExtArgs>
@@ -4409,6 +5253,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
   advertiserKind?: boolean
+  countryId?: boolean
+  cityId?: boolean
+  placementGraceEndsAt?: boolean
   locale?: boolean
   bannedAt?: boolean
   deletionRequestedAt?: boolean
@@ -4417,6 +5264,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4429,6 +5278,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
   advertiserKind?: boolean
+  countryId?: boolean
+  cityId?: boolean
+  placementGraceEndsAt?: boolean
   locale?: boolean
   bannedAt?: boolean
   deletionRequestedAt?: boolean
@@ -4437,6 +5289,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4449,6 +5303,9 @@ export type UserSelectScalar = {
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
   advertiserKind?: boolean
+  countryId?: boolean
+  cityId?: boolean
+  placementGraceEndsAt?: boolean
   locale?: boolean
   bannedAt?: boolean
   deletionRequestedAt?: boolean
@@ -4459,9 +5316,11 @@ export type UserSelectScalar = {
   createdById?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "glowcoinBalance" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "countryId" | "cityId" | "placementGraceEndsAt" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "glowcoinBalance" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.User$companyArgs<ExtArgs>
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   profiles?: boolean | Prisma.User$profilesArgs<ExtArgs>
   billingTransactions?: boolean | Prisma.User$billingTransactionsArgs<ExtArgs>
   billingAdjustments?: boolean | Prisma.User$billingAdjustmentsArgs<ExtArgs>
@@ -4483,9 +5342,13 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
 }
 export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  country?: boolean | Prisma.User$countryArgs<ExtArgs>
+  city?: boolean | Prisma.User$cityArgs<ExtArgs>
   createdBy?: boolean | Prisma.User$createdByArgs<ExtArgs>
 }
 
@@ -4496,6 +5359,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
      * Салон или агентство. У индивидуалки и у посетителя пусто.
      */
     company: Prisma.$CompanyPayload<ExtArgs> | null
+    country: Prisma.$CountryPayload<ExtArgs> | null
+    city: Prisma.$CityPayload<ExtArgs> | null
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     billingTransactions: Prisma.$BillingTransactionPayload<ExtArgs>[]
     billingAdjustments: Prisma.$BillingTransactionPayload<ExtArgs>[]
@@ -4527,6 +5392,24 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
      * Заполняется только для role = advertiser.
      */
     advertiserKind: $Enums.AdvertiserKind | null
+    /**
+     * Страна аккаунта рекламодателя: выбирается при регистрации, меняется в
+     * настройках. По ней идут правила и цены размещения, тарифы и ТОП агентства.
+     * У посетителей и персонала пусто.
+     */
+    countryId: string | null
+    /**
+     * Основной город: подставляется в новые анкеты и определяет цену размещения
+     * индивидуалки и салона. У агентства может быть пуст — у него анкеты в
+     * нескольких городах страны.
+     */
+    cityId: string | null
+    /**
+     * Льготный срок после того, как размещение в стране стало платным, а
+     * подписки у владельца нет: до этой даты опубликованные анкеты остаются в
+     * каталоге, потом задача снимает их с публикации. Пусто — льготы нет.
+     */
+    placementGraceEndsAt: Date | null
     /**
      * Язык интерфейса на момент регистрации — на нём приходят письма.
      */
@@ -4954,6 +5837,8 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   company<T extends Prisma.User$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$companyArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  country<T extends Prisma.User$countryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$countryArgs<ExtArgs>>): Prisma.Prisma__CountryClient<runtime.Types.Result.GetResult<Prisma.$CountryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  city<T extends Prisma.User$cityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cityArgs<ExtArgs>>): Prisma.Prisma__CityClient<runtime.Types.Result.GetResult<Prisma.$CityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   profiles<T extends Prisma.User$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingTransactions<T extends Prisma.User$billingTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billingTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingAdjustments<T extends Prisma.User$billingAdjustmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$billingAdjustmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillingTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5009,6 +5894,9 @@ export interface UserFieldRefs {
   readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly advertiserKind: Prisma.FieldRef<"User", 'AdvertiserKind'>
+  readonly countryId: Prisma.FieldRef<"User", 'String'>
+  readonly cityId: Prisma.FieldRef<"User", 'String'>
+  readonly placementGraceEndsAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly locale: Prisma.FieldRef<"User", 'String'>
   readonly bannedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly deletionRequestedAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -5434,6 +6322,44 @@ export type User$companyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    */
   include?: Prisma.CompanyInclude<ExtArgs> | null
   where?: Prisma.CompanyWhereInput
+}
+
+/**
+ * User.country
+ */
+export type User$countryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Country
+   */
+  select?: Prisma.CountrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Country
+   */
+  omit?: Prisma.CountryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CountryInclude<ExtArgs> | null
+  where?: Prisma.CountryWhereInput
+}
+
+/**
+ * User.city
+ */
+export type User$cityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the City
+   */
+  select?: Prisma.CitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the City
+   */
+  omit?: Prisma.CityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CityInclude<ExtArgs> | null
+  where?: Prisma.CityWhereInput
 }
 
 /**

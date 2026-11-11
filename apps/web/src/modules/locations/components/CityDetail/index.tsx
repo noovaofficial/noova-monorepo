@@ -38,7 +38,14 @@ export function CityDetail({ countryCode, citySlug }: { countryCode: string; cit
   const tabs: TabDef[] = useMemo(
     () => [
       { key: 'info', label: t('cityInfo') },
-      { key: 'placement', label: t('placementTitle') },
+      // Города наследуют правила страны: вкладка отключена, но данные и код
+      // остаются — вернуть переопределения можно, сняв флаг.
+      {
+        key: 'placement',
+        label: t('placementTitle'),
+        disabled: true,
+        hint: t('placementInheritedHint'),
+      },
       { key: 'monetization', label: t('monetizationBlock') },
       { key: 'districts', label: t('districts'), badge: city?.districts.length },
     ],
@@ -77,7 +84,7 @@ export function CityDetail({ countryCode, citySlug }: { countryCode: string; cit
 
       {tab === 'placement' ? (
         <section className={styles.section}>
-          <PlacementRules scope={{ cityId: city.id }} run={run} t={t} />
+          <PlacementRules scope={{ cityId: city.id, countryId: city.countryId }} run={run} t={t} />
         </section>
       ) : null}
 

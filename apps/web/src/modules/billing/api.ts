@@ -27,8 +27,10 @@ import {
   currentListingSchema,
   type GlobalBillingConfig,
   type Listing,
+  type PlacementState,
   type PlanTerm,
   type PriceBook,
+  placementStateSchema,
   priceBookSchema,
   type TopState,
   type TopupOrder,
@@ -79,6 +81,10 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
 /** Прайс для кабинета: пакеты пополнения и цены размещения. */
 export const fetchPriceBook = (): Promise<PriceBook> =>
   call('/billing/price-book', priceBookSchema);
+
+/** Правило размещения для страны и типа аккаунта: платно / бесплатно / закрыто. */
+export const fetchPlacement = (): Promise<PlacementState> =>
+  call('/billing/placement', placementStateSchema);
 
 /** Прайс для места владельца: город его анкеты или страна компании. */
 export const fetchMyPriceBook = (): Promise<PriceBook> =>

@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormatter, useLocale, useTranslations } from 'next-intl';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { BillingError, createTopup, fetchMyPriceBook, fetchWallet } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { GlowCoinIcon } from '../GlowCoinIcon';
@@ -24,6 +25,7 @@ import styles from './GlowCoinWallet.module.css';
  */
 export function GlowCoinWallet() {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
@@ -84,7 +86,9 @@ export function GlowCoinWallet() {
         </div>
       </div>
 
-      {wallet.isError || book.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {wallet.isError || book.isError ? (
+        <p className={styles.err}>{explain(wallet.error, t('loadFailed'))}</p>
+      ) : null}
 
       <p className={styles.current}>
         <Link className={styles.back} href="/account/subscription">
@@ -99,7 +103,9 @@ export function GlowCoinWallet() {
         <p className={styles.note}>{t('topupRedirect')}</p>
       ) : null}
       {topupUnavailable ? <p className={styles.err}>{t('topupUnavailable')}</p> : null}
-      {topup.isError && !topupUnavailable ? <p className={styles.err}>{t('topupFailed')}</p> : null}
+      {topup.isError && !topupUnavailable ? (
+        <p className={styles.err}>{explain(topup.error, t('topupFailed'))}</p>
+      ) : null}
 
       {book.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
 

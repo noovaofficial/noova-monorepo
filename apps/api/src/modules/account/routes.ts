@@ -18,6 +18,7 @@ import {
   type ServiceGroup,
   serviceGroupSchema,
   snapLocation,
+  updateLocationSchema,
   updateProfileSchema,
 } from '@noova/shared';
 import type { FastifyInstance } from 'fastify';
@@ -28,10 +29,21 @@ import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { verifyPassword } from '../auth/passwords.js';
-import { buildAgencyPaywallInfo, companyTariffSelect } from '../billing/agency-tariffs.js';
+import {
+  buildAgencyPaywallInfo,
+  companyTariffSelect,
+  resolveDefaultAgencyTierId,
+} from '../billing/agency-tariffs.js';
 import { loadBillingConfig } from '../billing/config.js';
 import { hasVisibleListing } from '../billing/listing.js';
 import { type PublishVerdict, placementFor, publishVerdict } from '../billing/placement.js';
+import { syncPremiumForOwner } from '../billing/premium.js';
+import {
+  LOCATION_HAS_PROFILES,
+  PLACEMENT_FORBIDDEN,
+  resolveAccountLocation,
+  throwLocationProblem,
+} from '../locations/account-location.js';
 import { COUNTRY_LOCKED, canMoveProfileToCity, withCode } from '../locations/country-lock.js';
 import { toOwnPhoto } from '../photos/routes.js';
 import { deletePhotoFiles } from '../photos/storage.js';
@@ -128,7 +140,10 @@ async function advertiserOr403(fastify: FastifyInstance, userId: string) {
 /** Превращает отказ правила размещения в HTTP-ошибку. */
 function throwForVerdict(fastify: FastifyInstance, verdict: PublishVerdict): void {
   if (verdict === 'forbidden') {
-    throw fastify.httpErrors.forbidden('Размещение этого типа в выбранном городе недоступно');
+    throw withCode(
+      fastify.httpErrors.forbidden('Размещение этого типа в выбранном городе недоступно'),
+      PLACEMENT_FORBIDDEN,
+    );
   }
   if (verdict === 'unpaid') throw fastify.httpErrors.paymentRequired('Размещение не оплачено');
 }
@@ -310,6 +325,132 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Смена страны и основного города в настройках.
+   *
+   * Город меняется свободно (в пределах страны) и не трогает уже созданные
+   * анкеты — у каждой свой.
+   *
+   * Страну можно сменить, пока нет опубликованных анкет. Остальные (черновики,
+   * на проверке, снятые) переезжают вместе с аккаунтом безопасно: страна и
+   * город новые, район и точка сбрасываются, цены очищаются (они в валюте
+   * прежней страны), статус — черновик. Агентству вместе со страной
+   * переезжает и сетка тарифов, а прайс компании очищается так же.
+   */
+  fastify.put(
+    '/me/location',
+    {
+      onRequest: fastify.requireAuth,
+      schema: {
+        tags: ['account'],
+        body: updateLocationSchema,
+        response: {
+          200: z.object({
+            countryCode: z.string(),
+            citySlug: z.string().nullable(),
+            /** Сколько анкет переведено в черновики при смене страны. */
+            convertedProfiles: z.number().int().nonnegative(),
+          }),
+        },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const { advertiserKind } = await advertiserOr403(fastify, userId);
+
+      const resolved = await resolveAccountLocation(fastify.prisma, {
+        kind: advertiserKind,
+        countryCode: request.body.countryCode,
+        citySlug: request.body.citySlug,
+      });
+      if ('problem' in resolved) throwLocationProblem(fastify, resolved.problem);
+      const { countryId, cityId } = resolved.location;
+
+      const me = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { countryId: true, company: { select: { id: true } } },
+      });
+
+      const countryChanges = me.countryId !== countryId;
+      let toConvert: { id: string }[] = [];
+      if (countryChanges) {
+        const profiles = await fastify.prisma.profile.findMany({
+          where: { ownerId: userId },
+          select: { id: true, status: true },
+        });
+        if (profiles.some((profile) => profile.status === 'published')) {
+          throw withCode(
+            fastify.httpErrors.conflict('Страну нельзя сменить, пока есть опубликованные анкеты'),
+            LOCATION_HAS_PROFILES,
+          );
+        }
+        toConvert = profiles;
+        // Анкетам нужен город новой страны — без него (агентство без основного
+        // города) переезд не определён.
+        if (toConvert.length > 0 && !cityId) {
+          throw withCode(fastify.httpErrors.badRequest('Выберите город'), 'city_required');
+        }
+      }
+
+      const company = me.company;
+      const newTierId =
+        company && me.countryId !== countryId
+          ? await resolveDefaultAgencyTierId(fastify.prisma, countryId)
+          : null;
+
+      const center = cityId && toConvert.length > 0 ? await centerFor(fastify, cityId, null) : null;
+
+      await fastify.prisma.$transaction(async (tx) => {
+        await tx.user.update({ where: { id: userId }, data: { countryId, cityId } });
+        if (company && newTierId) {
+          await tx.company.update({
+            where: { id: company.id },
+            data: { countryId, tariffTierId: newTierId },
+          });
+          // Прайс компании — в валюте прежней страны, а копируется в новые анкеты.
+          await tx.companyPriceSlot.deleteMany({ where: { companyId: company.id } });
+        }
+        if (toConvert.length > 0 && cityId) {
+          const ids = toConvert.map((profile) => profile.id);
+          await tx.priceSlot.deleteMany({ where: { profileId: { in: ids } } });
+          // Заявка на проверку, висевшая в очереди, теряет смысл: анкета снова
+          // черновик с пустыми ценами. Пройденная проверка остаётся.
+          await tx.verificationCase.updateMany({
+            where: { profileId: { in: ids }, status: 'pending' },
+            data: { status: 'none', submittedAt: null },
+          });
+          await tx.profile.updateMany({
+            where: { id: { in: ids } },
+            data: {
+              countryId,
+              cityId,
+              districtId: null,
+              status: 'draft',
+              fromPriceCents: null,
+              unpaidAt: null,
+              isPremium: false,
+              hasManualLocation: false,
+              ...(center ?? {}),
+            },
+          });
+        }
+      });
+      if (toConvert.length > 0) {
+        await syncPremiumForOwner(fastify.prisma, userId);
+      }
+
+      const saved = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { country: { select: { code: true } }, city: { select: { slug: true } } },
+      });
+      return {
+        countryCode: saved.country?.code ?? '',
+        citySlug: saved.city?.slug ?? null,
+        convertedProfiles: toConvert.length,
+      };
+    },
+  );
+
   fastify.get(
     '/me/profiles',
     {
@@ -341,7 +482,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         // обработчик ошибок: у него для 409 своей схемы нет.
         response: {
           201: ownProfileSchema,
-          409: z.union([agencyPaywallInfoSchema, z.object({ message: z.string() })]),
+          409: z.union([
+            agencyPaywallInfoSchema,
+            // `code` — причина для интерфейса (например, `country_locked`); без него в
+            // схеме сериализатор вырезал бы поле у ошибок, брошенных через обработчик.
+            z.object({ message: z.string(), code: z.string().optional() }),
+          ]),
         },
       },
     },
@@ -387,11 +533,25 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         }
       }
 
+      // Страна и основной город — у аккаунта; без явного города берём основной.
+      const account = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { countryId: true, city: { select: { slug: true } } },
+      });
+      const citySlug = request.body.citySlug ?? account?.city?.slug;
+      if (!citySlug) throw fastify.httpErrors.badRequest('Выберите город');
       const city = await fastify.prisma.city.findUnique({
-        where: { slug: request.body.citySlug },
+        where: { slug: citySlug },
         select: { id: true, slug: true, countryId: true },
       });
       if (!city) throw fastify.httpErrors.badRequest('Город не найден');
+      // Страна анкеты — страна аккаунта: сменить её можно только в настройках.
+      if (account?.countryId && city.countryId !== account.countryId) {
+        throw withCode(
+          fastify.httpErrors.conflict('Город не из страны вашего аккаунта'),
+          COUNTRY_LOCKED,
+        );
+      }
       if (
         !(
           await placementFor(
@@ -461,6 +621,9 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
         select: ownProfileSelect,
       });
+
+      // Подписка уже могла быть куплена: новая анкета в бесплатном месте — Premium.
+      await syncPremiumForOwner(fastify.prisma, userId);
 
       return reply.status(201).send(await present(created));
     },
@@ -679,6 +842,8 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
                 // biome-ignore lint/style/noNonNullAssertion: ключи сверены со справочником выше
                 serviceId: serviceIdByKey!.get(s.key)!,
                 isExtra: s.isExtra,
+                // Цена имеет смысл только у доплаты.
+                extraPriceCents: s.isExtra ? (s.extraPriceCents ?? null) : null,
               })),
             });
           }
@@ -1009,8 +1174,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           paywallEnabled: env.PAYWALL_ENABLED,
           hasListing,
         });
-        if (verdict === 'unpaid') throwForVerdict(fastify, verdict);
-        if (verdict === 'ok') eligible.push(p);
+        // Правила размещения общие для аккаунта, так что закрытая публикация
+        // или нехватка подписки касаются всех анкет разом. Молча пропустить
+        // их значило бы ответить «опубликовано 0, пропущено 12 (не проверены)»
+        // и ввести человека в заблуждение.
+        if (verdict !== 'ok') throwForVerdict(fastify, verdict);
+        eligible.push(p);
       }
 
       if (eligible.length > 0) {

@@ -23,6 +23,7 @@ import {
   updateCampaign,
 } from '@/modules/campaigns/api';
 import { fetchCities } from '@/modules/locations/api';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
@@ -124,6 +125,7 @@ function fromCampaign(campaign: Campaign): FormState {
  */
 export function CampaignsAdmin() {
   const t = useTranslations('campaigns');
+  const explain = useErrorText();
   // Типы размещения подписаны так же, как при регистрации: это один и тот же
   // выбор, и синоним читался бы как другой тариф.
   const ta = useTranslations('auth');
@@ -215,17 +217,19 @@ export function CampaignsAdmin() {
       {invalid ? <p className={`${styles.notice} ${styles.noticeError}`}>{t('invalid')}</p> : null}
       {conflict ? (
         <p className={`${styles.notice} ${styles.noticeError}`}>
-          {(save.error ?? remove.error) instanceof CampaignError
-            ? ((save.error ?? remove.error) as CampaignError).message
-            : t('actionFailed')}
+          {explain(save.error ?? remove.error, t('actionFailed'))}
         </p>
       ) : null}
       {failed ? (
-        <p className={`${styles.notice} ${styles.noticeError}`}>{t('actionFailed')}</p>
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(save.error ?? remove.error ?? toggle.error, t('actionFailed'))}
+        </p>
       ) : null}
 
       {campaigns.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {campaigns.isError ? <p className={styles.empty}>{t('loadFailed')}</p> : null}
+      {campaigns.isError ? (
+        <p className={styles.empty}>{explain(campaigns.error, t('loadFailed'))}</p>
+      ) : null}
 
       {campaigns.data?.length === 0 ? <p className={styles.empty}>{t('empty')}</p> : null}
 

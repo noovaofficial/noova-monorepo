@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { approveIdentity, fetchVerification, rejectIdentity } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Moderation.module.css';
@@ -20,6 +21,7 @@ import { PhotoViewer } from '../PhotoViewer';
  */
 export function VerificationReview({ requestId }: { requestId: string }) {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
@@ -61,7 +63,7 @@ export function VerificationReview({ requestId }: { requestId: string }) {
   }
 
   if (!isStaff) return <p className={styles.empty}>{t('onlyStaff')}</p>;
-  if (item.isError) return <p className={styles.empty}>{t('loadFailed')}</p>;
+  if (item.isError) return <p className={styles.empty}>{explain(item.error, t('loadFailed'))}</p>;
   if (!item.data) return <p className={styles.empty}>{t('loading')}</p>;
 
   const data = item.data;
@@ -96,7 +98,9 @@ export function VerificationReview({ requestId }: { requestId: string }) {
       ) : null}
 
       {approve.isError || reject.isError ? (
-        <p className={`${styles.notice} ${styles.noticeError}`}>{t('actionFailed')}</p>
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(approve.error ?? reject.error, t('actionFailed'))}
+        </p>
       ) : null}
 
       {data.isPurged ? (

@@ -81,7 +81,16 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
             Принадлежность агентству — тоже сюда, а не в ряд услуг: так услуги
             видны у любой анкеты, а не только у анкет без компании. */}
         <div className={styles.top}>
-          {profile.isFeatured ? <Badge variant="featured">★ {t('featured')}</Badge> : null}
+          {profile.isFeatured ? (
+            <Badge variant="featured" hint={t('featuredHint')}>
+              ★ {t('featured')}
+            </Badge>
+          ) : null}
+          {profile.isPremium ? (
+            <Badge variant="premium" hint={t('premiumHint')}>
+              ◆ {t('premium')}
+            </Badge>
+          ) : null}
           {profile.company ? (
             <span className={styles.companyTop}>
               <Badge variant="company">{t('fromAgency', { name: profile.company.name })}</Badge>
@@ -116,7 +125,13 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
           ))}
         </div>
         <div className={styles.foot}>
-          {profile.isVerified ? <Badge variant="verified">✓ {t('verified')}</Badge> : <span />}
+          {profile.isVerified ? (
+            <Badge variant="verified" hint={t('verifiedHint')}>
+              ✓ {t('verified')}
+            </Badge>
+          ) : (
+            <span />
+          )}
           {price ? (
             <span className={styles.price}>
               {t('priceFrom', { price })}

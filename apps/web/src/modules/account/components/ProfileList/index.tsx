@@ -28,6 +28,9 @@ import {
 } from '@/modules/account/api';
 import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { fetchListing, fetchPlacement } from '@/modules/billing/api';
+import { ListingNotice } from '@/modules/billing/components/ListingNotice';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -49,6 +52,7 @@ const STAGE_ORDER: ProfileStage[] = [
 export function ProfileList() {
   const locale = useLocale() as Locale;
   const t = useTranslations('account');
+  const explain = useErrorText();
   const { user, status: sessionStatus } = useSession();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -72,6 +76,18 @@ export function ProfileList() {
     queryFn: fetchOwnCompanyTariff,
     enabled: enabled && isAgency,
     staleTime: 60 * 1000,
+  });
+  // Те же запросы, что в ListingNotice, — кэш общий. Нужны, чтобы не звать
+  // анкету «готовой к публикации» там, где публиковать всё равно нельзя.
+  const placement = useQuery({
+    queryKey: queryKeys.placement(),
+    queryFn: fetchPlacement,
+    enabled: enabled && user?.role === 'advertiser',
+  });
+  const listing = useQuery({
+    queryKey: queryKeys.listing(),
+    queryFn: fetchListing,
+    enabled: enabled && user?.role === 'advertiser',
   });
   // Справочник городов меняется раз в год — свежесть держим долгую, иначе
   // он перезапрашивается на каждом заходе в кабинет без всякой пользы.
@@ -113,7 +129,9 @@ export function ProfileList() {
         text:
           cause instanceof AccountError && cause.status === 402
             ? t('bulkNeedsPayment')
-            : t('bulkFailed'),
+            : cause instanceof AccountError && cause.code === 'placement_forbidden'
+              ? t('publishBlockedClosed')
+              : t('bulkFailed'),
       }),
   });
   const submitAll = useMutation({
@@ -145,7 +163,12 @@ export function ProfileList() {
   });
 
   const profiles = list.data ?? null;
-  const cities = cityList.data ?? [];
+  // Страна анкет — страна аккаунта (меняется только в настройках), поэтому
+  // предлагаем города этой страны; основной город подставляется по умолчанию.
+  const allCities = cityList.data ?? [];
+  const cities = user?.countryCode
+    ? allCities.filter((city) => city.country.code === user.countryCode)
+    : allCities;
   const creating = create.isPending;
 
   // Лимит агентства достигнут — пейвол показываем сразу из уже загруженного
@@ -244,11 +267,31 @@ export function ProfileList() {
         editedSinceRejection: p.editedSinceRejection,
       }),
     ).length ?? 0;
-  const canPublish = (p: OwnProfile) =>
+  // Анкета проверена и заполнена — дальше публикации мешает только то, что
+  // общее для аккаунта: закрытая в стране публикация или нет подписки.
+  const isVerifiedAndComplete = (p: OwnProfile) =>
     p.verificationStatus === 'verified' &&
     p.status !== 'published' &&
     p.status !== 'banned' &&
     missingForReview(completeness(p)).length === 0;
+  // Пока подписка или правила размещения не загрузились, ничего не утверждаем:
+  // кнопка включится, а сервер всё равно проверит.
+  const listingVisible = listing.data?.status === 'active' || listing.data?.status === 'grace';
+  const publishBlocker: 'closed' | 'unpaid' | null = !placement.data
+    ? null
+    : !placement.data.allowed
+      ? 'closed'
+      : placement.data.paid && listing.isSuccess && !listingVisible
+        ? 'unpaid'
+        : null;
+  const canPublish = (p: OwnProfile) => isVerifiedAndComplete(p) && publishBlocker === null;
+  const blockedCount = publishBlocker ? (profiles?.filter(isVerifiedAndComplete).length ?? 0) : 0;
+  const blockerText =
+    publishBlocker === 'closed'
+      ? t('publishBlockedClosed')
+      : publishBlocker === 'unpaid'
+        ? t('publishBlockedUnpaid')
+        : null;
   const publishedCount = profiles?.filter((p) => p.status === 'published').length ?? 0;
   const publishableCount = profiles?.filter(canPublish).length ?? 0;
   // Разбивка сводки — по стадии (`profileStage`), не по сырому статусу: она
@@ -279,7 +322,8 @@ export function ProfileList() {
 
   // Районы зависят от выбранного города, а не от первого в списке: иначе при
   // смене города в селекте оставались районы другого города.
-  const selectedCitySlug = citySlug || cities[0]?.slug || '';
+  const mainCity = cities.find((city) => city.slug === user?.citySlug)?.slug;
+  const selectedCitySlug = citySlug || mainCity || cities[0]?.slug || '';
   const selectedCity = cities.find((city) => city.slug === selectedCitySlug);
 
   // Фильтр по стадии сужает сетку карточек, но не сводку справа — иначе
@@ -314,6 +358,8 @@ export function ProfileList() {
           </span>
           {(missingHint(profile) ?? rejectionHint(profile)) ? (
             <span className={styles.missing}>{missingHint(profile) ?? rejectionHint(profile)}</span>
+          ) : isVerifiedAndComplete(profile) && blockerText ? (
+            <span className={styles.missing}>{blockerText}</span>
           ) : null}
         </div>
         <div className={styles.profileActions}>
@@ -336,7 +382,9 @@ export function ProfileList() {
           ) : null}
         </div>
         {publish.isError && publish.variables === profile.id ? (
-          <p className={`${styles.notice} ${styles.noticeError}`}>{t('publishFailed')}</p>
+          <p className={`${styles.notice} ${styles.noticeError}`}>
+            {explain(publish.error, t('publishFailed'))}
+          </p>
         ) : null}
       </div>
     );
@@ -354,6 +402,9 @@ export function ProfileList() {
       {user.isEmailVerified ? null : (
         <p className={`${styles.notice} ${styles.noticeWarn}`}>{t('verifyEmailFirst')}</p>
       )}
+      {/* Закрытая страна и льготный срок после «стало платным» — над списком, а
+          не только внутри анкеты: владелец узнаёт причину, не открывая её. */}
+      <ListingNotice only="placement" />
       {isAgency && tariff.data && !tariff.data.hasCompany ? (
         <p className={`${styles.notice} ${styles.noticeWarn}`}>
           {t('fillCompanyFirst')} <Link href="/account/company">{t('fillCompanyLink')}</Link>
@@ -525,6 +576,11 @@ export function ProfileList() {
                   >
                     {t('submitAll', { count: submittableCount })}
                   </Button>
+                ) : null}
+                {blockedCount > 0 && blockerText ? (
+                  <span className={styles.missing}>
+                    {t('publishAllBlocked', { count: blockedCount, reason: blockerText })}
+                  </span>
                 ) : null}
                 <Button
                   disabled={publishableCount === 0 || bulkPending}

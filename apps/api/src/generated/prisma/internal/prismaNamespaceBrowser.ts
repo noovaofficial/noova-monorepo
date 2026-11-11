@@ -128,6 +128,9 @@ export const UserScalarFieldEnum = {
   emailVerifiedAt: 'emailVerifiedAt',
   lastLoginAt: 'lastLoginAt',
   advertiserKind: 'advertiserKind',
+  countryId: 'countryId',
+  cityId: 'cityId',
+  placementGraceEndsAt: 'placementGraceEndsAt',
   locale: 'locale',
   bannedAt: 'bannedAt',
   deletionRequestedAt: 'deletionRequestedAt',
@@ -331,6 +334,7 @@ export const ProfileScalarFieldEnum = {
   hasManualLocation: 'hasManualLocation',
   fromPriceCents: 'fromPriceCents',
   isFeatured: 'isFeatured',
+  isPremium: 'isPremium',
   isVerified: 'isVerified',
   lastSeenAt: 'lastSeenAt',
   publishedAt: 'publishedAt',
@@ -624,7 +628,8 @@ export type ServiceGroupTranslationScalarFieldEnum = (typeof ServiceGroupTransla
 export const ProfileServiceScalarFieldEnum = {
   profileId: 'profileId',
   serviceId: 'serviceId',
-  isExtra: 'isExtra'
+  isExtra: 'isExtra',
+  extraPriceCents: 'extraPriceCents'
 } as const
 
 export type ProfileServiceScalarFieldEnum = (typeof ProfileServiceScalarFieldEnum)[keyof typeof ProfileServiceScalarFieldEnum]

@@ -2,7 +2,7 @@ import { DEFAULT_LOCALE, isLocale, RESERVED_CITY_SLUGS } from '@noova/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './shared/i18n/routing';
-import { LOCATION_COOKIE } from './shared/location-cookie';
+import { countryFromHeaders, GEO_COOKIE, LOCATION_COOKIE } from './shared/location-cookie';
 import { agencySlugFromHost } from './shared/subdomain';
 
 const handleI18n = createMiddleware(routing);
@@ -103,12 +103,22 @@ export default function proxy(request: NextRequest) {
   // запоминать её как последнюю локацию незачем.
   const firstSegment = pathWithoutLocale(request.nextUrl.pathname).split('/')[1] ?? '';
   if (firstSegment !== '' && !ROUTE_SEGMENTS.has(firstSegment)) {
+    // Не httpOnly: кнопка «Фильтры» на странице анкеты (там локации в адресе
+    // нет) читает её на клиенте, чтобы показать страну, которую человек
+    // выбрал, а не страну по умолчанию. Это публичный слуг, не секрет.
     response.cookies.set(LOCATION_COOKIE, firstSegment, {
-      httpOnly: true,
+      httpOnly: false,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 365,
     });
+  }
+
+  // Страна посетителя — один раз за сессию. Нужна плашке «Это ваша
+  // локация?»; без cookie-сессии заголовки не пересчитываем на каждый запрос.
+  if (!request.cookies.get(GEO_COOKIE)) {
+    const geo = countryFromHeaders((name) => request.headers.get(name));
+    if (geo) response.cookies.set(GEO_COOKIE, geo, { sameSite: 'lax', path: '/' });
   }
 
   // Редирект строится по куке с ролью. Это подсказка интерфейсу, а не защита:

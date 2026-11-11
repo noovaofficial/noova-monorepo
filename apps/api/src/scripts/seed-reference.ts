@@ -131,6 +131,7 @@ async function seedCountries(): Promise<Map<string, string>> {
         name: name[DEFAULT_LOCALE],
         isActive: country.isActive,
         isDefault: country.isDefault,
+        currency: country.currency,
       },
     });
 
@@ -218,10 +219,120 @@ async function seedLocations(countryIds: Map<string, string>) {
   );
 }
 
+/**
+ * Польский (и любой добавленный позже язык) для записей, заведённых раньше:
+ * миграция кладёт им английское название как запасное, а здесь оно заменяется
+ * настоящим из справочника — но только пока значение не тронуто руками в
+ * админке (то есть всё ещё равно английскому). Правки админа неприкосновенны.
+ */
+async function backfillTranslations() {
+  let updated = 0;
+  const apply = async (
+    rows: { id: string; locale: string; name: string }[],
+    wanted: Translated,
+    update: (id: string, name: string) => Promise<unknown>,
+    create: (locale: string, name: string) => Promise<unknown>,
+  ) => {
+    for (const locale of LOCALES) {
+      const row = rows.find((r) => r.locale === locale);
+      const target = wanted[locale];
+      if (!row) {
+        await create(locale, target);
+        updated += 1;
+        continue;
+      }
+      const english = rows.find((r) => r.locale === 'en')?.name;
+      // Запасное значение миграции: совпадает с английским, а справочник говорит иное.
+      if (locale !== 'en' && row.name === english && target !== row.name) {
+        await update(row.id, target);
+        updated += 1;
+      }
+    }
+  };
+
+  for (const country of COUNTRIES) {
+    const row = await prisma.country.findUnique({
+      where: { code: country.code },
+      include: { translations: true },
+    });
+    if (!row) continue;
+    await apply(
+      row.translations,
+      check(country.name, `страны ${country.code}`),
+      (id, name) => prisma.countryTranslation.update({ where: { id }, data: { name } }),
+      (locale, name) =>
+        prisma.countryTranslation.create({ data: { countryId: row.id, locale, name } }),
+    );
+  }
+
+  for (const city of CITIES) {
+    const row = await prisma.city.findUnique({
+      where: { slug: city.slug },
+      include: { translations: true },
+    });
+    if (!row) continue;
+    await apply(
+      row.translations,
+      check(city.name, `города ${city.slug}`),
+      (id, name) => prisma.cityTranslation.update({ where: { id }, data: { name } }),
+      (locale, name) => prisma.cityTranslation.create({ data: { cityId: row.id, locale, name } }),
+    );
+
+    for (const district of city.districts) {
+      const districtRow = await prisma.district.findUnique({
+        where: { cityId_slug: { cityId: row.id, slug: district.slug } },
+        include: { translations: true },
+      });
+      if (!districtRow) continue;
+      await apply(
+        districtRow.translations,
+        check(district.name, `района ${city.slug}/${district.slug}`),
+        (id, name) => prisma.districtTranslation.update({ where: { id }, data: { name } }),
+        (locale, name) =>
+          prisma.districtTranslation.create({
+            data: { districtId: districtRow.id, locale, name },
+          }),
+      );
+    }
+  }
+
+  for (const service of SERVICES) {
+    const row = await prisma.service.findUnique({
+      where: { key: service.key },
+      include: { translations: true },
+    });
+    if (!row) continue;
+    await apply(
+      row.translations,
+      check(service.name, `услуги ${service.key}`),
+      (id, name) => prisma.serviceTranslation.update({ where: { id }, data: { name } }),
+      (locale, name) =>
+        prisma.serviceTranslation.create({ data: { serviceId: row.id, locale, name } }),
+    );
+  }
+
+  for (const group of SERVICE_GROUPS) {
+    const rows = await prisma.serviceGroupTranslation.findMany({ where: { groupKey: group.key } });
+    if (rows.length === 0) continue;
+    await apply(
+      rows,
+      check(group.name, `группы ${group.key}`),
+      (id, name) => prisma.serviceGroupTranslation.update({ where: { id }, data: { name } }),
+      (locale, name) =>
+        prisma.serviceGroupTranslation.create({
+          data: { groupKey: group.key, locale, name },
+        }),
+    );
+  }
+
+  console.log(`Переводы: дополнено или обновлено ${updated}`);
+}
+
 async function main() {
   await seedServices();
   // Страны первыми: город без страны не сохранить, связь обязательна.
   await seedLocations(await seedCountries());
+  await backfillTranslations();
   console.log(`Справочники готовы (источник: ${referencePath()}).`);
 }
 

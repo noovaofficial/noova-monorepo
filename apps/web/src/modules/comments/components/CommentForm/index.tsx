@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { CommentError, createComment, fetchOwnComment } from '@/modules/comments/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Comments.module.css';
@@ -22,6 +23,7 @@ const MIN_LENGTH = 10;
  */
 export function CommentForm({ slug }: Props) {
   const t = useTranslations('comments');
+  const explain = useErrorText();
   const { status, user } = useSession();
   const [body, setBody] = useState('');
   const queryClient = useQueryClient();
@@ -120,7 +122,11 @@ export function CommentForm({ slug }: Props) {
         required
       />
 
-      {errorKey ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(errorKey)}</p> : null}
+      {errorKey ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {errorKey === 'errorFailed' ? explain(send.error, t(errorKey)) : t(errorKey)}
+        </p>
+      ) : null}
 
       <p className={styles.hint}>{t('premoderationHint')}</p>
 

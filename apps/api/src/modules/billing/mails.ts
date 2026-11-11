@@ -58,6 +58,14 @@ const REMINDER: Record<Locale, (date: string) => Copy> = {
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'После окончания срока анкеты ещё несколько дней остаются в каталоге, затем снимаются с публикации. После оплаты они вернутся сами.',
   }),
+  pl: (date) => ({
+    subject: `Noova — Twoja publikacja wygasa ${date}`,
+    heading: 'Twoja publikacja wkrótce wygaśnie',
+    intro: `Twoja publikacja kończy się ${date}. Przedłuż ją na czas, aby profile pozostały w katalogu.`,
+    button: 'Przedłuż publikację',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Po wygaśnięciu profile pozostają widoczne jeszcze kilka dni, a potem są wycofywane. Po opłaceniu wracają automatycznie.',
+  }),
 };
 
 const GRACE: Record<Locale, (date: string) => Copy> = {
@@ -100,6 +108,14 @@ const GRACE: Record<Locale, (date: string) => Copy> = {
     button: 'Продлить сейчас',
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'После оплаты размещение продолжится с сегодняшнего дня, ничего не пропадёт.',
+  }),
+  pl: (date) => ({
+    subject: 'Noova — publikacja wygasła, profile wciąż widoczne',
+    heading: 'Twoja publikacja wygasła',
+    intro: `Opłacony okres dobiegł końca. Do ${date} profile pozostają w katalogu — to okres karencji. Przedłuż teraz, inaczej zostaną wycofane.`,
+    button: 'Przedłuż teraz',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Po opłaceniu publikacja będzie trwać od dziś; nic nie przepadnie.',
   }),
 };
 
@@ -149,6 +165,15 @@ const EXPIRED: Record<Locale, Copy> = {
     fallback: 'Если кнопка не работает, откройте ссылку:',
     note: 'После оплаты анкеты вернутся в каталог сами — повторная проверка не нужна.',
   },
+  pl: {
+    subject: 'Noova — profile wycofane: publikacja nie została przedłużona',
+    heading: 'Twoje profile nie są już widoczne',
+    intro:
+      'Okres karencji dobiegł końca, a Twoje profile zostały usunięte z katalogu. Twoje dane i zdjęcia zostają zachowane.',
+    button: 'Opłać publikację',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Po opłaceniu profile automatycznie wracają do katalogu — bez ponownej weryfikacji.',
+  },
 };
 
 export function listingReminderMail(locale: Locale, expiresAt: Date) {
@@ -169,4 +194,68 @@ export function listingGraceMail(locale: Locale, graceEndsAt: Date) {
 
 export function listingExpiredMail(locale: Locale) {
   return buildMail(EXPIRED[locale], locale, subscriptionLink(locale));
+}
+
+/**
+ * Размещение в стране стало платным: до даты анкеты остаются в каталоге,
+ * дальше их снимут. Письмо нужно, потому что без него снятие выглядит как
+ * поломка: человек публиковал бесплатно и ничего не менял.
+ */
+const PLACEMENT_PAID: Record<Locale, (date: string) => Copy> = {
+  de: (date) => ({
+    subject: 'Noova — die Platzierung in Ihrem Land ist jetzt kostenpflichtig',
+    heading: 'Die Platzierung ist jetzt kostenpflichtig',
+    intro: `In Ihrem Land ist die Platzierung von Profilen jetzt kostenpflichtig. Bis ${date} bleiben Ihre Profile im Katalog. Schließen Sie ein Abo ab, damit sie nicht deaktiviert werden.`,
+    button: 'Abo abschließen',
+    fallback: 'Falls die Schaltfläche nicht funktioniert, öffnen Sie diesen Link:',
+    note: 'Nach der Zahlung geht nichts verloren. Ohne Zahlung werden die Profile deaktiviert und erscheinen nach der Zahlung automatisch wieder.',
+  }),
+  en: (date) => ({
+    subject: 'Noova — listing in your country is now paid',
+    heading: 'Listing is now paid',
+    intro: `Listing profiles in your country is now paid. Until ${date} your profiles stay in the catalog. Get a subscription so they are not unpublished.`,
+    button: 'Get a subscription',
+    fallback: 'If the button does not work, open this link:',
+    note: 'Nothing is lost after payment. Without it the profiles are unpublished and come back automatically once you pay.',
+  }),
+  es: (date) => ({
+    subject: 'Noova — la publicación en tu país ahora es de pago',
+    heading: 'La publicación ahora es de pago',
+    intro: `Publicar perfiles en tu país ahora es de pago. Hasta el ${date} tus perfiles siguen en el catálogo. Suscríbete para que no se retiren.`,
+    button: 'Suscribirme',
+    fallback: 'Si el botón no funciona, abre este enlace:',
+    note: 'Tras el pago no se pierde nada. Sin él, los perfiles se retiran y vuelven automáticamente cuando pagues.',
+  }),
+  fr: (date) => ({
+    subject: 'Noova — la publication dans votre pays est désormais payante',
+    heading: 'La publication est désormais payante',
+    intro: `La publication de profils dans votre pays est désormais payante. Jusqu'au ${date}, vos profils restent au catalogue. Abonnez-vous pour qu'ils ne soient pas dépubliés.`,
+    button: "S'abonner",
+    fallback: 'Si le bouton ne fonctionne pas, ouvrez ce lien :',
+    note: "Après paiement, rien n'est perdu. Sans paiement, les profils sont dépubliés et reviennent automatiquement dès que vous payez.",
+  }),
+  ru: (date) => ({
+    subject: 'Noova — размещение в вашей стране стало платным',
+    heading: 'Размещение стало платным',
+    intro: `В вашей стране размещение анкет теперь платное. До ${date} анкеты остаются в каталоге. Оформите подписку, чтобы их не сняли с публикации.`,
+    button: 'Оформить подписку',
+    fallback: 'Если кнопка не работает, откройте ссылку:',
+    note: 'После оплаты ничего не пропадёт. Без оплаты анкеты будут сняты с публикации и вернутся сами, как только вы заплатите.',
+  }),
+  pl: (date) => ({
+    subject: 'Noova — publikacja w Twoim kraju jest teraz płatna',
+    heading: 'Publikacja jest teraz płatna',
+    intro: `Publikacja profili w Twoim kraju jest teraz płatna. Do ${date} Twoje profile pozostają w katalogu. Wykup subskrypcję, aby nie zostały wycofane.`,
+    button: 'Wykup subskrypcję',
+    fallback: 'Jeśli przycisk nie działa, otwórz ten link:',
+    note: 'Po opłaceniu nic nie przepadnie. Bez opłaty profile zostaną wycofane i wrócą automatycznie po zapłaceniu.',
+  }),
+};
+
+export function placementPaidMail(locale: Locale, graceEndsAt: Date) {
+  return buildMail(
+    PLACEMENT_PAID[locale](formatDate(locale, graceEndsAt)),
+    locale,
+    subscriptionLink(locale),
+  );
 }

@@ -172,6 +172,8 @@ export const serviceSchema = z.object({
   name: z.string(),
   groupName: z.string(),
   extra: z.boolean().default(false),
+  /** Цена доплаты; `null` — не указана («по договорённости»). */
+  extraPrice: moneySchema.nullable().default(null),
 });
 export type Service = z.infer<typeof serviceSchema>;
 
@@ -257,6 +259,8 @@ export const profileCardSchema = z.object({
   fromPrice: moneySchema.nullable(),
   isVerified: z.boolean(),
   isFeatured: z.boolean(),
+  /** Подписка в месте с бесплатным размещением: значок и приоритет в выдаче. */
+  isPremium: z.boolean(),
   isOnline: z.boolean(),
 });
 export type ProfileCard = z.infer<typeof profileCardSchema>;

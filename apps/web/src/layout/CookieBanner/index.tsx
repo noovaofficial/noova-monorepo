@@ -1,8 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { setConsent } from '@/layout/cookie-consent';
+import { applyStoredConsent, setConsent } from '@/layout/cookie-consent';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './CookieBanner.module.css';
 
@@ -20,6 +21,14 @@ import styles from './CookieBanner.module.css';
  */
 export function CookieBanner() {
   const t = useTranslations('cookieBanner');
+
+  // Смена языка перемонтирует layout, и атрибут `data-consent` на <html>
+  // теряется, хотя кука на месте — без этого баннер появлялся бы снова после
+  // каждого переключения языка. Возвращаем решение из куки (как у возрастного
+  // гейта и темы).
+  useEffect(() => {
+    applyStoredConsent();
+  }, []);
 
   return (
     <section className={styles.bar} aria-label={t('title')}>

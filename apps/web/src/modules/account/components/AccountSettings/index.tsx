@@ -1,17 +1,21 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { AccountError, fetchOwnProfiles, updateLocation } from '@/modules/account/api';
 import {
   AuthError,
   cancelAccountDeletion,
   changePassword,
   requestAccountDeletion,
 } from '@/modules/auth/api';
+import { LocationFields } from '@/modules/auth/components/LocationFields';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
+import { queryKeys } from '@/shared/query-keys';
 import styles from './AccountSettings.module.css';
 
 /**
@@ -21,6 +25,7 @@ import styles from './AccountSettings.module.css';
  */
 export function AccountSettings() {
   const t = useTranslations('settings');
+  const explain = useErrorText();
   // Даты — через форматтер next-intl: `toLocaleDateString()` без локали берёт
   // язык системы, и на русской странице показывал «1/15/2027».
   const format = useFormatter();
@@ -85,6 +90,15 @@ export function AccountSettings() {
         <p className={styles.meta}>{user?.email}</p>
       </div>
 
+      {user?.role === 'advertiser' && user.advertiserKind ? (
+        <LocationSection
+          key={`${user.countryCode}-${user.citySlug}`}
+          initial={{ countryCode: user.countryCode ?? '', citySlug: user.citySlug ?? '' }}
+          cityRequired={user.advertiserKind !== 'agency'}
+          onSaved={refresh}
+        />
+      ) : null}
+
       <div className={styles.section}>
         <h2 className={styles.sectionTitle}>{t('passwordTitle')}</h2>
 
@@ -128,7 +142,9 @@ export function AccountSettings() {
 
           {changePw.isError ? (
             <p className={`${styles.notice} ${styles.noticeError}`}>
-              {t(wrongCurrentPassword ? 'passwordWrongCurrent' : 'passwordFailed')}
+              {wrongCurrentPassword
+                ? t('passwordWrongCurrent')
+                : explain(changePw.error, t('passwordFailed'))}
             </p>
           ) : null}
 
@@ -189,7 +205,9 @@ export function AccountSettings() {
 
                   {request.isError ? (
                     <p className={`${styles.notice} ${styles.noticeError}`}>
-                      {t(wrongPassword ? 'deleteWrongPassword' : 'deleteFailed')}
+                      {wrongPassword
+                        ? t('deleteWrongPassword')
+                        : explain(request.error, t('deleteFailed'))}
                     </p>
                   ) : null}
 
@@ -218,6 +236,106 @@ export function AccountSettings() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Страна и основной город аккаунта. Город меняется свободно и не трогает уже
+ * созданные анкеты; страна — только пока анкет нет (цены лежат в её валюте).
+ */
+function LocationSection({
+  initial,
+  cityRequired,
+  onSaved,
+}: {
+  initial: { countryCode: string; citySlug: string };
+  cityRequired: boolean;
+  onSaved: () => Promise<unknown>;
+}) {
+  const t = useTranslations('settings');
+  const explain = useErrorText();
+  const [place, setPlace] = useState(initial);
+  // Страну нельзя менять, пока есть анкеты: объясняем это сразу, а не ошибкой
+  // после нажатия.
+  const own = useQuery({ queryKey: queryKeys.ownProfiles(), queryFn: fetchOwnProfiles });
+  const profiles = own.data ?? [];
+  // Опубликованные анкеты держат страну; остальные переедут вместе с ней как
+  // черновики (цены очистятся) — об этом спрашиваем до сохранения.
+  const hasPublished = profiles.some((profile) => profile.status === 'published');
+  const convertible = profiles.filter((profile) => profile.status !== 'published').length;
+  const countryChanged = place.countryCode !== initial.countryCode;
+  const [confirming, setConfirming] = useState(false);
+
+  const save = useMutation({
+    mutationFn: () =>
+      updateLocation({ countryCode: place.countryCode, citySlug: place.citySlug || null }),
+    onSuccess: onSaved,
+  });
+
+  const needsConfirm = countryChanged && convertible > 0;
+  const errorKey =
+    save.error instanceof AccountError
+      ? save.error.code === 'location_has_profiles'
+        ? 'locationHasProfiles'
+        : save.error.code === 'placement_forbidden'
+          ? 'locationForbidden'
+          : 'locationFailed'
+      : save.isError
+        ? 'locationFailed'
+        : null;
+
+  return (
+    <div className={styles.section}>
+      <h2 className={styles.sectionTitle}>{t('locationTitle')}</h2>
+      <p className={styles.lead}>{t('locationHint')}</p>
+      <form
+        className={styles.stack}
+        onSubmit={(event) => {
+          event.preventDefault();
+          // Страна меняется вместе с неопубликованными анкетами — сначала
+          // показываем, что с ними будет, и ждём второго нажатия.
+          if (needsConfirm && !confirming) {
+            setConfirming(true);
+            return;
+          }
+          setConfirming(false);
+          save.mutate();
+        }}
+      >
+        <LocationFields
+          idPrefix="settings"
+          countryCode={place.countryCode}
+          citySlug={place.citySlug}
+          onChange={(next) => {
+            setPlace(next);
+            setConfirming(false);
+          }}
+          cityRequired={cityRequired}
+          countryDisabled={hasPublished}
+        />
+        {hasPublished ? <p className={styles.meta}>{t('locationCountryLocked')}</p> : null}
+        {needsConfirm && confirming ? (
+          <p className={`${styles.notice} ${styles.noticeWarn}`}>
+            {t('locationConvertWarning', { count: convertible })}
+          </p>
+        ) : null}
+        {errorKey ? (
+          <p className={`${styles.notice} ${styles.noticeError}`}>
+            {errorKey === 'locationFailed' ? explain(save.error, t(errorKey)) : t(errorKey)}
+          </p>
+        ) : null}
+        {save.isSuccess ? (
+          <p className={styles.meta}>
+            {save.data.convertedProfiles > 0
+              ? t('locationConverted', { count: save.data.convertedProfiles })
+              : t('locationSaved')}
+          </p>
+        ) : null}
+        <Button type="submit" disabled={save.isPending}>
+          {needsConfirm && confirming ? t('locationConvertConfirm') : t('locationSave')}
+        </Button>
+      </form>
     </div>
   );
 }

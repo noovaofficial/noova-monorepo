@@ -45,6 +45,7 @@ import {
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { ListingNotice } from '@/modules/billing/components/ListingNotice';
 import { TopCard } from '@/modules/billing/components/TopCard';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -56,7 +57,11 @@ import { ProfileStatusBadge } from '../ProfileStatusBadge';
 import { ServicePicker } from '../ServicePicker';
 import { VerificationCard } from '../VerificationCard';
 
-type Notice = { kind: 'ok' | 'error' | 'warn'; key: string } | null;
+/** `cause` — исходная ошибка: по ней к общим «не удалось…» добавляется причина. */
+type Notice = { kind: 'ok' | 'error' | 'warn'; key: string; cause?: unknown } | null;
+
+/** Ключи без собственной причины — к ним дописываем причину по ответу сервера. */
+const GENERIC_NOTICE_KEYS = new Set(['saveFailed', 'deleteFailed']);
 
 /**
  * Выпадающий список по перечислению. Значения приходят из контракта,
@@ -120,8 +125,11 @@ const toHhmm = (minutes: number): string =>
  */
 function saveErrorKey(
   error: unknown,
-): 'hoursInvalid' | 'contactInvalid' | 'saveFailed' | 'countryLocked' {
+): 'hoursInvalid' | 'contactInvalid' | 'saveFailed' | 'countryLocked' | 'saveForbidden' {
   if (error instanceof AccountError && error.code === 'country_locked') return 'countryLocked';
+  // Сохранение отклонено правилом размещения (например, выбран город, где
+  // публикация для этого типа аккаунта закрыта) — говорим причину, а не «не удалось».
+  if (error instanceof AccountError && error.code === 'placement_forbidden') return 'saveForbidden';
   if (!(error instanceof AccountError) || error.status !== 400) return 'saveFailed';
 
   const fields = error.issues.map((issue) => issue.field);
@@ -134,6 +142,9 @@ function saveErrorKey(
 
 export function ProfileEditor({ profileId }: { profileId: string }) {
   const t = useTranslations('account');
+  const explain = useErrorText();
+  const noticeText = (n: NonNullable<Notice>): string =>
+    n.cause !== undefined && GENERIC_NOTICE_KEYS.has(n.key) ? explain(n.cause, t(n.key)) : t(n.key);
   // Язык для справочников: города и услуги переведены на стороне API.
   const locale = useLocale() as Locale;
   const tLang = useTranslations('languageNames');
@@ -212,7 +223,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
       setNotice({ kind: 'ok', key: 'saved' });
     },
     onError: (error) => {
-      setNotice({ kind: 'error', key: saveErrorKey(error) });
+      setNotice({ kind: 'error', key: saveErrorKey(error), cause: error });
     },
   });
 
@@ -222,12 +233,15 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
     onError: (error) => {
       setNotice({
         kind: 'error',
+        cause: error,
         key:
           error instanceof AccountError && error.status === 402
             ? 'listingRequired'
-            : error instanceof AccountError && error.status === 403
-              ? 'verificationRequired'
-              : 'saveFailed',
+            : error instanceof AccountError && error.code === 'placement_forbidden'
+              ? 'placementForbidden'
+              : error instanceof AccountError && error.status === 403
+                ? 'verificationRequired'
+                : 'saveFailed',
       });
     },
   });
@@ -245,6 +259,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
     onError: (error) => {
       setNotice({
         kind: 'error',
+        cause: error,
         key:
           error instanceof AccountError && error.status === 401
             ? 'deleteWrongPassword'
@@ -330,7 +345,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
   if (!profile) {
     return (
       <div className={styles.wrap}>
-        <p className={styles.empty}>{notice ? t(notice.key) : t('loading')}</p>
+        <p className={styles.empty}>{notice ? noticeText(notice) : t('loading')}</p>
       </div>
     );
   }
@@ -925,7 +940,12 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
 
           <ContactPicker contacts={contacts} onChange={setContacts} />
 
-          <ServicePicker catalog={catalog} selected={services} onChange={setServices} />
+          <ServicePicker
+            catalog={catalog}
+            selected={services}
+            onChange={setServices}
+            currency={profile.city.currency}
+          />
 
           <PhotoManager profileId={profileId} photos={photos} onChange={setPhotos} />
         </form>
@@ -950,7 +970,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
                 }`}
                 style={{ margin: 0 }}
               >
-                {t(notice.key)}
+                {noticeText(notice)}
               </p>
             ) : null}
 
@@ -1068,6 +1088,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
 
             {deleting ? (
               <form
+                className={styles.sidebarForm}
                 onSubmit={(event) => {
                   event.preventDefault();
                   remove.mutate();

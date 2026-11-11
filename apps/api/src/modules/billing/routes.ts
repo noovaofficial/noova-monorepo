@@ -17,6 +17,7 @@ import {
   globalBillingConfigSchema,
   isAdjustWithinLimit,
   type PlanTerm,
+  placementStateSchema,
   priceBookSchema,
   toAdminGlobalBilling,
   toPriceBook,
@@ -30,6 +31,8 @@ import { env } from '../../env.js';
 import type { PrismaClient } from '../../generated/prisma/client.js';
 import { BILLING_TAG, PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { PLACEMENT_FORBIDDEN } from '../locations/account-location.js';
+import { withCode } from '../locations/country-lock.js';
 import { resolveAgencyListingPriceGc } from './agency-tariffs.js';
 import {
   AgencyTopAlreadyActiveError,
@@ -47,6 +50,7 @@ import {
   PaymentoError,
   parseCallback,
 } from './paymento.js';
+import { placementFor } from './placement.js';
 import { buildPriceBook, ownerPlace, resolvePlacementPrices } from './scoped.js';
 import {
   buyTop,
@@ -131,6 +135,37 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
           : null;
       const global = await loadBillingConfig(fastify.prisma);
       return toPriceBook(await buildPriceBook(fastify.prisma, global, place));
+    },
+  );
+
+  /** Правило размещения для страны и типа аккаунта владельца. */
+  fastify.get(
+    '/billing/placement',
+    {
+      onRequest: fastify.requireAuth,
+      schema: { tags: ['billing'], response: { 200: placementStateSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { advertiserKind: true },
+      });
+      if (!user?.advertiserKind)
+        throw fastify.httpErrors.forbidden('Доступно только рекламодателю');
+      const place = await ownerPlace(fastify.prisma, userId, user.advertiserKind);
+      const grace = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { placementGraceEndsAt: true },
+      });
+      const graceEndsAt = grace?.placementGraceEndsAt?.toISOString() ?? null;
+      if (!place) return { paid: true, allowed: true, graceEndsAt };
+      const state = await placementFor(
+        fastify.prisma,
+        { countryId: place.countryId, cityId: place.cityId ?? '' },
+        user.advertiserKind,
+      );
+      return { ...state, graceEndsAt };
     },
   );
 
@@ -268,6 +303,26 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       if (user?.role !== 'advertiser' || !user.advertiserKind) {
         throw fastify.httpErrors.forbidden('Размещение доступно только рекламодателю');
+      }
+
+      // В закрытой для типа стране подписку не продаём: публиковать там нельзя.
+      const place = await ownerPlace(fastify.prisma, userId, user.advertiserKind);
+      if (
+        place &&
+        !(
+          await placementFor(
+            fastify.prisma,
+            { countryId: place.countryId, cityId: place.cityId ?? '' },
+            user.advertiserKind,
+          )
+        ).allowed
+      ) {
+        throw withCode(
+          fastify.httpErrors.forbidden(
+            'Размещение для вашего типа аккаунта в вашей стране недоступно',
+          ),
+          PLACEMENT_FORBIDDEN,
+        );
       }
 
       // У агентства цена не общая — по тарифу, назначенному его компании

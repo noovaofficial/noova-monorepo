@@ -1,6 +1,7 @@
 import type { CampaignReward, RedeemError } from '@noova/shared';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import type { AdvertiserKind, CampaignTrigger } from '../../generated/prisma/enums.js';
+import { syncPremiumForOwner } from '../billing/premium.js';
 import { applyMovement, toListing } from '../billing/wallet.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -135,6 +136,8 @@ async function grantReward(
         });
 
     listingExpiresAt = toListing(listing).expiresAt;
+    // Подаренные дни — такая же подписка: в бесплатном месте это Premium.
+    await syncPremiumForOwner(tx, candidate.userId);
 
     // Анкеты, снятые за неоплату, возвращаются: подаренные дни — такое же
     // оплаченное размещение, как купленное.

@@ -7,6 +7,7 @@ import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { ProfileCard } from '@/modules/catalog/components/ProfileCard';
 import { fetchFavorites } from '@/modules/favorites/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { useFavorites } from '../FavoritesProvider';
@@ -14,6 +15,7 @@ import styles from './FavoritesList.module.css';
 
 export function FavoritesList({ locale }: { locale: string }) {
   const t = useTranslations('favorites');
+  const explain = useErrorText();
   const { status, user } = useSession();
   // Подписываемся на общее состояние: снятое сердце должно убирать карточку
   // отсюда сразу, без перезагрузки страницы.
@@ -47,7 +49,7 @@ export function FavoritesList({ locale }: { locale: string }) {
   if (failed) {
     return (
       <div className={styles.wrap}>
-        <p className={styles.empty}>{t('loadFailed')}</p>
+        <p className={styles.empty}>{explain(list.error, t('loadFailed'))}</p>
       </div>
     );
   }

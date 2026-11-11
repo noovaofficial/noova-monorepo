@@ -8,6 +8,7 @@ import { purgeAnalyticsSessions } from '../modules/analytics/session.js';
 import { pushMail } from '../modules/auth/mail-queue.js';
 import { expireAgencyTopPlacements } from '../modules/billing/agency-top.js';
 import { expireListings } from '../modules/billing/listing.js';
+import { enforcePlacementGrace } from '../modules/billing/placement-grace.js';
 import { expireTopPlacements } from '../modules/billing/top.js';
 import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
@@ -65,6 +66,16 @@ export const JOBS: Job[] = [
         graceDays: env.LISTING_GRACE_DAYS,
         reminderDays: env.LISTING_REMINDER_DAYS,
         // Письма — через очередь API: у процесса задач своего SMTP нет.
+        notify: deps.redis ? (mail) => pushMail(deps.redis as Redis, mail) : undefined,
+        revalidate: (tags) => postRevalidate(tags, log),
+      }),
+  },
+  {
+    // Льготный срок после перехода размещения «бесплатно → платно»: у кого он
+    // кончился без подписки, анкеты снимаются с публикации.
+    name: 'placement-grace',
+    run: (prisma, deps) =>
+      enforcePlacementGrace(prisma, {
         notify: deps.redis ? (mail) => pushMail(deps.redis as Redis, mail) : undefined,
         revalidate: (tags) => postRevalidate(tags, log),
       }),

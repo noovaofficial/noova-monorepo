@@ -94,6 +94,22 @@ export function fetchCities(locale: Locale): Promise<CityOption[]> {
   return call(`/cities?locale=${locale}`, z.array(cityOptionSchema));
 }
 
+/** Смена страны и основного города в настройках. */
+export function updateLocation(input: {
+  countryCode: string;
+  citySlug: string | null;
+}): Promise<{ countryCode: string; citySlug: string | null; convertedProfiles: number }> {
+  return call(
+    '/me/location',
+    z.object({
+      countryCode: z.string(),
+      citySlug: z.string().nullable(),
+      convertedProfiles: z.number().int().nonnegative(),
+    }),
+    { method: 'PUT', body: JSON.stringify(input) },
+  );
+}
+
 /** Активные страны на языке запроса — для выбора страны компании. */
 export function fetchCountries(locale: Locale): Promise<CountryOption[]> {
   return call(`/countries?locale=${locale}`, z.array(countryOptionSchema));

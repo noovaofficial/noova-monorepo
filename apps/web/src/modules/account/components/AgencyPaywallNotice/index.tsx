@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/design-system/components/Button';
 import { AgencyError, upgradeOwnCompanyTariff } from '@/modules/agencies/api';
+import { useErrorText } from '@/shared/error-text';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
 
@@ -27,6 +28,7 @@ export function AgencyPaywallNotice({
   onUpgraded: () => void;
 }) {
   const t = useTranslations('account');
+  const explain = useErrorText();
   const queryClient = useQueryClient();
 
   const upgrade = useMutation({
@@ -50,7 +52,9 @@ export function AgencyPaywallNotice({
 
       {upgrade.isError ? (
         <p className={styles.noticeError}>
-          {insufficientBalance ? t('paywallInsufficientBalance') : t('paywallUpgradeFailed')}
+          {insufficientBalance
+            ? t('paywallInsufficientBalance')
+            : explain(upgrade.error, t('paywallUpgradeFailed'))}
         </p>
       ) : null}
 

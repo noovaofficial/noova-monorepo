@@ -7,7 +7,7 @@ import { z } from 'zod';
  * Он же порядок ключей в словарях и в справочниках — сверять переводы
  * приходится глазами, и разный порядок превращает сравнение в кашу.
  */
-export const LOCALES = ['en', 'de', 'es', 'fr', 'ru'] as const;
+export const LOCALES = ['en', 'pl', 'de', 'es', 'fr', 'ru'] as const;
 export type Locale = (typeof LOCALES)[number];
 
 /** Германия — основной рынок, поэтому дефолт немецкий. */

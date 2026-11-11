@@ -46,6 +46,8 @@ const countrySeedSchema = z.object({
   name: translatedSchema,
   isActive: z.boolean(),
   isDefault: z.boolean().default(false),
+  /** ISO 4217: валюта цен анкет страны. Не указана — евро. */
+  currency: z.string().length(3).default('EUR'),
 });
 
 const serviceSeedSchema = z.object({

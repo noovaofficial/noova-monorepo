@@ -133,6 +133,13 @@ export function buildProfileWhere(query: ProfileQuery): Record<string, unknown> 
  *  Используется как есть для `newest`/`price_*`, и как запасной вариант
  *  «релевантности» там, где курсорное перемешивание не годится (страница по
  *  номеру для ботов, срез «только ТОП») — см. `RELEVANCE_TOP_PERIOD` ниже. */
+/** Органическая часть «релевантности»: Premium выше остальных, дальше свежие. */
+export const ORGANIC_ORDER: Record<string, 'asc' | 'desc'>[] = [
+  { isPremium: 'desc' },
+  { publishedAt: 'desc' },
+  { id: 'desc' },
+];
+
 export function orderByFor(sort: ProfileSort): Record<string, 'asc' | 'desc'>[] {
   switch (sort) {
     case 'newest':
@@ -143,7 +150,12 @@ export function orderByFor(sort: ProfileSort): Record<string, 'asc' | 'desc'>[] 
       return [{ fromPriceCents: 'desc' }, { id: 'desc' }];
     default:
       // «Релевантность» = промо наверху, дальше свежие.
-      return [{ isFeatured: 'desc' }, { publishedAt: 'desc' }, { id: 'desc' }];
+      return [
+        { isFeatured: 'desc' },
+        { isPremium: 'desc' },
+        { publishedAt: 'desc' },
+        { id: 'desc' },
+      ];
   }
 }
 

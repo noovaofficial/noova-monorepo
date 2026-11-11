@@ -10,6 +10,7 @@ import type { Mail } from '../auth/mailer.js';
 import { localeOf } from '../auth/mailer.js';
 import { listingExpiredMail, listingGraceMail, listingReminderMail } from './mails.js';
 import { placementFor } from './placement.js';
+import { syncPremiumForOwner } from './premium.js';
 import { applyMovement, toListing } from './wallet.js';
 
 /**
@@ -143,6 +144,9 @@ export function activateListing(
       });
     }
 
+    // Буст Premium включается сразу: в бесплатном месте подписка — это он.
+    await syncPremiumForOwner(tx, activation.userId);
+
     return {
       result: { listing: toListing(listing), ...spend },
       restoredSlugs: unpaid.map((profile) => profile.slug),
@@ -248,6 +252,8 @@ export async function expireListings(
 
     const unpublished = await prisma.$transaction(async (tx) => {
       await tx.listing.update({ where: { id: listing.id }, data: { status: next } });
+      // Истёкшая подписка гасит и Premium.
+      await syncPremiumForOwner(tx, listing.userId);
       if (next !== 'expired') return [] as string[];
       const candidates = await tx.profile.findMany({
         where: { ownerId: listing.userId, status: 'published' },

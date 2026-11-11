@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { trackContactClick } from '@/modules/analytics/api';
 import { RevealError, revealContacts } from '@/modules/contacts/api';
+import { useErrorText } from '@/shared/error-text';
 import { ContactIcon } from '../ContactIcon';
 import styles from './ContactsCard.module.css';
 
@@ -24,9 +25,11 @@ type Props = {
  */
 export function ContactsCard({ slug, types }: Props) {
   const t = useTranslations('contacts');
+  const explain = useErrorText();
   const [contacts, setContacts] = useState<ProfileContact[] | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<'limit' | 'failed' | null>(null);
+  const [errorCause, setErrorCause] = useState<unknown>(null);
 
   async function onReveal() {
     setPending(true);
@@ -36,6 +39,7 @@ export function ContactsCard({ slug, types }: Props) {
       setContacts(result.contacts);
     } catch (cause) {
       // 429 говорит человеку о другом, чем сбой сети: подождать, а не повторить.
+      setErrorCause(cause);
       setError(cause instanceof RevealError && cause.status === 429 ? 'limit' : 'failed');
     } finally {
       setPending(false);
@@ -92,7 +96,11 @@ export function ContactsCard({ slug, types }: Props) {
         </Button>
       </div>
 
-      {error ? <p className={styles.error}>{t(error === 'limit' ? 'limit' : 'failed')}</p> : null}
+      {error ? (
+        <p className={styles.error}>
+          {error === 'limit' ? t('limit') : explain(errorCause, t('failed'))}
+        </p>
+      ) : null}
 
       <p className={styles.note}>{t('note')}</p>
     </div>

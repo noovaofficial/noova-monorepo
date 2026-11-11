@@ -14,6 +14,7 @@ import { AuthError, errorKeyFor, register } from '@/modules/auth/api';
 import { Link } from '@/shared/i18n/navigation';
 import { type FieldErrors, fieldErrorsFromIssues, validate } from '@/shared/validation';
 import styles from '../AuthForm.module.css';
+import { LocationFields } from '../LocationFields';
 import { useRedirectSignedIn } from '../useRedirectSignedIn';
 
 type Role = 'client' | 'advertiser';
@@ -42,6 +43,9 @@ export function RegisterForm() {
   const locale = useLocale() as Locale;
   const [role, setRole] = useState<Role>('client');
   const [advertiserKind, setAdvertiserKind] = useState<AdvertiserKind>('individual');
+  // Страна и основной город рекламодателя: выбираются сразу, от них зависят
+  // правила и цена размещения.
+  const [place, setPlace] = useState({ countryCode: '', citySlug: '' });
   const [pending, setPending] = useState(false);
   const [errorKey, setErrorKey] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -83,7 +87,15 @@ export function RegisterForm() {
             // языке, на котором человек сейчас смотрит сайт.
             locale,
           }
-        : { role: 'advertiser', email, password, advertiserKind, locale };
+        : {
+            role: 'advertiser',
+            email,
+            password,
+            advertiserKind,
+            countryCode: place.countryCode,
+            ...(place.citySlug ? { citySlug: place.citySlug } : {}),
+            locale,
+          };
 
     // Проверяем тем же контрактом, что и сервер: пользователь видит причину
     // сразу и под нужным полем, а не общее «не удалось» после запроса.
@@ -221,6 +233,16 @@ export function RegisterForm() {
             </div>
             <span className={styles.hint}>{t(KIND_HINT[advertiserKind])}</span>
           </div>
+        ) : null}
+
+        {role === 'advertiser' ? (
+          <LocationFields
+            idPrefix="reg"
+            countryCode={place.countryCode}
+            citySlug={place.citySlug}
+            onChange={setPlace}
+            cityRequired={advertiserKind !== 'agency'}
+          />
         ) : null}
 
         {role === 'client' ? (

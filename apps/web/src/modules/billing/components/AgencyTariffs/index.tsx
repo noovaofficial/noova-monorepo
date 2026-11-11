@@ -18,6 +18,7 @@ import {
   fetchAgencyTariffGrid,
   updateAgencyTariffTier,
 } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { queryKeys } from '@/shared/query-keys';
 import sharedStyles from '../MonetizationSettings/MonetizationSettings.module.css';
 import styles from './AgencyTariffs.module.css';
@@ -94,6 +95,7 @@ function toInput(row: TierRow): AgencyTariffTierInput {
  */
 export function AgencyTariffs({ countryId }: { countryId: string }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
 
   // Родитель (страница страны) уже пускает только админа.
   const grid = useQuery({
@@ -101,7 +103,8 @@ export function AgencyTariffs({ countryId }: { countryId: string }) {
     queryFn: () => fetchAgencyTariffGrid(countryId),
   });
 
-  if (grid.isError) return <p className={sharedStyles.empty}>{t('loadFailed')}</p>;
+  if (grid.isError)
+    return <p className={sharedStyles.empty}>{explain(grid.error, t('loadFailed'))}</p>;
   if (!grid.data) return <p className={sharedStyles.empty}>{t('loading')}</p>;
 
   return <AgencyTariffsForm key={grid.dataUpdatedAt} countryId={countryId} initial={grid.data} />;
@@ -115,6 +118,7 @@ function AgencyTariffsForm({
   initial: AgencyTariffTier[];
 }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const queryClient = useQueryClient();
 
   const [rows, setRows] = useState<TierRow[]>(() => initial.map(fromTier));
@@ -161,7 +165,9 @@ function AgencyTariffsForm({
         <p className={`${sharedStyles.notice} ${sharedStyles.noticeError}`}>{t('tierInUse')}</p>
       ) : null}
       {saveFailed ? (
-        <p className={`${sharedStyles.notice} ${sharedStyles.noticeError}`}>{t('saveFailed')}</p>
+        <p className={`${sharedStyles.notice} ${sharedStyles.noticeError}`}>
+          {explain(save.error, t('saveFailed'))}
+        </p>
       ) : null}
 
       {rows.length === 0 ? (

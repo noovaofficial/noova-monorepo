@@ -14,6 +14,9 @@ type UserRow = {
     gender: Gender | null;
   } | null;
   deletionRequestedAt: Date | null;
+  locale: string;
+  country?: { code: string } | null;
+  city?: { slug: string } | null;
 };
 
 /** Пароль, токены и служебные метки наружу не отдаются. */
@@ -24,6 +27,9 @@ export function toCurrentUser(user: UserRow): CurrentUser {
     role: user.role,
     isEmailVerified: user.emailVerifiedAt !== null,
     advertiserKind: user.advertiserKind,
+    locale: user.locale,
+    countryCode: user.country?.code ?? null,
+    citySlug: user.city?.slug ?? null,
     clientProfile: user.clientProfile
       ? {
           nickname: user.clientProfile.nickname,

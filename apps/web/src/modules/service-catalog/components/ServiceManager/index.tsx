@@ -16,10 +16,10 @@ import {
   createGroup,
   createService,
   fetchCatalog,
-  ServiceCatalogError,
   updateGroup,
   updateService,
 } from '@/modules/service-catalog/api';
+import { useErrorText } from '@/shared/error-text';
 import { useLabel } from '@/shared/i18n/use-label';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../ServiceCatalog.module.css';
@@ -98,6 +98,7 @@ function KindPicker({
 
 export function ServiceManager() {
   const t = useTranslations('services');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
@@ -121,9 +122,7 @@ export function ServiceManager() {
         return result;
       })
       .catch((cause: unknown) => {
-        setError(
-          cause instanceof ServiceCatalogError && cause.message ? cause.message : t('failed'),
-        );
+        setError(explain(cause, t('failed')));
         return undefined;
       });
   };

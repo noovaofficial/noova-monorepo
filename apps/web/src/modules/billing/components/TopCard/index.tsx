@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { BillingError, buyTop, fetchTopState, fetchWallet } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './TopCard.module.css';
@@ -26,6 +27,7 @@ export function TopCard({
   published: boolean;
 }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
   const queryClient = useQueryClient();
   const [confirming, setConfirming] = useState(false);
@@ -90,7 +92,11 @@ export function TopCard({
       </p>
 
       {doneUntil ? <p className={styles.ok}>{t('topDone', { date: date(doneUntil) })}</p> : null}
-      {errorKey ? <p className={styles.err}>{t(errorKey)}</p> : null}
+      {errorKey ? (
+        <p className={styles.err}>
+          {errorKey === 'topFailed' ? explain(buy.error, t(errorKey)) : t(errorKey)}
+        </p>
+      ) : null}
 
       {!published ? <p className={styles.hint}>{t('topNotPublished')}</p> : null}
       {published && !placement && cityTop.freeSlots === 0 ? (

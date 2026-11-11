@@ -207,7 +207,7 @@ export type OwnerPlace = { countryId: string; cityId: string | null };
 
 /**
  * Место, по которому владельцу считается размещение. Агентство — страна
- * компании. Индивидуалка и салон — город самой свежей анкеты: цена
+ * аккаунта. Индивидуалка и салон — основной город аккаунта: цена
  * фиксируется в момент покупки, и последующий переезд в другой город не
  * пересчитывает уже купленное. Нет ни анкеты, ни компании — страна по
  * умолчанию. `null`, если в справочнике нет ни одной страны.
@@ -217,6 +217,16 @@ export async function ownerPlace(
   userId: string,
   kind: AdvertiserKind | null,
 ): Promise<OwnerPlace | null> {
+  // Место аккаунта (страна при регистрации, основной город) — главный
+  // источник. Ниже — запасной путь для записей, которых миграция не заполнила.
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { countryId: true, cityId: true },
+  });
+  if (user?.countryId) {
+    return { countryId: user.countryId, cityId: kind === 'agency' ? null : user.cityId };
+  }
+
   if (kind === 'agency') {
     const company = await db.company.findUnique({
       where: { ownerId: userId },

@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { BillingError, fetchBillingConfig, saveBillingConfig } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './MonetizationSettings.module.css';
@@ -71,6 +72,7 @@ function toInput(form: FormState): GlobalBillingConfig {
  */
 export function MonetizationSettings() {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -90,7 +92,8 @@ export function MonetizationSettings() {
 
   if (!isAdmin) return <p className={styles.empty}>{t('onlyAdmins')}</p>;
 
-  if (config.isError) return <p className={styles.empty}>{t('loadFailed')}</p>;
+  if (config.isError)
+    return <p className={styles.empty}>{explain(config.error, t('loadFailed'))}</p>;
   if (!config.data) return <p className={styles.empty}>{t('loading')}</p>;
 
   // Форма получает начальное состояние через ключ, а не через эффект:
@@ -101,6 +104,7 @@ export function MonetizationSettings() {
 
 function MonetizationForm({ initial }: { initial: AdminGlobalBilling }) {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const queryClient = useQueryClient();
 
   const [form, setForm] = useState<FormState>(() => fromBook(initial));
@@ -152,7 +156,9 @@ function MonetizationForm({ initial }: { initial: AdminGlobalBilling }) {
         <p className={`${styles.notice} ${styles.noticeError}`}>{t('invalidConfig')}</p>
       ) : null}
       {failed ? (
-        <p className={`${styles.notice} ${styles.noticeError}`}>{t('saveFailed')}</p>
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(save.error, t('saveFailed'))}
+        </p>
       ) : null}
 
       <section className={styles.section}>

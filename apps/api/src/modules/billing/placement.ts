@@ -36,16 +36,16 @@ export async function placementFor(
   place: { cityId: string; countryId: string },
   kind: AdvertiserKind,
 ): Promise<Placement> {
-  const rules = await db.placementRule.findMany({
-    where: {
-      kind,
-      OR: [{ cityId: place.cityId }, { countryId: place.countryId }],
-    },
-    select: { cityId: true, paid: true, allowed: true },
+  // Города всегда наследуют правила страны: переопределения города в базе
+  // могут лежать (функционал не вырезан), но не читаются — ровно как и в
+  // интерфейсе, где вкладка правил города отключена. Вернуть приоритет
+  // города — вернуть сюда запрос по `cityId` и передать его первым аргументом.
+  void place.cityId;
+  const countryRule = await db.placementRule.findFirst({
+    where: { kind, countryId: place.countryId },
+    select: { paid: true, allowed: true },
   });
-  const cityRule = rules.find((rule) => rule.cityId !== null);
-  const countryRule = rules.find((rule) => rule.cityId === null);
-  return resolvePlacement(cityRule, countryRule);
+  return resolvePlacement(null, countryRule);
 }
 
 export type PublishVerdict = 'ok' | 'forbidden' | 'unpaid';

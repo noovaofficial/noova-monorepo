@@ -77,3 +77,32 @@ describe('салон', () => {
     expect(isProfileComplete(empty)).toBe(true);
   });
 });
+
+describe('цена доплаты за услугу', () => {
+  it('необязательна и принимает пусто: «по договорённости»', async () => {
+    const { profileServiceInputSchema } = await import('./account');
+    expect(profileServiceInputSchema.parse({ key: 'bj', isExtra: true })).toMatchObject({
+      isExtra: true,
+    });
+    expect(
+      profileServiceInputSchema.parse({ key: 'bj', isExtra: true, extraPriceCents: null })
+        .extraPriceCents,
+    ).toBeNull();
+    expect(
+      profileServiceInputSchema.parse({ key: 'bj', isExtra: true, extraPriceCents: 2500 })
+        .extraPriceCents,
+    ).toBe(2500);
+  });
+
+  it('отрицательную и дробную цену не принимает', async () => {
+    const { profileServiceInputSchema } = await import('./account');
+    expect(
+      profileServiceInputSchema.safeParse({ key: 'bj', isExtra: true, extraPriceCents: -1 })
+        .success,
+    ).toBe(false);
+    expect(
+      profileServiceInputSchema.safeParse({ key: 'bj', isExtra: true, extraPriceCents: 10.5 })
+        .success,
+    ).toBe(false);
+  });
+});

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { downloadTransactionsCsv, fetchBillingOperations } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './BillingOps.module.css';
@@ -20,6 +21,7 @@ const isoDay = (date: Date) => date.toISOString().slice(0, 10);
  */
 export function BillingOps() {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
   const { user, status } = useSession();
   const router = useRouter();
@@ -81,7 +83,7 @@ export function BillingOps() {
         placeholder={t('opsSearch')}
       />
 
-      {ops.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {ops.isError ? <p className={styles.err}>{explain(ops.error, t('loadFailed'))}</p> : null}
       {ops.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
 
       {data ? (
@@ -178,7 +180,7 @@ export function BillingOps() {
           {t('opsCsvButton')}
         </Button>
       </div>
-      {csv.isError ? <p className={styles.err}>{t('opsCsvFailed')}</p> : null}
+      {csv.isError ? <p className={styles.err}>{explain(csv.error, t('opsCsvFailed'))}</p> : null}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { LOCALES, type Translated } from '@noova/shared';
 import type { useTranslations } from 'next-intl';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
-import { LocationsError } from '@/modules/locations/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import styles from '../Locations.module.css';
 
@@ -16,11 +16,12 @@ export const emptyNames = (): Translated =>
   Object.fromEntries(LOCALES.map((locale) => [locale, ''])) as Translated;
 
 /**
- * Сообщение сервера показываем как есть: в нём объяснено, что именно не так —
- * занятый слуг, недостающий язык, дубль кода страны. Своя формулировка была бы
- * общее и бесполезнее.
+ * Причина — по коду ответа сервера и на языке интерфейса: занятый слуг, дубль
+ * кода страны, город с анкетами. Текст самого сервера по-русски и на экран не
+ * попадает.
  */
 export function useRunner(t: Translate, refresh: () => void) {
+  const explain = useErrorText();
   const [error, setError] = useState<string | null>(null);
 
   const run: Runner = (action, after) => {
@@ -32,13 +33,7 @@ export function useRunner(t: Translate, refresh: () => void) {
         return result;
       })
       .catch((cause: unknown) => {
-        setError(
-          cause instanceof LocationsError && cause.code === 'city_has_profiles'
-            ? t('cityHasProfiles')
-            : cause instanceof LocationsError && cause.message
-              ? cause.message
-              : t('failed'),
-        );
+        setError(explain(cause, t('failed')));
         return undefined;
       });
   };
@@ -126,7 +121,14 @@ export function EntityRow({
   );
 }
 
-export type TabDef = { key: string; label: string; badge?: string | number };
+export type TabDef = {
+  key: string;
+  label: string;
+  badge?: string | number;
+  /** Вкладка видна, но недоступна (с подсказкой `hint`). */
+  disabled?: boolean;
+  hint?: string;
+};
 
 /**
  * Вкладки страницы страны и города. Активная хранится в `?tab=`: так после
@@ -141,7 +143,7 @@ export function useTab(tabs: TabDef[]): [string, (key: string) => void] {
   // разметки сломало бы гидратацию.
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get('tab');
-    if (fromUrl && tabs.some((tab) => tab.key === fromUrl)) setActive(fromUrl);
+    if (fromUrl && tabs.some((tab) => tab.key === fromUrl && !tab.disabled)) setActive(fromUrl);
   }, [tabs]);
 
   const select = (key: string) => {
@@ -170,6 +172,8 @@ export function Tabs({
           type="button"
           role="tab"
           aria-selected={tab.key === active}
+          disabled={tab.disabled}
+          title={tab.disabled ? tab.hint : undefined}
           className={`${styles.tab} ${tab.key === active ? styles.tabActive : ''}`}
           onClick={() => onSelect(tab.key)}
         >

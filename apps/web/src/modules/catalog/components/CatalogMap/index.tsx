@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 import { fetchMapClusters } from '@/modules/catalog/api';
+import { useErrorText } from '@/shared/error-text';
 import { formatMoney } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
 import styles from './CatalogMap.module.css';
@@ -33,6 +34,7 @@ const FALLBACK = { lat: 52.52, lng: 13.405 };
  */
 export function CatalogMap({ kind, location, locator, locale }: Props) {
   const t = useTranslations('map');
+  const explain = useErrorText();
   const searchParams = useSearchParams();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<{ remove: () => void } | null>(null);
@@ -52,6 +54,7 @@ export function CatalogMap({ kind, location, locator, locale }: Props) {
     data: clusters,
     isPending,
     isError,
+    error: loadError,
   } = useQuery({
     queryKey: ['catalog-map', queryString],
     queryFn: () => fetchMapClusters(queryString),
@@ -150,7 +153,7 @@ export function CatalogMap({ kind, location, locator, locale }: Props) {
         </div>
       </div>
 
-      {isError ? <p className={styles.empty}>{t('failed')}</p> : null}
+      {isError ? <p className={styles.empty}>{explain(loadError, t('failed'))}</p> : null}
 
       <div className={styles.map} ref={containerRef} />
       <p className={styles.count} style={{ marginTop: 'var(--space3)' }}>

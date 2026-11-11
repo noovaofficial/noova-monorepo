@@ -16,6 +16,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { withCode } from '../locations/country-lock.js';
 
 /** Строки переводов в объект; неполный набор — след прежних версий каталога. */
 function fromRows(rows: { locale: string; name: string }[], fallback: string): Translated {
@@ -120,7 +121,8 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { groupKey: key },
         select: { id: true },
       });
-      if (exists) throw fastify.httpErrors.conflict(`Группа ${key} уже есть`);
+      if (exists)
+        throw withCode(fastify.httpErrors.conflict(`Группа ${key} уже есть`), 'group_exists');
 
       await fastify.prisma.serviceGroupTranslation.createMany({
         data: translationRows(name).map((row) => ({ groupKey: key, ...row })),
@@ -171,13 +173,15 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { key, group, name, appliesTo, position, isActive } = request.body;
 
       const exists = await fastify.prisma.service.findUnique({ where: { key } });
-      if (exists) throw fastify.httpErrors.conflict(`Услуга ${key} уже есть`);
+      if (exists)
+        throw withCode(fastify.httpErrors.conflict(`Услуга ${key} уже есть`), 'service_exists');
 
       const groupExists = await fastify.prisma.serviceGroupTranslation.findFirst({
         where: { groupKey: group },
         select: { id: true },
       });
-      if (!groupExists) throw fastify.httpErrors.badRequest(`Группы ${group} нет`);
+      if (!groupExists)
+        throw withCode(fastify.httpErrors.badRequest(`Группы ${group} нет`), 'group_missing');
 
       await fastify.prisma.service.create({
         data: {
@@ -214,7 +218,8 @@ export const serviceCatalogRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { groupKey: group },
         select: { id: true },
       });
-      if (!groupExists) throw fastify.httpErrors.badRequest(`Группы ${group} нет`);
+      if (!groupExists)
+        throw withCode(fastify.httpErrors.badRequest(`Группы ${group} нет`), 'group_missing');
 
       await fastify.prisma.service.update({
         where: { id: request.params.id },

@@ -12,6 +12,7 @@ import { type FormEvent, useId, useState } from 'react';
 import { DailyChart } from '@/modules/analytics/components/DailyChart';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchDashboard, fetchTrafficQuality } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './Dashboard.module.css';
@@ -34,6 +35,7 @@ function todayLocal(): string {
 
 export function InternalDashboard() {
   const t = useTranslations('analytics');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
   const isAdmin = user?.role === 'admin';
@@ -100,7 +102,7 @@ export function InternalDashboard() {
       </div>
 
       {query.isPending ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {query.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+      {query.isError ? <p className={styles.err}>{explain(query.error, t('loadFailed'))}</p> : null}
 
       {query.data ? <Report data={query.data} /> : null}
 
@@ -293,6 +295,7 @@ function RevenueStat({ label, value }: { label: string; value: string }) {
  */
 function TrafficQualityCheck() {
   const t = useTranslations('analytics');
+  const explain = useErrorText();
   const dateInputId = useId();
   const campaignInputId = useId();
 
@@ -349,7 +352,7 @@ function TrafficQualityCheck() {
 
       {submitted === null ? <p className={styles.muted}>{t('tqPickDate')}</p> : null}
       {query.isFetching ? <p className={styles.empty}>{t('loading')}</p> : null}
-      {query.isError ? <p className={styles.err}>{t('tqFailed')}</p> : null}
+      {query.isError ? <p className={styles.err}>{explain(query.error, t('tqFailed'))}</p> : null}
       {query.data ? <TrafficQualityReport data={query.data} /> : null}
     </section>
   );

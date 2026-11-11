@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { CommentError, reportComment } from '@/modules/comments/api';
+import { useErrorText } from '@/shared/error-text';
 import styles from '../Comments.module.css';
 
 /**
@@ -14,6 +15,7 @@ import styles from '../Comments.module.css';
  */
 export function CommentActions({ commentId }: { commentId: string }) {
   const t = useTranslations('comments');
+  const explain = useErrorText();
   const { status } = useSession();
   const [state, setState] = useState<'idle' | 'form' | 'sent' | 'already'>('idle');
   const [reason, setReason] = useState('');
@@ -21,6 +23,7 @@ export function CommentActions({ commentId }: { commentId: string }) {
   // Отдельно от `state`: сбой не выводит из формы, её нужно показать снова
   // вместе с сообщением и уже набранным текстом.
   const [failed, setFailed] = useState(false);
+  const [failedCause, setFailedCause] = useState<unknown>(null);
 
   if (status !== 'authenticated') return null;
 
@@ -52,7 +55,10 @@ export function CommentActions({ commentId }: { commentId: string }) {
     } catch (error) {
       // 409 — жалоба уже подана этим человеком, это не сбой.
       if (error instanceof CommentError && error.status === 409) setState('already');
-      else setFailed(true);
+      else {
+        setFailed(true);
+        setFailedCause(error);
+      }
     } finally {
       setPending(false);
     }
@@ -70,7 +76,9 @@ export function CommentActions({ commentId }: { commentId: string }) {
         required
       />
       {failed ? (
-        <p className={`${styles.notice} ${styles.noticeError}`}>{t('reportFailed')}</p>
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(failedCause, t('reportFailed'))}
+        </p>
       ) : null}
       <div className={styles.formFoot}>
         <button

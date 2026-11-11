@@ -18,6 +18,7 @@ import { ContactsCard } from '@/modules/contacts/components/ContactsCard';
 import { FavoriteButton } from '@/modules/favorites/components/FavoriteButton';
 import { ReportProfile } from '@/modules/reports/components/ReportProfile';
 import { ApiError, fetchComments, fetchNearby, fetchProfile } from '@/shared/api';
+import { activeCountries } from '@/shared/city';
 import { durationKey, formatMoney } from '@/shared/format';
 import { Link } from '@/shared/i18n/navigation';
 import { socialMeta } from '@/shared/metadata';
@@ -86,13 +87,22 @@ export default async function ProfilePage({ params }: Props) {
   const profile = await loadProfile(slug, cache);
   if (!profile) notFound();
 
-  const [nearby, comments, t] = await Promise.all([
+  const [nearby, comments, countries, t] = await Promise.all([
     fetchNearby(slug, 8, cache).catch(() => []),
     // Недоступность комментариев не должна ронять страницу анкеты.
     fetchComments(slug, cache).catch(() => []),
+    activeCountries(locale),
     getTranslations({ locale, namespace: 'profile' }),
   ]);
   const tc = await getTranslations({ locale, namespace: 'card' });
+  const tp = await getTranslations({ locale, namespace: 'cityPicker' });
+  // Хлебные крошки: страна → город → анкета. Ведут в витрину того же места,
+  // откуда пришла анкета, — оттуда видно, где человек, и можно вернуться.
+  const country = countries.find((item) => item.code === profile.city.countryCode);
+  const crumbs = [
+    ...(country ? [{ name: country.name, href: `/${country.code.toLowerCase()}` }] : []),
+    { name: profile.city.name, href: `/${profile.city.slug}` },
+  ];
   // Значения внешности лежат в БД ключами — подписи берём из словарей.
   const tHair = await getTranslations({ locale, namespace: 'hairColor' });
   const tEye = await getTranslations({ locale, namespace: 'eyeColor' });
@@ -159,6 +169,17 @@ export default async function ProfilePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      <nav className={styles.crumbs} aria-label={tp('crumbsLabel')}>
+        <ol className={styles.crumbList}>
+          {crumbs.map((crumb) => (
+            <li key={crumb.href}>
+              <Link href={crumb.href}>{crumb.name}</Link>
+            </li>
+          ))}
+          <li aria-current="page">{profile.displayName}</li>
+        </ol>
+      </nav>
+
       {/* Имя, бейджи и город одной строкой во всю ширину: раньше они занимали
           три строки в правой колонке и отодвигали содержимое вниз. */}
       <header className={styles.header}>
@@ -168,8 +189,21 @@ export default async function ProfilePage({ params }: Props) {
         </h1>
 
         <div className={styles.headerBadges}>
-          {profile.isVerified ? <Badge variant="verified">✓ {tc('verified')}</Badge> : null}
-          {profile.isFeatured ? <Badge variant="featured">★ {tc('featured')}</Badge> : null}
+          {profile.isVerified ? (
+            <Badge variant="verified" hint={tc('verifiedHint')}>
+              ✓ {tc('verified')}
+            </Badge>
+          ) : null}
+          {profile.isFeatured ? (
+            <Badge variant="featured" hint={tc('featuredHint')}>
+              ★ {tc('featured')}
+            </Badge>
+          ) : null}
+          {profile.isPremium ? (
+            <Badge variant="premium" hint={tc('premiumHint')}>
+              ◆ {tc('premium')}
+            </Badge>
+          ) : null}
           {profile.isOnline ? <Badge>{tc('online')}</Badge> : null}
           <FavoriteButton profileId={profile.id} withLabel />
         </div>
@@ -345,7 +379,15 @@ export default async function ProfilePage({ params }: Props) {
                       <span key={service.key} className={styles.service}>
                         <span className={styles.check}>✓</span>
                         {service.name}
-                        {service.extra ? <span className={styles.extra}>{t('extra')}</span> : null}
+                        {service.extra ? (
+                          <span className={styles.extra}>
+                            {service.extraPrice
+                              ? t('extraWithPrice', {
+                                  price: formatMoney(service.extraPrice, locale as Locale) ?? '',
+                                })
+                              : t('extra')}
+                          </span>
+                        ) : null}
                       </span>
                     ))}
                   </div>

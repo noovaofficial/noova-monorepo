@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRef } from 'react';
 import { AccountError, deletePhoto, reorderPhotos, uploadPhoto } from '@/modules/account/api';
+import { useErrorText } from '@/shared/error-text';
 import styles from '../Account.module.css';
 
 type Props = {
@@ -26,6 +27,7 @@ function errorKey(error: unknown): string {
 
 export function PhotoManager({ profileId, photos, onChange }: Props) {
   const t = useTranslations('account');
+  const explain = useErrorText();
   const inputRef = useRef<HTMLInputElement>(null);
 
   /**
@@ -88,7 +90,13 @@ export function PhotoManager({ profileId, photos, onChange }: Props) {
       <h2 className={styles.sectionTitle}>{t('photos')}</h2>
       <span className={styles.hint}>{t('photosHint')}</span>
 
-      {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
+      {error ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {error === 'photoFailed'
+            ? explain(upload.error ?? remove.error ?? reorder.error, t(error))
+            : t(error)}
+        </p>
+      ) : null}
 
       {photos.length === 0 ? (
         <p className={styles.hint}>{t('photoEmpty')}</p>

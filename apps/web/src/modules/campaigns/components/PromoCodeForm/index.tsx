@@ -6,6 +6,7 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { RedeemRejected, redeemPromo } from '@/modules/campaigns/api';
+import { useErrorText } from '@/shared/error-text';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './PromoCodeForm.module.css';
 
@@ -24,6 +25,7 @@ import styles from './PromoCodeForm.module.css';
  */
 export function PromoCodeForm() {
   const t = useTranslations('promo');
+  const explain = useErrorText();
   const format = useFormatter();
   const queryClient = useQueryClient();
 
@@ -87,7 +89,9 @@ export function PromoCodeForm() {
       ) : null}
 
       {reason ? <p className={styles.err}>{t(`error_${reason}`)}</p> : null}
-      {redeem.isError && !reason ? <p className={styles.err}>{t('failed')}</p> : null}
+      {redeem.isError && !reason ? (
+        <p className={styles.err}>{explain(redeem.error, t('failed'))}</p>
+      ) : null}
     </section>
   );
 }

@@ -159,16 +159,30 @@ model User {
   // Подтверждение совершеннолетия самого аккаунта, до анкет.
   isAdult      Boolean  @default(false)
 
-  emailVerifiedAt     DateTime?
-  lastLoginAt         DateTime?
+  emailVerifiedAt      DateTime?
+  lastLoginAt          DateTime?
   /// Заполняется только для role = advertiser.
-  advertiserKind      AdvertiserKind?
+  advertiserKind       AdvertiserKind?
   /// Салон или агентство. У индивидуалки и у посетителя пусто.
-  company             Company?
+  company              Company?
+  /// Страна аккаунта рекламодателя: выбирается при регистрации, меняется в
+  /// настройках. По ней идут правила и цены размещения, тарифы и ТОП агентства.
+  /// У посетителей и персонала пусто.
+  countryId            String?
+  country              Country?        @relation("UserCountry", fields: [countryId], references: [id], onDelete: SetNull)
+  /// Основной город: подставляется в новые анкеты и определяет цену размещения
+  /// индивидуалки и салона. У агентства может быть пуст — у него анкеты в
+  /// нескольких городах страны.
+  cityId               String?
+  city                 City?           @relation("UserCity", fields: [cityId], references: [id], onDelete: SetNull)
+  /// Льготный срок после того, как размещение в стране стало платным, а
+  /// подписки у владельца нет: до этой даты опубликованные анкеты остаются в
+  /// каталоге, потом задача снимает их с публикации. Пусто — льготы нет.
+  placementGraceEndsAt DateTime?
   /// Язык интерфейса на момент регистрации — на нём приходят письма.
-  locale              String          @default("de")
+  locale               String          @default("de")
   // Бан гасит все сессии; вход отклоняется до снятия.
-  bannedAt            DateTime?
+  bannedAt             DateTime?
   /**
    * Запрошено удаление учётной записи. Не мгновенное: анкеты сразу уходят
    * из каталога, а физическое удаление происходит по истечении отсрочки
@@ -176,11 +190,11 @@ model User {
    * необратимо, и для салона или индивидуалки это потеря заработка,
    * которую нельзя откатить.
    */
-  deletionRequestedAt DateTime?
+  deletionRequestedAt  DateTime?
   /// Причина блокировки. Обязательна вместе с `bannedAt`: блокировка без
   /// объяснения не оставляет человеку способа исправиться и превращает
   /// модерацию в произвол. Показывается ему же при попытке входа.
-  banReason           String?
+  banReason            String?
 
   /// Баланс GlowCoin. Меняется только вместе с записью в BillingTransaction,
   /// в одной транзакции БД: баланс без журнала — состояние, которое нечем
@@ -301,6 +315,7 @@ model Country {
   translations    CountryTranslation[]
   placementRules  PlacementRule[]
   placementPrices CountryPlacementPrice[]
+  users           User[]                  @relation("UserCountry")
   topSetting      CountryTopSetting?
   tariffTiers     AgencyTariffTier[]
   companies       Company[]
@@ -335,6 +350,7 @@ model City {
   topSetting      CityTopSetting?
   placementRules  PlacementRule[]
   placementPrices CityPlacementPrice[]
+  users           User[]               @relation("UserCity")
 
   @@index([countryId])
 }
@@ -527,6 +543,11 @@ model Profile {
   /// снимается задачей по истечении. Денормализована ради сортировки и
   /// фильтра «ТОП» без джойна.
   isFeatured           Boolean               @default(false)
+  /// Premium: подписка действует в месте с бесплатным размещением — там она
+  /// необязательный буст, а не условие публикации. Производная: пересчитывается
+  /// `syncPremium` при смене подписки, правил размещения и места анкеты. Значок
+  /// отличается от ТОПа; даёт приоритет в выдаче.
+  isPremium            Boolean               @default(false)
   topPlacement         TopPlacement?
   verificationRequests VerificationRequest[]
   isVerified           Boolean               @default(false)
@@ -1142,11 +1163,14 @@ model ServiceGroupTranslation {
 }
 
 model ProfileService {
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  serviceId String
-  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  isExtra   Boolean @default(false)
+  profileId       String
+  profile         Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  serviceId       String
+  service         Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  isExtra         Boolean @default(false)
+  /// Цена доплаты в минорных единицах валюты страны анкеты. Только при
+  /// `isExtra`; пусто — «по договорённости».
+  extraPriceCents Int?
 
   @@id([profileId, serviceId])
 }

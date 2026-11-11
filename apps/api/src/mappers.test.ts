@@ -54,6 +54,7 @@ const cardRow = {
   fromPriceCents: 15000,
   isVerified: true,
   isFeatured: false,
+  isPremium: false,
   lastSeenAt: null,
   city,
   district: { name: 'Mitte', translations: [{ name: 'Митте' }] },

@@ -114,12 +114,18 @@ async function companyOwnerOr403(fastify: FastifyInstance, userId: string) {
     select: { role: true, advertiserKind: true },
   });
   if (user?.role !== 'advertiser') {
-    throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
+    throw withCode(
+      fastify.httpErrors.forbidden('Доступно только рекламодателям'),
+      'role_forbidden',
+    );
   }
   // Салон — это анкета, а не компания рядом с ней (N-34): у него нет и не
   // должно быть отдельной записи компании.
   if (user.advertiserKind !== 'agency') {
-    throw fastify.httpErrors.forbidden('Компания есть только у агентства');
+    throw withCode(
+      fastify.httpErrors.forbidden('Компания есть только у агентства'),
+      'company_agency_only',
+    );
   }
   return user.advertiserKind;
 }
@@ -169,8 +175,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       } = request.body;
 
       if (kind !== advertiserKind) {
-        throw fastify.httpErrors.badRequest(
-          `Тип компании должен совпадать с типом учётной записи (${advertiserKind})`,
+        throw withCode(
+          fastify.httpErrors.badRequest(
+            `Тип компании должен совпадать с типом учётной записи (${advertiserKind})`,
+          ),
+          'company_kind_mismatch',
         );
       }
 
@@ -179,7 +188,10 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         select: { ownerId: true },
       });
       if (clash && clash.ownerId !== userId) {
-        throw fastify.httpErrors.conflict('Этот адрес уже занят другой компанией');
+        throw withCode(
+          fastify.httpErrors.conflict('Этот адрес уже занят другой компанией'),
+          'company_slug_taken',
+        );
       }
 
       // Контакты нормализуем на сервере, как у анкеты: они копируются в новые
@@ -190,8 +202,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       for (const raw of request.body.contacts) {
         const result = normalizeContact(raw.type, raw.value);
         if (!result.ok) {
-          throw fastify.httpErrors.badRequest(
-            `Некорректный контакт (${raw.type}): ${raw.value} — ${result.reason}`,
+          throw withCode(
+            fastify.httpErrors.badRequest(
+              `Некорректный контакт (${raw.type}): ${raw.value} — ${result.reason}`,
+            ),
+            'contact_invalid',
           );
         }
         const key = `${raw.type}:${result.value}`;
@@ -201,7 +216,10 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
       }
 
       if (new Set(prices.map((p) => p.durationMinutes)).size !== prices.length) {
-        throw fastify.httpErrors.badRequest('Длительность в прайсе не должна повторяться');
+        throw withCode(
+          fastify.httpErrors.badRequest('Длительность в прайсе не должна повторяться'),
+          'price_duration_duplicate',
+        );
       }
 
       const fields = {
@@ -235,9 +253,14 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
               select: { id: true },
             })
           : null;
-        if (countryCode && !country) throw fastify.httpErrors.badRequest('Страна не найдена');
+        if (countryCode && !country)
+          throw withCode(fastify.httpErrors.badRequest('Страна не найдена'), 'country_not_found');
         countryId = country?.id ?? (await defaultCountryId(fastify.prisma));
-        if (!countryId) throw fastify.httpErrors.conflict('В справочнике нет ни одной страны');
+        if (!countryId)
+          throw withCode(
+            fastify.httpErrors.conflict('В справочнике нет ни одной страны'),
+            'no_countries',
+          );
       }
 
       // Тариф назначается сразу при заведении компании, а не по факту первой
@@ -296,12 +319,19 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { ownerId: userId },
         select: { id: true, logoStorageKey: true },
       });
-      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+      if (!company)
+        throw withCode(
+          fastify.httpErrors.badRequest('Сначала заполните данные компании'),
+          'company_required',
+        );
 
       const file = await request.file({ limits: { fileSize: MAX_LOGO_BYTES } });
-      if (!file) throw fastify.httpErrors.badRequest('Файл не передан');
+      if (!file) throw withCode(fastify.httpErrors.badRequest('Файл не передан'), 'file_missing');
       const buffer = await file.toBuffer().catch(() => {
-        throw fastify.httpErrors.badRequest('Файл больше допустимого размера');
+        throw withCode(
+          fastify.httpErrors.badRequest('Файл больше допустимого размера'),
+          'file_too_large',
+        );
       });
 
       let processed: Awaited<ReturnType<typeof processLogo>>;
@@ -309,8 +339,9 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         processed = await processLogo(buffer);
       } catch (error) {
         if (error instanceof ImageError) {
-          throw fastify.httpErrors.badRequest(
-            'Файл не является изображением поддерживаемого формата',
+          throw withCode(
+            fastify.httpErrors.badRequest('Файл не является изображением поддерживаемого формата'),
+            'file_not_image',
           );
         }
         throw error;
@@ -352,7 +383,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { ownerId: userId },
         select: { id: true, logoStorageKey: true },
       });
-      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+      if (!company)
+        throw withCode(
+          fastify.httpErrors.badRequest('Сначала заполните данные компании'),
+          'company_required',
+        );
 
       if (company.logoStorageKey) {
         await deleteObject(company.logoStorageKey).catch((error) => {
@@ -396,14 +431,19 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { ownerId: userId },
         select: { id: true },
       });
-      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+      if (!company)
+        throw withCode(
+          fastify.httpErrors.badRequest('Сначала заполните данные компании'),
+          'company_required',
+        );
 
       // Чужую анкету привязать нельзя: проверяем владельца, а не только id.
       const profile = await fastify.prisma.profile.findFirst({
         where: { id: request.params.id, ownerId: userId },
         select: { id: true },
       });
-      if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
+      if (!profile)
+        throw withCode(fastify.httpErrors.notFound('Анкета не найдена'), 'profile_not_found');
 
       await fastify.prisma.profile.update({
         where: { id: profile.id },
@@ -450,7 +490,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
           },
         },
       });
-      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+      if (!company)
+        throw withCode(
+          fastify.httpErrors.badRequest('Сначала заполните данные компании'),
+          'company_required',
+        );
 
       const profiles = await fastify.prisma.profile.findMany({
         where: { companyId: company.id },
@@ -592,7 +636,11 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { ownerId: userId },
         select: companyTariffSelect,
       });
-      if (!company) throw fastify.httpErrors.badRequest('Сначала заполните данные компании');
+      if (!company)
+        throw withCode(
+          fastify.httpErrors.badRequest('Сначала заполните данные компании'),
+          'company_required',
+        );
 
       try {
         const { targetTier, costGc } = await computeAgencyUpgrade(fastify.prisma, {
@@ -623,14 +671,20 @@ export const companyRoutes: FastifyPluginAsyncZod = async (fastify) => {
         return presentCompanyTariffState(fastify.prisma, updated, profileCount);
       } catch (error) {
         if (error instanceof TariffTierNotFoundError) {
-          throw fastify.httpErrors.badRequest(error.message);
+          throw withCode(fastify.httpErrors.badRequest(error.message), 'tariff_tier_not_found');
         }
         if (error instanceof TariffUpgradeNotAllowedError) {
-          throw fastify.httpErrors.badRequest(error.message);
+          throw withCode(
+            fastify.httpErrors.badRequest(error.message),
+            'tariff_upgrade_not_allowed',
+          );
         }
         if (error instanceof InsufficientBalanceError) {
-          throw fastify.httpErrors.conflict(
-            `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
+          throw withCode(
+            fastify.httpErrors.conflict(
+              `Недостаточно GlowCoin: на балансе ${error.balance}, нужно ${error.requested}`,
+            ),
+            'insufficient_balance',
           );
         }
         throw error;

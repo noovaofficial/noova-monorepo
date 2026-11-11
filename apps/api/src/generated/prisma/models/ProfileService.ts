@@ -20,46 +20,70 @@ export type ProfileServiceModel = runtime.Types.Result.DefaultSelection<Prisma.$
 
 export type AggregateProfileService = {
   _count: ProfileServiceCountAggregateOutputType | null
+  _avg: ProfileServiceAvgAggregateOutputType | null
+  _sum: ProfileServiceSumAggregateOutputType | null
   _min: ProfileServiceMinAggregateOutputType | null
   _max: ProfileServiceMaxAggregateOutputType | null
+}
+
+export type ProfileServiceAvgAggregateOutputType = {
+  extraPriceCents: number | null
+}
+
+export type ProfileServiceSumAggregateOutputType = {
+  extraPriceCents: number | null
 }
 
 export type ProfileServiceMinAggregateOutputType = {
   profileId: string | null
   serviceId: string | null
   isExtra: boolean | null
+  extraPriceCents: number | null
 }
 
 export type ProfileServiceMaxAggregateOutputType = {
   profileId: string | null
   serviceId: string | null
   isExtra: boolean | null
+  extraPriceCents: number | null
 }
 
 export type ProfileServiceCountAggregateOutputType = {
   profileId: number
   serviceId: number
   isExtra: number
+  extraPriceCents: number
   _all: number
 }
 
+
+export type ProfileServiceAvgAggregateInputType = {
+  extraPriceCents?: true
+}
+
+export type ProfileServiceSumAggregateInputType = {
+  extraPriceCents?: true
+}
 
 export type ProfileServiceMinAggregateInputType = {
   profileId?: true
   serviceId?: true
   isExtra?: true
+  extraPriceCents?: true
 }
 
 export type ProfileServiceMaxAggregateInputType = {
   profileId?: true
   serviceId?: true
   isExtra?: true
+  extraPriceCents?: true
 }
 
 export type ProfileServiceCountAggregateInputType = {
   profileId?: true
   serviceId?: true
   isExtra?: true
+  extraPriceCents?: true
   _all?: true
 }
 
@@ -101,6 +125,18 @@ export type ProfileServiceAggregateArgs<ExtArgs extends runtime.Types.Extensions
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ProfileServiceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ProfileServiceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProfileServiceMinAggregateInputType
@@ -131,6 +167,8 @@ export type ProfileServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   _count?: ProfileServiceCountAggregateInputType | true
+  _avg?: ProfileServiceAvgAggregateInputType
+  _sum?: ProfileServiceSumAggregateInputType
   _min?: ProfileServiceMinAggregateInputType
   _max?: ProfileServiceMaxAggregateInputType
 }
@@ -139,7 +177,10 @@ export type ProfileServiceGroupByOutputType = {
   profileId: string
   serviceId: string
   isExtra: boolean
+  extraPriceCents: number | null
   _count: ProfileServiceCountAggregateOutputType | null
+  _avg: ProfileServiceAvgAggregateOutputType | null
+  _sum: ProfileServiceSumAggregateOutputType | null
   _min: ProfileServiceMinAggregateOutputType | null
   _max: ProfileServiceMaxAggregateOutputType | null
 }
@@ -166,6 +207,7 @@ export type ProfileServiceWhereInput = {
   profileId?: Prisma.StringFilter<"ProfileService"> | string
   serviceId?: Prisma.StringFilter<"ProfileService"> | string
   isExtra?: Prisma.BoolFilter<"ProfileService"> | boolean
+  extraPriceCents?: Prisma.IntNullableFilter<"ProfileService"> | number | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
 }
@@ -174,6 +216,7 @@ export type ProfileServiceOrderByWithRelationInput = {
   profileId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   isExtra?: Prisma.SortOrder
+  extraPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
   service?: Prisma.ServiceOrderByWithRelationInput
 }
@@ -186,6 +229,7 @@ export type ProfileServiceWhereUniqueInput = Prisma.AtLeast<{
   profileId?: Prisma.StringFilter<"ProfileService"> | string
   serviceId?: Prisma.StringFilter<"ProfileService"> | string
   isExtra?: Prisma.BoolFilter<"ProfileService"> | boolean
+  extraPriceCents?: Prisma.IntNullableFilter<"ProfileService"> | number | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
 }, "profileId_serviceId">
@@ -194,9 +238,12 @@ export type ProfileServiceOrderByWithAggregationInput = {
   profileId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   isExtra?: Prisma.SortOrder
+  extraPriceCents?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProfileServiceCountOrderByAggregateInput
+  _avg?: Prisma.ProfileServiceAvgOrderByAggregateInput
   _max?: Prisma.ProfileServiceMaxOrderByAggregateInput
   _min?: Prisma.ProfileServiceMinOrderByAggregateInput
+  _sum?: Prisma.ProfileServiceSumOrderByAggregateInput
 }
 
 export type ProfileServiceScalarWhereWithAggregatesInput = {
@@ -206,10 +253,12 @@ export type ProfileServiceScalarWhereWithAggregatesInput = {
   profileId?: Prisma.StringWithAggregatesFilter<"ProfileService"> | string
   serviceId?: Prisma.StringWithAggregatesFilter<"ProfileService"> | string
   isExtra?: Prisma.BoolWithAggregatesFilter<"ProfileService"> | boolean
+  extraPriceCents?: Prisma.IntNullableWithAggregatesFilter<"ProfileService"> | number | null
 }
 
 export type ProfileServiceCreateInput = {
   isExtra?: boolean
+  extraPriceCents?: number | null
   profile: Prisma.ProfileCreateNestedOneWithoutServicesInput
   service: Prisma.ServiceCreateNestedOneWithoutProfilesInput
 }
@@ -218,10 +267,12 @@ export type ProfileServiceUncheckedCreateInput = {
   profileId: string
   serviceId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceUpdateInput = {
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   profile?: Prisma.ProfileUpdateOneRequiredWithoutServicesNestedInput
   service?: Prisma.ServiceUpdateOneRequiredWithoutProfilesNestedInput
 }
@@ -230,22 +281,26 @@ export type ProfileServiceUncheckedUpdateInput = {
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceCreateManyInput = {
   profileId: string
   serviceId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceUpdateManyMutationInput = {
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceUncheckedUpdateManyInput = {
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceListRelationFilter = {
@@ -267,18 +322,29 @@ export type ProfileServiceCountOrderByAggregateInput = {
   profileId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   isExtra?: Prisma.SortOrder
+  extraPriceCents?: Prisma.SortOrder
+}
+
+export type ProfileServiceAvgOrderByAggregateInput = {
+  extraPriceCents?: Prisma.SortOrder
 }
 
 export type ProfileServiceMaxOrderByAggregateInput = {
   profileId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   isExtra?: Prisma.SortOrder
+  extraPriceCents?: Prisma.SortOrder
 }
 
 export type ProfileServiceMinOrderByAggregateInput = {
   profileId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   isExtra?: Prisma.SortOrder
+  extraPriceCents?: Prisma.SortOrder
+}
+
+export type ProfileServiceSumOrderByAggregateInput = {
+  extraPriceCents?: Prisma.SortOrder
 }
 
 export type ProfileServiceCreateNestedManyWithoutProfileInput = {
@@ -367,12 +433,14 @@ export type ProfileServiceUncheckedUpdateManyWithoutServiceNestedInput = {
 
 export type ProfileServiceCreateWithoutProfileInput = {
   isExtra?: boolean
+  extraPriceCents?: number | null
   service: Prisma.ServiceCreateNestedOneWithoutProfilesInput
 }
 
 export type ProfileServiceUncheckedCreateWithoutProfileInput = {
   serviceId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceCreateOrConnectWithoutProfileInput = {
@@ -408,16 +476,19 @@ export type ProfileServiceScalarWhereInput = {
   profileId?: Prisma.StringFilter<"ProfileService"> | string
   serviceId?: Prisma.StringFilter<"ProfileService"> | string
   isExtra?: Prisma.BoolFilter<"ProfileService"> | boolean
+  extraPriceCents?: Prisma.IntNullableFilter<"ProfileService"> | number | null
 }
 
 export type ProfileServiceCreateWithoutServiceInput = {
   isExtra?: boolean
+  extraPriceCents?: number | null
   profile: Prisma.ProfileCreateNestedOneWithoutServicesInput
 }
 
 export type ProfileServiceUncheckedCreateWithoutServiceInput = {
   profileId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceCreateOrConnectWithoutServiceInput = {
@@ -449,41 +520,49 @@ export type ProfileServiceUpdateManyWithWhereWithoutServiceInput = {
 export type ProfileServiceCreateManyProfileInput = {
   serviceId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceUpdateWithoutProfileInput = {
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   service?: Prisma.ServiceUpdateOneRequiredWithoutProfilesNestedInput
 }
 
 export type ProfileServiceUncheckedUpdateWithoutProfileInput = {
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceUncheckedUpdateManyWithoutProfileInput = {
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceCreateManyServiceInput = {
   profileId: string
   isExtra?: boolean
+  extraPriceCents?: number | null
 }
 
 export type ProfileServiceUpdateWithoutServiceInput = {
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   profile?: Prisma.ProfileUpdateOneRequiredWithoutServicesNestedInput
 }
 
 export type ProfileServiceUncheckedUpdateWithoutServiceInput = {
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type ProfileServiceUncheckedUpdateManyWithoutServiceInput = {
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   isExtra?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  extraPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -492,6 +571,7 @@ export type ProfileServiceSelect<ExtArgs extends runtime.Types.Extensions.Intern
   profileId?: boolean
   serviceId?: boolean
   isExtra?: boolean
+  extraPriceCents?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profileService"]>
@@ -500,6 +580,7 @@ export type ProfileServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   profileId?: boolean
   serviceId?: boolean
   isExtra?: boolean
+  extraPriceCents?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profileService"]>
@@ -508,6 +589,7 @@ export type ProfileServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   profileId?: boolean
   serviceId?: boolean
   isExtra?: boolean
+  extraPriceCents?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profileService"]>
@@ -516,9 +598,10 @@ export type ProfileServiceSelectScalar = {
   profileId?: boolean
   serviceId?: boolean
   isExtra?: boolean
+  extraPriceCents?: boolean
 }
 
-export type ProfileServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"profileId" | "serviceId" | "isExtra", ExtArgs["result"]["profileService"]>
+export type ProfileServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"profileId" | "serviceId" | "isExtra" | "extraPriceCents", ExtArgs["result"]["profileService"]>
 export type ProfileServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
@@ -542,6 +625,11 @@ export type $ProfileServicePayload<ExtArgs extends runtime.Types.Extensions.Inte
     profileId: string
     serviceId: string
     isExtra: boolean
+    /**
+     * Цена доплаты в минорных единицах валюты страны анкеты. Только при
+     * `isExtra`; пусто — «по договорённости».
+     */
+    extraPriceCents: number | null
   }, ExtArgs["result"]["profileService"]>
   composites: {}
 }
@@ -970,6 +1058,7 @@ export interface ProfileServiceFieldRefs {
   readonly profileId: Prisma.FieldRef<"ProfileService", 'String'>
   readonly serviceId: Prisma.FieldRef<"ProfileService", 'String'>
   readonly isExtra: Prisma.FieldRef<"ProfileService", 'Boolean'>
+  readonly extraPriceCents: Prisma.FieldRef<"ProfileService", 'Int'>
 }
     
 

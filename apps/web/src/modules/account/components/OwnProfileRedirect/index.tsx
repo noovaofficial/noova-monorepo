@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { fetchOwnProfiles } from '@/modules/account/api';
 import { useSession } from '@/modules/auth/components/SessionProvider';
+import { useErrorText } from '@/shared/error-text';
 import { useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -16,6 +17,7 @@ import styles from '../Account.module.css';
  */
 export function OwnProfileRedirect() {
   const t = useTranslations('account');
+  const explain = useErrorText();
   const router = useRouter();
   const { status } = useSession();
 
@@ -35,5 +37,9 @@ export function OwnProfileRedirect() {
     router.replace(first ? `/account/profiles/${first.id}` : '/account/profiles');
   }, [status, list.data, router]);
 
-  return <p className={styles.empty}>{list.isError ? t('loadFailed') : t('loading')}</p>;
+  return (
+    <p className={styles.empty}>
+      {list.isError ? explain(list.error, t('loadFailed')) : t('loading')}
+    </p>
+  );
 }

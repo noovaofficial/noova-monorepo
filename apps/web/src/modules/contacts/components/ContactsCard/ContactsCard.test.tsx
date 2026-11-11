@@ -21,6 +21,8 @@ const analytics = vi.hoisted(() => ({ trackContactClick: vi.fn() }));
 vi.mock('@/modules/analytics/api', () => analytics);
 
 const t = messages.contacts;
+// Действие в сообщении идёт без конечной точки: дальше следует причина.
+const failedText = t.failed.replace(/\.$/, '');
 
 function renderCard() {
   return render(
@@ -78,7 +80,22 @@ describe('гейт показа', () => {
     renderCard();
     await userEvent.click(screen.getByRole('button', { name: t.reveal }));
 
-    await waitFor(() => expect(screen.getByText(t.failed)).toBeTruthy());
+    // Название действия плюс причина и подсказка: голое «не удалось» человеку
+    // ничего не говорит.
+    await waitFor(() =>
+      expect(screen.getByText(`${failedText}. ${messages.error.reason_unknown}`)).toBeTruthy(),
+    );
+  });
+
+  it('при обрыве сети называет причину', async () => {
+    contacts.revealContacts.mockRejectedValue(new TypeError('Failed to fetch'));
+
+    renderCard();
+    await userEvent.click(screen.getByRole('button', { name: t.reveal }));
+
+    await waitFor(() =>
+      expect(screen.getByText(`${failedText}. ${messages.error.reason_network}`)).toBeTruthy(),
+    );
   });
 });
 

@@ -197,6 +197,7 @@ export type CountryWhereInput = {
   translations?: Prisma.CountryTranslationListRelationFilter
   placementRules?: Prisma.PlacementRuleListRelationFilter
   placementPrices?: Prisma.CountryPlacementPriceListRelationFilter
+  users?: Prisma.UserListRelationFilter
   topSetting?: Prisma.XOR<Prisma.CountryTopSettingNullableScalarRelationFilter, Prisma.CountryTopSettingWhereInput> | null
   tariffTiers?: Prisma.AgencyTariffTierListRelationFilter
   companies?: Prisma.CompanyListRelationFilter
@@ -214,6 +215,7 @@ export type CountryOrderByWithRelationInput = {
   translations?: Prisma.CountryTranslationOrderByRelationAggregateInput
   placementRules?: Prisma.PlacementRuleOrderByRelationAggregateInput
   placementPrices?: Prisma.CountryPlacementPriceOrderByRelationAggregateInput
+  users?: Prisma.UserOrderByRelationAggregateInput
   topSetting?: Prisma.CountryTopSettingOrderByWithRelationInput
   tariffTiers?: Prisma.AgencyTariffTierOrderByRelationAggregateInput
   companies?: Prisma.CompanyOrderByRelationAggregateInput
@@ -234,6 +236,7 @@ export type CountryWhereUniqueInput = Prisma.AtLeast<{
   translations?: Prisma.CountryTranslationListRelationFilter
   placementRules?: Prisma.PlacementRuleListRelationFilter
   placementPrices?: Prisma.CountryPlacementPriceListRelationFilter
+  users?: Prisma.UserListRelationFilter
   topSetting?: Prisma.XOR<Prisma.CountryTopSettingNullableScalarRelationFilter, Prisma.CountryTopSettingWhereInput> | null
   tariffTiers?: Prisma.AgencyTariffTierListRelationFilter
   companies?: Prisma.CompanyListRelationFilter
@@ -275,6 +278,7 @@ export type CountryCreateInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -292,6 +296,7 @@ export type CountryUncheckedCreateInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -309,6 +314,7 @@ export type CountryUpdateInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -326,6 +332,7 @@ export type CountryUncheckedUpdateInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -356,6 +363,11 @@ export type CountryUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type CountryNullableScalarRelationFilter = {
+  is?: Prisma.CountryWhereInput | null
+  isNot?: Prisma.CountryWhereInput | null
 }
 
 export type CountryCountOrderByAggregateInput = {
@@ -390,9 +402,20 @@ export type CountryScalarRelationFilter = {
   isNot?: Prisma.CountryWhereInput
 }
 
-export type CountryNullableScalarRelationFilter = {
-  is?: Prisma.CountryWhereInput | null
-  isNot?: Prisma.CountryWhereInput | null
+export type CountryCreateNestedOneWithoutUsersInput = {
+  create?: Prisma.XOR<Prisma.CountryCreateWithoutUsersInput, Prisma.CountryUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.CountryCreateOrConnectWithoutUsersInput
+  connect?: Prisma.CountryWhereUniqueInput
+}
+
+export type CountryUpdateOneWithoutUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.CountryCreateWithoutUsersInput, Prisma.CountryUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.CountryCreateOrConnectWithoutUsersInput
+  upsert?: Prisma.CountryUpsertWithoutUsersInput
+  disconnect?: Prisma.CountryWhereInput | boolean
+  delete?: Prisma.CountryWhereInput | boolean
+  connect?: Prisma.CountryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CountryUpdateToOneWithWhereWithoutUsersInput, Prisma.CountryUpdateWithoutUsersInput>, Prisma.CountryUncheckedUpdateWithoutUsersInput>
 }
 
 export type CountryCreateNestedOneWithoutTranslationsInput = {
@@ -511,6 +534,90 @@ export type CountryUpdateOneRequiredWithoutTariffTiersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CountryUpdateToOneWithWhereWithoutTariffTiersInput, Prisma.CountryUpdateWithoutTariffTiersInput>, Prisma.CountryUncheckedUpdateWithoutTariffTiersInput>
 }
 
+export type CountryCreateWithoutUsersInput = {
+  id?: string
+  code: string
+  name: string
+  isActive?: boolean
+  isDefault?: boolean
+  currency?: string
+  cities?: Prisma.CityCreateNestedManyWithoutCountryInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutCountryInput
+  translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
+  placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
+  placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
+  tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
+  companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
+}
+
+export type CountryUncheckedCreateWithoutUsersInput = {
+  id?: string
+  code: string
+  name: string
+  isActive?: boolean
+  isDefault?: boolean
+  currency?: string
+  cities?: Prisma.CityUncheckedCreateNestedManyWithoutCountryInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCountryInput
+  translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
+  placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
+  placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
+  tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
+  companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
+}
+
+export type CountryCreateOrConnectWithoutUsersInput = {
+  where: Prisma.CountryWhereUniqueInput
+  create: Prisma.XOR<Prisma.CountryCreateWithoutUsersInput, Prisma.CountryUncheckedCreateWithoutUsersInput>
+}
+
+export type CountryUpsertWithoutUsersInput = {
+  update: Prisma.XOR<Prisma.CountryUpdateWithoutUsersInput, Prisma.CountryUncheckedUpdateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.CountryCreateWithoutUsersInput, Prisma.CountryUncheckedCreateWithoutUsersInput>
+  where?: Prisma.CountryWhereInput
+}
+
+export type CountryUpdateToOneWithWhereWithoutUsersInput = {
+  where?: Prisma.CountryWhereInput
+  data: Prisma.XOR<Prisma.CountryUpdateWithoutUsersInput, Prisma.CountryUncheckedUpdateWithoutUsersInput>
+}
+
+export type CountryUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  cities?: Prisma.CityUpdateManyWithoutCountryNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutCountryNestedInput
+  translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
+  placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
+  placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
+  tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
+  companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
+}
+
+export type CountryUncheckedUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  cities?: Prisma.CityUncheckedUpdateManyWithoutCountryNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCountryNestedInput
+  translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
+  placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
+  placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
+  tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
+  companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
+}
+
 export type CountryCreateWithoutTranslationsInput = {
   id?: string
   code: string
@@ -522,6 +629,7 @@ export type CountryCreateWithoutTranslationsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -538,6 +646,7 @@ export type CountryUncheckedCreateWithoutTranslationsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -570,6 +679,7 @@ export type CountryUpdateWithoutTranslationsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -586,6 +696,7 @@ export type CountryUncheckedUpdateWithoutTranslationsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -602,6 +713,7 @@ export type CountryCreateWithoutCitiesInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -618,6 +730,7 @@ export type CountryUncheckedCreateWithoutCitiesInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -650,6 +763,7 @@ export type CountryUpdateWithoutCitiesInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -666,6 +780,7 @@ export type CountryUncheckedUpdateWithoutCitiesInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -682,6 +797,7 @@ export type CountryCreateWithoutPlacementRulesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutCountryInput
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -698,6 +814,7 @@ export type CountryUncheckedCreateWithoutPlacementRulesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCountryInput
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -730,6 +847,7 @@ export type CountryUpdateWithoutPlacementRulesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutCountryNestedInput
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -746,6 +864,7 @@ export type CountryUncheckedUpdateWithoutPlacementRulesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCountryNestedInput
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -763,6 +882,7 @@ export type CountryCreateWithoutTopSettingInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
 }
@@ -779,6 +899,7 @@ export type CountryUncheckedCreateWithoutTopSettingInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
 }
@@ -811,6 +932,7 @@ export type CountryUpdateWithoutTopSettingInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
 }
@@ -827,6 +949,7 @@ export type CountryUncheckedUpdateWithoutTopSettingInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
 }
@@ -842,6 +965,7 @@ export type CountryCreateWithoutPlacementPricesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutCountryInput
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -858,6 +982,7 @@ export type CountryUncheckedCreateWithoutPlacementPricesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutCountryInput
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -890,6 +1015,7 @@ export type CountryUpdateWithoutPlacementPricesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutCountryNestedInput
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -906,6 +1032,7 @@ export type CountryUncheckedUpdateWithoutPlacementPricesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutCountryNestedInput
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -922,6 +1049,7 @@ export type CountryCreateWithoutProfilesInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
@@ -938,6 +1066,7 @@ export type CountryUncheckedCreateWithoutProfilesInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
@@ -970,6 +1099,7 @@ export type CountryUpdateWithoutProfilesInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
@@ -986,6 +1116,7 @@ export type CountryUncheckedUpdateWithoutProfilesInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
@@ -1003,6 +1134,7 @@ export type CountryCreateWithoutCompaniesInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierCreateNestedManyWithoutCountryInput
 }
@@ -1019,6 +1151,7 @@ export type CountryUncheckedCreateWithoutCompaniesInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedCreateNestedManyWithoutCountryInput
 }
@@ -1051,6 +1184,7 @@ export type CountryUpdateWithoutCompaniesInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUpdateManyWithoutCountryNestedInput
 }
@@ -1067,6 +1201,7 @@ export type CountryUncheckedUpdateWithoutCompaniesInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   tariffTiers?: Prisma.AgencyTariffTierUncheckedUpdateManyWithoutCountryNestedInput
 }
@@ -1083,6 +1218,7 @@ export type CountryCreateWithoutTariffTiersInput = {
   translations?: Prisma.CountryTranslationCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingCreateNestedOneWithoutCountryInput
   companies?: Prisma.CompanyCreateNestedManyWithoutCountryInput
 }
@@ -1099,6 +1235,7 @@ export type CountryUncheckedCreateWithoutTariffTiersInput = {
   translations?: Prisma.CountryTranslationUncheckedCreateNestedManyWithoutCountryInput
   placementRules?: Prisma.PlacementRuleUncheckedCreateNestedManyWithoutCountryInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedCreateNestedManyWithoutCountryInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutCountryInput
   topSetting?: Prisma.CountryTopSettingUncheckedCreateNestedOneWithoutCountryInput
   companies?: Prisma.CompanyUncheckedCreateNestedManyWithoutCountryInput
 }
@@ -1131,6 +1268,7 @@ export type CountryUpdateWithoutTariffTiersInput = {
   translations?: Prisma.CountryTranslationUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUpdateOneWithoutCountryNestedInput
   companies?: Prisma.CompanyUpdateManyWithoutCountryNestedInput
 }
@@ -1147,6 +1285,7 @@ export type CountryUncheckedUpdateWithoutTariffTiersInput = {
   translations?: Prisma.CountryTranslationUncheckedUpdateManyWithoutCountryNestedInput
   placementRules?: Prisma.PlacementRuleUncheckedUpdateManyWithoutCountryNestedInput
   placementPrices?: Prisma.CountryPlacementPriceUncheckedUpdateManyWithoutCountryNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutCountryNestedInput
   topSetting?: Prisma.CountryTopSettingUncheckedUpdateOneWithoutCountryNestedInput
   companies?: Prisma.CompanyUncheckedUpdateManyWithoutCountryNestedInput
 }
@@ -1162,6 +1301,7 @@ export type CountryCountOutputType = {
   translations: number
   placementRules: number
   placementPrices: number
+  users: number
   tariffTiers: number
   companies: number
 }
@@ -1172,6 +1312,7 @@ export type CountryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   translations?: boolean | CountryCountOutputTypeCountTranslationsArgs
   placementRules?: boolean | CountryCountOutputTypeCountPlacementRulesArgs
   placementPrices?: boolean | CountryCountOutputTypeCountPlacementPricesArgs
+  users?: boolean | CountryCountOutputTypeCountUsersArgs
   tariffTiers?: boolean | CountryCountOutputTypeCountTariffTiersArgs
   companies?: boolean | CountryCountOutputTypeCountCompaniesArgs
 }
@@ -1224,6 +1365,13 @@ export type CountryCountOutputTypeCountPlacementPricesArgs<ExtArgs extends runti
 /**
  * CountryCountOutputType without action
  */
+export type CountryCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * CountryCountOutputType without action
+ */
 export type CountryCountOutputTypeCountTariffTiersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AgencyTariffTierWhereInput
 }
@@ -1248,6 +1396,7 @@ export type CountrySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   translations?: boolean | Prisma.Country$translationsArgs<ExtArgs>
   placementRules?: boolean | Prisma.Country$placementRulesArgs<ExtArgs>
   placementPrices?: boolean | Prisma.Country$placementPricesArgs<ExtArgs>
+  users?: boolean | Prisma.Country$usersArgs<ExtArgs>
   topSetting?: boolean | Prisma.Country$topSettingArgs<ExtArgs>
   tariffTiers?: boolean | Prisma.Country$tariffTiersArgs<ExtArgs>
   companies?: boolean | Prisma.Country$companiesArgs<ExtArgs>
@@ -1288,6 +1437,7 @@ export type CountryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   translations?: boolean | Prisma.Country$translationsArgs<ExtArgs>
   placementRules?: boolean | Prisma.Country$placementRulesArgs<ExtArgs>
   placementPrices?: boolean | Prisma.Country$placementPricesArgs<ExtArgs>
+  users?: boolean | Prisma.Country$usersArgs<ExtArgs>
   topSetting?: boolean | Prisma.Country$topSettingArgs<ExtArgs>
   tariffTiers?: boolean | Prisma.Country$tariffTiersArgs<ExtArgs>
   companies?: boolean | Prisma.Country$companiesArgs<ExtArgs>
@@ -1304,6 +1454,7 @@ export type $CountryPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     translations: Prisma.$CountryTranslationPayload<ExtArgs>[]
     placementRules: Prisma.$PlacementRulePayload<ExtArgs>[]
     placementPrices: Prisma.$CountryPlacementPricePayload<ExtArgs>[]
+    users: Prisma.$UserPayload<ExtArgs>[]
     topSetting: Prisma.$CountryTopSettingPayload<ExtArgs> | null
     tariffTiers: Prisma.$AgencyTariffTierPayload<ExtArgs>[]
     companies: Prisma.$CompanyPayload<ExtArgs>[]
@@ -1736,6 +1887,7 @@ export interface Prisma__CountryClient<T, Null = never, ExtArgs extends runtime.
   translations<T extends Prisma.Country$translationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CountryTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   placementRules<T extends Prisma.Country$placementRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$placementRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlacementRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   placementPrices<T extends Prisma.Country$placementPricesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$placementPricesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CountryPlacementPricePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  users<T extends Prisma.Country$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   topSetting<T extends Prisma.Country$topSettingArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$topSettingArgs<ExtArgs>>): Prisma.Prisma__CountryTopSettingClient<runtime.Types.Result.GetResult<Prisma.$CountryTopSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tariffTiers<T extends Prisma.Country$tariffTiersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$tariffTiersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AgencyTariffTierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   companies<T extends Prisma.Country$companiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Country$companiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2284,6 +2436,30 @@ export type Country$placementPricesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.CountryPlacementPriceScalarFieldEnum | Prisma.CountryPlacementPriceScalarFieldEnum[]
+}
+
+/**
+ * Country.users
+ */
+export type Country$usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**

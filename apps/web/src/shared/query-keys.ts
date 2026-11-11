@@ -64,6 +64,7 @@ export const queryKeys = {
 
   /** Монетизация в кабинете. */
   priceBook: () => ['price-book'] as const,
+  placement: () => ['placement'] as const,
   wallet: () => ['wallet'] as const,
   listing: () => ['listing'] as const,
   topupOrder: (id: string) => ['topup-order', id] as const,

@@ -11,6 +11,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
 import { requireSession } from '../../plugins/session.js';
+import { withCode } from '../locations/country-lock.js';
 import { RedeemFailed, redeemPromoCode } from './service.js';
 
 const rowSelect = (locale: Locale) =>
@@ -142,7 +143,10 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
           // Код уникален: два предложения под одним кодом — это акция,
           // про которую нельзя сказать, какая из них применится.
           if (error.code === 'P2002') {
-            throw fastify.httpErrors.conflict('Такой промокод уже занят');
+            throw withCode(
+              fastify.httpErrors.conflict('Такой промокод уже занят'),
+              'promo_code_taken',
+            );
           }
           throw error;
         });
@@ -170,7 +174,8 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: request.params.id },
         select: { id: true },
       });
-      if (!exists) throw fastify.httpErrors.notFound('Акция не найдена');
+      if (!exists)
+        throw withCode(fastify.httpErrors.notFound('Акция не найдена'), 'campaign_not_found');
 
       const row = await fastify.prisma.campaign
         .update({
@@ -192,7 +197,10 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         })
         .catch((error: { code?: string }) => {
           if (error.code === 'P2002') {
-            throw fastify.httpErrors.conflict('Такой промокод уже занят');
+            throw withCode(
+              fastify.httpErrors.conflict('Такой промокод уже занят'),
+              'promo_code_taken',
+            );
           }
           throw error;
         });
@@ -222,15 +230,19 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { campaignId: request.params.id },
       });
       if (granted > 0) {
-        throw fastify.httpErrors.conflict(
-          'По акции уже были выдачи — её можно выключить, но не удалить',
+        throw withCode(
+          fastify.httpErrors.conflict(
+            'По акции уже были выдачи — её можно выключить, но не удалить',
+          ),
+          'campaign_has_grants',
         );
       }
 
       const { count } = await fastify.prisma.campaign.deleteMany({
         where: { id: request.params.id },
       });
-      if (count === 0) throw fastify.httpErrors.notFound('Акция не найдена');
+      if (count === 0)
+        throw withCode(fastify.httpErrors.notFound('Акция не найдена'), 'campaign_not_found');
 
       return reply.status(204).send(null);
     },
@@ -268,7 +280,10 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       });
       if (!user?.advertiserKind) {
-        throw fastify.httpErrors.forbidden('Доступно только рекламодателям');
+        throw withCode(
+          fastify.httpErrors.forbidden('Доступно только рекламодателям'),
+          'role_forbidden',
+        );
       }
 
       try {

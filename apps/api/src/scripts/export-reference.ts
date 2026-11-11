@@ -110,6 +110,7 @@ async function main() {
       name: names(c.translations, `страны ${c.code}`),
       isActive: c.isActive,
       isDefault: c.isDefault,
+      currency: c.currency,
     })),
     cities: cities.map((city) => ({
       id: city.id,

@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchModerationLog, fetchStaff } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { LoadMore } from '../LoadMore';
@@ -23,6 +24,7 @@ const SUBJECT_LABEL: Record<string, string> = {
 
 export function ModerationLog() {
   const t = useTranslations('admin');
+  const explain = useErrorText();
   const { user, status } = useSession();
   const router = useRouter();
 
@@ -118,7 +120,7 @@ export function ModerationLog() {
         </select>
       </div>
 
-      {isError ? <p className={styles.empty}>{t('logFailed')}</p> : null}
+      {isError ? <p className={styles.empty}>{explain(log.error, t('logFailed'))}</p> : null}
 
       {entries === null ? (
         <p className={styles.empty}>…</p>

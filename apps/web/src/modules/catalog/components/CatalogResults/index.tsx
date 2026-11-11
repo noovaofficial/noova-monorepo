@@ -4,6 +4,7 @@ import type { Locale, ProfileCard as ProfileCardData } from '@noova/shared';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { fetchProfilesClient } from '@/modules/catalog/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { ProfileCard } from '../ProfileCard';
 import gridStyles from '../ProfileGrid.module.css';
@@ -47,12 +48,14 @@ export function CatalogResults({
   pageSize,
 }: Props) {
   const t = useTranslations('filters');
+  const explain = useErrorText();
   const [items, setItems] = useState(initialItems);
   // Страница из URL нужна только на первом рендере: дальше счёт ведётся
   // по числу показанных карточек.
   const [cursor, setCursor] = useState(initialCursor);
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [failedCause, setFailedCause] = useState<unknown>(null);
 
   async function loadMore() {
     if (!cursor) return;
@@ -66,7 +69,8 @@ export function CatalogResults({
         return [...current, ...page.items.filter((item) => !seen.has(item.id))];
       });
       setCursor(page.nextCursor);
-    } catch {
+    } catch (cause) {
+      setFailedCause(cause);
       setFailed(true);
     } finally {
       setPending(false);
@@ -93,7 +97,9 @@ export function CatalogResults({
 
       {hasMore ? (
         <div className={styles.wrap}>
-          {failed ? <span className={styles.error}>{t('loadFailed')}</span> : null}
+          {failed ? (
+            <span className={styles.error}>{explain(failedCause, t('loadFailed'))}</span>
+          ) : null}
           <Link
             className={styles.more}
             href={nextHref()}

@@ -41,7 +41,7 @@ type OwnProfileRow = {
   payments: ('cash' | 'card' | 'transfer')[];
   amenities: string[];
   hours: { weekday: number; opensAt: number | null; closesAt: number | null }[];
-  services: { isExtra: boolean; service: { key: string } }[];
+  services: { isExtra: boolean; extraPriceCents: number | null; service: { key: string } }[];
   contacts: { type: OwnProfile['contacts'][number]['type']; value: string }[];
   photos: {
     id: string;
@@ -104,7 +104,11 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
       incallCents: p.incallCents,
       outcallCents: p.outcallCents,
     })),
-    services: row.services.map((s) => ({ key: s.service.key, isExtra: s.isExtra })),
+    services: row.services.map((s) => ({
+      key: s.service.key,
+      isExtra: s.isExtra,
+      extraPriceCents: s.isExtra ? s.extraPriceCents : null,
+    })),
     // Свои контакты владелица видит без гейта: он защищает от чужих сборщиков.
     contacts: row.contacts.map((c) => ({ type: c.type, value: c.value })),
     // Владельцу показываем и неодобренные фото — иначе он не поймёт,
@@ -168,7 +172,7 @@ export const ownProfileSelect = {
     // Убранная из справочника услуга не должна оставаться в форме: иначе
     // владелец видит её, сохраняет — и она возвращается на анкету.
     where: { service: { isActive: true } },
-    select: { isExtra: true, service: { select: { key: true } } },
+    select: { isExtra: true, extraPriceCents: true, service: { select: { key: true } } },
   },
   contacts: { orderBy: { position: 'asc' }, select: { type: true, value: true } },
   photos: {

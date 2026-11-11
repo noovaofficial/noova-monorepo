@@ -16,6 +16,8 @@ export class CampaignError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    /** Код причины от сервера — по нему интерфейс подбирает перевод. */
+    readonly code?: string,
   ) {
     super(message);
     this.name = 'CampaignError';
@@ -47,7 +49,11 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
 
   if (!response.ok) {
     const body = await response.json().catch(() => null);
-    throw new CampaignError(String(body?.message ?? ''), response.status);
+    throw new CampaignError(
+      String(body?.message ?? ''),
+      response.status,
+      typeof body?.code === 'string' ? body.code : undefined,
+    );
   }
 
   if (response.status === 204) return schema.parse(null);

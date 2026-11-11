@@ -1,0 +1,240 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space2);
+  max-width: 220px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--surface);
+  color: var(--primaryText);
+  font: inherit;
+  font-size: var(--textSm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover {
+  border-color: var(--primary);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pin {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--primary);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex: none;
+  font-size: 10px;
+  color: var(--secondaryText);
+}
+
+/* На узком экране остаётся значок и стрелка, но название обрезается сильнее:
+   в первой строке шапки рядом ещё вход и меню. */
+@media (max-width: 560px) {
+  .button {
+    max-width: 150px;
+    padding: 6px 10px;
+  }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--zOverlay);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh var(--space4) var(--space4);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(0, 0, 0, 0.45);
+  cursor: default;
+}
+
+.panel {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusLg);
+  overflow: hidden;
+}
+
+/* На телефоне панель — шторка снизу: до нижнего края тянуться пальцем
+   ближе, чем до середины экрана. */
+@media (max-width: 560px) {
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .panel {
+    width: 100%;
+    max-height: 85vh;
+    border-radius: var(--radiusLg) var(--radiusLg) 0 0;
+    border-bottom: none;
+  }
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space3);
+  padding: var(--space4) var(--space5);
+  border-bottom: 1px solid var(--border);
+  flex: none;
+}
+
+.title {
+  font-family: var(--fontDisplay);
+  font-weight: 700;
+  font-size: var(--textLg);
+}
+
+.close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radiusMd);
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--secondaryText);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space5);
+  padding: var(--space5);
+  overflow-y: auto;
+}
+
+.heading {
+  display: block;
+  margin-bottom: var(--space2);
+  font-size: var(--textXs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tertiaryText);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space2);
+}
+
+.chip {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--primaryText);
+  font: inherit;
+  font-size: var(--textSm);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--primary);
+}
+
+.chipActive {
+  border-color: var(--primary);
+  background: var(--primarySubtle, transparent);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.cities {
+  display: flex;
+  flex-direction: column;
+}
+
+.search {
+  width: 100%;
+  margin-bottom: var(--space3);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  background: var(--background);
+  color: var(--primaryText);
+  font: inherit;
+  font-size: var(--textBase);
+}
+
+.search:focus {
+  border-color: var(--borderFocus);
+  outline: none;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--radiusMd);
+  background: none;
+  color: var(--primaryText);
+  font: inherit;
+  font-size: var(--textBase);
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--surfaceSunken);
+}
+
+.itemActive {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.itemActive::after {
+  content: ' ✓';
+}
+
+.none {
+  margin: var(--space3) 0 0;
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+}

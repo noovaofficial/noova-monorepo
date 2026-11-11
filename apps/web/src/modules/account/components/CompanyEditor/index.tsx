@@ -14,7 +14,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import {
-  AccountError,
   deleteCompanyLogo,
   fetchCountries,
   fetchOwnCompany,
@@ -25,6 +24,7 @@ import {
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { AgencyTopCard } from '@/modules/billing/components/AgencyTopCard';
 import { Overlay } from '@/overlays/Overlay';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from '../Account.module.css';
@@ -94,6 +94,7 @@ type Notice = { kind: 'ok' | 'error'; text: string } | null;
  */
 export function CompanyEditor() {
   const t = useTranslations('company');
+  const explain = useErrorText();
   const tAccount = useTranslations('account');
   const tLang = useTranslations('languageNames');
   const tf = useTranslations('filters');
@@ -191,12 +192,9 @@ export function CompanyEditor() {
       void queryClient.invalidateQueries({ queryKey: queryKeys.ownCompany() });
     },
     onError: (cause: unknown) => {
-      // Сообщение сервера показываем как есть: в нём сказано, что именно
-      // не так — занятый адрес, несовпадение типа, слишком короткое имя.
-      setNotice({
-        kind: 'error',
-        text: cause instanceof AccountError && cause.message ? cause.message : t('failed'),
-      });
+      // Причина — по коду ответа (занятый адрес, несовпадение типа…) и на
+      // языке интерфейса: текст самого сервера по-русски и на экран не идёт.
+      setNotice({ kind: 'error', text: explain(cause, t('failed')) });
     },
   });
 
@@ -207,8 +205,8 @@ export function CompanyEditor() {
       setNotice({ kind: 'ok', text: t('syncDone', { count: profilesUpdated }) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.ownProfiles() });
     },
-    onError: () => {
-      setNotice({ kind: 'error', text: t('syncFailed') });
+    onError: (cause: unknown) => {
+      setNotice({ kind: 'error', text: explain(cause, t('syncFailed')) });
     },
   });
 
@@ -322,7 +320,9 @@ export function CompanyEditor() {
               <span className={styles.hint}>{t('logoNeedsCompany')}</span>
             )}
             {logoUpload.isError || logoRemove.isError ? (
-              <p className={`${styles.notice} ${styles.noticeError}`}>{t('logoFailed')}</p>
+              <p className={`${styles.notice} ${styles.noticeError}`}>
+                {explain(logoUpload.error ?? logoRemove.error, t('logoFailed'))}
+              </p>
             ) : null}
           </div>
 

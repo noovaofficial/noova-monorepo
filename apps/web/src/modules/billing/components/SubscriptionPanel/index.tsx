@@ -17,8 +17,10 @@ import {
   activateListing,
   fetchListing,
   fetchMyPriceBook,
+  fetchPlacement,
   fetchWallet,
 } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './SubscriptionPanel.module.css';
@@ -49,6 +51,7 @@ function daysLeft(iso: string): number {
  */
 export function SubscriptionPanel() {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   // Тип размещения подписан так же, как при регистрации: человек выбирал
   // его там, и синоним читался бы как другой тариф.
   const ta = useTranslations('auth');
@@ -77,6 +80,13 @@ export function SubscriptionPanel() {
     queryKey: queryKeys.ownCompanyTariff(),
     queryFn: fetchOwnCompanyTariff,
     enabled: isAgency,
+  });
+  // Правило страны: подписка может быть обязательной, необязательной (бесплатное
+  // место, подписка даёт бусты) или бесполезной (публикация закрыта).
+  const placement = useQuery({
+    queryKey: queryKeys.placement(),
+    queryFn: fetchPlacement,
+    enabled: isAdvertiser,
   });
   const wallet = useQuery({
     queryKey: queryKeys.wallet(),
@@ -149,7 +159,9 @@ export function SubscriptionPanel() {
 
       <div className={styles.card}>
         {listing.isPending ? <p className={styles.text}>{t('loading')}</p> : null}
-        {listing.isError ? <p className={styles.err}>{t('loadFailed')}</p> : null}
+        {listing.isError ? (
+          <p className={styles.err}>{explain(listing.error, t('loadFailed'))}</p>
+        ) : null}
 
         {(listing.isSuccess && current) || (isAgency && tariff.data) ? (
           <dl className={styles.rows}>
@@ -209,71 +221,94 @@ export function SubscriptionPanel() {
           </dl>
         ) : null}
 
-        {listing.isSuccess && !current ? (
-          <p className={styles.text}>{t('subscriptionNone')}</p>
+        {listing.isSuccess && !current && placement.isSuccess ? (
+          <p className={styles.text}>
+            {t(
+              !placement.data.allowed
+                ? 'subscriptionForbidden'
+                : placement.data.paid
+                  ? 'subscriptionNone'
+                  : 'subscriptionFreeNone',
+            )}
+          </p>
         ) : null}
       </div>
 
-      <h2 className={styles.sectionTitle}>
-        {t(isExtension ? 'activateExtendTitle' : 'activateTitle')}
-      </h2>
-      <p className={styles.text}>{t(isExtension ? 'activateExtendHint' : 'activateText')}</p>
+      {/* В закрытой стране подписка не нужна: покупать нечего. */}
+      {placement.isSuccess && !placement.data.allowed ? null : (
+        <>
+          <h2 className={styles.sectionTitle}>
+            {t(isExtension ? 'activateExtendTitle' : 'activateTitle')}
+          </h2>
+          <p className={styles.text}>
+            {t(
+              isExtension
+                ? 'activateExtendHint'
+                : placement.data && !placement.data.paid
+                  ? 'activateFreeText'
+                  : 'activateText',
+            )}
+          </p>
 
-      {activatedUntil ? (
-        <p className={styles.ok}>
-          {t('activateDone', {
-            date: format.dateTime(new Date(activatedUntil), { dateStyle: 'long' }),
-          })}
-        </p>
-      ) : null}
-      {activate.isError ? <p className={styles.err}>{t('activateFailed')}</p> : null}
+          {activatedUntil ? (
+            <p className={styles.ok}>
+              {t('activateDone', {
+                date: format.dateTime(new Date(activatedUntil), { dateStyle: 'long' }),
+              })}
+            </p>
+          ) : null}
+          {activate.isError ? (
+            <p className={styles.err}>{explain(activate.error, t('activateFailed'))}</p>
+          ) : null}
 
-      {prices && gcPerEur ? (
-        <div className={styles.terms}>
-          {PLAN_TERMS.map((option) => (
-            <button
-              type="button"
-              key={option}
-              className={`${styles.term} ${term === option ? styles.termSelected : ''}`}
-              aria-pressed={term === option}
-              onClick={() => {
-                setTerm(option);
-                setActivatedUntil(null);
-              }}
-            >
-              <span className={styles.termName}>{t(TERM_LABEL[option])}</span>
-              <span className={styles.termPrice}>{t('termPrice', { gc: prices[option] })}</span>
-              <span className={styles.termMonthly}>
-                {t('termMonthly', {
-                  amount: gcToEur(prices[option], gcPerEur) / TERM_MONTHS[option],
-                })}
-              </span>
-            </button>
-          ))}
-        </div>
-      ) : null}
+          {prices && gcPerEur ? (
+            <div className={styles.terms}>
+              {PLAN_TERMS.map((option) => (
+                <button
+                  type="button"
+                  key={option}
+                  className={`${styles.term} ${term === option ? styles.termSelected : ''}`}
+                  aria-pressed={term === option}
+                  onClick={() => {
+                    setTerm(option);
+                    setActivatedUntil(null);
+                  }}
+                >
+                  <span className={styles.termName}>{t(TERM_LABEL[option])}</span>
+                  <span className={styles.termPrice}>{t('termPrice', { gc: prices[option] })}</span>
+                  <span className={styles.termMonthly}>
+                    {t('termMonthly', {
+                      amount: gcToEur(prices[option], gcPerEur) / TERM_MONTHS[option],
+                    })}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : null}
 
-      {/* Списываемая сумма и остаток после — до нажатия, а не после (§6):
+          {/* Списываемая сумма и остаток после — до нажатия, а не после (§6):
           человек должен видеть, что останется, пока ещё может передумать. */}
-      {term && price !== null && balance !== undefined ? (
-        <div className={styles.confirm}>
-          {balance >= price ? (
-            <>
-              <span>{t('activateConfirm', { gc: price, rest: balance - price })}</span>
-              <Button disabled={activate.isPending} onClick={() => activate.mutate(term)}>
-                {t(isExtension ? 'activateExtendSubmit' : 'activateSubmit')}
-              </Button>
-            </>
-          ) : (
-            <span>
-              {t('activateNotEnough', { gc: price - balance })}{' '}
-              <Link className={styles.link} href="/account/glowcoin">
-                {t('subscriptionWallet')}
-              </Link>
-            </span>
-          )}
-        </div>
-      ) : null}
+          {term && price !== null && balance !== undefined ? (
+            <div className={styles.confirm}>
+              {balance >= price ? (
+                <>
+                  <span>{t('activateConfirm', { gc: price, rest: balance - price })}</span>
+                  <Button disabled={activate.isPending} onClick={() => activate.mutate(term)}>
+                    {t(isExtension ? 'activateExtendSubmit' : 'activateSubmit')}
+                  </Button>
+                </>
+              ) : (
+                <span>
+                  {t('activateNotEnough', { gc: price - balance })}{' '}
+                  <Link className={styles.link} href="/account/glowcoin">
+                    {t('subscriptionWallet')}
+                  </Link>
+                </span>
+              )}
+            </div>
+          ) : null}
+        </>
+      )}
 
       <p className={styles.text}>
         {balance !== undefined ? (

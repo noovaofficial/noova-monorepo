@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Button } from '@/design-system/components/Button';
 import { ReportError, reportProfile } from '@/modules/reports/api';
+import { useErrorText } from '@/shared/error-text';
 import styles from './ReportProfile.module.css';
 
 const MIN_DETAILS = 10;
@@ -17,6 +18,7 @@ const MIN_DETAILS = 10;
  */
 export function ReportProfile({ slug }: { slug: string }) {
   const t = useTranslations('reports');
+  const explain = useErrorText();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<ProfileReportReason>('underage');
   const [details, setDetails] = useState('');
@@ -93,7 +95,7 @@ export function ReportProfile({ slug }: { slug: string }) {
 
       {send.isError ? (
         <p className={`${styles.notice} ${styles.noticeError}`}>
-          {t(tooManyRequests ? 'limit' : 'failed')}
+          {tooManyRequests ? t('limit') : explain(send.error, t('failed'))}
         </p>
       ) : null}
 

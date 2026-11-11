@@ -4,6 +4,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useFormatter, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { fetchVerifications } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { LoadMore } from '../LoadMore';
@@ -18,6 +19,7 @@ const FILTERS = ['pending', 'approved', 'rejected'] as const;
  */
 export function VerificationRequests() {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const format = useFormatter();
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('pending');
 
@@ -49,7 +51,9 @@ export function VerificationRequests() {
       </div>
 
       {list.isError ? (
-        <p className={`${styles.notice} ${styles.noticeError}`}>{t('loadFailed')}</p>
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {explain(list.error, t('loadFailed'))}
+        </p>
       ) : null}
 
       {items === null ? (

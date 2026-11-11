@@ -10,6 +10,7 @@ import {
   fetchAgencyTopState,
   fetchWallet,
 } from '@/modules/billing/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import styles from './AgencyTopCard.module.css';
@@ -21,6 +22,7 @@ import styles from './AgencyTopCard.module.css';
  */
 export function AgencyTopCard() {
   const t = useTranslations('billing');
+  const explain = useErrorText();
   const format = useFormatter();
   const queryClient = useQueryClient();
   const [confirming, setConfirming] = useState(false);
@@ -86,7 +88,11 @@ export function AgencyTopCard() {
       {doneUntil ? (
         <p className={styles.ok}>{t('agencyTopDone', { date: date(doneUntil) })}</p>
       ) : null}
-      {errorKey ? <p className={styles.err}>{t(errorKey)}</p> : null}
+      {errorKey ? (
+        <p className={styles.err}>
+          {errorKey === 'topFailed' ? explain(buy.error, t(errorKey)) : t(errorKey)}
+        </p>
+      ) : null}
 
       {!top.data.hasPublishedProfile ? (
         <p className={styles.hint}>{t('agencyTopNoProfiles')}</p>

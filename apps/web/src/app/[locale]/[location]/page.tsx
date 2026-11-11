@@ -98,6 +98,15 @@ export default async function HomePage({ params }: Props) {
   const locationSlug =
     resolved.type === 'city' ? resolved.city.slug : resolved.country.code.toLowerCase();
   const catalogHref = (kind: 'escort' | 'massage') => `/${locationSlug}/catalog/${kind}`;
+  // В городе без анкет предлагаем страну целиком: у неё свой срез (N-43).
+  const emptyCity =
+    resolved.type === 'city'
+      ? {
+          cityName: resolved.city.name,
+          countryName: resolved.city.country.name,
+          countryHref: `/${resolved.city.country.code.toLowerCase()}`,
+        }
+      : undefined;
 
   return (
     <>
@@ -129,7 +138,7 @@ export default async function HomePage({ params }: Props) {
           moreHref={catalogHref('escort')}
           moreLabel={th('showAll')}
         />
-        <ProfileGrid profiles={escorts.items} locale={locale as Locale} />
+        <ProfileGrid profiles={escorts.items} locale={locale as Locale} emptyCity={emptyCity} />
         {escortCount.total > escorts.items.length ? (
           <div className={styles.showAll}>
             <Link href={catalogHref('escort')}>

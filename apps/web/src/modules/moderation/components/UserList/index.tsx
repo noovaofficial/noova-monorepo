@@ -31,6 +31,7 @@ import {
   unblockUser,
   verifyUserEmail,
 } from '@/modules/moderation/api';
+import { useErrorText } from '@/shared/error-text';
 import { Link } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 import { AdvertiserAnalyticsLink } from '../AdvertiserAnalytics';
@@ -118,6 +119,7 @@ export function UserList({
   advertiserKind?: AdvertiserKind;
 } = {}) {
   const t = useTranslations('moderation');
+  const explain = useErrorText();
   const { user: me } = useSession();
   /**
    * Баланс правят и админ, и модератор — но с разными правами: у модератора
@@ -349,7 +351,23 @@ export function UserList({
         ) : null}
       </div>
 
-      {error ? <p className={`${styles.notice} ${styles.noticeError}`}>{t(error)}</p> : null}
+      {error ? (
+        <p className={`${styles.notice} ${styles.noticeError}`}>
+          {error === 'actionFailed' || error === 'loadFailed'
+            ? explain(
+                verify.error ??
+                  block.error ??
+                  unblock.error ??
+                  adjust.error ??
+                  remove.error ??
+                  grantTop.error ??
+                  revokeTop.error ??
+                  list.error,
+                t(error),
+              )
+            : t(error)}
+        </p>
+      ) : null}
 
       {users === null ? (
         <p className={styles.empty}>{t('loading')}</p>
