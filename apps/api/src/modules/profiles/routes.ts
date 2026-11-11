@@ -282,14 +282,21 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           ? { status: 'published' as const, country: { code: country.toUpperCase() } }
           : { status: 'published' as const };
 
-      // У компании нет своего города/страны — локация есть только через
-      // анкеты. На срезе по конкретному городу агентство без подходящей
-      // анкеты определить некуда, поэтому там фильтр остаётся строгим. На
-      // срезе «вся страна» (city не выбран — ближайший к глобальной главной
-      // режим, N-42) такого ограничения нет: сюда попадает и агентство без
-      // единой анкеты (например, ТОП выдан администратором вперёд публикации,
-      // см. `grantAgencyTop`) — иначе выданный ТОП был бы нигде не виден.
-      const requireProfile = city ? { profiles: { some: asPublished } } : {};
+      // Город: агентство без подходящей анкеты определить некуда, фильтр строгий.
+      //
+      // Страна: у компании есть своя (`Company.countryId`, закреплена при
+      // создании). Раньше фильтра по стране не было вовсе — поэтому на
+      // польской главной показывались агентства из Германии. Оплаченное
+      // (ТОП выдан администратором вперёд публикации, `grantAgencyTop`) агентство
+      // без анкет остаётся видно в своей стране, но не в чужой. Остальные
+      // попадают в срез, только когда в нём есть их опубликованная анкета.
+      const inSlice = { profiles: { some: asPublished } };
+      const featuredScope = city
+        ? inSlice
+        : country
+          ? { OR: [{ country: { code: country.toUpperCase() } }, inSlice] }
+          : {};
+      const organicScope = city || country ? inSlice : {};
 
       const featuredRows = await fastify.prisma.company.findMany({
         where: {
@@ -297,7 +304,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
           isActive: true,
           bannedAt: null,
           isFeatured: true,
-          ...requireProfile,
+          ...featuredScope,
         },
         select: {
           slug: true,
@@ -317,7 +324,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
                 isActive: true,
                 bannedAt: null,
                 isFeatured: false,
-                ...requireProfile,
+                ...organicScope,
               },
               // Потолок перед сортировкой в приложении: число опубликованных
               // анкет в срезе не выражается прямым `orderBy` на фильтрованном

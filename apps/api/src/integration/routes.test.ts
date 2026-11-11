@@ -281,6 +281,36 @@ describe.skipIf(!testUrl)('маршруты: место аккаунта, пра
       expect(result.body.code).toBe('city_has_profiles');
     });
 
+    it('агентства страны не показываются в чужой стране', async () => {
+      const [de, nl] = await Promise.all([
+        app.prisma.country.findUniqueOrThrow({ where: { code: 'DE' } }),
+        app.prisma.country.findUniqueOrThrow({ where: { code: 'NL' } }),
+      ]);
+      const mk = async (email: string, slug: string, countryId: string) => {
+        const owner = await app.prisma.user.create({
+          data: { email, passwordHash: 'x', role: 'advertiser', advertiserKind: 'agency' },
+        });
+        await app.prisma.company.create({
+          data: {
+            slug,
+            name: slug,
+            kind: 'agency',
+            ownerId: owner.id,
+            countryId,
+            // ТОП выдан вперёд публикации: анкет у агентства ещё нет.
+            isFeatured: true,
+          },
+        });
+      };
+      await mk('geo-de@test.dev', 'geo-agency-de', de.id);
+      await mk('geo-nl@test.dev', 'geo-agency-nl', nl.id);
+
+      const inNl = await call('GET', '/companies?country=NL');
+      const slugs = (inNl.body as unknown as { slug: string }[]).map((row) => row.slug);
+      expect(slugs).toContain('geo-agency-nl');
+      expect(slugs).not.toContain('geo-agency-de');
+    });
+
     it('считает опубликованные анкеты типа и снимает их в паузу', async () => {
       const de = await app.prisma.country.findUniqueOrThrow({ where: { code: 'DE' } });
       await app.prisma.profile.updateMany({
