@@ -1,0 +1,5 @@
+[
+  { "name": "support1" },
+  { "name": "support2" },
+  { "name": "broadcast1", "api_id": 12345, "api_hash": "свои api_id/api_hash — необязательно" }
+]

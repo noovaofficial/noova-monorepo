@@ -5,3 +5,6 @@
 sent.jsonl
 .env
 .venv/
+accounts.json
+sessions/
+__pycache__/
