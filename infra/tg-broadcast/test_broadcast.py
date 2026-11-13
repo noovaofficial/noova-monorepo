@@ -1,6 +1,12 @@
 import unittest
 
-from broadcast import pick_account, sent_today_by_account
+import json
+import tempfile
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import broadcast
+from broadcast import load_accounts, mark_flood_wait, mark_peer_flood, pick_account, sent_today_by_account
 
 
 class PickAccountTest(unittest.TestCase):
@@ -50,3 +56,45 @@ class PickAccountTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class PeerFloodTest(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        self.path = Path(self.dir.name) / 'accounts.json'
+        self.addCleanup(self.dir.cleanup)
+
+    def write(self, items):
+        self.path.write_text(json.dumps(items), encoding='utf-8')
+
+    def names(self):
+        return [a['name'] for a in load_accounts(self.path)]
+
+    def ago(self, hours):
+        return (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+
+    def test_skips_within_24h(self):
+        self.write([{'name': 'a', 'peerFlood': self.ago(2)}, {'name': 'b'}])
+        self.assertEqual(self.names(), ['b'])
+
+    def test_returns_after_24h(self):
+        self.write([{'name': 'a', 'peerFlood': self.ago(25)}, {'name': 'b'}])
+        self.assertEqual(self.names(), ['a', 'b'])
+
+    def test_mark_writes_flag_and_skips(self):
+        self.write([{'name': 'a'}, {'name': 'b', 'api_id': 1}])
+        mark_peer_flood(self.path, 'a')
+        data = json.loads(self.path.read_text(encoding='utf-8'))
+        self.assertIn('peerFlood', data[0])
+        self.assertEqual(data[1], {'name': 'b', 'api_id': 1})
+        self.assertEqual(self.names(), ['b'])
+
+    def test_flood_wait_skips_until_expiry(self):
+        future = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+        self.write([{'name': 'a', 'floodWait': future}, {'name': 'b', 'floodWait': self.ago(1)}])
+        self.assertEqual(self.names(), ['b'])
+
+    def test_mark_flood_wait_sets_future_time(self):
+        self.write([{'name': 'a'}])
+        mark_flood_wait(self.path, 'a', 600)
+        self.assertEqual(self.names(), [])

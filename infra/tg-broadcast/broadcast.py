@@ -24,6 +24,12 @@ recipients.csv — колонки name, telegram, locale. telegram — «@ник
 по нажатию</code>, <a href="https://…">ссылка</a>; символы < > & в самом
 тексте писать как &lt; &gt; &amp;.
 
+PeerFlood. Аккаунт, получивший PeerFlood, помечается в accounts.json полем
+"peerFlood": "<время UTC>" и 24 часа не участвует в рассылке (при запуске
+пропускается). FloodWait — так же, полем "floodWait": "<время UTC>", но это
+момент, до которого Telegram просил ждать (now + секунды из ошибки).
+"disabled": true выключает аккаунт насовсем.
+
 Несколько аккаунтов. Если рядом лежит accounts.json (см.
 accounts.example.json), каждое следующее сообщение уходит с другого аккаунта:
 берётся тот, с которого сегодня отправлено меньше всего, при равенстве — по
@@ -59,7 +65,7 @@ import os
 import random
 import re
 import sys
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -155,6 +161,58 @@ def needs_name(r):
     return NAME_PLACEHOLDER in message_for(r['locale']) and not r['name']
 
 
+PEER_FLOOD_COOLDOWN = timedelta(hours=24)
+
+
+def peer_flood_until(item):
+    """Когда у аккаунта кончается карантин после PeerFlood; None — карантина нет."""
+    raw = item.get('peerFlood') if isinstance(item, dict) else None
+    if not raw:
+        return None
+    try:
+        at = datetime.fromisoformat(raw)
+    except (TypeError, ValueError):
+        sys.exit(f'accounts.json: у {item.get("name")!r} в peerFlood не дата ISO: {raw!r}')
+    if at.tzinfo is None:
+        at = at.replace(tzinfo=timezone.utc)
+    return at + PEER_FLOOD_COOLDOWN
+
+
+def flood_wait_until(item):
+    """Когда кончается FloodWait: в floodWait лежит момент, до которого Telegram просил ждать."""
+    raw = item.get('floodWait') if isinstance(item, dict) else None
+    if not raw:
+        return None
+    try:
+        at = datetime.fromisoformat(raw)
+    except (TypeError, ValueError):
+        sys.exit(f'accounts.json: у {item.get("name")!r} в floodWait не дата ISO: {raw!r}')
+    return at if at.tzinfo else at.replace(tzinfo=timezone.utc)
+
+
+def mark_flood_wait(path, name, seconds):
+    """Пишет в accounts.json floodWait: <до какого времени ждать> — до него аккаунт пропускается."""
+    if not path.exists():
+        return
+    until = datetime.now(timezone.utc) + timedelta(seconds=seconds)
+    raw = json.loads(path.read_text(encoding='utf-8'))
+    for item in raw:
+        if isinstance(item, dict) and item.get('name') == name:
+            item['floodWait'] = until.isoformat(timespec='seconds')
+    path.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+
+def mark_peer_flood(path, name):
+    """Пишет в accounts.json peerFlood: <время> — аккаунт 24 часа не участвует в рассылке."""
+    if not path.exists():
+        return
+    raw = json.loads(path.read_text(encoding='utf-8'))
+    for item in raw:
+        if isinstance(item, dict) and item.get('name') == name:
+            item['peerFlood'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    path.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+
 def load_accounts(path):
     """accounts.json -> [{name, session, api_id, api_hash}]; без файла — прежний один аккаунт."""
     if not path.exists():
@@ -165,6 +223,17 @@ def load_accounts(path):
         sys.exit(f'{path}: ожидается непустой список аккаунтов [{{"name": "support1"}}, …]')
     out, seen = [], set()
     for item in raw:
+        if isinstance(item, dict) and item.get('disabled'):
+            continue  # «закомментированный» аккаунт: оставлен в файле, в рассылке не участвует
+        now = datetime.now(timezone.utc)
+        until = peer_flood_until(item)
+        if until and until > now:
+            print(f'Пропущен {item.get("name")}: PeerFlood, карантин до {until.astimezone():%Y-%m-%d %H:%M}')
+            continue
+        until = flood_wait_until(item)
+        if until and until > now:
+            print(f'Пропущен {item.get("name")}: FloodWait, ждать до {until.astimezone():%Y-%m-%d %H:%M:%S}')
+            continue
         name = (item.get('name') or '').strip() if isinstance(item, dict) else ''
         if not re.fullmatch(r'[\w.-]+', name):
             sys.exit(f'{path}: у аккаунта нужно имя из букв, цифр, «_», «-», «.» (получено: {item!r})')
@@ -281,6 +350,7 @@ async def send_all(args, pending, sent_by, accounts):
                 # Ограничен этот аккаунт, а не получатель: получателя отдаём другому.
                 append_log({'key': key, 'status': 'error', 'error': 'PeerFlood', 'account': name})
                 blocked.add(name)
+                mark_peer_flood(Path(args.accounts), name)
                 queue.insert(0, r)
                 print(f'\n  {name}: PeerFlood — Telegram ограничил аккаунт. Он выбывает до конца запуска;')
                 print('  не использовать его минимум сутки, статус — у @SpamBot.')
@@ -288,6 +358,7 @@ async def send_all(args, pending, sent_by, accounts):
             except errors.FloodWaitError as e:
                 append_log({'key': key, 'status': 'error', 'error': f'FloodWait {e.seconds}s', 'account': name})
                 blocked.add(name)
+                mark_flood_wait(Path(args.accounts), name, e.seconds)
                 queue.insert(0, r)
                 note = ' — слишком долго' if e.seconds > MAX_FLOOD_WAIT_S else ''
                 print(f'  {name}: FloodWait {e.seconds} с{note}, аккаунт выбывает до конца запуска')
@@ -330,6 +401,8 @@ def main():
     args = p.parse_args()
     load_env()
     accounts = load_accounts(Path(args.accounts))
+    if not accounts:
+        sys.exit('Нет аккаунтов для рассылки: все отключены или в карантине после PeerFlood (24 ч).')
     names = [a['name'] for a in accounts]
 
     if args.login:
