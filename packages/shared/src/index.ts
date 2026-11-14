@@ -23,3 +23,4 @@ export * from './profile';
 export * from './promo';
 export * from './report';
 export * from './service-catalog';
+export * from './video';

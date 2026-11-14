@@ -49,6 +49,7 @@ export type CountryTopSettingMinAggregateOutputType = {
   slots: number | null
   agencyWeekGc: number | null
   agencySlots: number | null
+  agencyProfilesAllowed: boolean | null
   updatedAt: Date | null
 }
 
@@ -58,6 +59,7 @@ export type CountryTopSettingMaxAggregateOutputType = {
   slots: number | null
   agencyWeekGc: number | null
   agencySlots: number | null
+  agencyProfilesAllowed: boolean | null
   updatedAt: Date | null
 }
 
@@ -67,6 +69,7 @@ export type CountryTopSettingCountAggregateOutputType = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed: number
   updatedAt: number
   _all: number
 }
@@ -92,6 +95,7 @@ export type CountryTopSettingMinAggregateInputType = {
   slots?: true
   agencyWeekGc?: true
   agencySlots?: true
+  agencyProfilesAllowed?: true
   updatedAt?: true
 }
 
@@ -101,6 +105,7 @@ export type CountryTopSettingMaxAggregateInputType = {
   slots?: true
   agencyWeekGc?: true
   agencySlots?: true
+  agencyProfilesAllowed?: true
   updatedAt?: true
 }
 
@@ -110,6 +115,7 @@ export type CountryTopSettingCountAggregateInputType = {
   slots?: true
   agencyWeekGc?: true
   agencySlots?: true
+  agencyProfilesAllowed?: true
   updatedAt?: true
   _all?: true
 }
@@ -206,6 +212,7 @@ export type CountryTopSettingGroupByOutputType = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed: boolean
   updatedAt: Date
   _count: CountryTopSettingCountAggregateOutputType | null
   _avg: CountryTopSettingAvgAggregateOutputType | null
@@ -238,6 +245,7 @@ export type CountryTopSettingWhereInput = {
   slots?: Prisma.IntFilter<"CountryTopSetting"> | number
   agencyWeekGc?: Prisma.IntFilter<"CountryTopSetting"> | number
   agencySlots?: Prisma.IntFilter<"CountryTopSetting"> | number
+  agencyProfilesAllowed?: Prisma.BoolFilter<"CountryTopSetting"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"CountryTopSetting"> | Date | string
   country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
 }
@@ -248,6 +256,7 @@ export type CountryTopSettingOrderByWithRelationInput = {
   slots?: Prisma.SortOrder
   agencyWeekGc?: Prisma.SortOrder
   agencySlots?: Prisma.SortOrder
+  agencyProfilesAllowed?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   country?: Prisma.CountryOrderByWithRelationInput
 }
@@ -261,6 +270,7 @@ export type CountryTopSettingWhereUniqueInput = Prisma.AtLeast<{
   slots?: Prisma.IntFilter<"CountryTopSetting"> | number
   agencyWeekGc?: Prisma.IntFilter<"CountryTopSetting"> | number
   agencySlots?: Prisma.IntFilter<"CountryTopSetting"> | number
+  agencyProfilesAllowed?: Prisma.BoolFilter<"CountryTopSetting"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"CountryTopSetting"> | Date | string
   country?: Prisma.XOR<Prisma.CountryScalarRelationFilter, Prisma.CountryWhereInput>
 }, "countryId">
@@ -271,6 +281,7 @@ export type CountryTopSettingOrderByWithAggregationInput = {
   slots?: Prisma.SortOrder
   agencyWeekGc?: Prisma.SortOrder
   agencySlots?: Prisma.SortOrder
+  agencyProfilesAllowed?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CountryTopSettingCountOrderByAggregateInput
   _avg?: Prisma.CountryTopSettingAvgOrderByAggregateInput
@@ -288,6 +299,7 @@ export type CountryTopSettingScalarWhereWithAggregatesInput = {
   slots?: Prisma.IntWithAggregatesFilter<"CountryTopSetting"> | number
   agencyWeekGc?: Prisma.IntWithAggregatesFilter<"CountryTopSetting"> | number
   agencySlots?: Prisma.IntWithAggregatesFilter<"CountryTopSetting"> | number
+  agencyProfilesAllowed?: Prisma.BoolWithAggregatesFilter<"CountryTopSetting"> | boolean
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CountryTopSetting"> | Date | string
 }
 
@@ -296,6 +308,7 @@ export type CountryTopSettingCreateInput = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed?: boolean
   updatedAt?: Date | string
   country: Prisma.CountryCreateNestedOneWithoutTopSettingInput
 }
@@ -306,6 +319,7 @@ export type CountryTopSettingUncheckedCreateInput = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed?: boolean
   updatedAt?: Date | string
 }
 
@@ -314,6 +328,7 @@ export type CountryTopSettingUpdateInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   country?: Prisma.CountryUpdateOneRequiredWithoutTopSettingNestedInput
 }
@@ -324,6 +339,7 @@ export type CountryTopSettingUncheckedUpdateInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -333,6 +349,7 @@ export type CountryTopSettingCreateManyInput = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed?: boolean
   updatedAt?: Date | string
 }
 
@@ -341,6 +358,7 @@ export type CountryTopSettingUpdateManyMutationInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -350,6 +368,7 @@ export type CountryTopSettingUncheckedUpdateManyInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -364,6 +383,7 @@ export type CountryTopSettingCountOrderByAggregateInput = {
   slots?: Prisma.SortOrder
   agencyWeekGc?: Prisma.SortOrder
   agencySlots?: Prisma.SortOrder
+  agencyProfilesAllowed?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -380,6 +400,7 @@ export type CountryTopSettingMaxOrderByAggregateInput = {
   slots?: Prisma.SortOrder
   agencyWeekGc?: Prisma.SortOrder
   agencySlots?: Prisma.SortOrder
+  agencyProfilesAllowed?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -389,6 +410,7 @@ export type CountryTopSettingMinOrderByAggregateInput = {
   slots?: Prisma.SortOrder
   agencyWeekGc?: Prisma.SortOrder
   agencySlots?: Prisma.SortOrder
+  agencyProfilesAllowed?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -436,6 +458,7 @@ export type CountryTopSettingCreateWithoutCountryInput = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed?: boolean
   updatedAt?: Date | string
 }
 
@@ -444,6 +467,7 @@ export type CountryTopSettingUncheckedCreateWithoutCountryInput = {
   slots: number
   agencyWeekGc: number
   agencySlots: number
+  agencyProfilesAllowed?: boolean
   updatedAt?: Date | string
 }
 
@@ -468,6 +492,7 @@ export type CountryTopSettingUpdateWithoutCountryInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -476,6 +501,7 @@ export type CountryTopSettingUncheckedUpdateWithoutCountryInput = {
   slots?: Prisma.IntFieldUpdateOperationsInput | number
   agencyWeekGc?: Prisma.IntFieldUpdateOperationsInput | number
   agencySlots?: Prisma.IntFieldUpdateOperationsInput | number
+  agencyProfilesAllowed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -487,6 +513,7 @@ export type CountryTopSettingSelect<ExtArgs extends runtime.Types.Extensions.Int
   slots?: boolean
   agencyWeekGc?: boolean
   agencySlots?: boolean
+  agencyProfilesAllowed?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["countryTopSetting"]>
@@ -497,6 +524,7 @@ export type CountryTopSettingSelectCreateManyAndReturn<ExtArgs extends runtime.T
   slots?: boolean
   agencyWeekGc?: boolean
   agencySlots?: boolean
+  agencyProfilesAllowed?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["countryTopSetting"]>
@@ -507,6 +535,7 @@ export type CountryTopSettingSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   slots?: boolean
   agencyWeekGc?: boolean
   agencySlots?: boolean
+  agencyProfilesAllowed?: boolean
   updatedAt?: boolean
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["countryTopSetting"]>
@@ -517,10 +546,11 @@ export type CountryTopSettingSelectScalar = {
   slots?: boolean
   agencyWeekGc?: boolean
   agencySlots?: boolean
+  agencyProfilesAllowed?: boolean
   updatedAt?: boolean
 }
 
-export type CountryTopSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"countryId" | "weekGc" | "slots" | "agencyWeekGc" | "agencySlots" | "updatedAt", ExtArgs["result"]["countryTopSetting"]>
+export type CountryTopSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"countryId" | "weekGc" | "slots" | "agencyWeekGc" | "agencySlots" | "agencyProfilesAllowed" | "updatedAt", ExtArgs["result"]["countryTopSetting"]>
 export type CountryTopSettingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   country?: boolean | Prisma.CountryDefaultArgs<ExtArgs>
 }
@@ -542,6 +572,13 @@ export type $CountryTopSettingPayload<ExtArgs extends runtime.Types.Extensions.I
     slots: number
     agencyWeekGc: number
     agencySlots: number
+    /**
+     * Могут ли анкеты агентств покупать место в ТОПе анкет этой страны.
+     * Индивидуалкам и салонам ТОП анкет доступен всегда; агентству — только
+     * при включённом флаге. Это не ТОП агентств (`agency*` выше): тот
+     * поднимает саму компанию, а не её анкеты.
+     */
+    agencyProfilesAllowed: boolean
     updatedAt: Date
   }, ExtArgs["result"]["countryTopSetting"]>
   composites: {}
@@ -972,6 +1009,7 @@ export interface CountryTopSettingFieldRefs {
   readonly slots: Prisma.FieldRef<"CountryTopSetting", 'Int'>
   readonly agencyWeekGc: Prisma.FieldRef<"CountryTopSetting", 'Int'>
   readonly agencySlots: Prisma.FieldRef<"CountryTopSetting", 'Int'>
+  readonly agencyProfilesAllowed: Prisma.FieldRef<"CountryTopSetting", 'Boolean'>
   readonly updatedAt: Prisma.FieldRef<"CountryTopSetting", 'DateTime'>
 }
     

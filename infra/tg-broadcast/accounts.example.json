@@ -1,5 +1,5 @@
 [
-  { "name": "support1" },
-  { "name": "support2" },
+  { "name": "support1", "proxy": "socks5://user:pass@203.0.113.10:1080" },
+  { "name": "support2", "proxy": "socks5://user:pass@203.0.113.11:1080" },
   { "name": "broadcast1", "api_id": 12345, "api_hash": "свои api_id/api_hash — необязательно" }
 ]

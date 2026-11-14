@@ -48,6 +48,7 @@ import { COUNTRY_LOCKED, canMoveProfileToCity, withCode } from '../locations/cou
 import { toOwnPhoto } from '../photos/routes.js';
 import { deletePhotoFiles } from '../photos/storage.js';
 import { deleteVerificationPhotos } from '../verification/service.js';
+import { deleteProfileVideoFiles } from '../videos/service.js';
 import { ownProfileSelect, toOwnProfile } from './mappers.js';
 
 /**
@@ -1270,6 +1271,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       for (const photo of photos) {
         await deletePhotoFiles(photo.storageKey);
       }
+      await deleteProfileVideoFiles(fastify.prisma, [owned.id]);
 
       // Снимки верификации — там же и по той же причине: каскад удалит
       // строки заявок, а файлы останутся в хранилище.

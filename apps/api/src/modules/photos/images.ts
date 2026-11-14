@@ -42,7 +42,7 @@ const MARK_VIEW_HEIGHT = 100;
  * `sharp` не может тайлить composite крупнее базового изображения (уже
  * ловили на мелких загрузках), а точечная позиция от этого не зависит.
  */
-function cornerWatermark(
+export function cornerWatermark(
   imageWidth: number,
   imageHeight: number,
 ): { input: Buffer; left: number; top: number } {

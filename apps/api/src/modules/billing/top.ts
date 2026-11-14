@@ -1,4 +1,10 @@
-import { type BuyTopResult, TOP_WEEK_DAYS, type TopPlacement, type TopState } from '@noova/shared';
+import {
+  type BuyTopResult,
+  canBuyProfileTop,
+  TOP_WEEK_DAYS,
+  type TopPlacement,
+  type TopState,
+} from '@noova/shared';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { getCountryMonetization } from './scoped.js';
@@ -17,6 +23,11 @@ type Db = PrismaClient | Prisma.TransactionClient;
  * Места считаются по ГОРОДУ анкеты: у каждого города свои цена и число мест
  * (`CityTopSetting`), а у города без настроек действуют общие по умолчанию из
  * настроек монетизации. Анкета занимает место только среди анкет своего города.
+ *
+ * Кому продаётся: индивидуалке и салону — всегда, агентству — только если
+ * страна анкеты это разрешила (`CountryTopSetting.agencyProfilesAllowed`,
+ * правило — `canBuyProfileTop`). Запрет касается покупки: уже занятое место
+ * доживает срок, а ручная выдача админом (`grantTop`) его не проверяет.
  *
  * `Profile.isFeatured` — производная: ставится здесь, снимается задачей.
  * По ней работают сортировка каталога и фильтр «ТОП», без джойна.
@@ -52,6 +63,13 @@ export class TopNotPublishedError extends Error {
   }
 }
 
+export class TopNotAllowedError extends Error {
+  constructor() {
+    super('ТОП анкет недоступен агентствам в этой стране');
+    this.name = 'TopNotAllowedError';
+  }
+}
+
 type PlacementRow = {
   profileId: string;
   status: 'active' | 'expired';
@@ -71,19 +89,23 @@ export function toTopPlacement(row: PlacementRow): TopPlacement {
 /** Занятые места — активные и ещё не истёкшие: задача снимает их с опозданием до цикла. */
 const activeWhere = (now: Date) => ({ status: 'active' as const, expiresAt: { gt: now } });
 
-/** Цена недели и число мест. */
-export type TopDefaults = { weekGc: number; slots: number };
+/** Цена недели, число мест и доступность ТОПа анкетам агентств. */
+export type TopDefaults = { weekGc: number; slots: number; agencyProfilesInTop: boolean };
 
-/** Действующие цена и число мест города: своё значение или значение страны. */
+/**
+ * Действующие цена и число мест города: своё значение или значение страны.
+ * Доступность агентствам — всегда от страны, город её не переопределяет.
+ */
 export async function cityTopConfig(db: Db, cityId: string): Promise<TopDefaults> {
   const city = await db.city.findUniqueOrThrow({
     where: { id: cityId },
     select: { countryId: true, topSetting: { select: { weekGc: true, slots: true } } },
   });
-  const country = (await getCountryMonetization(db, city.countryId)).top;
+  const country = await getCountryMonetization(db, city.countryId);
   return {
-    weekGc: city.topSetting?.weekGc ?? country.weekGc,
-    slots: city.topSetting?.slots ?? country.slots,
+    weekGc: city.topSetting?.weekGc ?? country.top.weekGc,
+    slots: city.topSetting?.slots ?? country.top.slots,
+    agencyProfilesInTop: country.agencyProfilesInTop,
   };
 }
 
@@ -96,7 +118,8 @@ export async function topState(
   userId: string,
   now: Date = new Date(),
 ): Promise<TopState> {
-  const [own, placements] = await Promise.all([
+  const [owner, own, placements] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId }, select: { advertiserKind: true } }),
     prisma.profile.findMany({
       where: { ownerId: userId },
       select: { cityId: true, city: { select: { slug: true, name: true } } },
@@ -121,6 +144,7 @@ export async function topState(
         priceGc: config.weekGc,
         slots: config.slots,
         freeSlots: Math.max(0, config.slots - taken),
+        allowed: canBuyProfileTop(owner?.advertiserKind ?? null, config.agencyProfilesInTop),
       };
     }),
   );
@@ -151,10 +175,23 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
 
     const profile = await tx.profile.findFirst({
       where: { id: purchase.profileId, ownerId: purchase.userId },
-      select: { id: true, status: true, cityId: true, topPlacement: true },
+      select: {
+        id: true,
+        status: true,
+        cityId: true,
+        topPlacement: true,
+        owner: { select: { advertiserKind: true } },
+      },
     });
     if (!profile) throw new TopNotPublishedError();
     if (profile.status !== 'published') throw new TopNotPublishedError();
+
+    const config = await cityTopConfig(tx, profile.cityId);
+    // Проверка на сервере, а не только скрытой карточкой в кабинете: запрос
+    // можно отправить и мимо интерфейса.
+    if (!canBuyProfileTop(profile.owner.advertiserKind, config.agencyProfilesInTop)) {
+      throw new TopNotAllowedError();
+    }
 
     const current = profile.topPlacement;
     // Недели не складываются (D-11): пока место активно, вторая покупка
@@ -164,7 +201,6 @@ export function buyTop(prisma: PrismaClient, purchase: TopPurchase): Promise<Buy
       throw new TopAlreadyActiveError(current.expiresAt);
     }
 
-    const config = await cityTopConfig(tx, profile.cityId);
     const taken = await takenInCity(tx, profile.cityId, now);
     if (taken >= config.slots) throw new TopFullError(config.slots);
 
@@ -255,7 +291,9 @@ export type TopGrant = {
 /**
  * Выдача места админом (без оплаты) — то же место, тот же лимит и те же
  * проверки, что у покупки, только без списания GlowCoin: `applyMovement`
- * не вызывается. Если место уже действует, оно продлевается (`extended`). Место засчитывается на владельца анкеты, чтобы попасть в
+ * не вызывается. Запрет ТОПа анкетам агентств (`canBuyProfileTop`) на выдачу
+ * не действует: он ограничивает продажу, а не решение администратора.
+ * Если место уже действует, оно продлевается (`extended`). Место засчитывается на владельца анкеты, чтобы попасть в
  * его собственный `GET /billing/top` наравне с купленными.
  */
 export function grantTop(

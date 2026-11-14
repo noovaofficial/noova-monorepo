@@ -14,6 +14,7 @@ import { purgeDeletedPhotos } from '../modules/photos/moderation.js';
 import { deletePhotoFiles } from '../modules/photos/storage.js';
 import { purgeProfileEvents } from '../modules/profiles/retention.js';
 import { purgeVerificationDocuments } from '../modules/verification/service.js';
+import { recoverStuckVideos } from '../modules/videos/service.js';
 import { postRevalidate } from '../plugins/revalidate.js';
 import { purgeAuthTokens, purgeDeletedAccounts, purgeModerationActions } from './retention.js';
 
@@ -79,6 +80,12 @@ export const JOBS: Job[] = [
         notify: deps.redis ? (mail) => pushMail(deps.redis as Redis, mail) : undefined,
         revalidate: (tags) => postRevalidate(tags, log),
       }),
+  },
+  {
+    // Видео, обработку которых оборвал перезапуск API: в норме их
+    // обрабатывает сам API сразу после загрузки, цикл только страхует.
+    name: 'stuck-videos',
+    run: (prisma) => recoverStuckVideos(prisma),
   },
   {
     name: 'deleted-photos',

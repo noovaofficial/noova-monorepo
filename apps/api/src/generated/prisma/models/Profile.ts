@@ -565,6 +565,7 @@ export type ProfileWhereInput = {
   topPlacement?: Prisma.XOR<Prisma.TopPlacementNullableScalarRelationFilter, Prisma.TopPlacementWhereInput> | null
   verificationRequests?: Prisma.VerificationRequestListRelationFilter
   photos?: Prisma.PhotoListRelationFilter
+  videos?: Prisma.VideoListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
   comments?: Prisma.ProfileCommentListRelationFilter
   contacts?: Prisma.ProfileContactListRelationFilter
@@ -633,6 +634,7 @@ export type ProfileOrderByWithRelationInput = {
   topPlacement?: Prisma.TopPlacementOrderByWithRelationInput
   verificationRequests?: Prisma.VerificationRequestOrderByRelationAggregateInput
   photos?: Prisma.PhotoOrderByRelationAggregateInput
+  videos?: Prisma.VideoOrderByRelationAggregateInput
   favorites?: Prisma.FavoriteOrderByRelationAggregateInput
   comments?: Prisma.ProfileCommentOrderByRelationAggregateInput
   contacts?: Prisma.ProfileContactOrderByRelationAggregateInput
@@ -704,6 +706,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   topPlacement?: Prisma.XOR<Prisma.TopPlacementNullableScalarRelationFilter, Prisma.TopPlacementWhereInput> | null
   verificationRequests?: Prisma.VerificationRequestListRelationFilter
   photos?: Prisma.PhotoListRelationFilter
+  videos?: Prisma.VideoListRelationFilter
   favorites?: Prisma.FavoriteListRelationFilter
   comments?: Prisma.ProfileCommentListRelationFilter
   contacts?: Prisma.ProfileContactListRelationFilter
@@ -873,6 +876,7 @@ export type ProfileCreateInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -936,6 +940,7 @@ export type ProfileUncheckedCreateInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -999,6 +1004,7 @@ export type ProfileUpdateInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -1062,6 +1068,7 @@ export type ProfileUncheckedUpdateInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -1648,6 +1655,20 @@ export type NullableEnumAppearanceTypeFieldUpdateOperationsInput = {
   set?: $Enums.AppearanceType | null
 }
 
+export type ProfileCreateNestedOneWithoutVideosInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutVideosInput, Prisma.ProfileUncheckedCreateWithoutVideosInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutVideosInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutVideosNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutVideosInput, Prisma.ProfileUncheckedCreateWithoutVideosInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutVideosInput
+  upsert?: Prisma.ProfileUpsertWithoutVideosInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutVideosInput, Prisma.ProfileUpdateWithoutVideosInput>, Prisma.ProfileUncheckedUpdateWithoutVideosInput>
+}
+
 export type ProfileCreateNestedOneWithoutPhotosInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutPhotosInput, Prisma.ProfileUncheckedCreateWithoutPhotosInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPhotosInput
@@ -1940,6 +1961,7 @@ export type ProfileCreateWithoutOwnerInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2002,6 +2024,7 @@ export type ProfileUncheckedCreateWithoutOwnerInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2142,6 +2165,7 @@ export type ProfileCreateWithoutCountryInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2204,6 +2228,7 @@ export type ProfileUncheckedCreateWithoutCountryInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2292,6 +2317,7 @@ export type ProfileCreateWithoutCityInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2354,6 +2380,7 @@ export type ProfileUncheckedCreateWithoutCityInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2442,6 +2469,7 @@ export type ProfileCreateWithoutDistrictInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2504,6 +2532,7 @@ export type ProfileUncheckedCreateWithoutDistrictInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2540,6 +2569,274 @@ export type ProfileUpdateWithWhereUniqueWithoutDistrictInput = {
 export type ProfileUpdateManyWithWhereWithoutDistrictInput = {
   where: Prisma.ProfileScalarWhereInput
   data: Prisma.XOR<Prisma.ProfileUpdateManyMutationInput, Prisma.ProfileUncheckedUpdateManyWithoutDistrictInput>
+}
+
+export type ProfileCreateWithoutVideosInput = {
+  id?: string
+  slug: string
+  kind?: $Enums.ListingKind
+  status?: $Enums.ProfileStatus
+  displayName: string
+  description?: string
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
+  payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileCreateamenitiesInput | string[]
+  approxLat?: number | null
+  approxLng?: number | null
+  hasManualLocation?: boolean
+  fromPriceCents?: number | null
+  isFeatured?: boolean
+  isPremium?: boolean
+  isVerified?: boolean
+  lastSeenAt?: Date | string | null
+  publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
+  age?: number | null
+  heightCm?: number | null
+  weightKg?: number | null
+  languages?: Prisma.ProfileCreatelanguagesInput | string[]
+  hairColor?: $Enums.HairColor | null
+  eyeColor?: $Enums.EyeColor | null
+  breastSize?: $Enums.BreastSize | null
+  breastType?: $Enums.BreastType | null
+  bodyType?: $Enums.BodyType | null
+  pubicHair?: $Enums.PubicHair | null
+  hasPiercing?: boolean | null
+  hasTattoos?: boolean | null
+  appearanceType?: $Enums.AppearanceType | null
+  smoker?: boolean | null
+  moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutProfilesInput
+  hours?: Prisma.ProfileHoursCreateNestedManyWithoutProfileInput
+  owner: Prisma.UserCreateNestedOneWithoutProfilesInput
+  city: Prisma.CityCreateNestedOneWithoutProfilesInput
+  district?: Prisma.DistrictCreateNestedOneWithoutProfilesInput
+  country: Prisma.CountryCreateNestedOneWithoutProfilesInput
+  topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
+  verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
+  photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
+  contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
+  eventsDaily?: Prisma.ProfileEventDailyCreateNestedManyWithoutProfileInput
+  reports?: Prisma.ProfileReportCreateNestedManyWithoutProfileInput
+  prices?: Prisma.PriceSlotCreateNestedManyWithoutProfileInput
+  services?: Prisma.ProfileServiceCreateNestedManyWithoutProfileInput
+  verification?: Prisma.VerificationCaseCreateNestedOneWithoutProfileInput
+  promoSlots?: Prisma.PromoSlotCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutVideosInput = {
+  id?: string
+  slug: string
+  kind?: $Enums.ListingKind
+  status?: $Enums.ProfileStatus
+  displayName: string
+  description?: string
+  companyId?: string | null
+  address?: string | null
+  directions?: string | null
+  minSessionMinutes?: number | null
+  bookingPolicy?: $Enums.BookingPolicy | null
+  website?: string | null
+  payments?: Prisma.ProfileCreatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileCreateamenitiesInput | string[]
+  ownerId: string
+  cityId: string
+  districtId?: string | null
+  countryId: string
+  approxLat?: number | null
+  approxLng?: number | null
+  hasManualLocation?: boolean
+  fromPriceCents?: number | null
+  isFeatured?: boolean
+  isPremium?: boolean
+  isVerified?: boolean
+  lastSeenAt?: Date | string | null
+  publishedAt?: Date | string | null
+  unpaidAt?: Date | string | null
+  age?: number | null
+  heightCm?: number | null
+  weightKg?: number | null
+  languages?: Prisma.ProfileCreatelanguagesInput | string[]
+  hairColor?: $Enums.HairColor | null
+  eyeColor?: $Enums.EyeColor | null
+  breastSize?: $Enums.BreastSize | null
+  breastType?: $Enums.BreastType | null
+  bodyType?: $Enums.BodyType | null
+  pubicHair?: $Enums.PubicHair | null
+  hasPiercing?: boolean | null
+  hasTattoos?: boolean | null
+  appearanceType?: $Enums.AppearanceType | null
+  smoker?: boolean | null
+  moderationNote?: string | null
+  needsEditBeforeResubmit?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
+  topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
+  verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
+  photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
+  contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
+  events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
+  eventsDaily?: Prisma.ProfileEventDailyUncheckedCreateNestedManyWithoutProfileInput
+  reports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutProfileInput
+  prices?: Prisma.PriceSlotUncheckedCreateNestedManyWithoutProfileInput
+  services?: Prisma.ProfileServiceUncheckedCreateNestedManyWithoutProfileInput
+  verification?: Prisma.VerificationCaseUncheckedCreateNestedOneWithoutProfileInput
+  promoSlots?: Prisma.PromoSlotUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutVideosInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutVideosInput, Prisma.ProfileUncheckedCreateWithoutVideosInput>
+}
+
+export type ProfileUpsertWithoutVideosInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutVideosInput, Prisma.ProfileUncheckedUpdateWithoutVideosInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutVideosInput, Prisma.ProfileUncheckedCreateWithoutVideosInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutVideosInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutVideosInput, Prisma.ProfileUncheckedUpdateWithoutVideosInput>
+}
+
+export type ProfileUpdateWithoutVideosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
+  status?: Prisma.EnumProfileStatusFieldUpdateOperationsInput | $Enums.ProfileStatus
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
+  approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  languages?: Prisma.ProfileUpdatelanguagesInput | string[]
+  hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
+  eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
+  breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
+  breastType?: Prisma.NullableEnumBreastTypeFieldUpdateOperationsInput | $Enums.BreastType | null
+  bodyType?: Prisma.NullableEnumBodyTypeFieldUpdateOperationsInput | $Enums.BodyType | null
+  pubicHair?: Prisma.NullableEnumPubicHairFieldUpdateOperationsInput | $Enums.PubicHair | null
+  hasPiercing?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
+  smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutProfilesNestedInput
+  hours?: Prisma.ProfileHoursUpdateManyWithoutProfileNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutProfilesNestedInput
+  city?: Prisma.CityUpdateOneRequiredWithoutProfilesNestedInput
+  district?: Prisma.DistrictUpdateOneWithoutProfilesNestedInput
+  country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
+  topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
+  verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
+  photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
+  contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
+  eventsDaily?: Prisma.ProfileEventDailyUpdateManyWithoutProfileNestedInput
+  reports?: Prisma.ProfileReportUpdateManyWithoutProfileNestedInput
+  prices?: Prisma.PriceSlotUpdateManyWithoutProfileNestedInput
+  services?: Prisma.ProfileServiceUpdateManyWithoutProfileNestedInput
+  verification?: Prisma.VerificationCaseUpdateOneWithoutProfileNestedInput
+  promoSlots?: Prisma.PromoSlotUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutVideosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumListingKindFieldUpdateOperationsInput | $Enums.ListingKind
+  status?: Prisma.EnumProfileStatusFieldUpdateOperationsInput | $Enums.ProfileStatus
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  directions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  minSessionMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  bookingPolicy?: Prisma.NullableEnumBookingPolicyFieldUpdateOperationsInput | $Enums.BookingPolicy | null
+  website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payments?: Prisma.ProfileUpdatepaymentsInput | $Enums.PaymentMethod[]
+  amenities?: Prisma.ProfileUpdateamenitiesInput | string[]
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  cityId?: Prisma.StringFieldUpdateOperationsInput | string
+  districtId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countryId?: Prisma.StringFieldUpdateOperationsInput | string
+  approxLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approxLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hasManualLocation?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  fromPriceCents?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPremium?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  unpaidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  age?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  heightCm?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  weightKg?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  languages?: Prisma.ProfileUpdatelanguagesInput | string[]
+  hairColor?: Prisma.NullableEnumHairColorFieldUpdateOperationsInput | $Enums.HairColor | null
+  eyeColor?: Prisma.NullableEnumEyeColorFieldUpdateOperationsInput | $Enums.EyeColor | null
+  breastSize?: Prisma.NullableEnumBreastSizeFieldUpdateOperationsInput | $Enums.BreastSize | null
+  breastType?: Prisma.NullableEnumBreastTypeFieldUpdateOperationsInput | $Enums.BreastType | null
+  bodyType?: Prisma.NullableEnumBodyTypeFieldUpdateOperationsInput | $Enums.BodyType | null
+  pubicHair?: Prisma.NullableEnumPubicHairFieldUpdateOperationsInput | $Enums.PubicHair | null
+  hasPiercing?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  hasTattoos?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  appearanceType?: Prisma.NullableEnumAppearanceTypeFieldUpdateOperationsInput | $Enums.AppearanceType | null
+  smoker?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  moderationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  needsEditBeforeResubmit?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
+  topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
+  verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
+  photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
+  contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
+  events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
+  eventsDaily?: Prisma.ProfileEventDailyUncheckedUpdateManyWithoutProfileNestedInput
+  reports?: Prisma.ProfileReportUncheckedUpdateManyWithoutProfileNestedInput
+  prices?: Prisma.PriceSlotUncheckedUpdateManyWithoutProfileNestedInput
+  services?: Prisma.ProfileServiceUncheckedUpdateManyWithoutProfileNestedInput
+  verification?: Prisma.VerificationCaseUncheckedUpdateOneWithoutProfileNestedInput
+  promoSlots?: Prisma.PromoSlotUncheckedUpdateManyWithoutProfileNestedInput
 }
 
 export type ProfileCreateWithoutPhotosInput = {
@@ -2592,6 +2889,7 @@ export type ProfileCreateWithoutPhotosInput = {
   country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2654,6 +2952,7 @@ export type ProfileUncheckedCreateWithoutPhotosInput = {
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2732,6 +3031,7 @@ export type ProfileUpdateWithoutPhotosInput = {
   country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -2794,6 +3094,7 @@ export type ProfileUncheckedUpdateWithoutPhotosInput = {
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -2857,6 +3158,7 @@ export type ProfileCreateWithoutReportsInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -2919,6 +3221,7 @@ export type ProfileUncheckedCreateWithoutReportsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -2997,6 +3300,7 @@ export type ProfileUpdateWithoutReportsInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -3059,6 +3363,7 @@ export type ProfileUncheckedUpdateWithoutReportsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -3121,6 +3426,7 @@ export type ProfileCreateWithoutCommentsInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
@@ -3183,6 +3489,7 @@ export type ProfileUncheckedCreateWithoutCommentsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
@@ -3261,6 +3568,7 @@ export type ProfileUpdateWithoutCommentsInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
@@ -3323,6 +3631,7 @@ export type ProfileUncheckedUpdateWithoutCommentsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
@@ -3385,6 +3694,7 @@ export type ProfileCreateWithoutFavoritesInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
@@ -3447,6 +3757,7 @@ export type ProfileUncheckedCreateWithoutFavoritesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
@@ -3525,6 +3836,7 @@ export type ProfileUpdateWithoutFavoritesInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
@@ -3587,6 +3899,7 @@ export type ProfileUncheckedUpdateWithoutFavoritesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
@@ -3648,6 +3961,7 @@ export type ProfileCreateWithoutCompanyInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -3710,6 +4024,7 @@ export type ProfileUncheckedCreateWithoutCompanyInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -3798,6 +4113,7 @@ export type ProfileCreateWithoutHoursInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -3860,6 +4176,7 @@ export type ProfileUncheckedCreateWithoutHoursInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -3938,6 +4255,7 @@ export type ProfileUpdateWithoutHoursInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -4000,6 +4318,7 @@ export type ProfileUncheckedUpdateWithoutHoursInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -4063,6 +4382,7 @@ export type ProfileCreateWithoutContactsInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventCreateNestedManyWithoutProfileInput
@@ -4125,6 +4445,7 @@ export type ProfileUncheckedCreateWithoutContactsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   events?: Prisma.ProfileEventUncheckedCreateNestedManyWithoutProfileInput
@@ -4203,6 +4524,7 @@ export type ProfileUpdateWithoutContactsInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUpdateManyWithoutProfileNestedInput
@@ -4265,6 +4587,7 @@ export type ProfileUncheckedUpdateWithoutContactsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   events?: Prisma.ProfileEventUncheckedUpdateManyWithoutProfileNestedInput
@@ -4327,6 +4650,7 @@ export type ProfileCreateWithoutEventsInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -4389,6 +4713,7 @@ export type ProfileUncheckedCreateWithoutEventsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -4467,6 +4792,7 @@ export type ProfileUpdateWithoutEventsInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -4529,6 +4855,7 @@ export type ProfileUncheckedUpdateWithoutEventsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -4591,6 +4918,7 @@ export type ProfileCreateWithoutEventsDailyInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -4653,6 +4981,7 @@ export type ProfileUncheckedCreateWithoutEventsDailyInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -4731,6 +5060,7 @@ export type ProfileUpdateWithoutEventsDailyInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -4793,6 +5123,7 @@ export type ProfileUncheckedUpdateWithoutEventsDailyInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -4855,6 +5186,7 @@ export type ProfileCreateWithoutPricesInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -4917,6 +5249,7 @@ export type ProfileUncheckedCreateWithoutPricesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -4995,6 +5328,7 @@ export type ProfileUpdateWithoutPricesInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -5057,6 +5391,7 @@ export type ProfileUncheckedUpdateWithoutPricesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -5119,6 +5454,7 @@ export type ProfileCreateWithoutServicesInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -5181,6 +5517,7 @@ export type ProfileUncheckedCreateWithoutServicesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -5259,6 +5596,7 @@ export type ProfileUpdateWithoutServicesInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -5321,6 +5659,7 @@ export type ProfileUncheckedUpdateWithoutServicesInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -5383,6 +5722,7 @@ export type ProfileCreateWithoutVerificationInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -5445,6 +5785,7 @@ export type ProfileUncheckedCreateWithoutVerificationInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -5523,6 +5864,7 @@ export type ProfileUpdateWithoutVerificationInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -5585,6 +5927,7 @@ export type ProfileUncheckedUpdateWithoutVerificationInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -5647,6 +5990,7 @@ export type ProfileCreateWithoutPromoSlotsInput = {
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -5709,6 +6053,7 @@ export type ProfileUncheckedCreateWithoutPromoSlotsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -5787,6 +6132,7 @@ export type ProfileUpdateWithoutPromoSlotsInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -5849,6 +6195,7 @@ export type ProfileUncheckedUpdateWithoutPromoSlotsInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -5910,6 +6257,7 @@ export type ProfileCreateWithoutTopPlacementInput = {
   country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   verificationRequests?: Prisma.VerificationRequestCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -5972,6 +6320,7 @@ export type ProfileUncheckedCreateWithoutTopPlacementInput = {
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
   verificationRequests?: Prisma.VerificationRequestUncheckedCreateNestedManyWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -6050,6 +6399,7 @@ export type ProfileUpdateWithoutTopPlacementInput = {
   country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -6112,6 +6462,7 @@ export type ProfileUncheckedUpdateWithoutTopPlacementInput = {
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -6174,6 +6525,7 @@ export type ProfileCreateWithoutVerificationRequestsInput = {
   country: Prisma.CountryCreateNestedOneWithoutProfilesInput
   topPlacement?: Prisma.TopPlacementCreateNestedOneWithoutProfileInput
   photos?: Prisma.PhotoCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactCreateNestedManyWithoutProfileInput
@@ -6236,6 +6588,7 @@ export type ProfileUncheckedCreateWithoutVerificationRequestsInput = {
   hours?: Prisma.ProfileHoursUncheckedCreateNestedManyWithoutProfileInput
   topPlacement?: Prisma.TopPlacementUncheckedCreateNestedOneWithoutProfileInput
   photos?: Prisma.PhotoUncheckedCreateNestedManyWithoutProfileInput
+  videos?: Prisma.VideoUncheckedCreateNestedManyWithoutProfileInput
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutProfileInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutProfileInput
   contacts?: Prisma.ProfileContactUncheckedCreateNestedManyWithoutProfileInput
@@ -6314,6 +6667,7 @@ export type ProfileUpdateWithoutVerificationRequestsInput = {
   country?: Prisma.CountryUpdateOneRequiredWithoutProfilesNestedInput
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -6376,6 +6730,7 @@ export type ProfileUncheckedUpdateWithoutVerificationRequestsInput = {
   hours?: Prisma.ProfileHoursUncheckedUpdateManyWithoutProfileNestedInput
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -6486,6 +6841,7 @@ export type ProfileUpdateWithoutOwnerInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -6548,6 +6904,7 @@ export type ProfileUncheckedUpdateWithoutOwnerInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -6706,6 +7063,7 @@ export type ProfileUpdateWithoutCountryInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -6768,6 +7126,7 @@ export type ProfileUncheckedUpdateWithoutCountryInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -6926,6 +7285,7 @@ export type ProfileUpdateWithoutCityInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -6988,6 +7348,7 @@ export type ProfileUncheckedUpdateWithoutCityInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -7146,6 +7507,7 @@ export type ProfileUpdateWithoutDistrictInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -7208,6 +7570,7 @@ export type ProfileUncheckedUpdateWithoutDistrictInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -7366,6 +7729,7 @@ export type ProfileUpdateWithoutCompanyInput = {
   topPlacement?: Prisma.TopPlacementUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUpdateManyWithoutProfileNestedInput
@@ -7428,6 +7792,7 @@ export type ProfileUncheckedUpdateWithoutCompanyInput = {
   topPlacement?: Prisma.TopPlacementUncheckedUpdateOneWithoutProfileNestedInput
   verificationRequests?: Prisma.VerificationRequestUncheckedUpdateManyWithoutProfileNestedInput
   photos?: Prisma.PhotoUncheckedUpdateManyWithoutProfileNestedInput
+  videos?: Prisma.VideoUncheckedUpdateManyWithoutProfileNestedInput
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutProfileNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutProfileNestedInput
   contacts?: Prisma.ProfileContactUncheckedUpdateManyWithoutProfileNestedInput
@@ -7497,6 +7862,7 @@ export type ProfileCountOutputType = {
   hours: number
   verificationRequests: number
   photos: number
+  videos: number
   favorites: number
   comments: number
   contacts: number
@@ -7512,6 +7878,7 @@ export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   hours?: boolean | ProfileCountOutputTypeCountHoursArgs
   verificationRequests?: boolean | ProfileCountOutputTypeCountVerificationRequestsArgs
   photos?: boolean | ProfileCountOutputTypeCountPhotosArgs
+  videos?: boolean | ProfileCountOutputTypeCountVideosArgs
   favorites?: boolean | ProfileCountOutputTypeCountFavoritesArgs
   comments?: boolean | ProfileCountOutputTypeCountCommentsArgs
   contacts?: boolean | ProfileCountOutputTypeCountContactsArgs
@@ -7552,6 +7919,13 @@ export type ProfileCountOutputTypeCountVerificationRequestsArgs<ExtArgs extends 
  */
 export type ProfileCountOutputTypeCountPhotosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PhotoWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountVideosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VideoWhereInput
 }
 
 /**
@@ -7674,6 +8048,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   topPlacement?: boolean | Prisma.Profile$topPlacementArgs<ExtArgs>
   verificationRequests?: boolean | Prisma.Profile$verificationRequestsArgs<ExtArgs>
   photos?: boolean | Prisma.Profile$photosArgs<ExtArgs>
+  videos?: boolean | Prisma.Profile$videosArgs<ExtArgs>
   favorites?: boolean | Prisma.Profile$favoritesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
   contacts?: boolean | Prisma.Profile$contactsArgs<ExtArgs>
@@ -7855,6 +8230,7 @@ export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   topPlacement?: boolean | Prisma.Profile$topPlacementArgs<ExtArgs>
   verificationRequests?: boolean | Prisma.Profile$verificationRequestsArgs<ExtArgs>
   photos?: boolean | Prisma.Profile$photosArgs<ExtArgs>
+  videos?: boolean | Prisma.Profile$videosArgs<ExtArgs>
   favorites?: boolean | Prisma.Profile$favoritesArgs<ExtArgs>
   comments?: boolean | Prisma.Profile$commentsArgs<ExtArgs>
   contacts?: boolean | Prisma.Profile$contactsArgs<ExtArgs>
@@ -7894,6 +8270,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     topPlacement: Prisma.$TopPlacementPayload<ExtArgs> | null
     verificationRequests: Prisma.$VerificationRequestPayload<ExtArgs>[]
     photos: Prisma.$PhotoPayload<ExtArgs>[]
+    videos: Prisma.$VideoPayload<ExtArgs>[]
     favorites: Prisma.$FavoritePayload<ExtArgs>[]
     comments: Prisma.$ProfileCommentPayload<ExtArgs>[]
     contacts: Prisma.$ProfileContactPayload<ExtArgs>[]
@@ -8431,6 +8808,7 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   topPlacement<T extends Prisma.Profile$topPlacementArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$topPlacementArgs<ExtArgs>>): Prisma.Prisma__TopPlacementClient<runtime.Types.Result.GetResult<Prisma.$TopPlacementPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   verificationRequests<T extends Prisma.Profile$verificationRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$verificationRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   photos<T extends Prisma.Profile$photosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$photosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PhotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  videos<T extends Prisma.Profile$videosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$videosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VideoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   favorites<T extends Prisma.Profile$favoritesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$favoritesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FavoritePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Profile$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.Profile$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9043,6 +9421,30 @@ export type Profile$photosArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.PhotoScalarFieldEnum | Prisma.PhotoScalarFieldEnum[]
+}
+
+/**
+ * Profile.videos
+ */
+export type Profile$videosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Video
+   */
+  select?: Prisma.VideoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Video
+   */
+  omit?: Prisma.VideoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VideoInclude<ExtArgs> | null
+  where?: Prisma.VideoWhereInput
+  orderBy?: Prisma.VideoOrderByWithRelationInput | Prisma.VideoOrderByWithRelationInput[]
+  cursor?: Prisma.VideoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VideoScalarFieldEnum | Prisma.VideoScalarFieldEnum[]
 }
 
 /**

@@ -211,6 +211,7 @@ function CountryForm({
     weekGc: String(initial.agencyTop.weekGc),
     slots: String(initial.agencyTop.slots),
   });
+  const [agencyProfilesInTop, setAgencyProfilesInTop] = useState(initial.agencyProfilesInTop);
   const [invalid, setInvalid] = useState(false);
 
   const save = useMutation({
@@ -238,6 +239,7 @@ function CountryForm({
       ),
       top: { weekGc: toNumber(top.weekGc), slots: toNumber(top.slots) },
       agencyTop: { weekGc: toNumber(agencyTop.weekGc), slots: toNumber(agencyTop.slots) },
+      agencyProfilesInTop,
     };
     const parsed = countryMonetizationSchema.safeParse(candidate);
     setInvalid(!parsed.success);
@@ -262,6 +264,15 @@ function CountryForm({
 
       <Card title={t('topSection')} lead={t('scopeTopHint')}>
         <TopFields value={top} onChange={setTop} idPrefix="top" rate={rate} />
+        <label className={styles.check}>
+          <input
+            type="checkbox"
+            checked={agencyProfilesInTop}
+            onChange={(event) => setAgencyProfilesInTop(event.target.checked)}
+          />
+          {t('topAgencyProfilesLabel')}
+        </label>
+        <p className={billing.sub}>{t('topAgencyProfilesHint')}</p>
       </Card>
 
       <Card title={t('agencyTopSection')} lead={t('scopeAgencyTopHint')}>

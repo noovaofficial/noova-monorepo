@@ -131,6 +131,7 @@ enum PubicHair {
 
 enum ModerationSubject {
   photo
+  video
   profile
   /// Проверка анкеты перед публикацией.
   verification
@@ -393,13 +394,18 @@ model CityTopSetting {
 /// только ТОП анкет (`CityTopSetting`); пустое поле города — «как у страны».
 /// ТОП агентств привязан к стране компании (`Company.countryId`).
 model CountryTopSetting {
-  countryId    String   @id
-  country      Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
-  weekGc       Int
-  slots        Int
-  agencyWeekGc Int
-  agencySlots  Int
-  updatedAt    DateTime @updatedAt
+  countryId             String   @id
+  country               Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  weekGc                Int
+  slots                 Int
+  agencyWeekGc          Int
+  agencySlots           Int
+  /// Могут ли анкеты агентств покупать место в ТОПе анкет этой страны.
+  /// Индивидуалкам и салонам ТОП анкет доступен всегда; агентству — только
+  /// при включённом флаге. Это не ТОП агентств (`agency*` выше): тот
+  /// поднимает саму компанию, а не её анкеты.
+  agencyProfilesAllowed Boolean  @default(false)
+  updatedAt             DateTime @updatedAt
 }
 
 /// Цена размещения по типу и сроку в стране (payments.md §5). Общего прайса
@@ -594,6 +600,7 @@ model Profile {
   updatedAt DateTime @updatedAt
 
   photos       Photo[]
+  videos       Video[]
   favorites    Favorite[]
   comments     ProfileComment[]
   contacts     ProfileContact[]
@@ -611,6 +618,55 @@ model Profile {
   @@index([status, kind, countryId, publishedAt])
   @@index([status, kind, fromPriceCents])
   @@index([status, isFeatured, publishedAt])
+}
+
+enum VideoStatus {
+  /// Исходник загружен, ffmpeg ещё не отработал.
+  processing
+  ready
+  /// Обработка не удалась: владелец видит причину и удаляет запись.
+  failed
+}
+
+/// Видео анкеты. Доступно только при действующей подписке (`Listing` в
+/// статусе active/grace): без неё нельзя загрузить новое, а уже одобренное
+/// не показывается на публичной странице — но не удаляется и возвращается
+/// само, когда подписка снова действует.
+///
+/// Как и фото, проходит модерацию и лежит в `pending/`, пока не одобрено.
+/// В отличие от фото, обрабатывается не в запросе, а фоном: перекодирование
+/// занимает десятки секунд.
+model Video {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  status    VideoStatus @default(processing)
+
+  /// Папка в хранилище, не публичный URL. Внутри: `source` (исходник, только
+  /// до конца обработки), `video.mp4` и `poster.webp` (после неё).
+  storageKey String
+  width      Int    @default(0)
+  height     Int    @default(0)
+  durationMs Int    @default(0)
+  /// Вес готового `video.mp4`.
+  bytes      Int    @default(0)
+
+  isApproved     Boolean @default(false)
+  rejectedReason String?
+  /// Код причины для `failed` — текст подбирает интерфейс.
+  failReason     String?
+
+  /// Когда обработку взяли в работу. Пусто — ещё не брали; старое значение
+  /// при `processing` — процесс умер посреди работы, запись подберёт задача.
+  claimedAt DateTime?
+  attempts  Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([status, claimedAt])
+  @@index([isApproved, status])
 }
 
 model Photo {

@@ -8,6 +8,7 @@ import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import type { Mail } from '../auth/mailer.js';
 import { localeOf } from '../auth/mailer.js';
+import { videoProfileSlugs } from '../videos/service.js';
 import { listingExpiredMail, listingGraceMail, listingReminderMail } from './mails.js';
 import { placementFor } from './placement.js';
 import { syncPremiumForOwner } from './premium.js';
@@ -149,7 +150,14 @@ export function activateListing(
 
     return {
       result: { listing: toListing(listing), ...spend },
-      restoredSlugs: unpaid.map((profile) => profile.slug),
+      // Плюс анкеты с видео: оно показывается только при подписке, и их
+      // страницы тоже нужно пересобрать.
+      restoredSlugs: [
+        ...new Set([
+          ...unpaid.map((profile) => profile.slug),
+          ...(await videoProfileSlugs(tx, activation.userId)),
+        ]),
+      ],
     };
   });
 }
@@ -288,8 +296,12 @@ export async function expireListings(
       await notify({ to: listing.user.email, ...listingGraceMail(locale, graceEndsAt) });
     } else {
       await notify({ to: listing.user.email, ...listingExpiredMail(locale) });
-      if (unpublished.length > 0) {
-        options.revalidate?.([PROFILES_TAG, ...unpublished.map(profileTag)]);
+      // Без подписки видео скрывается — в том числе у анкет в бесплатных
+      // местах, которые остались опубликованными.
+      const withVideo = await videoProfileSlugs(prisma, listing.userId);
+      const slugs = [...new Set([...unpublished, ...withVideo])];
+      if (slugs.length > 0) {
+        options.revalidate?.([PROFILES_TAG, ...slugs.map(profileTag)]);
       }
     }
   }

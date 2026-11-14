@@ -85,7 +85,7 @@ export function fetchQueueCount(): Promise<QueueCount> {
 }
 
 export function fetchQueue(
-  kind: 'photo' | 'verification' | 'comment' | 'report' | undefined,
+  kind: 'photo' | 'video' | 'verification' | 'comment' | 'report' | undefined,
   cursor: string | null = null,
 ): Promise<Page<QueueItem>> {
   const params = new URLSearchParams();
@@ -101,6 +101,17 @@ export function approvePhoto(id: string) {
 
 export function rejectPhoto(id: string, reason: string) {
   return call(`/moderation/photos/${id}/reject`, ackSchema, {
+    method: 'POST',
+    body: JSON.stringify({ reason }),
+  });
+}
+
+export function approveVideo(id: string) {
+  return call(`/moderation/videos/${id}/approve`, ackSchema, { method: 'POST' });
+}
+
+export function rejectVideo(id: string, reason: string) {
+  return call(`/moderation/videos/${id}/reject`, ackSchema, {
     method: 'POST',
     body: JSON.stringify({ reason }),
   });

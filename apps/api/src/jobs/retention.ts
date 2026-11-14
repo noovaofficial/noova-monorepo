@@ -1,4 +1,5 @@
 import type { PrismaClient } from '../generated/prisma/client.js';
+import { deleteVideoFiles } from '../modules/photos/storage.js';
 import { deleteVerificationPhotos } from '../modules/verification/service.js';
 
 /**
@@ -63,7 +64,12 @@ export async function purgeDeletedAccounts(
     where: { deletionRequestedAt: { not: null, lte: cutoff } },
     select: {
       id: true,
-      profiles: { select: { photos: { select: { storageKey: true } } } },
+      profiles: {
+        select: {
+          photos: { select: { storageKey: true } },
+          videos: { select: { storageKey: true } },
+        },
+      },
     },
   });
 
@@ -74,7 +80,10 @@ export async function purgeDeletedAccounts(
   return users.length;
 }
 
-type PurgeTarget = { id: string; profiles: { photos: { storageKey: string }[] }[] };
+type PurgeTarget = {
+  id: string;
+  profiles: { photos: { storageKey: string }[]; videos?: { storageKey: string }[] }[];
+};
 
 /**
  * Физическое удаление учётной записи — общее для отсрочки и для кнопки
@@ -103,6 +112,10 @@ export async function purgeUser(
   for (const key of keys) {
     await deleteFile(key);
   }
+  // Видео — та же история: каскад удалит строки, файлы останутся.
+  for (const profile of user.profiles) {
+    for (const video of profile.videos ?? []) await deleteVideoFiles(video.storageKey);
+  }
 
   // Строки удаляет каскад: анкеты, фото, контакты, избранное, отзывы.
   // Журнал модерации связан с пользователем строковым `subjectId` без
@@ -121,7 +134,12 @@ export async function purgeUserById(
     where: { id: userId },
     select: {
       id: true,
-      profiles: { select: { photos: { select: { storageKey: true } } } },
+      profiles: {
+        select: {
+          photos: { select: { storageKey: true } },
+          videos: { select: { storageKey: true } },
+        },
+      },
     },
   });
   if (!user) return false;

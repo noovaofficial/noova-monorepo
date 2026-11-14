@@ -17,13 +17,18 @@ import {
   type OwnPhoto,
   type OwnProfile,
   type OwnVerification,
+  type OwnVideo,
+  type OwnVideoState,
   ownPhotoSchema,
   ownProfileSchema,
   ownVerificationSchema,
+  ownVideoSchema,
+  ownVideoStateSchema,
   type ServiceGroup,
   serviceGroupSchema,
   type UpdateProfileInput,
   type VerificationPhotoKind,
+  VIDEO_MAX_BYTES,
 } from '@noova/shared';
 import { z } from 'zod';
 
@@ -276,6 +281,42 @@ export async function uploadPhoto(profileId: string, file: File): Promise<OwnPho
   }
 
   return ownPhotoSchema.parse(await response.json());
+}
+
+export function fetchVideoState(profileId: string): Promise<OwnVideoState> {
+  return call(`/me/profiles/${profileId}/video`, ownVideoStateSchema);
+}
+
+/** Как и фото — через FormData, content-type ставит браузер. */
+export async function uploadVideo(profileId: string, file: File): Promise<OwnVideo> {
+  // Слишком большой файл не отправляем вовсе: ответ был бы тем же отказом,
+  // только после минут загрузки.
+  if (file.size > VIDEO_MAX_BYTES) throw new AccountError('', 413);
+  const form = new FormData();
+  form.append('file', file);
+
+  const response = await fetch(`${BASE}/api/v1/me/profiles/${profileId}/video`, {
+    method: 'POST',
+    body: form,
+    credentials: 'include',
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    const message = await response
+      .json()
+      .then((body) => String(body?.message ?? ''))
+      .catch(() => '');
+    throw new AccountError(message, response.status);
+  }
+
+  return ownVideoSchema.parse(await response.json());
+}
+
+export function deleteVideo(profileId: string, videoId: string): Promise<{ ok: true }> {
+  return call(`/me/profiles/${profileId}/video/${videoId}`, z.object({ ok: z.literal(true) }), {
+    method: 'DELETE',
+  });
 }
 
 export function deletePhoto(profileId: string, photoId: string): Promise<{ ok: true }> {

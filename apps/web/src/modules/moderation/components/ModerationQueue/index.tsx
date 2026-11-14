@@ -10,11 +10,13 @@ import {
   approveComment,
   approvePhoto,
   approveVerification,
+  approveVideo,
   fetchQueue,
   fetchQueueCount,
   rejectComment,
   rejectPhoto,
   rejectVerification,
+  rejectVideo,
   resolveReport,
 } from '@/modules/moderation/api';
 import { useErrorText } from '@/shared/error-text';
@@ -34,6 +36,7 @@ const TABS = [
   'all',
   'report',
   'photo',
+  'video',
   'verification',
   'identity',
   'comment',
@@ -45,6 +48,7 @@ type Tab = (typeof TABS)[number];
 const TAB_LABELS: Record<Tab, string> = {
   all: 'tabAll',
   photo: 'tabPhotos',
+  video: 'tabVideos',
   verification: 'tabVerifications',
   identity: 'tabIdentity',
   comment: 'tabComments',
@@ -60,6 +64,7 @@ const TAB_LABELS: Record<Tab, string> = {
 const TAB_COUNTS: Partial<Record<Tab, keyof QueueCount>> = {
   report: 'reports',
   photo: 'photos',
+  video: 'videos',
   verification: 'verifications',
   identity: 'identity',
   comment: 'comments',
@@ -98,7 +103,7 @@ export function ModerationQueue() {
    * Виды очереди перечислены явно, а не «всё кроме»: список вкладок растёт,
    * и вычитание рано или поздно пропустит новую вкладку в запрос к очереди.
    */
-  const QUEUE_KINDS = ['photo', 'verification', 'comment', 'report'] as const;
+  const QUEUE_KINDS = ['photo', 'video', 'verification', 'comment', 'report'] as const;
   type QueueKind = (typeof QUEUE_KINDS)[number];
   const queueKind = (QUEUE_KINDS as readonly string[]).includes(tab)
     ? (tab as QueueKind)
@@ -224,15 +229,38 @@ export function ModerationQueue() {
                 </div>
               ) : null}
 
+              {item.kind === 'video' ? (
+                <div className={styles.cardPhoto}>
+                  {/* Играет прямо в карточке: решение принимают, посмотрев
+                      ролик целиком. Файл идёт через API с проверкой роли. */}
+                  {/* biome-ignore lint/a11y/useMediaCaption: пользовательский ролик без речи, субтитров у него нет */}
+                  <video
+                    src={item.url}
+                    poster={item.posterUrl}
+                    controls
+                    playsInline
+                    preload="none"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      background: '#000',
+                    }}
+                  />
+                </div>
+              ) : null}
+
               <div className={styles.cardBody}>
                 <span className={styles.cardKind}>
                   {item.kind === 'photo'
                     ? t('photoOf')
-                    : item.kind === 'verification'
-                      ? t('verificationOf')
-                      : item.kind === 'report'
-                        ? t('reportOf')
-                        : t(item.reports.length > 0 ? 'reportedCommentOf' : 'commentOf')}
+                    : item.kind === 'video'
+                      ? t('videoOf')
+                      : item.kind === 'verification'
+                        ? t('verificationOf')
+                        : item.kind === 'report'
+                          ? t('reportOf')
+                          : t(item.reports.length > 0 ? 'reportedCommentOf' : 'commentOf')}
                 </span>
                 <span className={styles.cardName}>{item.profile.displayName}</span>
                 <span className={styles.cardMeta}>
@@ -312,9 +340,11 @@ export function ModerationQueue() {
                         decide(() =>
                           item.kind === 'photo'
                             ? rejectPhoto(item.id, reason.trim())
-                            : item.kind === 'comment'
-                              ? rejectComment(item.id, reason.trim())
-                              : rejectVerification(item.id, reason.trim()),
+                            : item.kind === 'video'
+                              ? rejectVideo(item.id, reason.trim())
+                              : item.kind === 'comment'
+                                ? rejectComment(item.id, reason.trim())
+                                : rejectVerification(item.id, reason.trim()),
                         )
                       }
                     >
@@ -333,11 +363,13 @@ export function ModerationQueue() {
                       decide(() =>
                         item.kind === 'photo'
                           ? approvePhoto(item.id)
-                          : item.kind === 'comment'
-                            ? approveComment(item.id)
-                            : item.kind === 'report'
-                              ? resolveReport(item.id)
-                              : approveVerification(item.id),
+                          : item.kind === 'video'
+                            ? approveVideo(item.id)
+                            : item.kind === 'comment'
+                              ? approveComment(item.id)
+                              : item.kind === 'report'
+                                ? resolveReport(item.id)
+                                : approveVerification(item.id),
                       )
                     }
                   >

@@ -44,6 +44,11 @@ ENV NODE_ENV=production
 # самое рендерится «квадратиками» — глифами-заглушками для утерянного
 # шрифта). На деве этого не видно: там шрифты системные, chrome есть.
 RUN apk add --no-cache fontconfig ttf-dejavu && fc-cache -f
+# ffmpeg и ffprobe — для видео анкет (modules/videos/ffmpeg.ts): перекодирование
+# в MP4, снятие метаданных, вотермарка и постер. Образ общий у api и jobs, и
+# нужен обоим: API обрабатывает сразу после загрузки, цикл задач — подбирает
+# оборванное перезапуском.
+RUN apk add --no-cache ffmpeg
 # Прод-процесс не должен ходить под root.
 RUN addgroup -g 1001 nodejs && adduser -S -u 1001 -G nodejs noova
 

@@ -67,6 +67,7 @@ export const ModelName = {
   District: 'District',
   DistrictTranslation: 'DistrictTranslation',
   Profile: 'Profile',
+  Video: 'Video',
   Photo: 'Photo',
   ProfileReport: 'ProfileReport',
   ProfileComment: 'ProfileComment',
@@ -249,6 +250,7 @@ export const CountryTopSettingScalarFieldEnum = {
   slots: 'slots',
   agencyWeekGc: 'agencyWeekGc',
   agencySlots: 'agencySlots',
+  agencyProfilesAllowed: 'agencyProfilesAllowed',
   updatedAt: 'updatedAt'
 } as const
 
@@ -360,6 +362,27 @@ export const ProfileScalarFieldEnum = {
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const VideoScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  status: 'status',
+  storageKey: 'storageKey',
+  width: 'width',
+  height: 'height',
+  durationMs: 'durationMs',
+  bytes: 'bytes',
+  isApproved: 'isApproved',
+  rejectedReason: 'rejectedReason',
+  failReason: 'failReason',
+  claimedAt: 'claimedAt',
+  attempts: 'attempts',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VideoScalarFieldEnum = (typeof VideoScalarFieldEnum)[keyof typeof VideoScalarFieldEnum]
 
 
 export const PhotoScalarFieldEnum = {

@@ -1,0 +1,30 @@
+.player {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  max-height: 520px;
+  border-radius: var(--radiusMd, 12px);
+  background: #000;
+}
+
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space3);
+  margin-top: var(--space3);
+}
+
+.processing {
+  padding: var(--space4);
+  max-width: 420px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radiusMd, 12px);
+  color: var(--secondaryText);
+  font-size: var(--textSm);
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+}

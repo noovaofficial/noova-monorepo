@@ -16,6 +16,8 @@ export const queryKeys = {
   countries: (locale: string) => ['countries', locale] as const,
   ownCompanyTariff: () => ['own-company-tariff'] as const,
   ownProfile: (id: string) => ['own-profile', id] as const,
+  /** Видео анкеты — отдельно от неё: его статус опрашивается, пока идёт обработка. */
+  ownVideo: (profileId: string) => ['own-video', profileId] as const,
   // Локаль — часть ключа: названия переведены на стороне API, и без неё
   // смена языка отдавала бы прежний список из кэша.
   cities: (locale: string) => ['cities', locale] as const,

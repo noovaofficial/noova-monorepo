@@ -8,6 +8,7 @@ import { profileReportItemSchema } from './report';
 
 export const moderationSubjectSchema = z.enum([
   'photo',
+  'video',
   'profile',
   'verification',
   'identity',
@@ -48,6 +49,21 @@ export const photoQueueItemSchema = z.object({
 });
 export type PhotoQueueItem = z.infer<typeof photoQueueItemSchema>;
 
+/** Видео в очереди — после обработки, до решения модератора. */
+export const videoQueueItemSchema = z.object({
+  kind: z.literal('video'),
+  id: z.string(),
+  /** Файл идёт через API с проверкой роли: неодобренное публично недоступно. */
+  url: z.string(),
+  posterUrl: z.string(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  durationMs: z.number().int().nonnegative(),
+  createdAt: z.string().datetime(),
+  profile: queueProfileSchema,
+});
+export type VideoQueueItem = z.infer<typeof videoQueueItemSchema>;
+
 export const verificationQueueItemSchema = z.object({
   kind: z.literal('verification'),
   id: z.string(),
@@ -61,6 +77,7 @@ export type VerificationQueueItem = z.infer<typeof verificationQueueItemSchema>;
 
 export const queueItemSchema = z.discriminatedUnion('kind', [
   photoQueueItemSchema,
+  videoQueueItemSchema,
   verificationQueueItemSchema,
   commentQueueItemSchema,
   profileReportItemSchema,
@@ -70,7 +87,7 @@ export type QueueItem = z.infer<typeof queueItemSchema>;
 /** Очередь листается курсором: у неё четыре источника, и курсор несёт
  *  ещё и вид, с которого продолжать. Клиент его не разбирает. */
 export const queueQuerySchema = z.object({
-  kind: z.enum(['photo', 'verification', 'comment', 'report']).optional(),
+  kind: z.enum(['photo', 'video', 'verification', 'comment', 'report']).optional(),
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(30),
 });
@@ -78,6 +95,7 @@ export type QueueQuery = z.infer<typeof queueQuerySchema>;
 
 export const queueCountSchema = z.object({
   photos: z.number().int().nonnegative(),
+  videos: z.number().int().nonnegative(),
   verifications: z.number().int().nonnegative(),
   /** Заявки на верификацию личности, ждущие решения (D-12). */
   identity: z.number().int().nonnegative(),
@@ -151,6 +169,17 @@ export const moderatedProfileSchema = z.object({
       rejectedReason: z.string().nullable(),
     }),
   ),
+  /** Видео анкеты в любом состоянии модерации; `null` — нет или ещё обрабатывается. */
+  video: z
+    .object({
+      id: z.string(),
+      url: z.string(),
+      posterUrl: z.string(),
+      isApproved: z.boolean(),
+      rejectedReason: z.string().nullable(),
+    })
+    .nullable()
+    .default(null),
   verificationStatus: verificationStatusSchema,
   /** Бейдж «Проверено» (D-12, личность) — отдельная сущность от проверки
    *  контента выше: её можно включить и через заявку, и вручную админом,

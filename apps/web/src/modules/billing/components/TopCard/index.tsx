@@ -58,12 +58,16 @@ export function TopCard({
   if (!top.data || !cityTop) return null;
 
   const placement = top.data.placements.find((item) => item.profileId === profileId) ?? null;
+  // Агентству ТОП анкет продаётся только там, где это разрешила страна.
+  // Нельзя купить и места нет — показывать нечего; место есть (куплено до
+  // запрета или выдано админом) — карточка остаётся и показывает срок.
+  if (!cityTop.allowed && placement === null) return null;
   const price = cityTop.priceGc;
   const balance = wallet.data?.balanceGc;
   const date = (iso: string) => format.dateTime(new Date(iso), { dateStyle: 'long' });
   // Активное место — покупка недоступна (D-11). Купить снова можно, когда
   // неделя выйдет: тогда `placements` его уже не вернёт.
-  const canBuy = published && placement === null && cityTop.freeSlots > 0;
+  const canBuy = cityTop.allowed && published && placement === null && cityTop.freeSlots > 0;
 
   const errorKey =
     buy.error instanceof BillingError

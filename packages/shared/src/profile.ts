@@ -10,6 +10,7 @@ import {
 } from './common';
 import { paymentMethodSchema, profileCompanySchema } from './company';
 import { contactTypeSchema } from './contact';
+import { videoSchema } from './video';
 
 /**
  * Языки, на которых говорят в анкетах. Один список на форму редактирования
@@ -270,6 +271,8 @@ export const profileDetailSchema = profileCardSchema.extend({
   status: profileStatusSchema,
   description: z.string(),
   photos: z.array(photoSchema),
+  /** Одобренное видео — только пока у владельца действует подписка. */
+  video: videoSchema.nullable().default(null),
   params: paramsSchema,
   prices: z.array(priceSlotSchema),
   services: z.array(serviceSchema),

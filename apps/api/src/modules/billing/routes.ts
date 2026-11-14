@@ -56,6 +56,7 @@ import {
   buyTop,
   TopAlreadyActiveError,
   TopFullError,
+  TopNotAllowedError,
   TopNotPublishedError,
   topState,
 } from './top.js';
@@ -422,6 +423,9 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
         }
         if (error instanceof TopNotPublishedError) {
           throw fastify.httpErrors.conflict(error.message);
+        }
+        if (error instanceof TopNotAllowedError) {
+          throw fastify.httpErrors.forbidden(error.message);
         }
         if (error instanceof InsufficientBalanceError) {
           throw fastify.httpErrors.paymentRequired(

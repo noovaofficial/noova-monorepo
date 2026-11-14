@@ -233,7 +233,7 @@ TG_DIR := infra/tg-broadcast
 TG_PY := $(TG_DIR)/.venv/bin/python
 
 $(TG_PY):
-	python3 -m venv $(TG_DIR)/.venv && $(TG_DIR)/.venv/bin/pip install -q telethon
+	python3 -m venv $(TG_DIR)/.venv && $(TG_DIR)/.venv/bin/pip install -q telethon python-socks
 
 tg-broadcast-login: $(TG_PY) ## Рассылка в TG: войти во все аккаунты из accounts.json (код из Telegram)
 	$(TG_PY) $(TG_DIR)/broadcast.py --login

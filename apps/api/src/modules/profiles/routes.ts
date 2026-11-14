@@ -21,6 +21,7 @@ import { isOnline, toMoney, toProfileCard, toProfileDetail } from '../../mappers
 import { loadBillingConfig } from '../billing/config.js';
 import { shuffle } from '../billing/top.js';
 import { publicUrl } from '../photos/storage.js';
+import { ownerSubscribedSelect, publicVideoSelect, toPublicVideo } from '../videos/service.js';
 import {
   buildProfileWhere,
   decodeCursor,
@@ -472,6 +473,9 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
               position: true,
             },
           },
+          // Видео показывается, только пока у владельца действует подписка.
+          videos: publicVideoSelect,
+          owner: ownerSubscribedSelect(),
           status: true,
           description: true,
           heightCm: true,
@@ -530,7 +534,8 @@ export const profileRoutes: FastifyPluginAsyncZod = async (fastify) => {
         ).map((g) => [g.groupKey, g.name]),
       );
 
-      return toProfileDetail(row, groupNames);
+      const video = row.owner.listings.length > 0 ? row.videos[0] : undefined;
+      return { ...toProfileDetail(row, groupNames), video: video ? toPublicVideo(video) : null };
     },
   );
 

@@ -11,6 +11,7 @@ import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import {
   approvePhoto,
   approveVerification,
+  approveVideo,
   blockProfile,
   deleteModeratedProfile,
   deleteUser,
@@ -20,6 +21,7 @@ import {
   publishModeratedProfile,
   rejectPhoto,
   rejectVerification,
+  rejectVideo,
   revokeProfileTop,
   setManualVerification,
   unblockProfile,
@@ -160,6 +162,22 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     },
   });
 
+  const approveVideoM = useMutation({
+    mutationFn: (videoId: string) => approveVideo(videoId),
+    onSuccess: refresh,
+  });
+
+  // Форма причины — та же, что у фото: открыта всегда одна, и ключ
+  // `video:<id>` с идентификатором фотографии не пересечётся.
+  const rejectVideoM = useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => rejectVideo(id, reason),
+    onSuccess: async () => {
+      setRejectingPhotoId(null);
+      setPhotoReason('');
+      await refresh();
+    },
+  });
+
   const adjustInput = (ownerId: string) =>
     adjustBalanceInputSchema.safeParse({
       userId: ownerId,
@@ -209,6 +227,8 @@ export function ProfileReview({ profileId }: { profileId: string }) {
     removeProfile.isPending ||
     approvePhotoM.isPending ||
     rejectPhotoM.isPending ||
+    approveVideoM.isPending ||
+    rejectVideoM.isPending ||
     manualVerify.isPending ||
     publishNow.isPending ||
     revokeTop.isPending;
@@ -804,6 +824,90 @@ export function ProfileReview({ profileId }: { profileId: string }) {
           ))}
         </div>
       ) : null}
+
+      {profile.video
+        ? ((video) => (
+            <div className={styles.list} style={{ marginBottom: 'var(--space5)' }}>
+              <div className={styles.card}>
+                <div className={styles.cardPhoto}>
+                  {/* biome-ignore lint/a11y/useMediaCaption: пользовательский ролик без речи, субтитров у него нет */}
+                  <video
+                    src={video.url}
+                    poster={video.posterUrl}
+                    controls
+                    playsInline
+                    preload="none"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      background: '#000',
+                    }}
+                  />
+                  {!video.isApproved ? (
+                    <span
+                      className={`${styles.badge} ${styles.badgeBlocked}`}
+                      title={video.rejectedReason ?? undefined}
+                    >
+                      {t('photoPendingBadge')}
+                    </span>
+                  ) : null}
+                </div>
+                {/* Отклонить можно и уже одобренное: так видео снимают с
+                    публичной страницы, не трогая саму анкету. */}
+                {rejectingPhotoId === `video:${video.id}` ? (
+                  <div className={styles.reasonBox}>
+                    <textarea
+                      className={styles.textarea}
+                      value={photoReason}
+                      onChange={(event) => setPhotoReason(event.target.value)}
+                      placeholder={t('reason')}
+                      minLength={5}
+                    />
+                    <span className={styles.hint}>{t('reasonHint')}</span>
+                    <div className={styles.cardActions} style={{ padding: 0 }}>
+                      <Button
+                        disabled={busy || photoReason.trim().length < 5}
+                        onClick={() =>
+                          rejectVideoM.mutate({ id: video.id, reason: photoReason.trim() })
+                        }
+                      >
+                        {t('reject')}
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => setRejectingPhotoId(null)}
+                      >
+                        {t('cancel')}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.cardActions}>
+                    {!video.isApproved ? (
+                      <Button disabled={busy} onClick={() => approveVideoM.mutate(video.id)}>
+                        {t('approve')}
+                      </Button>
+                    ) : null}
+                    {video.rejectedReason ? null : (
+                      <Button
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => {
+                          setRejectingPhotoId(`video:${video.id}`);
+                          setPhotoReason('');
+                        }}
+                      >
+                        {t('reject')}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))(profile.video)
+        : null}
 
       <div className={styles.staffList}>
         <div className={styles.staffRow}>

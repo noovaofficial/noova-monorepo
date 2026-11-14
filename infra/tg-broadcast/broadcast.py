@@ -30,6 +30,16 @@ PeerFlood. Аккаунт, получивший PeerFlood, помечается 
 момент, до которого Telegram просил ждать (now + секунды из ошибки).
 "disabled": true выключает аккаунт насовсем.
 
+Автостоп. Если подряд N раз (--max-flood-streak, по умолчанию 3) приходит
+PeerFlood и между ними не было ни одной успешной отправки, запуск
+останавливается: так не сжигаются карантином все аккаунты на одном получателе.
+
+Прокси. Рекомендация — один аккаунт = один статический прокси/мобильный IP.
+В accounts.json: {"name": "support1", "proxy": "socks5://user:pass@host:port"}
+(socks5, socks4 или http; нужен пакет python-socks). Скрипт предупреждает об
+аккаунтах без прокси и о прокси, общем для нескольких; --require-proxy в таких
+случаях не даёт запуститься.
+
 Несколько аккаунтов. Если рядом лежит accounts.json (см.
 accounts.example.json), каждое следующее сообщение уходит с другого аккаунта:
 берётся тот, с которого сегодня отправлено меньше всего, при равенстве — по
@@ -65,6 +75,7 @@ import os
 import random
 import re
 import sys
+from urllib.parse import unquote, urlparse
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -134,8 +145,21 @@ def load_log():
     return [json.loads(line) for line in LOG_PATH.read_text(encoding='utf-8').splitlines() if line.strip()]
 
 
+try:
+    # ProxyError (прокси отверг логин/пароль, не смог дойти до Telegram) — не OSError,
+    # поэтому без этого он ронял бы запуск трейсбеком.
+    from python_socks import ProxyException
+    NET_ERRORS = (ConnectionError, OSError, asyncio.TimeoutError, ProxyException)
+except ImportError:
+    NET_ERRORS = (ConnectionError, OSError, asyncio.TimeoutError)
+
+PROXY_BY_ACCOUNT = {}  # имя аккаунта -> 'host:port' (без логина и пароля), для журнала
+
+
 def append_log(entry):
     entry = {**entry, 'at': datetime.now(timezone.utc).isoformat()}
+    if entry.get('account') in PROXY_BY_ACCOUNT:
+        entry['proxy'] = PROXY_BY_ACCOUNT[entry['account']]
     with LOG_PATH.open('a', encoding='utf-8') as f:
         f.write(json.dumps(entry, ensure_ascii=False) + '\n')
 
@@ -190,6 +214,17 @@ def flood_wait_until(item):
     return at if at.tzinfo else at.replace(tzinfo=timezone.utc)
 
 
+ACCOUNTS_FILE = None  # путь к accounts.json, выставляется в main(); None — файла нет
+
+
+def set_account_field(path, name, key, value):
+    raw = json.loads(path.read_text(encoding='utf-8'))
+    for item in raw:
+        if isinstance(item, dict) and item.get('name') == name:
+            item[key] = value
+    path.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+
 def mark_flood_wait(path, name, seconds):
     """Пишет в accounts.json floodWait: <до какого времени ждать> — до него аккаунт пропускается."""
     if not path.exists():
@@ -211,6 +246,34 @@ def mark_peer_flood(path, name):
         if isinstance(item, dict) and item.get('name') == name:
             item['peerFlood'] = datetime.now(timezone.utc).isoformat(timespec='seconds')
     path.write_text(json.dumps(raw, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+
+
+def parse_proxy(url, who):
+    """'socks5://user:pass@host:port' -> кортеж для Telethon (нужен python-socks)."""
+    u = urlparse(url)
+    if u.scheme not in ('socks5', 'socks4', 'http') or not u.hostname or not u.port:
+        sys.exit(f'{who}: proxy должен быть вида socks5://[user:pass@]host:port (socks4/http тоже можно), получено: {url!r}')
+    return (u.scheme, u.hostname, u.port, True, unquote(u.username) if u.username else None,
+            unquote(u.password) if u.password else None)
+
+
+def check_proxies(accounts, require):
+    """Один аккаунт — свой прокси: без прокси и с общим прокси предупреждаем, с --require-proxy — стоп."""
+    none = [a['name'] for a in accounts if not a.get('proxy_url')]
+    by_url = {}
+    for a in accounts:
+        if a.get('proxy_url'):
+            by_url.setdefault(a['proxy_url'], []).append(a['name'])
+    shared = [names for names in by_url.values() if len(names) > 1]
+    problems = []
+    if none:
+        problems.append(f'без прокси (ходят с вашего IP): {", ".join(none)}')
+    for names in shared:
+        problems.append(f'один прокси на несколько аккаунтов: {", ".join(names)}')
+    for p in problems:
+        print(f'Внимание: {p}')
+    if problems and require:
+        sys.exit('--require-proxy: у каждого аккаунта должен быть свой прокси. Остановлено.')
 
 
 def load_accounts(path):
@@ -245,6 +308,8 @@ def load_accounts(path):
             'session': str(SESSIONS_DIR / name),
             'api_id': item.get('api_id') or os.environ.get('TG_API_ID'),
             'api_hash': item.get('api_hash') or os.environ.get('TG_API_HASH'),
+            'proxy_url': item.get('proxy') or None,
+            'proxy': parse_proxy(item['proxy'], f'{path}: аккаунт {name}') if item.get('proxy') else None,
         })
     return out
 
@@ -285,20 +350,43 @@ async def resolve(client, key):
 
 async def open_clients(accounts, stack):
     """Подключает все аккаунты; без сессии Telethon спросит телефон и код."""
-    from telethon import TelegramClient
+    from telethon import TelegramClient, errors
 
     clients = {}
     for acc in accounts:
         if not acc['api_id'] or not acc['api_hash']:
             sys.exit(f'Для аккаунта {acc["name"]} нужны TG_API_ID и TG_API_HASH (my.telegram.org).')
         SESSIONS_DIR.mkdir(exist_ok=True)
-        client = TelegramClient(acc['session'], int(acc['api_id']), acc['api_hash'])
-        await client.start()
+        client = TelegramClient(acc['session'], int(acc['api_id']), acc['api_hash'], proxy=acc.get('proxy'))
+        try:
+            await client.start()
+            me = await client.get_me()
+        except errors.RPCError as e:
+            # Сессия мертва навсегда (ключ аннулирован, аккаунт удалён/забанен): один плохой
+            # аккаунт не должен ронять запуск. Помечаем disabled, чтобы не ходить к нему снова.
+            await client.disconnect()
+            fatal = isinstance(e, (errors.AuthKeyDuplicatedError, errors.AuthKeyUnregisteredError,
+                                   errors.SessionRevokedError, errors.UserDeactivatedError,
+                                   errors.UserDeactivatedBanError))
+            if fatal and ACCOUNTS_FILE:
+                set_account_field(ACCOUNTS_FILE, acc['name'], 'disabled', True)
+            print(f'Аккаунт {acc["name"]}: пропущен — {type(e).__name__}'
+                  + (' (помечен disabled; нужен новый вход: удалите sessions/'
+                     f'{acc["name"]}.session и выполните make tg-broadcast-login)' if fatal else ''))
+            continue
+        except NET_ERRORS as e:
+            await client.disconnect()
+            print(f'Аккаунт {acc["name"]}: пропущен — нет связи/прокси ({e!r}); проверьте прокси и сеть')
+            continue
         stack.push_async_callback(client.disconnect)
-        me = await client.get_me()
-        print(f'Аккаунт {acc["name"]}: {me.first_name} @{me.username or "—"}')
+        if acc.get('proxy'):
+            PROXY_BY_ACCOUNT[acc['name']] = f'{acc["proxy"][1]}:{acc["proxy"][2]}'
+        via = f' через прокси {PROXY_BY_ACCOUNT[acc["name"]]}' if acc['name'] in PROXY_BY_ACCOUNT else ' БЕЗ прокси'
+        print(f'Аккаунт {acc["name"]}: {me.first_name} @{me.username or "—"},{via}')
         clients[acc['name']] = client
     print()
+    if not clients:
+        sys.exit('Ни один аккаунт не подключился.')
     return clients
 
 
@@ -318,9 +406,12 @@ async def send_all(args, pending, sent_by, accounts):
     names = [a['name'] for a in accounts]
     queue = list(pending)
     blocked, last = set(), None
+    conn_fails = {}
+    flood_streak = 0  # PeerFlood подряд без единой успешной отправки между ними
 
     async with AsyncExitStack() as stack:
         clients = await open_clients(accounts, stack)
+        names = [n for n in names if n in clients]
 
         while queue:
             name = pick_account(names, sent_by, args.daily_cap, blocked, last)
@@ -345,6 +436,7 @@ async def send_all(args, pending, sent_by, accounts):
                 append_log({'key': key, 'status': 'sent', 'account': name})
                 sent_by[name] = sent_by.get(name, 0) + 1
                 sent_ok = True
+                flood_streak = 0
                 print(f'  {key}: отправлено с {name} ({sent_by[name]}/{args.daily_cap})')
             except errors.PeerFloodError:
                 # Ограничен этот аккаунт, а не получатель: получателя отдаём другому.
@@ -352,6 +444,13 @@ async def send_all(args, pending, sent_by, accounts):
                 blocked.add(name)
                 mark_peer_flood(Path(args.accounts), name)
                 queue.insert(0, r)
+                flood_streak += 1
+                if args.max_flood_streak and flood_streak >= args.max_flood_streak:
+                    print(f'\n  {name}: PeerFlood')
+                    print(f'Остановлено: {flood_streak} PeerFlood подряд без единой отправки. Скорее всего дело не в '
+                          'объёме, а в самих аккаунтах (новые/«холодные») или в получателях — остальные аккаунты '
+                          'не трогаем, чтобы не сжечь их карантином.')
+                    return
                 print(f'\n  {name}: PeerFlood — Telegram ограничил аккаунт. Он выбывает до конца запуска;')
                 print('  не использовать его минимум сутки, статус — у @SpamBot.')
                 continue
@@ -375,6 +474,25 @@ async def send_all(args, pending, sent_by, accounts):
                 append_log({'key': key, 'status': 'deactivated', 'account': name})
                 print(f'  {key}: аккаунт удалён')
                 continue
+            except NET_ERRORS as e:
+                # Обрыв связи (чаще всего — упавший прокси или сеть), а не вина получателя:
+                # в журнал не пишем, получатель остаётся в очереди. Один раз пробуем
+                # переподключиться, на повторном обрыве аккаунт выбывает до конца запуска.
+                conn_fails[name] = conn_fails.get(name, 0) + 1
+                queue.insert(0, r)
+                reconnected = False
+                if conn_fails[name] < 2:
+                    try:
+                        await client.connect()
+                        reconnected = client.is_connected()
+                    except NET_ERRORS:
+                        pass
+                if reconnected:
+                    print(f'  {name}: связь оборвалась ({e!r}), переподключился, продолжаю')
+                else:
+                    blocked.add(name)
+                    print(f'  {name}: нет связи ({e!r}) — аккаунт выбывает до конца запуска (проверьте прокси/сеть)')
+                continue
             except errors.RPCError as e:
                 append_log({'key': key, 'status': 'error', 'error': repr(e), 'account': name})
                 print(f'  {key}: ошибка {e!r}')
@@ -393,6 +511,9 @@ def main():
     p.add_argument('recipients', nargs='?', help='CSV с колонкой telegram (и необязательной locale)')
     p.add_argument('--login', action='store_true', help='войти во все аккаунты из accounts.json и сохранить сессии')
     p.add_argument('--accounts', default=str(ACCOUNTS_PATH), help='JSON со списком аккаунтов (по умолчанию accounts.json)')
+    p.add_argument('--max-flood-streak', type=int, default=3,
+                   help='остановиться после N PeerFlood подряд без единой успешной отправки (0 — не останавливаться; по умолчанию 3)')
+    p.add_argument('--require-proxy', action='store_true', help='не запускаться, если у какого-то аккаунта нет своего прокси')
     p.add_argument('--send', action='store_true', help='реально отправлять (без флага — пробный прогон)')
     p.add_argument('--limit', type=int, help='обработать не больше N получателей за запуск')
     p.add_argument('--daily-cap', type=int, default=25, help='не больше N отправленных в сутки С КАЖДОГО аккаунта (по умолчанию 25)')
@@ -400,10 +521,13 @@ def main():
     p.add_argument('--delay-max', type=float, default=150, help='максимальная пауза между сообщениями, с')
     args = p.parse_args()
     load_env()
+    global ACCOUNTS_FILE
+    ACCOUNTS_FILE = Path(args.accounts) if Path(args.accounts).exists() else None
     accounts = load_accounts(Path(args.accounts))
     if not accounts:
         sys.exit('Нет аккаунтов для рассылки: все отключены или в карантине после PeerFlood (24 ч).')
     names = [a['name'] for a in accounts]
+    check_proxies(accounts, args.require_proxy)
 
     if args.login:
         asyncio.run(login_all(accounts))

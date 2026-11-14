@@ -56,6 +56,7 @@ import { PriceSlotsEditor } from '../PriceSlotsEditor';
 import { ProfileStatusBadge } from '../ProfileStatusBadge';
 import { ServicePicker } from '../ServicePicker';
 import { VerificationCard } from '../VerificationCard';
+import { VideoManager } from '../VideoManager';
 
 /** `cause` — исходная ошибка: по ней к общим «не удалось…» добавляется причина. */
 type Notice = { kind: 'ok' | 'error' | 'warn'; key: string; cause?: unknown } | null;
@@ -948,6 +949,7 @@ export function ProfileEditor({ profileId }: { profileId: string }) {
           />
 
           <PhotoManager profileId={profileId} photos={photos} onChange={setPhotos} />
+          <VideoManager profileId={profileId} />
         </form>
 
         <aside className={styles.sidebar}>

@@ -15,7 +15,11 @@ import {
   putObject,
 } from './storage.js';
 
-async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profileId: string) {
+export async function ownedProfileOr404(
+  fastify: FastifyInstance,
+  userId: string,
+  profileId: string,
+) {
   const profile = await fastify.prisma.profile.findFirst({
     where: { id: profileId, ownerId: userId },
     select: { id: true, slug: true, status: true },
@@ -31,7 +35,7 @@ async function ownedProfileOr404(fastify: FastifyInstance, userId: string, profi
  * замены фото. Трогаем только когда это имеет значение: остальным статусам
  * лишняя запись не нужна.
  */
-async function clearNeedsEditIfRejected(
+export async function clearNeedsEditIfRejected(
   fastify: FastifyInstance,
   profile: { id: string; status: string },
 ) {

@@ -1,3 +1,6 @@
+import { createReadStream, createWriteStream } from 'node:fs';
+import { stat } from 'node:fs/promises';
+import { pipeline } from 'node:stream/promises';
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
@@ -44,6 +47,36 @@ export async function putObject(key: string, body: Buffer, contentType: string):
   );
 }
 
+/**
+ * То же с диска, потоком: видео весит десятки мегабайт, и держать его целиком
+ * в памяти процесса API незачем. Длину передаём явно — без неё S3 не примет
+ * поток неизвестного размера.
+ */
+export async function putObjectFromFile(
+  key: string,
+  path: string,
+  contentType: string,
+): Promise<void> {
+  const { size } = await stat(path);
+  await client.send(
+    new PutObjectCommand({
+      Bucket: env.S3_BUCKET,
+      Key: key,
+      Body: createReadStream(path),
+      ContentLength: size,
+      ContentType: contentType,
+      CacheControl: 'public, max-age=31536000, immutable',
+    }),
+  );
+}
+
+/** Скачивает объект на диск — исходник видео для ffmpeg. */
+export async function downloadObject(key: string, path: string): Promise<void> {
+  const out = await client.send(new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+  if (!out.Body) throw new Error(`Объект пуст: ${key}`);
+  await pipeline(out.Body as NodeJS.ReadableStream, createWriteStream(path));
+}
+
 export async function deleteObject(key: string): Promise<void> {
   await client.send(new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
 }
@@ -70,17 +103,29 @@ export async function moveObject(from: string, to: string): Promise<void> {
  * Поэтому байты идёт отдавать сам API, проверяя права на каждый запрос.
  * Заодно исчезает ссылка, работающая у любого, кому её переслали.
  */
-export async function getObject(key: string): Promise<{
+export async function getObject(
+  key: string,
+  /**
+   * Заголовок `Range` запроса, как есть. Нужен видео: Safari не играет
+   * ролик, если сервер не умеет отдавать его кусками.
+   */
+  range?: string,
+): Promise<{
   body: NodeJS.ReadableStream;
   contentType: string;
   contentLength?: number;
+  /** Есть только у ответа на `range` — признак частичного ответа (206). */
+  contentRange?: string;
 }> {
-  const out = await client.send(new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+  const out = await client.send(
+    new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key, ...(range ? { Range: range } : {}) }),
+  );
   if (!out.Body) throw new Error(`Объект пуст: ${key}`);
   return {
     body: out.Body as NodeJS.ReadableStream,
     contentType: out.ContentType ?? 'application/octet-stream',
     ...(out.ContentLength === undefined ? {} : { contentLength: out.ContentLength }),
+    ...(out.ContentRange === undefined ? {} : { contentRange: out.ContentRange }),
   };
 }
 
@@ -105,6 +150,20 @@ function apiBase(): string {
 
 export function publicUrl(key: string): string {
   return `${env.MEDIA_BASE_URL.replace(/\/$/, '')}/${key.replace(/^\//, '')}`;
+}
+
+/** Файлы одного видео в его папке. `source` живёт только до конца обработки. */
+export const VIDEO_FILES = { source: 'source', video: 'video.mp4', poster: 'poster.webp' } as const;
+export type VideoFile = 'video' | 'poster';
+
+/** Адрес, по которому владелец видит своё неодобренное видео или его постер. */
+export function ownVideoUrl(videoId: string, file: VideoFile): string {
+  return `${apiBase()}/api/v1/me/videos/${videoId}/file?file=${file}`;
+}
+
+/** То же для модератора. */
+export function moderationVideoUrl(videoId: string, file: VideoFile): string {
+  return `${apiBase()}/api/v1/moderation/videos/${videoId}/file?file=${file}`;
 }
 
 export const isPublicKey = (key: string) => key.startsWith(`${PUBLIC_PREFIX}/`);
@@ -134,6 +193,21 @@ export async function deletePhotoFiles(storageKey: string): Promise<void> {
   for (const variant of Object.keys(VARIANT_WIDTHS)) {
     try {
       await deleteObject(`${storageKey}/${variant}.webp`);
+    } catch (error) {
+      if (!isMissingObject(error)) throw error;
+    }
+  }
+}
+
+/**
+ * Удаляет все файлы одного видео. Та же роль и те же правила, что у
+ * `deletePhotoFiles`: зовётся всюду, где исчезает видео, отсутствующий
+ * объект проглатывает, недоступное хранилище — нет.
+ */
+export async function deleteVideoFiles(storageKey: string): Promise<void> {
+  for (const file of Object.values(VIDEO_FILES)) {
+    try {
+      await deleteObject(`${storageKey}/${file}`);
     } catch (error) {
       if (!isMissingObject(error)) throw error;
     }

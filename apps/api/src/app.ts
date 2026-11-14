@@ -33,6 +33,7 @@ import { promoRoutes } from './modules/promo/routes.js';
 import { reportRoutes } from './modules/reports/routes.js';
 import { serviceCatalogRoutes } from './modules/service-catalog/routes.js';
 import { verificationRoutes } from './modules/verification/routes.js';
+import { videoRoutes } from './modules/videos/routes.js';
 import eventBufferPlugin from './plugins/event-buffer.js';
 import presencePlugin from './plugins/presence.js';
 import prismaPlugin from './plugins/prisma.js';
@@ -137,6 +138,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(authRoutes);
       await api.register(accountRoutes);
       await api.register(photoRoutes);
+      await api.register(videoRoutes);
       await api.register(moderationRoutes);
       await api.register(adminRoutes);
       await api.register(companyRoutes);

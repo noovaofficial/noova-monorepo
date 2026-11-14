@@ -122,6 +122,7 @@ describe('монетизация по месту', () => {
       prices: country,
       top: { weekGc: 300, slots: 16 },
       agencyTop: { weekGc: 300, slots: 8 },
+      agencyProfilesInTop: false,
     };
     expect(countryMonetizationSchema.safeParse(base).success).toBe(true);
 

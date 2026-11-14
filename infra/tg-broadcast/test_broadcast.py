@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import broadcast
-from broadcast import load_accounts, mark_flood_wait, mark_peer_flood, pick_account, sent_today_by_account
+from broadcast import check_proxies, parse_proxy, load_accounts, mark_flood_wait, mark_peer_flood, pick_account, sent_today_by_account
 
 
 class PickAccountTest(unittest.TestCase):
@@ -98,3 +98,23 @@ class PeerFloodTest(unittest.TestCase):
         self.write([{'name': 'a'}])
         mark_flood_wait(self.path, 'a', 600)
         self.assertEqual(self.names(), [])
+
+
+class ProxyTest(unittest.TestCase):
+    def test_parse(self):
+        self.assertEqual(parse_proxy('socks5://u:p%40@1.2.3.4:1080', 'x'),
+                         ('socks5', '1.2.3.4', 1080, True, 'u', 'p@'))
+        self.assertEqual(parse_proxy('socks5://1.2.3.4:1080', 'x')[4:], (None, None))
+
+    def test_parse_rejects_garbage(self):
+        for bad in ('1.2.3.4:1080', 'socks5://host', 'ftp://h:1'):
+            with self.assertRaises(SystemExit):
+                parse_proxy(bad, 'x')
+
+    def test_require_proxy_blocks_missing_and_shared(self):
+        ok = [{'name': 'a', 'proxy_url': 'socks5://h:1'}, {'name': 'b', 'proxy_url': 'socks5://h:2'}]
+        check_proxies(ok, True)
+        with self.assertRaises(SystemExit):
+            check_proxies(ok + [{'name': 'c'}], True)
+        with self.assertRaises(SystemExit):
+            check_proxies([ok[0], {'name': 'd', 'proxy_url': 'socks5://h:1'}], True)

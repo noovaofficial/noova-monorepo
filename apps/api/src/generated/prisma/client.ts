@@ -146,6 +146,18 @@ export type DistrictTranslation = Prisma.DistrictTranslationModel
  */
 export type Profile = Prisma.ProfileModel
 /**
+ * Model Video
+ * Видео анкеты. Доступно только при действующей подписке (`Listing` в
+ * статусе active/grace): без неё нельзя загрузить новое, а уже одобренное
+ * не показывается на публичной странице — но не удаляется и возвращается
+ * само, когда подписка снова действует.
+ * 
+ * Как и фото, проходит модерацию и лежит в `pending/`, пока не одобрено.
+ * В отличие от фото, обрабатывается не в запросе, а фоном: перекодирование
+ * занимает десятки секунд.
+ */
+export type Video = Prisma.VideoModel
+/**
  * Model Photo
  * 
  */

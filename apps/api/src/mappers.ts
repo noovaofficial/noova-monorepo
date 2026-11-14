@@ -159,6 +159,8 @@ export function toProfileDetail(
     status: row.status,
     description: row.description,
     photos: row.photos.map(toPhoto),
+    // Видео подставляет маршрут: оно зависит от подписки владельца.
+    video: null,
     params: {
       age: row.age,
       heightCm: row.heightCm,

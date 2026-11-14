@@ -30,10 +30,14 @@ import {
   getObject,
   isPublicKey,
   moderationPhotoUrl,
+  moderationVideoUrl,
   publicUrl,
+  VIDEO_FILES,
 } from '../photos/storage.js';
 import { decodeCursor, encodeCursor } from '../profiles/query.js';
 import { deleteVerificationPhotos } from '../verification/service.js';
+import { sendVideoFile } from '../videos/routes.js';
+import { approveVideo, deleteProfileVideoFiles, rejectVideo } from '../videos/service.js';
 
 const profileSelect = {
   id: true,
@@ -43,6 +47,12 @@ const profileSelect = {
   ownerId: true,
   city: { select: { name: true } },
 } as const;
+
+/**
+ * Видео, ждущее решения: обработано, не одобрено и ещё не отклонено. Одно
+ * условие на счётчик и на очередь — иначе число разойдётся со списком.
+ */
+const pendingVideoWhere = { status: 'ready', isApproved: false, rejectedReason: null } as const;
 
 /**
  * Модератор не проверяет собственные материалы. Роли разведены по разным
@@ -58,7 +68,15 @@ function refuseSelfModeration(fastify: FastifyInstance, ownerId: string, moderat
 async function writeAction(
   fastify: FastifyInstance,
   moderatorId: string,
-  subjectType: 'photo' | 'verification' | 'identity' | 'user' | 'comment' | 'profile' | 'company',
+  subjectType:
+    | 'photo'
+    | 'video'
+    | 'verification'
+    | 'identity'
+    | 'user'
+    | 'comment'
+    | 'profile'
+    | 'company',
   subjectId: string,
   decision: 'approved' | 'rejected',
   reason?: string,
@@ -275,6 +293,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async () => {
       const [
         photos,
+        videos,
         verifications,
         identity,
         pendingComments,
@@ -290,6 +309,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         fastify.prisma.photo.count({
           where: { isApproved: false, deletedAt: null, rejectedReason: null },
         }),
+        fastify.prisma.video.count({ where: pendingVideoWhere }),
         fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
         // Заявки на верификацию личности — тоже незакрытая работа (D-12).
         fastify.prisma.verificationRequest.count({ where: { status: 'pending' } }),
@@ -315,6 +335,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const comments = pendingComments + openReports;
       return {
         photos,
+        videos,
         verifications,
         identity,
         comments,
@@ -324,7 +345,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         blockedUsers,
         // Заблокированных в итоге нет: бейдж в шапке — это то, что ждёт
         // решения, и расти от уже принятых решений он не должен.
-        total: photos + verifications + identity + comments + profileReports,
+        total: photos + videos + verifications + identity + comments + profileReports,
       };
     },
   );
@@ -339,8 +360,15 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
    * поднимались сортировкой в памяти, а с курсором порядок обязан жить в
    * запросе — иначе страницы перекрывались бы.
    */
-  type QueueSource = 'verification' | 'photo' | 'comment' | 'reportUrgent' | 'report';
-  const QUEUE_ORDER: QueueSource[] = ['verification', 'photo', 'comment', 'reportUrgent', 'report'];
+  type QueueSource = 'verification' | 'photo' | 'video' | 'comment' | 'reportUrgent' | 'report';
+  const QUEUE_ORDER: QueueSource[] = [
+    'verification',
+    'photo',
+    'video',
+    'comment',
+    'reportUrgent',
+    'report',
+  ];
   const URGENT_REASONS = ['underage', 'coercion'] as const;
   type Item = z.infer<typeof queueItemSchema>;
 
@@ -419,6 +447,39 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           displayName: photo.profile.displayName,
           kind: photo.profile.kind,
           cityName: photo.profile.city.name,
+        },
+      }));
+    },
+    video: async (afterId, take) => {
+      const videos = await fastify.prisma.video.findMany({
+        where: pendingVideoWhere,
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        take,
+        ...after(afterId),
+        select: {
+          id: true,
+          width: true,
+          height: true,
+          durationMs: true,
+          createdAt: true,
+          profile: { select: profileSelect },
+        },
+      });
+      return videos.map((video) => ({
+        kind: 'video' as const,
+        id: video.id,
+        url: moderationVideoUrl(video.id, 'video'),
+        posterUrl: moderationVideoUrl(video.id, 'poster'),
+        width: video.width,
+        height: video.height,
+        durationMs: video.durationMs,
+        createdAt: video.createdAt.toISOString(),
+        profile: {
+          id: video.profile.id,
+          slug: video.profile.slug,
+          displayName: video.profile.displayName,
+          kind: video.profile.kind,
+          cityName: video.profile.city.name,
         },
       }));
     },
@@ -534,6 +595,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       fastify.prisma.photo.count({
         where: { isApproved: false, deletedAt: null, rejectedReason: null },
       }),
+    video: () => fastify.prisma.video.count({ where: pendingVideoWhere }),
     comment: () =>
       fastify.prisma.profileComment.count({
         where: {
@@ -747,6 +809,85 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       return { ok: true as const };
     },
   );
+
+  /** Файл видео для модератора — как у фото, достаточно роли. */
+  fastify.get(
+    '/moderation/videos/:id/file',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        querystring: z.object({ file: z.enum(['video', 'poster']).default('video') }),
+      },
+    },
+    async (request, reply) => {
+      const video = await fastify.prisma.video.findFirst({
+        where: { id: request.params.id, status: 'ready' },
+        select: { storageKey: true },
+      });
+      if (!video) throw fastify.httpErrors.notFound('Видео не найдено');
+      return sendVideoFile(reply, video.storageKey, request.query.file, request.headers.range);
+    },
+  );
+
+  fastify.post(
+    '/moderation/videos/:id/approve',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const video = await findModeratedVideo(request.params.id);
+      refuseSelfModeration(fastify, video.profile.ownerId, userId);
+
+      await approveVideo(fastify.prisma, video.id);
+      await writeAction(fastify, userId, 'video', video.id, 'approved');
+      fastify.revalidate([profileTag(video.profile.slug)]);
+      return { ok: true as const };
+    },
+  );
+
+  fastify.post(
+    '/moderation/videos/:id/reject',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        body: rejectionSchema,
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const video = await findModeratedVideo(request.params.id);
+      refuseSelfModeration(fastify, video.profile.ownerId, userId);
+
+      await rejectVideo(fastify.prisma, video.id, request.body.reason);
+      await writeAction(fastify, userId, 'video', video.id, 'rejected', request.body.reason);
+      fastify.revalidate([profileTag(video.profile.slug)]);
+      return { ok: true as const };
+    },
+  );
+
+  /** Решение принимается только по обработанному видео: до этого смотреть нечего. */
+  async function findModeratedVideo(id: string) {
+    const video = await fastify.prisma.video.findFirst({
+      where: { id, status: 'ready' },
+      select: { id: true, profile: { select: { slug: true, ownerId: true } } },
+    });
+    if (!video) throw fastify.httpErrors.notFound('Видео не найдено');
+    return video;
+  }
 
   fastify.post(
     '/moderation/photos/:id/approve',
@@ -1633,6 +1774,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       for (const photo of photos) {
         await deletePhotoFiles(photo.storageKey);
       }
+      await deleteProfileVideoFiles(fastify.prisma, [profile.id]);
 
       const requests = await fastify.prisma.verificationRequest.findMany({
         where: { profileId: profile.id },
@@ -1770,11 +1912,18 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
               rejectedReason: true,
             },
           },
+          videos: {
+            where: { status: 'ready' },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+            select: { id: true, storageKey: true, isApproved: true, rejectedReason: true },
+          },
           verification: { select: { id: true, status: true } },
         },
       });
 
       if (!profile) throw fastify.httpErrors.notFound('Анкета не найдена');
+      const video = profile.videos[0];
 
       return {
         id: profile.id,
@@ -1808,6 +1957,19 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
             rejectedReason: photo.rejectedReason,
           })),
         ),
+        video: video
+          ? {
+              id: video.id,
+              url: isPublicKey(video.storageKey)
+                ? publicUrl(`${video.storageKey}/${VIDEO_FILES.video}`)
+                : moderationVideoUrl(video.id, 'video'),
+              posterUrl: isPublicKey(video.storageKey)
+                ? publicUrl(`${video.storageKey}/${VIDEO_FILES.poster}`)
+                : moderationVideoUrl(video.id, 'poster'),
+              isApproved: video.isApproved,
+              rejectedReason: video.rejectedReason,
+            }
+          : null,
         verificationStatus: profile.verification?.status ?? 'none',
         verificationCaseId: profile.verification?.id ?? null,
         owner: {

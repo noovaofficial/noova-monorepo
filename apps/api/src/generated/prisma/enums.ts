@@ -151,6 +151,7 @@ export type PubicHair = (typeof PubicHair)[keyof typeof PubicHair]
 
 export const ModerationSubject = {
   photo: 'photo',
+  video: 'video',
   profile: 'profile',
   verification: 'verification',
   identity: 'identity',
@@ -176,6 +177,15 @@ export const AuthTokenPurpose = {
 } as const
 
 export type AuthTokenPurpose = (typeof AuthTokenPurpose)[keyof typeof AuthTokenPurpose]
+
+
+export const VideoStatus = {
+  processing: 'processing',
+  ready: 'ready',
+  failed: 'failed'
+} as const
+
+export type VideoStatus = (typeof VideoStatus)[keyof typeof VideoStatus]
 
 
 export const ProfileReportReason = {

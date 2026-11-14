@@ -247,6 +247,25 @@ export default async function ProfilePage({ params }: Props) {
             profileSlug={profile.slug}
           />
 
+          {/* Видео приходит, только если оно одобрено и у владельца действует
+              подписка, — решает API, здесь условий нет. `preload="none"`:
+              ролик весит мегабайты, и качать его до нажатия незачем. */}
+          {profile.video ? (
+            <Section title={t('video')}>
+              {/* biome-ignore lint/a11y/useMediaCaption: пользовательский ролик без речи, субтитров у него нет */}
+              <video
+                className={styles.video}
+                src={profile.video.url}
+                poster={profile.video.posterUrl}
+                width={profile.video.width}
+                height={profile.video.height}
+                controls
+                playsInline
+                preload="none"
+              />
+            </Section>
+          ) : null}
+
           <Section title={t('description')}>
             <p className={styles.description}>{profile.description}</p>
           </Section>

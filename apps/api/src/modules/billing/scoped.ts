@@ -38,6 +38,7 @@ function defaultCountryMonetization(): CountryMonetization {
       slots: DEFAULT_BILLING_CONFIG.top.slots,
     },
     agencyTop: { ...DEFAULT_BILLING_CONFIG.agencyTop },
+    agencyProfilesInTop: false,
   };
 }
 
@@ -79,6 +80,7 @@ export async function getCountryMonetization(
     prices,
     top: { weekGc: top.weekGc, slots: top.slots },
     agencyTop: { weekGc: top.agencyWeekGc, slots: top.agencySlots },
+    agencyProfilesInTop: top.agencyProfilesAllowed,
   };
 }
 
@@ -105,12 +107,14 @@ export async function saveCountryMonetization(
         slots: input.top.slots,
         agencyWeekGc: input.agencyTop.weekGc,
         agencySlots: input.agencyTop.slots,
+        agencyProfilesAllowed: input.agencyProfilesInTop,
       },
       update: {
         weekGc: input.top.weekGc,
         slots: input.top.slots,
         agencyWeekGc: input.agencyTop.weekGc,
         agencySlots: input.agencyTop.slots,
+        agencyProfilesAllowed: input.agencyProfilesInTop,
       },
     }),
   ]);

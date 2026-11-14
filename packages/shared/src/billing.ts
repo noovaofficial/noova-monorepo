@@ -160,6 +160,11 @@ export const countryMonetizationSchema = z.object({
   prices: priceGridSchema,
   top: topTermsSchema,
   agencyTop: topTermsSchema,
+  /**
+   * Могут ли анкеты агентств покупать место в ТОПе анкет. Индивидуалкам и
+   * салонам он доступен всегда. По умолчанию выключено.
+   */
+  agencyProfilesInTop: z.boolean(),
 });
 export type CountryMonetization = z.infer<typeof countryMonetizationSchema>;
 
@@ -478,6 +483,11 @@ export const cityTopSchema = z.object({
   priceGc: z.number().int().positive(),
   slots: z.number().int().positive(),
   freeSlots: z.number().int().nonnegative(),
+  /**
+   * Может ли этот рекламодатель покупать ТОП в городе: агентству — только
+   * если страна разрешила ТОП анкетам агентств (`agencyProfilesInTop`).
+   */
+  allowed: z.boolean(),
 });
 export type CityTop = z.infer<typeof cityTopSchema>;
 
@@ -486,6 +496,17 @@ export const topStateSchema = z.object({
   placements: z.array(topPlacementSchema),
 });
 export type TopState = z.infer<typeof topStateSchema>;
+
+/**
+ * Кому доступна покупка ТОПа анкеты: индивидуалке и салону — всегда,
+ * агентству — только если это включено в настройках страны анкеты.
+ */
+export function canBuyProfileTop(
+  ownerKind: AdvertiserKind | null,
+  agencyProfilesInTop: boolean,
+): boolean {
+  return ownerKind !== 'agency' || agencyProfilesInTop;
+}
 
 export const buyTopInputSchema = z.object({ profileId: z.string().min(1) });
 
