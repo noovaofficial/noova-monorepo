@@ -76,7 +76,9 @@ describe('обработка фотографий', () => {
       .toBuffer();
 
     await expect(processImage(bomb)).rejects.toBeInstanceOf(ImageError);
-  });
+    // Долго не отказ, а подготовка: сжатие холста в 900 Мпикс. На машине,
+    // занятой остальными тестами, оно не укладывается в стандартные 5 секунд.
+  }, 30_000);
 
   it('готовит три размера и превью-заглушку', async () => {
     const processed = await processImage(await photoWithGps(2400, 3000));
