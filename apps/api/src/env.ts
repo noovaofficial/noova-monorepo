@@ -148,6 +148,40 @@ if (!parsed.success) {
 
 export const env: Env = parsed.data;
 
+/**
+ * Секреты, без которых прод запускать нельзя. Значения по умолчанию удобны
+ * локально, но в проде они же — тихая дыра: переменная выпала из `.env`, и
+ * сервис поднялся с пустым или общеизвестным секретом, ничего не сказав.
+ *
+ * Отдельной функцией, а не в схеме: api и jobs делят один `env.ts`, но
+ * секреты у них разные — jobs не принимает запросов, и токены ему не нужны.
+ */
+const DEV_DEFAULTS: Partial<Record<keyof Env, string>> = {
+  IP_HASH_SALT: 'dev-only-salt',
+  S3_SECRET_KEY: 'noova-dev-secret',
+};
+
+export function missingProductionSecrets(
+  values: Pick<Env, 'NODE_ENV'> & Partial<Env>,
+  names: readonly (keyof Env)[],
+): string[] {
+  if (values.NODE_ENV !== 'production') return [];
+  return names.filter((name) => {
+    const value = values[name];
+    return value === undefined || value === '' || value === DEV_DEFAULTS[name];
+  });
+}
+
+/** Падает до старта, если в проде не задан хотя бы один из секретов. */
+export function requireProductionSecrets(names: readonly (keyof Env)[]): void {
+  const missing = missingProductionSecrets(env, names);
+  if (missing.length === 0) return;
+  console.error(
+    `В проде не заданы или оставлены дев-значениями: ${missing.join(', ')}. Сервис не запущен.`,
+  );
+  process.exit(1);
+}
+
 export const corsOrigins = env.CORS_ORIGINS.split(',')
   .map((o) => o.trim())
   .filter(Boolean);

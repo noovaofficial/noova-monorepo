@@ -42,6 +42,8 @@ make server-env SERVER=deploy@<IP> DOMAIN=noova.cc EMAIL=admin@example.com
 | `POSTGRES_PASSWORD` | `openssl rand -base64 32 \| tr -d '/+='` |
 | `MINIO_ROOT_USER` | любое имя, не `noova` |
 | `MINIO_ROOT_PASSWORD` | `openssl rand -base64 32` |
+| `MINIO_APP_USER` | учётка, под которой api и jobs ходят в хранилище: любое имя, не равное `MINIO_ROOT_USER`, например `noova-app` |
+| `MINIO_APP_PASSWORD` | `openssl rand -hex 32`. Без этих двух переменных `docker compose` не стартует |
 | `IP_HASH_SALT` | `openssl rand -hex 32` |
 | `REVALIDATE_SECRET` | `openssl rand -hex 32` |
 | `PAYMENTO_API_KEY` / `PAYMENTO_SECRET_KEY` | Из кабинета `app.paymento.io`. Пустые — касса выключена. В настройках Paymento адрес IPN: `https://noova.cc/api/v1/billing/webhook/paymento` |

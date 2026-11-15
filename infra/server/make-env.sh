@@ -53,6 +53,8 @@ POSTGRES_DB=noova
 POSTGRES_PASSWORD=$(secret)
 MINIO_ROOT_USER=noova-minio
 MINIO_ROOT_PASSWORD=$(secret)
+MINIO_APP_USER=noova-app
+MINIO_APP_PASSWORD=$(hex)
 
 IP_HASH_SALT=$(hex)
 INTERNAL_API_TOKEN=$(hex)
@@ -88,7 +90,7 @@ chmod 600 "$ENV_FILE"
 
 printf '\033[32m✓ %s создан\033[0m (%s строк, права 600)\n' "$ENV_FILE" "$(grep -c . "$ENV_FILE")"
 printf '  Домен: https://%s\n' "$DOMAIN"
-printf '  Секреты: POSTGRES_PASSWORD, MINIO_ROOT_PASSWORD, IP_HASH_SALT,\n'
+printf '  Секреты: POSTGRES_PASSWORD, MINIO_ROOT_PASSWORD, MINIO_APP_PASSWORD, IP_HASH_SALT,\n'
 printf '           INTERNAL_API_TOKEN, REVALIDATE_SECRET — сгенерированы\n'
 printf '  Карта: tile.openstreetmap.org, контакт в User-Agent — %s\n\n' "$EMAIL"
 printf '  Сделайте копию файла вне сервера: без пароля базы дамп бесполезен.\n'

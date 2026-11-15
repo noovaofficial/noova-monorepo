@@ -16,7 +16,7 @@ function errorKey(error: unknown): string {
   if (error.status === 409) return 'videoExists';
   if (error.status === 413) return 'videoTooLarge';
   if (error.status === 400) {
-    return error.message.includes('длиннее') ? 'videoTooLong' : 'videoBadFormat';
+    return error.code === 'video_too_long' ? 'videoTooLong' : 'videoBadFormat';
   }
   return 'videoUploadFailed';
 }

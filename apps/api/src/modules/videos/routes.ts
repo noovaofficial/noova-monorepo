@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { hasVisibleListing } from '../billing/listing.js';
+import { withCode } from '../locations/country-lock.js';
 import { clearNeedsEditIfRejected, ownedProfileOr404 } from '../photos/routes.js';
 import {
   deleteVideoFiles,
@@ -75,6 +76,11 @@ export const videoRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
 
       // Проверки до чтения тела: незачем принимать 50 МБ, чтобы отказать.
+      // Заблокированная анкета наружу не выйдет: её видео только заняло бы
+      // хранилище и очередь модератора.
+      if (owned.status === 'banned') {
+        throw fastify.httpErrors.forbidden('Анкета заблокирована');
+      }
       if (!(await hasVisibleListing(fastify.prisma, userId))) {
         throw fastify.httpErrors.paymentRequired('Видео доступно только с активной подпиской');
       }
@@ -88,11 +94,16 @@ export const videoRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       // На диск, а не в память: файл большой, а ffprobe всё равно читает путь.
       const workDir = await mkdtemp(join(tmpdir(), 'noova-upload-'));
+      // Папку убираем сами, пока её не забрала очередь обработки.
+      let handedOver = false;
       try {
         const sourcePath = join(workDir, 'source');
         await pipeline(file.file, createWriteStream(sourcePath));
         if (file.file.truncated) {
-          throw fastify.httpErrors.payloadTooLarge('Файл больше допустимого размера');
+          throw withCode(
+            fastify.httpErrors.payloadTooLarge('Файл больше допустимого размера'),
+            'video_too_large',
+          );
         }
 
         // Формат и длительность — по содержимому, сразу: владелец узнаёт об
@@ -102,18 +113,33 @@ export const videoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         } catch (error) {
           if (!(error instanceof VideoError)) throw error;
           if (error.reason === 'too_long') {
-            throw fastify.httpErrors.badRequest(`Видео длиннее ${VIDEO_MAX_SECONDS} секунд`);
+            throw withCode(
+              fastify.httpErrors.badRequest(`Видео длиннее ${VIDEO_MAX_SECONDS} секунд`),
+              'video_too_long',
+            );
           }
           if (error.reason === 'unavailable') {
             throw fastify.httpErrors.serviceUnavailable('Обработка видео недоступна');
           }
-          throw fastify.httpErrors.badRequest('Файл не является видео поддерживаемого формата');
+          throw withCode(
+            fastify.httpErrors.badRequest('Файл не является видео поддерживаемого формата'),
+            'video_bad_format',
+          );
         }
 
         // Запись — до загрузки в хранилище: её id входит в ключ объекта.
-        const created = await fastify.prisma.video.create({
-          data: { profileId: owned.id, storageKey: '' },
-          select: { id: true },
+        // Лимит перепроверяем под замком на анкету: первая проверка была до
+        // приёма файла, и две одновременные загрузки прошли бы её обе.
+        const created = await fastify.prisma.$transaction(async (tx) => {
+          await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${`video:${owned.id}`}))`;
+          const existing = await tx.video.count({ where: { profileId: owned.id } });
+          if (existing >= MAX_VIDEOS_PER_PROFILE) {
+            throw fastify.httpErrors.conflict('У анкеты уже есть видео — сначала удалите его');
+          }
+          return tx.video.create({
+            data: { profileId: owned.id, storageKey: '' },
+            select: { id: true },
+          });
         });
         const storageKey = videoDir(PENDING_PREFIX, owned.id, created.id);
         try {
@@ -133,10 +159,11 @@ export const videoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         });
 
         await clearNeedsEditIfRejected(fastify, owned);
-        enqueueVideo(fastify.prisma, fastify.log, saved.id);
+        enqueueVideo(fastify.prisma, fastify.log, saved.id, workDir);
+        handedOver = true;
         return reply.status(201).send(toOwnVideo(saved));
       } finally {
-        await rm(workDir, { recursive: true, force: true });
+        if (!handedOver) await rm(workDir, { recursive: true, force: true });
       }
     },
   );

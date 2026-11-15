@@ -261,6 +261,17 @@ export function updateProfile(id: string, input: UpdateProfileInput): Promise<Ow
  * Загрузка идёт через FormData, поэтому content-type ставит сам браузер —
  * вручную его задавать нельзя, иначе потеряется boundary.
  */
+/** Ошибка загрузки файла: статус и код причины, по которому подбирается перевод. */
+async function uploadError(response: Response): Promise<AccountError> {
+  const body = await response.json().catch(() => null);
+  return new AccountError(
+    String(body?.message ?? ''),
+    response.status,
+    [],
+    typeof body?.code === 'string' ? body.code : undefined,
+  );
+}
+
 export async function uploadPhoto(profileId: string, file: File): Promise<OwnPhoto> {
   const form = new FormData();
   form.append('file', file);
@@ -272,13 +283,7 @@ export async function uploadPhoto(profileId: string, file: File): Promise<OwnPho
     cache: 'no-store',
   });
 
-  if (!response.ok) {
-    const message = await response
-      .json()
-      .then((body) => String(body?.message ?? ''))
-      .catch(() => '');
-    throw new AccountError(message, response.status);
-  }
+  if (!response.ok) throw await uploadError(response);
 
   return ownPhotoSchema.parse(await response.json());
 }
@@ -302,13 +307,7 @@ export async function uploadVideo(profileId: string, file: File): Promise<OwnVid
     cache: 'no-store',
   });
 
-  if (!response.ok) {
-    const message = await response
-      .json()
-      .then((body) => String(body?.message ?? ''))
-      .catch(() => '');
-    throw new AccountError(message, response.status);
-  }
+  if (!response.ok) throw await uploadError(response);
 
   return ownVideoSchema.parse(await response.json());
 }

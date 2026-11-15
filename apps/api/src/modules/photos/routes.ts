@@ -4,6 +4,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
+import { withCode } from '../locations/country-lock.js';
 import { ImageError, MAX_PHOTOS_PER_PROFILE, MAX_UPLOAD_BYTES, processImage } from './images.js';
 import {
   deleteObject,
@@ -140,7 +141,10 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
       if (!file) throw fastify.httpErrors.badRequest('Файл не передан');
 
       const buffer = await file.toBuffer().catch(() => {
-        throw fastify.httpErrors.badRequest('Файл больше допустимого размера');
+        throw withCode(
+          fastify.httpErrors.badRequest('Файл больше допустимого размера'),
+          'photo_too_large',
+        );
       });
 
       const count = await fastify.prisma.photo.count({
@@ -155,8 +159,9 @@ export const photoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         processed = await processImage(buffer);
       } catch (error) {
         if (error instanceof ImageError) {
-          throw fastify.httpErrors.badRequest(
-            'Файл не является изображением поддерживаемого формата',
+          throw withCode(
+            fastify.httpErrors.badRequest('Файл не является изображением поддерживаемого формата'),
+            'photo_bad_format',
           );
         }
         throw error;

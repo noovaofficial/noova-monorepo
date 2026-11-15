@@ -20,7 +20,7 @@ function errorKey(error: unknown): string {
   if (error.status === 409) return 'photoLimit';
   if (error.status === 413) return 'photoTooLarge';
   if (error.status === 400) {
-    return error.message.includes('размера') ? 'photoTooLarge' : 'photoBadFormat';
+    return error.code === 'photo_too_large' ? 'photoTooLarge' : 'photoBadFormat';
   }
   return 'photoFailed';
 }

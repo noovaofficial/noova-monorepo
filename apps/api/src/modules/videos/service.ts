@@ -146,7 +146,13 @@ export async function videoProfileSlugs(db: Db, userId: string): Promise<string[
  * Обработка одного видео. Берёт запись в работу условным обновлением: два
  * процесса (API и цикл задач) одну запись не обработают дважды.
  */
-export async function processVideo(prisma: PrismaClient, videoId: string): Promise<void> {
+export async function processVideo(
+  prisma: PrismaClient,
+  videoId: string,
+  /** Исходник, ещё лежащий на диске после загрузки, — чтобы не качать его
+   *  обратно из хранилища. Нет файла — берём копию оттуда. */
+  localSource?: string,
+): Promise<void> {
   const now = new Date();
   const claimed = await prisma.video.updateMany({
     where: {
@@ -166,8 +172,12 @@ export async function processVideo(prisma: PrismaClient, videoId: string): Promi
 
   const workDir = await mkdtemp(join(tmpdir(), 'noova-video-'));
   try {
-    const sourcePath = join(workDir, 'source');
-    await downloadObject(`${video.storageKey}/${VIDEO_FILES.source}`, sourcePath);
+    let sourcePath = join(workDir, 'source');
+    if (localSource && (await stat(localSource).catch(() => null))) {
+      sourcePath = localSource;
+    } else {
+      await downloadObject(`${video.storageKey}/${VIDEO_FILES.source}`, sourcePath);
+    }
     const result = await transcodeVideo(sourcePath, workDir, await probeVideo(sourcePath));
 
     await putObjectFromFile(
@@ -225,11 +235,23 @@ export async function processVideo(prisma: PrismaClient, videoId: string): Promi
 /** Очередь процесса: ffmpeg грузит все ядра, два ролика разом — уже лишнее. */
 let chain: Promise<void> = Promise.resolve();
 
-/** Ставит видео на обработку и сразу возвращается — запрос загрузки не ждёт. */
-export function enqueueVideo(prisma: PrismaClient, log: Log, videoId: string): void {
+/**
+ * Ставит видео на обработку и сразу возвращается — запрос загрузки не ждёт.
+ *
+ * `uploadDir` — временная папка загрузки с файлом `source`. Очередь берёт
+ * исходник прямо оттуда и сама её удаляет. Копия в хранилище при этом
+ * остаётся: по ней обработку повторит цикл задач, если процесс перезапустят.
+ */
+export function enqueueVideo(
+  prisma: PrismaClient,
+  log: Log,
+  videoId: string,
+  uploadDir?: string,
+): void {
   chain = chain
-    .then(() => processVideo(prisma, videoId))
-    .catch((error) => log.error({ err: error, videoId }, 'видео не обработано'));
+    .then(() => processVideo(prisma, videoId, uploadDir && join(uploadDir, 'source')))
+    .catch((error) => log.error({ err: error, videoId }, 'видео не обработано'))
+    .finally(() => (uploadDir ? rm(uploadDir, { recursive: true, force: true }) : undefined));
 }
 
 /**

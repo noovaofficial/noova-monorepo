@@ -165,8 +165,10 @@ export default async function ProfilePage({ params }: Props) {
 
       <script
         type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD из провалидированных схемой данных, сериализуется JSON.stringify
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        // `<` экранируем: JSON.stringify его не трогает, и имя анкеты вида
+        // `</script><script>…` закрыло бы этот тег и выполнилось на странице.
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD, `<` экранирован — выйти из тега script нельзя
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       <nav className={styles.crumbs} aria-label={tp('crumbsLabel')}>

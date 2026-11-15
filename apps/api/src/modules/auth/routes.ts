@@ -15,6 +15,7 @@ import { z } from 'zod';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { resolveAccountLocation, throwLocationProblem } from '../locations/account-location.js';
+import { clearLoginFailures, isLoginLocked, recordLoginFailure } from './login-guard.js';
 import { MailQueue } from './mail-queue.js';
 import { createMailer, localeOf, mailLink } from './mailer.js';
 import { toCurrentUser } from './mappers.js';
@@ -86,6 +87,9 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Занятый email не подтверждаем: ответ такой же, как при успехе.
       // Настоящему владельцу адреса уходит письмо о попытке регистрации.
       if (existing) {
+        // Хэш считаем и здесь, хотя он не нужен: иначе ответ на занятый
+        // адрес приходит заметно быстрее, и по времени видно, есть ли учётка.
+        await hashPassword(input.password);
         // Письмо уходит настоящему владельцу адреса, поэтому язык берём его,
         // а не того, кто сейчас заполнял форму.
         mails.enqueue({ to: input.email, ...emailTakenMail(locale) });
@@ -152,6 +156,14 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request, reply) => {
       const { email, password } = request.body;
 
+      // Замок по учётке — до проверки пароля и одинаково для существующих и
+      // несуществующих адресов: иначе он сам выдавал бы, есть ли учётка.
+      if (await isLoginLocked(fastify.redis, email)) {
+        throw fastify.httpErrors.tooManyRequests(
+          'Слишком много неудачных попыток входа. Попробуйте позже или восстановите пароль',
+        );
+      }
+
       const user = await fastify.prisma.user.findUnique({
         where: { email },
         include: USER_INCLUDE,
@@ -161,11 +173,16 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         // Тратим то же время, что и на настоящую проверку: иначе по задержке
         // ответа можно перебирать существующие адреса.
         await burnTimeLikeVerify(password);
+        await recordLoginFailure(fastify.redis, email);
         throw fastify.httpErrors.unauthorized('Неверный email или пароль');
       }
 
       const ok = await verifyPassword(user.passwordHash, password);
-      if (!ok) throw fastify.httpErrors.unauthorized('Неверный email или пароль');
+      if (!ok) {
+        await recordLoginFailure(fastify.redis, email);
+        throw fastify.httpErrors.unauthorized('Неверный email или пароль');
+      }
+      await clearLoginFailures(fastify.redis, email);
 
       if (user.bannedAt) {
         await fastify.destroyAllSessions(user.id);
@@ -258,10 +275,16 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const ok = await verifyPassword(user.passwordHash, request.body.currentPassword);
       if (!ok) throw fastify.httpErrors.unauthorized('Неверный пароль');
 
-      await fastify.prisma.user.update({
-        where: { id: user.id },
-        data: { passwordHash: await hashPassword(request.body.newPassword) },
-      });
+      const passwordHash = await hashPassword(request.body.newPassword);
+      await fastify.prisma.$transaction([
+        fastify.prisma.user.update({ where: { id: user.id }, data: { passwordHash } }),
+        // Ссылка сброса, запрошенная до смены, больше не должна работать:
+        // ею вернули бы себе учётку после того, как владелец сменил пароль.
+        fastify.prisma.authToken.updateMany({
+          where: { userId: user.id, purpose: 'password_reset', usedAt: null },
+          data: { usedAt: new Date() },
+        }),
+      ]);
 
       await fastify.destroyAllSessions(user.id);
       await fastify.destroySession(request, reply);
@@ -433,14 +456,22 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         // регистрации: человек читает письмо на том языке, на котором его просил.
         const locale = localeOf(request.body.locale ?? user.locale);
         const { token, tokenHash } = generateToken();
-        await fastify.prisma.authToken.create({
-          data: {
-            userId: user.id,
-            tokenHash,
-            purpose: 'password_reset',
-            expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS),
-          },
-        });
+        await fastify.prisma.$transaction([
+          // Действует только последняя ссылка: прежние гасим, чтобы письмо,
+          // оставшееся в чужих руках, не пережило новый запрос.
+          fastify.prisma.authToken.updateMany({
+            where: { userId: user.id, purpose: 'password_reset', usedAt: null },
+            data: { usedAt: new Date() },
+          }),
+          fastify.prisma.authToken.create({
+            data: {
+              userId: user.id,
+              tokenHash,
+              purpose: 'password_reset',
+              expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS),
+            },
+          }),
+        ]);
         mails.enqueue({
           to: request.body.email,
           ...resetPasswordMail(locale, mailLink(locale, '/reset-password', token)),
@@ -477,8 +508,9 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
           where: { id: record.userId },
           data: { passwordHash },
         }),
-        fastify.prisma.authToken.update({
-          where: { id: record.id },
+        // Вместе с использованной гасим и остальные ссылки сброса этой учётки.
+        fastify.prisma.authToken.updateMany({
+          where: { userId: record.userId, purpose: 'password_reset', usedAt: null },
           data: { usedAt: new Date() },
         }),
       ]);

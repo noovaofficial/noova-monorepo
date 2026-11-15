@@ -1,7 +1,7 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Redis } from 'ioredis';
 import { pino } from 'pino';
-import { env } from '../env.js';
+import { env, requireProductionSecrets } from '../env.js';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { loggerOptions } from '../logger.js';
 import { JOBS, type JobDeps } from './tasks.js';
@@ -65,6 +65,7 @@ async function runCycle(prisma: PrismaClient, redis: Redis): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  requireProductionSecrets(['S3_SECRET_KEY']);
   const adapter = new PrismaPg({ connectionString: env.DATABASE_URL });
   const prisma = new PrismaClient({ adapter, log: ['warn', 'error'] });
   const redis = new Redis(env.REDIS_URL, { maxRetriesPerRequest: 3 });

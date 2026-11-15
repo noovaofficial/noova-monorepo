@@ -1,5 +1,12 @@
 import { buildApp } from './app.js';
-import { env } from './env.js';
+import { env, requireProductionSecrets } from './env.js';
+
+requireProductionSecrets([
+  'IP_HASH_SALT',
+  'INTERNAL_API_TOKEN',
+  'REVALIDATE_SECRET',
+  'S3_SECRET_KEY',
+]);
 
 const app = await buildApp();
 

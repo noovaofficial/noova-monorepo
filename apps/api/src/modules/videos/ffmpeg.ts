@@ -23,10 +23,59 @@ export class VideoError extends Error {
   }
 }
 
+/**
+ * Контейнеры, которые ffmpeg вообще разрешено открывать. Без списка он
+ * определяет формат по содержимому, а среди форматов есть плейлисты (HLS,
+ * concat): файл-плейлист под видом ролика заставил бы ffmpeg читать другие
+ * файлы с диска сервера или ходить по сети. Свежие версии это ограничивают
+ * сами, но версия в образе — не то, на чём стоит держать защиту.
+ */
+const INPUT_FORMATS = 'mov,mp4,m4a,3gp,3g2,mj2,matroska,webm';
+const SAFE_INPUT = ['-format_whitelist', INPUT_FORMATS, '-protocol_whitelist', 'file'];
+
+/**
+ * Потолок стороны кадра исходника. Длительность и вес файла ограничены, но
+ * короткий ролик с гигантским кадром всё равно развернулся бы в гигабайты
+ * памяти при декодировании. 8K с телефона проходит.
+ */
+const MAX_SOURCE_SIDE = 8192;
+
 /** Запас поверх лимита: контейнеры округляют длительность по-своему. */
 const DURATION_TOLERANCE_SECONDS = 0.5;
 const PROBE_TIMEOUT_MS = 20_000;
 const TRANSCODE_TIMEOUT_MS = 5 * 60_000;
+
+/**
+ * Потолок потоков ffmpeg. Без него он занимает все ядра, а процесс рядом —
+ * API: пока идёт перекодирование, ответы посетителям ждали бы своей очереди
+ * к процессору. Ролик короткий, два потока укладываются в те же секунды.
+ */
+const FFMPEG_THREADS = '2';
+
+/**
+ * Сколько проверок ffprobe идёт одновременно. Проверка запускается прямо в
+ * запросе загрузки, и без потолка пачка одновременных загрузок породила бы
+ * столько же процессов. Лишние ждут своей очереди.
+ */
+const MAX_PARALLEL_PROBES = 2;
+let activeProbes = 0;
+const probeWaiters: (() => void)[] = [];
+
+async function withProbeSlot<T>(task: () => Promise<T>): Promise<T> {
+  if (activeProbes >= MAX_PARALLEL_PROBES) {
+    // Место передаётся напрямую от закончившего: счётчик при этом не меняется.
+    await new Promise<void>((resolve) => probeWaiters.push(resolve));
+  } else {
+    activeProbes += 1;
+  }
+  try {
+    return await task();
+  } finally {
+    const next = probeWaiters.shift();
+    if (next) next();
+    else activeProbes -= 1;
+  }
+}
 
 function run(
   bin: 'ffmpeg' | 'ffprobe',
@@ -118,13 +167,25 @@ export function parseProbe(json: string): VideoProbe {
 
 /** Читает параметры файла. Не видео или длиннее лимита — `VideoError`. */
 export async function probeVideo(path: string): Promise<VideoProbe> {
-  const { code, stdout } = await run(
-    'ffprobe',
-    ['-v', 'error', '-print_format', 'json', '-show_format', '-show_streams', path],
-    PROBE_TIMEOUT_MS,
+  const { code, stdout } = await withProbeSlot(() =>
+    run(
+      'ffprobe',
+      [
+        '-v',
+        'error',
+        ...SAFE_INPUT,
+        '-print_format',
+        'json',
+        '-show_format',
+        '-show_streams',
+        path,
+      ],
+      PROBE_TIMEOUT_MS,
+    ),
   );
   if (code !== 0) throw new VideoError('unreadable');
   const probe = parseProbe(stdout);
+  if (Math.max(probe.width, probe.height) > MAX_SOURCE_SIDE) throw new VideoError('unreadable');
   if (probe.durationSeconds > VIDEO_MAX_SECONDS + DURATION_TOLERANCE_SECONDS) {
     throw new VideoError('too_long');
   }
@@ -161,6 +222,13 @@ export async function transcodeVideo(
     'ffmpeg',
     [
       '-y',
+      '-filter_complex_threads',
+      FFMPEG_THREADS,
+      // Ограничение — только на исходник: знак ниже — наш собственный PNG.
+      ...SAFE_INPUT,
+      // Потоки декодера исходника; кодировщику — отдельно, ниже.
+      '-threads',
+      FFMPEG_THREADS,
       '-i',
       sourcePath,
       '-i',
@@ -200,6 +268,8 @@ export async function transcodeVideo(
       // Индекс в начале файла: браузер начинает играть, не скачав всё.
       '-movflags',
       '+faststart',
+      '-threads',
+      FFMPEG_THREADS,
       videoPath,
     ],
     TRANSCODE_TIMEOUT_MS,

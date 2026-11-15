@@ -28,6 +28,31 @@ function isAllowedOrigin(origin: string): boolean {
   }
 }
 
+/**
+ * Ключ лимита запросов. IPv4 — сам адрес. IPv6 — подсеть /64: провайдер
+ * выдаёт абоненту её целиком, и счёт по полному адресу давал бы одному
+ * человеку 2^64 отдельных квот — лимит раскрытия контактов обходился бы
+ * простой сменой адреса внутри своей же подсети.
+ */
+export function rateLimitKey(ip: string): string {
+  if (!ip.includes(':')) return ip;
+  // IPv4 в обёртке IPv6 (`::ffff:1.2.3.4`) — это один IPv4-адрес.
+  const mapped = /^::ffff:(\d+\.\d+\.\d+\.\d+)$/i.exec(ip);
+  if (mapped?.[1]) return mapped[1];
+
+  const [head = '', tail = ''] = ip.toLowerCase().split('::');
+  const left = head ? head.split(':') : [];
+  const right = tail ? tail.split(':') : [];
+  // `::` заменяет недостающие нулевые группы — разворачиваем до восьми.
+  const groups = ip.includes('::')
+    ? [...left, ...Array(Math.max(0, 8 - left.length - right.length)).fill('0'), ...right]
+    : left;
+  return `${groups
+    .slice(0, 4)
+    .map((group) => group.replace(/^0+(?=.)/, ''))
+    .join(':')}::/64`;
+}
+
 const securityPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(sensible);
   await fastify.register(helmet, { contentSecurityPolicy: false });
@@ -50,6 +75,7 @@ const securityPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(rateLimit, {
     max: env.RATE_LIMIT_MAX,
     timeWindow: env.RATE_LIMIT_WINDOW,
+    keyGenerator: (request) => rateLimitKey(request.ip),
     /**
      * Серверный рендер фронта — не посетитель. Все его запросы приходят с
      * одного адреса (в проде это контейнер `web`), и без освобождения лимит
