@@ -894,7 +894,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       await approveVideo(fastify.prisma, video.id);
       await writeAction(fastify, userId, 'video', video.id, 'approved');
-      fastify.revalidate([profileTag(video.profile.slug)]);
+      fastify.revalidate([profileTag(video.profile.slug), PROFILES_TAG]);
       return { ok: true as const };
     },
   );
@@ -918,7 +918,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       await rejectVideo(fastify.prisma, video.id, request.body.reason);
       await writeAction(fastify, userId, 'video', video.id, 'rejected', request.body.reason);
-      fastify.revalidate([profileTag(video.profile.slug)]);
+      fastify.revalidate([profileTag(video.profile.slug), PROFILES_TAG]);
       return { ok: true as const };
     },
   );

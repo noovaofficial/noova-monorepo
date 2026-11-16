@@ -96,6 +96,13 @@ export function ProfileCard({ profile, locale, priority = false, unavailable = f
               <Badge variant="company">{t('fromAgency', { name: profile.company.name })}</Badge>
             </span>
           ) : null}
+          {profile.hasVideo ? (
+            <span className={styles.video} role="img" aria-label={t('video')} title={t('video')}>
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                <path d="M4 2.5v11l9-5.5z" fill="currentColor" />
+              </svg>
+            </span>
+          ) : null}
           {profile.isOnline ? (
             <span className={styles.online}>
               <span className={styles.dot} />

@@ -263,6 +263,9 @@ export const profileCardSchema = z.object({
   /** Подписка в месте с бесплатным размещением: значок и приоритет в выдаче. */
   isPremium: z.boolean(),
   isOnline: z.boolean(),
+  /** У анкеты есть видео, которое сейчас видно посетителю: одобрено и у
+   *  владельца действует подписка. */
+  hasVideo: z.boolean().default(false),
 });
 export type ProfileCard = z.infer<typeof profileCardSchema>;
 
@@ -329,6 +332,8 @@ export const profileQuerySchema = cursorPaginationSchema.extend({
   featuredOnly: booleanFromString().optional(),
   /** Только анкеты, у которых есть хотя бы один опубликованный отзыв (N-10). */
   withCommentsOnly: booleanFromString().optional(),
+  /** Только анкеты с видео, видимым посетителю. */
+  withVideoOnly: booleanFromString().optional(),
   minPriceCents: z.coerce.number().int().nonnegative().optional(),
   maxPriceCents: z.coerce.number().int().nonnegative().optional(),
   ageMin: z.coerce.number().int().min(18).optional(),

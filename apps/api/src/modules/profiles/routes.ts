@@ -73,6 +73,9 @@ export const cardSelect = (locale: Locale) =>
       take: 6,
       select: { service: { select: { key: true, translations: translationSelect(locale) } } },
     },
+    // Значок «видео» на карточке: условие то же, что у показа на странице.
+    videos: { where: { status: 'ready', isApproved: true }, take: 1, select: { id: true } },
+    owner: ownerSubscribedSelect(),
     photos: {
       where: { isApproved: true, deletedAt: null },
       orderBy: { position: 'asc' },

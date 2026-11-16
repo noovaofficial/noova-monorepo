@@ -1,4 +1,5 @@
 import type { ProfileQuery, ProfileSort } from '@noova/shared';
+import { publicVideoWhere } from '../videos/visibility.js';
 
 /** Курсор — просто id последней записи, но в base64url, чтобы клиент не пытался
  *  его конструировать вручную и мы могли поменять формат без ломки контракта. */
@@ -71,6 +72,9 @@ export function buildProfileWhere(query: ProfileQuery): Record<string, unknown> 
   if (query.withCommentsOnly) {
     where.comments = { some: { status: 'published' } };
   }
+  // То же условие, по которому видео показывается на странице анкеты:
+  // иначе фильтр находил бы анкеты, где ролика посетитель не увидит.
+  if (query.withVideoOnly) Object.assign(where, publicVideoWhere());
   if (query.onlineOnly) where.lastSeenAt = { gte: new Date(Date.now() - ONLINE_WINDOW_MS) };
 
   // Вне среза страны диапазон цены игнорируем — см. `hasPriceScope`.

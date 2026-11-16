@@ -62,7 +62,8 @@
     "loadMore": "Mostrar más",
     "loading": "Cargando…",
     "loadFailed": "No se ha podido cargar",
-    "withCommentsOnly": "Con reseñas"
+    "withCommentsOnly": "Con reseñas",
+    "withVideoOnly": "Con vídeo"
   },
   "home": {
     "escortSection": "Perfiles en {city}",
@@ -77,6 +78,7 @@
     "topSection": "TOP — {city}"
   },
   "card": {
+    "video": "Con vídeo",
     "verified": "Verificado",
     "featured": "TOP",
     "online": "En línea",

@@ -85,6 +85,8 @@ type ProfileCardRow = {
   isFeatured: boolean;
   isPremium: boolean;
   lastSeenAt: Date | null;
+  videos?: { id: string }[];
+  owner?: { listings: { id: string }[] };
 };
 
 export function toProfileCard(row: ProfileCardRow): ProfileCard {
@@ -109,6 +111,8 @@ export function toProfileCard(row: ProfileCardRow): ProfileCard {
     isFeatured: row.isFeatured,
     isPremium: row.isPremium,
     isOnline: isOnline(row.lastSeenAt),
+    // Одобренное видео видно, только пока у владельца действует подписка.
+    hasVideo: (row.videos?.length ?? 0) > 0 && (row.owner?.listings.length ?? 0) > 0,
   };
 }
 

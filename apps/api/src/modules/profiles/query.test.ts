@@ -95,6 +95,14 @@ describe('построитель фильтров каталога', () => {
     });
   });
 
+  it('«с видео» требует одобренного ролика и действующей подписки владельца', () => {
+    expect(buildProfileWhere(query({ withVideoOnly: true }))).toMatchObject({
+      videos: { some: { status: 'ready', isApproved: true } },
+      owner: { listings: { some: { status: { in: ['active', 'grace'] } } } },
+    });
+    expect(buildProfileWhere(query())).not.toHaveProperty('videos');
+  });
+
   it('онлайн отсчитывает окно от текущего момента', () => {
     const where = buildProfileWhere(query({ onlineOnly: true })) as {
       lastSeenAt: { gte: Date };

@@ -329,17 +329,19 @@ export function FilterPanel({
             <div className={styles.group}>
               <span className={styles.groupTitle}>{t('availability')}</span>
               <div className={styles.chips}>
-                {(['onlineOnly', 'verifiedOnly', 'withCommentsOnly'] as const).map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    className={`${styles.chip} ${params.get(key) === 'true' ? styles.chipOn : ''}`}
-                    onClick={() => set(key, params.get(key) === 'true' ? '' : 'true')}
-                    aria-pressed={params.get(key) === 'true'}
-                  >
-                    {t(key)}
-                  </button>
-                ))}
+                {(['onlineOnly', 'verifiedOnly', 'withCommentsOnly', 'withVideoOnly'] as const).map(
+                  (key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      className={`${styles.chip} ${params.get(key) === 'true' ? styles.chipOn : ''}`}
+                      onClick={() => set(key, params.get(key) === 'true' ? '' : 'true')}
+                      aria-pressed={params.get(key) === 'true'}
+                    >
+                      {t(key)}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
           </div>

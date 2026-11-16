@@ -62,7 +62,8 @@
     "loadMore": "Show more",
     "loading": "Loading…",
     "loadFailed": "Could not load",
-    "withCommentsOnly": "With reviews"
+    "withCommentsOnly": "With reviews",
+    "withVideoOnly": "With video"
   },
   "home": {
     "escortSection": "Profiles in {city}",
@@ -77,6 +78,7 @@
     "topSection": "TOP — {city}"
   },
   "card": {
+    "video": "Has video",
     "verified": "Verified",
     "featured": "TOP",
     "online": "Online",

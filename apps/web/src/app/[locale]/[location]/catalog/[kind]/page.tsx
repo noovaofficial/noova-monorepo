@@ -38,6 +38,7 @@ const FILTER_KEYS = new Set([
   'maxPriceCents',
   'onlineOnly',
   'verifiedOnly',
+  'withVideoOnly',
   'district',
   // Несколько городов внутри страны — такой же срез, как остальные фильтры,
   // не структурный параметр (N-43).

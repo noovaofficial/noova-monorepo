@@ -62,7 +62,8 @@
     "loadMore": "Afficher plus",
     "loading": "Chargement…",
     "loadFailed": "Chargement impossible",
-    "withCommentsOnly": "Avec avis"
+    "withCommentsOnly": "Avec avis",
+    "withVideoOnly": "Avec vidéo"
   },
   "home": {
     "escortSection": "Profils à {city}",
@@ -77,6 +78,7 @@
     "topSection": "TOP — {city}"
   },
   "card": {
+    "video": "Avec vidéo",
     "verified": "Vérifié",
     "featured": "TOP",
     "online": "En ligne",

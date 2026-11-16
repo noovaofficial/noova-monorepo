@@ -62,7 +62,8 @@
     "loadMore": "Показать ещё",
     "loading": "Загрузка…",
     "loadFailed": "Не удалось загрузить",
-    "withCommentsOnly": "С отзывами"
+    "withCommentsOnly": "С отзывами",
+    "withVideoOnly": "С видео"
   },
   "home": {
     "escortSection": "Анкеты — {city}",
@@ -77,6 +78,7 @@
     "topSection": "ТОП — {city}"
   },
   "card": {
+    "video": "Есть видео",
     "verified": "Проверено",
     "featured": "ТОП",
     "online": "Онлайн",

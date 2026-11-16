@@ -9,6 +9,7 @@ import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import type { Mail } from '../auth/mailer.js';
 import { localeOf } from '../auth/mailer.js';
 import { videoProfileSlugs } from '../videos/service.js';
+import { SUBSCRIBED_LISTING_STATUSES } from '../videos/visibility.js';
 import { listingExpiredMail, listingGraceMail, listingReminderMail } from './mails.js';
 import { placementFor } from './placement.js';
 import { syncPremiumForOwner } from './premium.js';
@@ -43,7 +44,7 @@ export function addMonths(date: Date, months: number): Date {
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Размещение, которое ещё держит анкеты в выдаче: активное или в льготных днях (D-04). */
-export const VISIBLE_LISTING_STATUSES = ['active', 'grace'] as const;
+export const VISIBLE_LISTING_STATUSES = SUBSCRIBED_LISTING_STATUSES;
 
 export async function hasVisibleListing(
   db: PrismaClient | Prisma.TransactionClient,

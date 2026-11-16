@@ -12,7 +12,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { profileTag } from '../../plugins/revalidate.js';
+import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { hasVisibleListing } from '../billing/listing.js';
 import { withCode } from '../locations/country-lock.js';
@@ -195,7 +195,7 @@ export const videoRoutes: FastifyPluginAsyncZod = async (fastify) => {
       await fastify.prisma.video.delete({ where: { id: video.id } });
 
       await clearNeedsEditIfRejected(fastify, owned);
-      fastify.revalidate([profileTag(owned.slug)]);
+      fastify.revalidate([profileTag(owned.slug), PROFILES_TAG]);
       return { ok: true as const };
     },
   );

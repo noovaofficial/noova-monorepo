@@ -1,0 +1,185 @@
+[
+  {
+    "name": "noovasupport_1",
+    "proxy": "socks5://DYXup4:HqWuaJ@185.71.214.130:8000"
+  },
+  {
+    "name": "noovasupport_2",
+    "peerFlood": "2026-11-15T22:52:35+00:00",
+    "disabled": true
+  },
+  {
+    "name": "noovasupport_5",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.248.99:8000"
+  },
+  {
+    "name": "15797701110",
+    "peerFlood": "2026-11-14T16:19:55+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.250.226:8000"
+  },
+  {
+    "name": "447599190925",
+    "peerFlood": "2026-11-15T22:52:35+00:00",
+    "disabled": true
+  },
+  {
+    "name": "447708232847",
+    "peerFlood": "2026-11-14T12:57:12+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.251.61:8000"
+  },
+  {
+    "name": "17538321044",
+    "peerFlood": "2026-11-13T10:33:57+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.248.16:8000"
+  },
+  {
+    "name": "18568467150",
+    "peerFlood": "2026-11-14T13:32:11+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.248.19:8000"
+  },
+  {
+    "name": "18572195315",
+    "peerFlood": "2026-11-14T13:32:11+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.250.46:8000"
+  },
+  {
+    "name": "18572263665",
+    "peerFlood": "2026-11-14T13:32:12+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.251.242:8000"
+  },
+  {
+    "name": "18702642531",
+    "peerFlood": "2026-11-14T16:18:53+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.250.112:8000"
+  },
+  {
+    "name": "18703623289",
+    "peerFlood": "2026-11-14T16:18:54+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.249.189:8000"
+  },
+  {
+    "name": "18706282156",
+    "peerFlood": "2026-11-14T16:18:54+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.248.75:8000"
+  },
+  {
+    "name": "18782293815",
+    "peerFlood": "2026-11-14T16:19:25+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.251.220:8000"
+  },
+  {
+    "name": "19017402862",
+    "peerFlood": "2026-11-14T16:19:25+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.251.119:8000"
+  },
+  {
+    "name": "19032299936",
+    "peerFlood": "2026-11-14T16:19:26+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.250.89:8000"
+  },
+  {
+    "name": "19033474666",
+    "peerFlood": "2026-11-14T16:19:44+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.251.239:8000"
+  },
+  {
+    "name": "19036366400",
+    "peerFlood": "2026-11-14T16:19:44+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.250.130:8000"
+  },
+  {
+    "name": "19038483057",
+    "peerFlood": "2026-11-14T16:19:45+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.248.196:8000"
+  },
+  {
+    "name": "19039043518",
+    "peerFlood": "2026-11-14T16:19:55+00:00",
+    "proxy": "socks5://DYXup4:HqWuaJ@45.140.249.82:8000"
+  },
+  {
+    "name": "12137529228",
+    "peerFlood": "2026-11-15T22:52:36+00:00",
+    "disabled": true
+  },
+  {
+    "name": "12179089488",
+    "peerFlood": "2026-11-15T22:52:36+00:00",
+    "disabled": true
+  },
+  {
+    "name": "12403767336",
+    "peerFlood": "2026-11-15T22:52:37+00:00",
+    "disabled": true
+  },
+  {
+    "name": "12623905644",
+    "peerFlood": "2026-11-15T22:52:37+00:00",
+    "disabled": true
+  },
+  {
+    "name": "13412270723",
+    "peerFlood": "2026-11-15T22:52:37+00:00",
+    "disabled": true
+  },
+  {
+    "name": "14012465682",
+    "peerFlood": "2026-11-15T22:52:38+00:00",
+    "disabled": true
+  },
+  {
+    "name": "15076107694",
+    "peerFlood": "2026-11-15T22:52:38+00:00",
+    "disabled": true
+  },
+  {
+    "name": "15304549117",
+    "peerFlood": "2026-11-15T22:52:39+00:00",
+    "disabled": true
+  },
+  {
+    "name": "15408958751",
+    "peerFlood": "2026-11-15T22:52:39+00:00",
+    "disabled": true
+  },
+  {
+    "name": "16208887083",
+    "peerFlood": "2026-11-15T22:52:40+00:00",
+    "disabled": true
+  },
+  {
+    "name": "16364070688",
+    "peerFlood": "2026-11-15T22:52:41+00:00",
+    "disabled": true
+  },
+  {
+    "name": "16675037968",
+    "peerFlood": "2026-11-15T22:52:41+00:00",
+    "disabled": true
+  },
+  {
+    "name": "17406064167",
+    "peerFlood": "2026-11-15T22:56:36+00:00",
+    "disabled": true
+  },
+  {
+    "name": "18285403992",
+    "peerFlood": "2026-11-15T22:56:37+00:00",
+    "disabled": true
+  },
+  {
+    "name": "19038654876",
+    "peerFlood": "2026-11-15T22:55:22+00:00",
+    "disabled": true
+  },
+  {
+    "name": "19379206132",
+    "peerFlood": "2026-11-15T22:55:21+00:00",
+    "disabled": true
+  },
+  {
+    "name": "19566467650",
+    "peerFlood": "2026-11-15T22:55:22+00:00",
+    "disabled": true
+  }
+]
