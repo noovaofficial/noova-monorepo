@@ -135,17 +135,20 @@ mv stalwart-cli-x86_64-unknown-linux-musl/stalwart-cli . && rm -rf stalwart-cli-
 
 ### 4. План и учётка admin
 
-Команды раздела «Накатить план» ниже, а перед `docker rm -f stalwart-apply` —
-учётка администратора:
-
 ```bash
+./recovery.sh plan                               # см. «Накатить план»
+
 ADMIN_PASSWORD="$(openssl rand -base64 24 | tr -d '/+=')"
 echo "Пароль admin@noova.fyi: $ADMIN_PASSWORD"   # сохранить в менеджер паролей
 { head -1 stalwart/plan.ndjson; cat <<EOF
 {"@type":"upsert","object":"Account","matchOn":["name","domainId"],"value":{"admin":{"@type":"User","name":"admin","domainId":"#d","description":"администратор","roles":{"@type":"Admin"},"credentials":{"0":{"@type":"Password","secret":"$ADMIN_PASSWORD"}}}}}
 EOF
-} | ./stalwart-cli apply --stdin
+} | ./recovery.sh apply
 ```
+
+Затем — веб-интерфейс: закрепить его версию и папку (раздел «Веб-интерфейс:
+версия и папка» ниже). Без этого админка работает до первого несовместимого
+выпуска интерфейса.
 
 ### 5. Запуск
 
@@ -186,24 +189,27 @@ docker compose exec smtp postqueue -f
 
 ```bash
 cd ~/relay
-docker compose stop stalwart
-P="$(openssl rand -hex 24)"
-docker compose run -d --no-deps --name stalwart-apply -p 127.0.0.1:8080:8080 \
-  -e STALWART_RECOVERY_MODE=1 -e STALWART_RECOVERY_ADMIN="admin:$P" stalwart
-until curl -fs http://127.0.0.1:8080/healthz/ready >/dev/null; do sleep 2; done
-export STALWART_URL=http://127.0.0.1:8080 STALWART_USER=admin STALWART_PASSWORD="$P"
-sed "s/__RELAY_PASSWORD__/$(sed -n 's/^RELAY_PASSWORD=//p' .env)/" stalwart/plan.ndjson \
-  | ./stalwart-cli apply --stdin
-docker rm -f stalwart-apply
-unset STALWART_URL STALWART_USER STALWART_PASSWORD
-docker compose up -d stalwart
+./recovery.sh plan
 ```
 
-Пароль восстановления одноразовый: живёт только в этой сессии и в контейнере,
-который тут же удаляется. Постоянный пароль восстановления — чёрный ход в
-обход всех учёток.
+Скрипт сам останавливает почту, поднимает режим восстановления, накатывает
+план и возвращает почту — в том числе при ошибке и при Ctrl+C. Руками эти
+шаги не повторять: забытый временный контейнер `stalwart-apply` держит адрес
+основного, и почта не поднимается («Address already in use»).
+
+Пароль восстановления одноразовый: создаётся на один запуск и живёт только во
+временном контейнере. Постоянный пароль восстановления — чёрный ход в обход
+всех учёток.
 
 План идемпотентен: повторный накат ничего не дублирует.
+
+Другие режимы того же скрипта:
+
+```bash
+./recovery.sh cli query Application      # одна команда stalwart-cli
+./recovery.sh shell                      # несколько команд за одну остановку; выход — exit
+./recovery.sh apply < записи.ndjson      # записи не из плана
+```
 
 ---
 
@@ -263,17 +269,10 @@ docker compose logs roundcube | grep userlogins     # X-Forwarded-For — это
 
 ```bash
 cd ~/relay
-docker compose stop stalwart
-P="$(openssl rand -hex 24)"
-docker compose run -d --no-deps --name stalwart-apply -p 127.0.0.1:8080:8080 \
-  -e STALWART_RECOVERY_MODE=1 -e STALWART_RECOVERY_ADMIN="admin:$P" stalwart
-until curl -fs http://127.0.0.1:8080/healthz/ready >/dev/null; do sleep 2; done
-export STALWART_URL=http://127.0.0.1:8080 STALWART_USER=admin STALWART_PASSWORD="$P"
+./recovery.sh shell
 ./stalwart-cli query BlockedIp                   # адрес, причина, до какого времени
 ./stalwart-cli delete BlockedIp --ids <id>
-docker rm -f stalwart-apply
-unset STALWART_URL STALWART_USER STALWART_PASSWORD
-docker compose up -d stalwart
+exit                                             # почта возвращается сама
 ```
 
 Без остановки почты — тем же CLI на работающем сервере, под учёткой
@@ -285,6 +284,47 @@ docker compose up -d stalwart
 printf '%s\n' '{"@type":"create","object":"Action","value":{"a":{"@type":"ReloadBlockedIps"}}}' \
   | ./stalwart-cli -k apply --stdin
 ```
+
+На 16.11.2026 этот путь не работает: учётке `admin@noova.fyi` API управления
+отвечает 403, хотя в панель она входит. Пока не разобрано — режим
+восстановления.
+
+---
+
+## Веб-интерфейс: версия и папка
+
+Админка и кабинет ящика (`/admin`, `/account`) в образ Stalwart не входят:
+сервер скачивает архив интерфейса с GitHub и распаковывает на диск. У этого
+две ловушки, обе сработали 8 ноября 2026 — админка восемь дней отвечала 404
+при исправной почте.
+
+1. **Адрес по умолчанию — «последний выпуск».** 26 октября вышел интерфейс
+   2.x для сервера 1.0; серверу 0.16 он не подходит. При перезапуске сервер
+   взял его и ничего не развернул. Версию нужно закрепить: для ветки 0.16
+   последняя подходящая — 1.0.11.
+2. **Папка распаковки по умолчанию — `/tmp`** внутри контейнера. Постоянную
+   папку сервер сам не создаёт: без неё — `Failed to unpack application
+   bundle … No such file or directory` в логе.
+
+Настроить (один раз на машину; почта стоит около минуты):
+
+```bash
+cd ~/relay
+docker compose exec -u root stalwart sh -c \
+  'mkdir -p /var/lib/stalwart/webui && chown stalwart:stalwart /var/lib/stalwart/webui'
+./recovery.sh shell
+./stalwart-cli query Application                 # id приложения
+./stalwart-cli update Application <id> \
+  --field resourceUrl=https://github.com/stalwartlabs/webui/releases/download/v1.0.11/webui.zip \
+  --field unpackDirectory=/var/lib/stalwart/webui
+exit
+docker compose exec stalwart ls /var/lib/stalwart/webui      # через полминуты — файлы
+```
+
+Папка лежит на томе `stalwart_data` и переживает пересоздание контейнера.
+
+**При обновлении Stalwart до 1.x** адрес интерфейса сменить на выпуск 2.x —
+иначе получится та же поломка наоборот.
 
 ---
 
@@ -319,6 +359,9 @@ timeout 8 bash -c 'exec 3<>/dev/tcp/mail.noova.fyi/25 && head -1 <&3'   # сна
 | веб-почта: `Too many failed login attempts` | у этого ящика три неудачных входа за минуту — подождать минуту |
 | всех выкидывает из веб-почты после пересоздания контейнера | нет `ROUNDCUBE_DES_KEY` в `.env` |
 | админка после входа уводит на странный адрес | не задан `STALWART_PUBLIC_URL` |
+| админка: `{"status":404,"title":"Not Found"}`, почта при этом работает | интерфейс не развёрнут — «Веб-интерфейс: версия и папка»; в логе искать `resource.error` |
+| `Address already in use` при запуске Stalwart | остался временный контейнер: `docker rm -f stalwart-apply`, затем `docker compose up -d stalwart` |
+| `stalwart-cli`: `permission denied (HTTP 403)` | учётке не даны права на API управления — работать через `./recovery.sh` |
 | `docker compose logs stalwart` пуст | план не накатан |
 | письма с `@noova.cc` отклоняются | нет SPF или DKIM у noova.cc, а там DMARC `p=reject` |
 | уходят, но в спам | PTR/SPF/DKIM или репутация нового домена — прогрев |
@@ -331,8 +374,17 @@ sudo certbot renew --dry-run                 # на релее
 ```
 
 **Обновить Stalwart.** Прочитать `UPGRADING` в репозитории Stalwart — между
-версиями менялся формат настроек. Потом тег в compose, `docker compose pull
-stalwart` и «Накатить план».
+версиями менялся формат настроек. Потом образ в compose, `docker compose pull
+stalwart` и «Накатить план». Версию веб-интерфейса сверить с версией сервера
+(«Веб-интерфейс: версия и папка»).
+
+**Образы закреплены отпечатками** (`image: …@sha256:…` в compose, рядом в
+комментарии — версия). Новый отпечаток:
+`docker buildx imagetools inspect <образ>:<тег>`, строка `Digest`.
+
+**Что сервисы отвечают снаружи**, каждые пять минут проверяет хранилище копий
+(`infra/backup/services-check.sh`) и пишет в Telegram — см.
+`documentation/deploy/backup.md`.
 
 **Обновить Roundcube.** Тег в compose, `docker compose pull roundcube &&
 docker compose up -d roundcube`. Исправления безопасности выходят часто — не

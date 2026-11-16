@@ -300,6 +300,24 @@ def authorized(message, chat, admins, topic=None):
     )
 
 
+def refusal(message, chat, admins, topic=None):
+    """Почему команда не принята — для журнала. Отвечать в чат нельзя (см.
+    `handle`), а без причины в журнале не понять, что поправить в настройках:
+    чат, список админов или топик."""
+    got_chat = message.get("chat", {}).get("id")
+    got_user = message.get("from", {}).get("id")
+    got_topic = message.get("message_thread_id")
+    reasons = []
+    if got_chat != chat:
+        reasons.append(f"чат {got_chat}, а в PULL_TG_CHAT {chat}")
+    if got_user not in admins:
+        reasons.append(f"пользователя {got_user} нет в PULL_TG_ADMINS")
+    if topic is not None and got_topic != topic:
+        where = "общая лента" if got_topic is None else f"топик {got_topic}"
+        reasons.append(f"{where}, а в PULL_TG_TOPIC {topic}")
+    return "; ".join(reasons)
+
+
 def summarize_verify(output):
     """Из вывода storage-verify.sh оставляем содержательные строки (✓ / ! / ✗)."""
     lines = []
@@ -380,7 +398,7 @@ class Bot:
             return False
         if not authorized(message, self.cfg.chat, self.cfg.admins, self.cfg.topic):
             # Молча: отвечать чужим значит подтверждать, что здесь что-то есть.
-            log(f"игнор /{cmd} от {message.get('from', {}).get('id')} в {message.get('chat', {}).get('id')}")
+            log(f"игнор /{cmd}: {refusal(message, self.cfg.chat, self.cfg.admins, self.cfg.topic)}")
             return False
         reply_to = message.get("message_id")
         if cmd in ("start", "help"):

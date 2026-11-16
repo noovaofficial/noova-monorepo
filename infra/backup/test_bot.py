@@ -63,6 +63,13 @@ class Parsing(unittest.TestCase):
         self.assertFalse(bot.authorized(msg("/x", user=1), -100, {42}))
         self.assertFalse(bot.authorized(msg("/x", chat=5), -100, {42}))
 
+    def test_refusal_names_the_setting(self):
+        self.assertEqual(bot.refusal(msg("/x"), -100, {42}), "")
+        self.assertIn("PULL_TG_ADMINS", bot.refusal(msg("/x", user=1), -100, {42}))
+        self.assertIn("PULL_TG_CHAT", bot.refusal(msg("/x", chat=5), -100, {42}))
+        self.assertIn("топик 5", bot.refusal(msg("/x", topic=5), -100, {42}, topic=9))
+        self.assertIn("общая лента", bot.refusal(msg("/x"), -100, {42}, topic=9))
+
     def test_authorized_topic(self):
         # Не задан — как раньше, принимаем из любого топика группы.
         self.assertTrue(bot.authorized(msg("/x"), -100, {42}, topic=None))

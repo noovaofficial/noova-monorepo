@@ -95,6 +95,17 @@ PULL_TG_TOPIC=${PULL_TG_TOPIC:-}
 # Кому разрешены команды бота (/list, /backup, /verify): числовые user id через
 # запятую. Пусто — бот не стартует. Свой id: написать боту @userinfobot.
 PULL_TG_ADMINS=${PULL_TG_ADMINS:-}
+
+# Внешняя проверка сервисов (services-check.sh, каждые пять минут). Списки
+# через пробел; пустой список — проверка не делается. Сообщения уходят в тот
+# же чат и топик, что выше.
+#   CHECK_HTTP — адреса, которые должны отвечать 2xx
+#   CHECK_TCP  — host:port, порт должен принимать соединение
+#   CHECK_TLS  — host:port, сертификат не истекает в ближайшие CHECK_TLS_DAYS
+CHECK_HTTP="${CHECK_HTTP:-}"
+CHECK_TCP="${CHECK_TCP:-}"
+CHECK_TLS="${CHECK_TLS:-}"
+CHECK_TLS_DAYS=${CHECK_TLS_DAYS:-14}
 CONFEOF
 
 # --- расписание ------------------------------------------------------------
@@ -105,6 +116,18 @@ CURRENT="$(crontab -l 2>/dev/null || true)"
 REST="$(printf '%s\n' "$CURRENT" | grep -v 'pull\.sh' || true)"
 printf '%s\n%s\n' "$REST" "$LINE" | grep -v '^[[:space:]]*$' | crontab -
 say "Расписание: $AT (UTC-время машины)"
+
+# Проверка сервисов — отдельной строкой: она не связана с копиями и идёт
+# каждые пять минут. Скрипта рядом нет (старый набор файлов) — пропускаем.
+CHECK="$HERE/services-check.sh"
+if [ -f "$CHECK" ]; then
+	chmod +x "$CHECK"
+	CHECK_LINE="*/5 * * * * export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; /bin/bash $CHECK >> $HOME/noova-check.log 2>&1"
+	CURRENT="$(crontab -l 2>/dev/null || true)"
+	REST="$(printf '%s\n' "$CURRENT" | grep -v 'services-check\.sh' || true)"
+	printf '%s\n%s\n' "$REST" "$CHECK_LINE" | grep -v '^[[:space:]]*$' | crontab -
+	say "Проверка сервисов: каждые 5 минут (цели — CHECK_* в $CONF)"
+fi
 
 printf '\n\033[32mХранилище готово.\033[0m Осталось разрешить ему забирать копии.\n\n'
 printf 'Отпечаток ключа %s — сверьте с тем, что печатает на проде\n' "$HOST"

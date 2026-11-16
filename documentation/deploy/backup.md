@@ -80,6 +80,29 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
    что угодно и посмотреть `message_thread_id` в ответе
    `https://api.telegram.org/bot<токен>/getUpdates`.
 
+   **Один топик на всё.** Отчёты хранилища (`PULL_TG_TOPIC` в
+   `~/noova-pull.env` на хранилище) и сторожа с прода (`WATCH_TG_TOPIC` в
+   `~/noova-watch.env` на проде) настраиваются на разных машинах и разными
+   переменными. Чтобы всё шло в один топик, значения должны совпадать —
+   как и `PULL_TG_CHAT` с `WATCH_TG_CHAT`. После правки на хранилище
+   перезапустить бота: он читает настройки при старте.
+
+   **Проверка сервисов** (`services-check.sh`) — каждые пять минут с
+   хранилища: отвечают ли адреса, открыты ли порты, не истекают ли
+   сертификаты. Пишет в тот же чат и топик: «Сервисы Noova: Тревога 🚨» после
+   двух неудач подряд, напоминание раз в шесть часов, «Восстановлено ✅»,
+   когда сервис вернулся. Что проверять — там же, в `~/noova-pull.env`:
+
+   ```bash
+   CHECK_HTTP="https://noova.cc/ https://mail.noova.fyi:8443/admin/ https://webmail.noova.fyi/"
+   CHECK_TCP="mail.noova.fyi:25 mail.noova.fyi:465 mail.noova.fyi:993"
+   CHECK_TLS="noova.cc:443 mail.noova.fyi:8443 mail.noova.fyi:993 webmail.noova.fyi:443"
+   ```
+
+   Зачем отдельная машина: проверка здоровья контейнера видит только процесс.
+   Админка почты восемь дней отвечала 404 при статусе `healthy`. Журнал —
+   `~/noova-check.log`, ручной запуск — `bash ~/services-check.sh`.
+
 2. **Сторож на проде** (`watch.sh`) — ловит тишину. Хранилище, выключенное или
    со сломанным кроном/ключом, само ничего не напишет. Поэтому при каждой
    выдаче копии `pull-guard.sh` пишет пульс `~/.noova-backup/last-db` и

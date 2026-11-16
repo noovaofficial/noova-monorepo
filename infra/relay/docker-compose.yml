@@ -47,7 +47,11 @@ services:
   # mail.<домен> не выпускает, только отдаёт файл челленджа из общего с
   # certbot вебрута — см. Caddyfile.
   caddy:
-    image: caddy:2-alpine
+    # Образы закреплены отпечатками: тег автор может перевесить на другую
+    # сборку, отпечаток — нет. Как обновлять — «Обслуживание» в
+    # documentation/deploy/smtp.md.
+    # caddy:2-alpine — та же сборка, что на Prod (снято 15.11.2026).
+    image: caddy@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
     restart: unless-stopped
     logging:
       driver: json-file
@@ -72,7 +76,8 @@ services:
   # Версия закреплена точно: обновление почтового сервера — отдельное решение
   # с чтением UPGRADING, а не побочный эффект `docker compose pull`.
   stalwart:
-    image: stalwartlabs/stalwart:v0.16.21
+    # stalwartlabs/stalwart:v0.16.21 (отпечаток тега на 16.11.2026).
+    image: stalwartlabs/stalwart@sha256:93c574e52249c1ebf90061da2c4c0756a7b72abfcc1fec34506a03c2e38b5977
     restart: unless-stopped
     logging:
       driver: json-file
@@ -112,7 +117,8 @@ services:
   # Веб-почта. nonroot: процессы не под root, и взлом веб-приложения, которое
   # разбирает чужой HTML, не даёт root в контейнере.
   roundcube:
-    image: roundcube/roundcubemail:1.7.4-apache-nonroot
+    # roundcube/roundcubemail:1.7.4-apache-nonroot (отпечаток тега на 16.11.2026).
+    image: roundcube/roundcubemail@sha256:22a0ed6be0d08a30fbe68301e7bb91dfa7811c4a884eb91a75e92076ca0be097
     restart: unless-stopped
     logging:
       driver: json-file
