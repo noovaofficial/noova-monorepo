@@ -97,9 +97,18 @@ LIST="$TMP/list"
 decrypt "$MEDIA_ENC" | tar tzf - > "$LIST" \
 	|| fail "Архив фотографий не расшифровался или повреждён"
 
-OBJECTS="$(grep -c '\.webp/$' "$LIST" || true)"
+# Копия, снятая через S3-API (MEDIA_BACKUP=s3), хранит сами файлы, а не
+# каталоги MinIO: отличаем по наличию `*.webp/` и приводим к одному списку.
+if grep -q '\.webp/$' "$LIST"; then
+	WEBP="$(grep '\.webp/$' "$LIST" | sed 's|/$||')"
+else
+	WEBP="$(grep '\.webp$' "$LIST" || true)"
+fi
+OBJECTS="$(printf '%s\n' "$WEBP" | grep -c . || true)"
 [ "$OBJECTS" -gt 0 ] || fail "В архиве нет ни одного объекта — копия фотографий непригодна"
-MEDIA_PHOTOS="$(grep '\.webp/$' "$LIST" | sed 's|/[^/]*/$||' | sort -u | wc -l | tr -d ' ')"
+# Постеры видео и снимки документов — тоже webp, но не фотографии анкет.
+MEDIA_PHOTOS="$(printf '%s\n' "$WEBP" | grep . | grep -vE '/video-[^/]*/|(^|/)verification/' \
+	| sed 's|/[^/]*$||' | sort -u | wc -l | tr -d ' ')"
 ok "фотографии: объектов $OBJECTS, снимков $MEDIA_PHOTOS"
 
 # --- сверка ----------------------------------------------------------------

@@ -17,6 +17,9 @@ export default defineConfig({
     'src/scripts/remove-agency-logo-photos.ts',
     'src/scripts/remove-photos-by-position.ts',
     'src/scripts/diagnose-sharp.ts',
+    // Резервная копия медиа через S3-API: работает и без тома MinIO.
+    'src/scripts/export-media.ts',
+    'src/scripts/import-media.ts',
   ],
   outDir: 'dist',
   format: ['esm'],

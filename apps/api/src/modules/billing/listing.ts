@@ -134,8 +134,13 @@ export function activateListing(
 
     // Анкеты, снятые за неоплату, возвращаются сами: человек заплатил ровно
     // за это. Снятые владельцем руками (`unpaidAt` пуст) остаются как были.
+    //
+    // Только те, что всё ещё в паузе: после снятия за неоплату анкету могли
+    // заблокировать или отклонить, а метка `unpaidAt` на ней осталась — без
+    // условия на статус оплата вернула бы такую анкету в каталог мимо
+    // модератора.
     const unpaid = await tx.profile.findMany({
-      where: { ownerId: activation.userId, unpaidAt: { not: null } },
+      where: { ownerId: activation.userId, status: 'paused', unpaidAt: { not: null } },
       select: { id: true, slug: true },
     });
     if (unpaid.length > 0) {

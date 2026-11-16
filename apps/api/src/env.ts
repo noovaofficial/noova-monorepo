@@ -54,6 +54,22 @@ const envSchema = z.object({
   S3_BUCKET: z.string().default('noova-media'),
   S3_ACCESS_KEY: z.string().default('noova'),
   S3_SECRET_KEY: z.string().default('noova-dev-secret'),
+  /**
+   * Отдельная зона для публичных файлов. Пусто — всё лежит в `S3_BUCKET`, а
+   * анонимный доступ открыт на префикс `public/` (так работает MinIO). Нужна
+   * хранилищам с CDN, которые открывают зону целиком (Bunny): тогда публичное
+   * уходит сюда, а в `S3_BUCKET` остаётся только закрытое. Ключ доступа у
+   * такой зоны свой; пустые значения означают «тот же, что у основной».
+   */
+  S3_PUBLIC_BUCKET: z.string().default(''),
+  S3_PUBLIC_ACCESS_KEY: z.string().default(''),
+  S3_PUBLIC_SECRET_KEY: z.string().default(''),
+  /**
+   * Сброс кэша CDN при удалении публичного файла. Пустой ключ отключает сброс.
+   * Адрес — метод «purge» поставщика; по умолчанию Bunny.
+   */
+  CDN_PURGE_URL: z.string().default('https://api.bunny.net/purge'),
+  CDN_PURGE_KEY: z.string().default(''),
 
   /**
    * Общий секрет для запросов от фронта к API «изнутри» — серверного рендера.

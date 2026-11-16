@@ -11,6 +11,7 @@
 export type * from './models/User'
 export type * from './models/ClientProfile'
 export type * from './models/ModerationAction'
+export type * from './models/ProfileTextReview'
 export type * from './models/AuthToken'
 export type * from './models/Country'
 export type * from './models/CountryTranslation'

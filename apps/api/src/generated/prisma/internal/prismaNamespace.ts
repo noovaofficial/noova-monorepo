@@ -400,6 +400,7 @@ export const ModelName = {
   User: 'User',
   ClientProfile: 'ClientProfile',
   ModerationAction: 'ModerationAction',
+  ProfileTextReview: 'ProfileTextReview',
   AuthToken: 'AuthToken',
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
@@ -463,7 +464,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "authToken" | "country" | "countryTranslation" | "city" | "placementRule" | "cityTopSetting" | "countryTopSetting" | "countryPlacementPrice" | "cityPlacementPrice" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "video" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "profileTextReview" | "authToken" | "country" | "countryTranslation" | "city" | "placementRule" | "cityTopSetting" | "countryTopSetting" | "countryPlacementPrice" | "cityPlacementPrice" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "video" | "photo" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -686,6 +687,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ModerationActionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ModerationActionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ProfileTextReview: {
+      payload: Prisma.$ProfileTextReviewPayload<ExtArgs>
+      fields: Prisma.ProfileTextReviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ProfileTextReviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ProfileTextReviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        findFirst: {
+          args: Prisma.ProfileTextReviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ProfileTextReviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        findMany: {
+          args: Prisma.ProfileTextReviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>[]
+        }
+        create: {
+          args: Prisma.ProfileTextReviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        createMany: {
+          args: Prisma.ProfileTextReviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ProfileTextReviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>[]
+        }
+        delete: {
+          args: Prisma.ProfileTextReviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        update: {
+          args: Prisma.ProfileTextReviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.ProfileTextReviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ProfileTextReviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ProfileTextReviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.ProfileTextReviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ProfileTextReviewPayload>
+        }
+        aggregate: {
+          args: Prisma.ProfileTextReviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateProfileTextReview>
+        }
+        groupBy: {
+          args: Prisma.ProfileTextReviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileTextReviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ProfileTextReviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ProfileTextReviewCountAggregateOutputType> | number
         }
       }
     }
@@ -4332,6 +4407,18 @@ export const ModerationActionScalarFieldEnum = {
 export type ModerationActionScalarFieldEnum = (typeof ModerationActionScalarFieldEnum)[keyof typeof ModerationActionScalarFieldEnum]
 
 
+export const ProfileTextReviewScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  previousDisplayName: 'previousDisplayName',
+  previousDescription: 'previousDescription',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProfileTextReviewScalarFieldEnum = (typeof ProfileTextReviewScalarFieldEnum)[keyof typeof ProfileTextReviewScalarFieldEnum]
+
+
 export const AuthTokenScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -5743,6 +5830,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   clientProfile?: Prisma.ClientProfileOmit
   moderationAction?: Prisma.ModerationActionOmit
+  profileTextReview?: Prisma.ProfileTextReviewOmit
   authToken?: Prisma.AuthTokenOmit
   country?: Prisma.CountryOmit
   countryTranslation?: Prisma.CountryTranslationOmit

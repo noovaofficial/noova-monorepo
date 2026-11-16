@@ -269,6 +269,29 @@ model ModerationAction {
   @@index([moderatorId, createdAt])
 }
 
+/// Правка текста уже одобренной анкеты, ждущая взгляда модератора.
+///
+/// Имя и описание меняются сразу — анкета из каталога не пропадает, — но
+/// модератор одобрял прежний текст, и новый должен увидеть тоже. Строка
+/// хранит последний одобренный текст: по нему видно, что изменилось, и к
+/// нему анкета возвращается при отказе.
+///
+/// Одна на анкету: серия правок подряд — это одна проверка от одобренного
+/// текста до текущего, а не очередь из промежуточных вариантов.
+model ProfileTextReview {
+  id        String  @id @default(cuid())
+  profileId String  @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  previousDisplayName String
+  previousDescription String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
 /// Одноразовые токены для подтверждения почты и сброса пароля.
 model AuthToken {
   id     String @id @default(cuid())
@@ -555,6 +578,8 @@ model Profile {
   /// отличается от ТОПа; даёт приоритет в выдаче.
   isPremium            Boolean               @default(false)
   topPlacement         TopPlacement?
+  /// Непроверенная правка имени или описания опубликованной анкеты.
+  textReview           ProfileTextReview?
   verificationRequests VerificationRequest[]
   isVerified           Boolean               @default(false)
   lastSeenAt           DateTime?

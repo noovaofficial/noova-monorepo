@@ -182,6 +182,12 @@ services:
       S3_BUCKET: ${S3_BUCKET:-noova-media}
       S3_ACCESS_KEY: ${MINIO_APP_USER:-}
       S3_SECRET_KEY: ${MINIO_APP_PASSWORD:-}
+      # Отдельная публичная зона и сброс кэша CDN (внешнее хранилище вроде
+      # Bunny). Пусто — всё лежит в S3_BUCKET, как с MinIO.
+      S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-}
+      S3_PUBLIC_ACCESS_KEY: ${S3_PUBLIC_ACCESS_KEY:-}
+      S3_PUBLIC_SECRET_KEY: ${S3_PUBLIC_SECRET_KEY:-}
+      CDN_PURGE_KEY: ${CDN_PURGE_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -353,6 +359,12 @@ services:
       S3_BUCKET: ${S3_BUCKET:-noova-media}
       S3_ACCESS_KEY: ${MINIO_APP_USER:-}
       S3_SECRET_KEY: ${MINIO_APP_PASSWORD:-}
+      # Отдельная публичная зона и сброс кэша CDN (внешнее хранилище вроде
+      # Bunny). Пусто — всё лежит в S3_BUCKET, как с MinIO.
+      S3_PUBLIC_BUCKET: ${S3_PUBLIC_BUCKET:-}
+      S3_PUBLIC_ACCESS_KEY: ${S3_PUBLIC_ACCESS_KEY:-}
+      S3_PUBLIC_SECRET_KEY: ${S3_PUBLIC_SECRET_KEY:-}
+      CDN_PURGE_KEY: ${CDN_PURGE_KEY:-}
       MEDIA_BASE_URL: ${MEDIA_BASE_URL}
     depends_on:
       postgres:

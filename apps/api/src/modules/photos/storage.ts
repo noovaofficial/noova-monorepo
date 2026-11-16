@@ -5,10 +5,13 @@ import {
   CopyObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { pino } from 'pino';
 import { env } from '../../env.js';
+import { loggerOptions } from '../../logger.js';
 import { VARIANT_WIDTHS } from './images.js';
 
 /**
@@ -27,22 +30,68 @@ export const PUBLIC_PREFIX = 'public';
  */
 export const VERIFICATION_PREFIX = 'verification';
 
-const client = new S3Client({
-  endpoint: env.S3_ENDPOINT,
-  region: env.S3_REGION,
-  credentials: { accessKeyId: env.S3_ACCESS_KEY, secretAccessKey: env.S3_SECRET_KEY },
-  // MinIO адресует бакет путём, а не поддоменом.
-  forcePathStyle: true,
-});
+const log = pino({ ...loggerOptions, name: 'storage' });
+
+/**
+ * Куда физически ложится объект: закрытая зона или публичная.
+ *
+ * По умолчанию это один бакет — так работает MinIO, где анонимный доступ
+ * открыт на префикс `public/`. У внешних хранилищ с CDN (Bunny) такого
+ * правила нет: CDN подключается к зоне целиком и открывает всё, что в ней
+ * лежит. Тогда публичное живёт в отдельной зоне (`S3_PUBLIC_BUCKET`), а
+ * неодобренные фото, видео и снимки документов — в закрытой, куда CDN не
+ * подключён вовсе.
+ *
+ * Ключи при этом не меняются: объект `public/…` лежит под тем же ключом,
+ * только в другой зоне. Поэтому переезд не требует править строки в базе.
+ */
+type Zone = { client: S3Client; bucket: string };
+
+const privateZone: Zone = {
+  client: new S3Client({
+    endpoint: env.S3_ENDPOINT,
+    region: env.S3_REGION,
+    credentials: { accessKeyId: env.S3_ACCESS_KEY, secretAccessKey: env.S3_SECRET_KEY },
+    // MinIO адресует бакет путём, а не поддоменом.
+    forcePathStyle: true,
+  }),
+  bucket: env.S3_BUCKET,
+};
+
+/** Отдельная публичная зона задана — иначе всё лежит в одном бакете. */
+export const hasSeparatePublicZone = env.S3_PUBLIC_BUCKET !== '';
+
+const publicZone: Zone = hasSeparatePublicZone
+  ? {
+      // Свой клиент: у Bunny ключ доступа выдаётся на зону, а не на учётку.
+      client: new S3Client({
+        endpoint: env.S3_ENDPOINT,
+        region: env.S3_REGION,
+        credentials: {
+          accessKeyId: env.S3_PUBLIC_ACCESS_KEY || env.S3_ACCESS_KEY,
+          secretAccessKey: env.S3_PUBLIC_SECRET_KEY || env.S3_SECRET_KEY,
+        },
+        forcePathStyle: true,
+      }),
+      bucket: env.S3_PUBLIC_BUCKET,
+    }
+  : privateZone;
+
+export const isPublicKey = (key: string) => key.startsWith(`${PUBLIC_PREFIX}/`);
+
+const zoneOf = (key: string): Zone => (isPublicKey(key) ? publicZone : privateZone);
+
+const CACHE_FOREVER = 'public, max-age=31536000, immutable';
 
 export async function putObject(key: string, body: Buffer, contentType: string): Promise<void> {
-  await client.send(
+  const zone = zoneOf(key);
+  await zone.client.send(
     new PutObjectCommand({
-      Bucket: env.S3_BUCKET,
+      Bucket: zone.bucket,
       Key: key,
       Body: body,
       ContentType: contentType,
-      CacheControl: 'public, max-age=31536000, immutable',
+      CacheControl: CACHE_FOREVER,
     }),
   );
 }
@@ -58,38 +107,137 @@ export async function putObjectFromFile(
   contentType: string,
 ): Promise<void> {
   const { size } = await stat(path);
-  await client.send(
+  const zone = zoneOf(key);
+  await zone.client.send(
     new PutObjectCommand({
-      Bucket: env.S3_BUCKET,
+      Bucket: zone.bucket,
       Key: key,
       Body: createReadStream(path),
       ContentLength: size,
       ContentType: contentType,
-      CacheControl: 'public, max-age=31536000, immutable',
+      CacheControl: CACHE_FOREVER,
     }),
   );
 }
 
 /** Скачивает объект на диск — исходник видео для ffmpeg. */
 export async function downloadObject(key: string, path: string): Promise<void> {
-  const out = await client.send(new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+  const zone = zoneOf(key);
+  const out = await zone.client.send(new GetObjectCommand({ Bucket: zone.bucket, Key: key }));
   if (!out.Body) throw new Error(`Объект пуст: ${key}`);
   await pipeline(out.Body as NodeJS.ReadableStream, createWriteStream(path));
 }
 
+/**
+ * Удаляет объект. Публичный заодно сбрасывается из кэша CDN: без этого
+ * удалённое или отклонённое после одобрения фото оставалось бы доступно по
+ * прежней ссылке до конца срока кэша — а он у нас год.
+ */
 export async function deleteObject(key: string): Promise<void> {
-  await client.send(new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+  const zone = zoneOf(key);
+  await zone.client.send(new DeleteObjectCommand({ Bucket: zone.bucket, Key: key }));
+  if (isPublicKey(key)) await purgeCdn(publicUrl(key));
 }
 
+/**
+ * Перенос объекта: одобрение (`pending/` → `public/`) и отклонение обратно.
+ *
+ * Внутри одной зоны это копирование на стороне хранилища. Между зонами
+ * такого нет — Bunny копирует только внутри зоны, — поэтому объект
+ * перекачивается через API: читается потоком из одной зоны и пишется в
+ * другую. Файлы небольшие: фото — сотни килобайт, видео — до десятков мегабайт.
+ */
 export async function moveObject(from: string, to: string): Promise<void> {
-  await client.send(
-    new CopyObjectCommand({
-      Bucket: env.S3_BUCKET,
-      CopySource: `${env.S3_BUCKET}/${from}`,
-      Key: to,
+  const source = zoneOf(from);
+  const target = zoneOf(to);
+  if (source === target) {
+    await source.client.send(
+      new CopyObjectCommand({
+        Bucket: source.bucket,
+        CopySource: `${source.bucket}/${from}`,
+        Key: to,
+      }),
+    );
+  } else {
+    const out = await source.client.send(
+      new GetObjectCommand({ Bucket: source.bucket, Key: from }),
+    );
+    if (!out.Body || out.ContentLength === undefined) throw new Error(`Объект пуст: ${from}`);
+    await target.client.send(
+      new PutObjectCommand({
+        Bucket: target.bucket,
+        Key: to,
+        Body: out.Body as NodeJS.ReadableStream as never,
+        ContentLength: out.ContentLength,
+        ContentType: out.ContentType ?? 'application/octet-stream',
+        CacheControl: CACHE_FOREVER,
+      }),
+    );
+  }
+  await deleteObject(from);
+}
+
+/**
+ * Все объекты хранилища — для резервной копии. Обходит обе зоны; когда зона
+ * одна, обходит её один раз. Листинг идёт страницами, в память целиком не
+ * попадает.
+ */
+export async function* listAllObjects(): AsyncGenerator<{ key: string; size: number }> {
+  for (const zone of new Set([privateZone, publicZone])) {
+    let token: string | undefined;
+    do {
+      const page = await zone.client.send(
+        new ListObjectsV2Command({ Bucket: zone.bucket, ContinuationToken: token }),
+      );
+      for (const item of page.Contents ?? []) {
+        if (item.Key) yield { key: item.Key, size: item.Size ?? 0 };
+      }
+      token = page.IsTruncated ? page.NextContinuationToken : undefined;
+    } while (token);
+  }
+}
+
+/** Запись потоком известной длины — восстановление из резервной копии. */
+export async function putObjectStream(
+  key: string,
+  body: NodeJS.ReadableStream,
+  size: number,
+  contentType: string,
+): Promise<void> {
+  const zone = zoneOf(key);
+  await zone.client.send(
+    new PutObjectCommand({
+      Bucket: zone.bucket,
+      Key: key,
+      Body: body as never,
+      ContentLength: size,
+      ContentType: contentType,
+      CacheControl: CACHE_FOREVER,
     }),
   );
-  await deleteObject(from);
+}
+
+/**
+ * Сброс одного адреса из кэша CDN (Bunny: `POST /purge?url=…`, ключ учётной
+ * записи в заголовке `AccessKey`). Без ключа — ничего не делает: так живёт
+ * локальная среда и сервер без CDN.
+ *
+ * Сбой не пробрасывается: объект из хранилища уже удалён, и ронять из-за
+ * кэша удаление анкеты или решение модератора нельзя. Но и молчать нельзя —
+ * файл остаётся виден снаружи, поэтому сбой пишется в лог ошибкой.
+ */
+async function purgeCdn(url: string): Promise<void> {
+  if (env.CDN_PURGE_KEY === '') return;
+  try {
+    const response = await fetch(`${env.CDN_PURGE_URL}?url=${encodeURIComponent(url)}`, {
+      method: 'POST',
+      headers: { AccessKey: env.CDN_PURGE_KEY },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) throw new Error(`CDN ответил ${response.status}`);
+  } catch (error) {
+    log.error({ err: error, url }, 'кэш CDN не сброшен: файл удалён, но может отдаваться из кэша');
+  }
 }
 
 /**
@@ -117,8 +265,9 @@ export async function getObject(
   /** Есть только у ответа на `range` — признак частичного ответа (206). */
   contentRange?: string;
 }> {
-  const out = await client.send(
-    new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key, ...(range ? { Range: range } : {}) }),
+  const zone = zoneOf(key);
+  const out = await zone.client.send(
+    new GetObjectCommand({ Bucket: zone.bucket, Key: key, ...(range ? { Range: range } : {}) }),
   );
   if (!out.Body) throw new Error(`Объект пуст: ${key}`);
   return {
@@ -165,8 +314,6 @@ export function ownVideoUrl(videoId: string, file: VideoFile): string {
 export function moderationVideoUrl(videoId: string, file: VideoFile): string {
   return `${apiBase()}/api/v1/moderation/videos/${videoId}/file?file=${file}`;
 }
-
-export const isPublicKey = (key: string) => key.startsWith(`${PUBLIC_PREFIX}/`);
 
 /** Хранилище отвечает так, когда объекта нет. Это не сбой. */
 function isMissingObject(error: unknown): boolean {

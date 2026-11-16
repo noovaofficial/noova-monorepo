@@ -47,6 +47,19 @@ case "$WHAT" in
 			</dev/null | gzip -9 | encrypt
 		;;
 	media)
+		# Два способа снять медиа. `volume` — архив тома MinIO, как было.
+		# `s3` — обход хранилища через S3-API скриптом из образа api: нужен,
+		# когда медиа лежат во внешнем хранилище и тома на сервере нет.
+		# Способ задаётся строкой MEDIA_BACKUP=s3 в .env; по умолчанию — том.
+		MODE="$(grep -E '^MEDIA_BACKUP=' .env 2>/dev/null | tail -1 | cut -d= -f2- | tr -d '[:space:]' || true)"
+		if [ "${MODE:-volume}" = "s3" ]; then
+			printf 'способ: s3\n' >&2
+			# Отдельный контейнер, а не exec в работающий api: копия не должна
+			# отнимать у него память и процессор. --no-deps — стек не трогаем.
+			docker compose run --rm --no-deps -T api node dist/scripts/export-media.js \
+				</dev/null | gzip -1 | encrypt
+			exit 0
+		fi
 		# Имя тома спрашиваем у Docker, а не вычитываем из compose-файла: там
 		# короткое имя (`minio_data`), а Docker хранит его с префиксом проекта
 		# (`noova_minio_data`). Разбор регуляркой давал первое и промахивался.

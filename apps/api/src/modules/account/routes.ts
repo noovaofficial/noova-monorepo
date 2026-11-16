@@ -102,6 +102,7 @@ function tagsFor(slug: string): string[] {
   return [profileTag(slug), PROFILES_TAG];
 }
 
+import { trackTextEdit } from '../moderation/text-review.js';
 import { inheritContacts, lowestPriceCents } from './company-defaults.js';
 import { buildUniqueSlug } from './slug.js';
 
@@ -374,11 +375,16 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
       const countryChanges = me.countryId !== countryId;
       let toConvert: { id: string }[] = [];
+      // Заблокированные переезжают вместе с остальными, но остаются
+      // заблокированными: проверка анкеты у них пройдена, и в черновике их
+      // можно было бы опубликовать заново — смена страны снимала бы блокировку.
+      let bannedIds: string[] = [];
       if (countryChanges) {
         const profiles = await fastify.prisma.profile.findMany({
           where: { ownerId: userId },
           select: { id: true, status: true },
         });
+        bannedIds = profiles.filter((profile) => profile.status === 'banned').map((p) => p.id);
         if (profiles.some((profile) => profile.status === 'published')) {
           throw withCode(
             fastify.httpErrors.conflict('Страну нельзя сменить, пока есть опубликованные анкеты'),
@@ -434,6 +440,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
               ...(center ?? {}),
             },
           });
+          if (bannedIds.length > 0) {
+            await tx.profile.updateMany({
+              where: { id: { in: bannedIds } },
+              data: { status: 'banned' },
+            });
+          }
         }
       });
       if (toConvert.length > 0) {
@@ -868,6 +880,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
           }
         }
 
+        // До записи нового текста: сравнивать нужно с тем, что сейчас в базе.
+        await trackTextEdit(tx, request.params.id, {
+          displayName: body.displayName,
+          description: body.description,
+        });
+
         return tx.profile.update({
           where: { id: request.params.id },
           data: {
@@ -1010,6 +1028,12 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const { advertiserKind } = await advertiserOr403(fastify, userId);
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
+      // Блокировку снимает модератор, а не владелец: проверка анкеты у
+      // заблокированной остаётся пройденной, и без этого условия публикация
+      // возвращала бы её в каталог.
+      if (owned.status === 'banned') {
+        throw fastify.httpErrors.forbidden('Анкета заблокирована');
+      }
       await assertComplete(fastify, owned.id);
 
       const verification = await fastify.prisma.verificationCase.findUnique({
@@ -1301,6 +1325,21 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId } = requireSession(request);
       const owned = await ownedProfileOr404(fastify, userId, request.params.id);
+
+      // Снять можно только то, что опубликовано. Без условия пауза меняла
+      // любой статус — и заблокированную анкету тоже: «пауза», а следом
+      // «опубликовать» снимали блокировку модератора руками самого владельца.
+      if (owned.status === 'paused') {
+        return present(
+          await fastify.prisma.profile.findUniqueOrThrow({
+            where: { id: owned.id },
+            select: ownProfileSelect,
+          }),
+        );
+      }
+      if (owned.status !== 'published') {
+        throw fastify.httpErrors.conflict('Снять с публикации можно только опубликованную анкету');
+      }
 
       const updated = await fastify.prisma.profile.update({
         where: { id: request.params.id },

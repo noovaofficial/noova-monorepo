@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   ClientProfile: 'ClientProfile',
   ModerationAction: 'ModerationAction',
+  ProfileTextReview: 'ProfileTextReview',
   AuthToken: 'AuthToken',
   Country: 'Country',
   CountryTranslation: 'CountryTranslation',
@@ -170,6 +171,18 @@ export const ModerationActionScalarFieldEnum = {
 } as const
 
 export type ModerationActionScalarFieldEnum = (typeof ModerationActionScalarFieldEnum)[keyof typeof ModerationActionScalarFieldEnum]
+
+
+export const ProfileTextReviewScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  previousDisplayName: 'previousDisplayName',
+  previousDescription: 'previousDescription',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProfileTextReviewScalarFieldEnum = (typeof ProfileTextReviewScalarFieldEnum)[keyof typeof ProfileTextReviewScalarFieldEnum]
 
 
 export const AuthTokenScalarFieldEnum = {

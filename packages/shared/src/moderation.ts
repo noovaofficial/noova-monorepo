@@ -64,6 +64,23 @@ export const videoQueueItemSchema = z.object({
 });
 export type VideoQueueItem = z.infer<typeof videoQueueItemSchema>;
 
+/**
+ * Правка имени или описания уже опубликованной анкеты. Текст на сайте уже
+ * новый; модератор видит, каким он был при одобрении, и либо соглашается,
+ * либо возвращает прежний.
+ */
+export const textEditQueueItemSchema = z.object({
+  kind: z.literal('textEdit'),
+  id: z.string(),
+  createdAt: z.string().datetime(),
+  previousDisplayName: z.string(),
+  previousDescription: z.string(),
+  displayName: z.string(),
+  description: z.string(),
+  profile: queueProfileSchema,
+});
+export type TextEditQueueItem = z.infer<typeof textEditQueueItemSchema>;
+
 export const verificationQueueItemSchema = z.object({
   kind: z.literal('verification'),
   id: z.string(),
@@ -78,6 +95,7 @@ export type VerificationQueueItem = z.infer<typeof verificationQueueItemSchema>;
 export const queueItemSchema = z.discriminatedUnion('kind', [
   photoQueueItemSchema,
   videoQueueItemSchema,
+  textEditQueueItemSchema,
   verificationQueueItemSchema,
   commentQueueItemSchema,
   profileReportItemSchema,
@@ -87,7 +105,7 @@ export type QueueItem = z.infer<typeof queueItemSchema>;
 /** Очередь листается курсором: у неё четыре источника, и курсор несёт
  *  ещё и вид, с которого продолжать. Клиент его не разбирает. */
 export const queueQuerySchema = z.object({
-  kind: z.enum(['photo', 'video', 'verification', 'comment', 'report']).optional(),
+  kind: z.enum(['photo', 'video', 'textEdit', 'verification', 'comment', 'report']).optional(),
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(30),
 });
@@ -96,6 +114,8 @@ export type QueueQuery = z.infer<typeof queueQuerySchema>;
 export const queueCountSchema = z.object({
   photos: z.number().int().nonnegative(),
   videos: z.number().int().nonnegative(),
+  /** Правки текста опубликованных анкет, которые модератор ещё не видел. */
+  textEdits: z.number().int().nonnegative(),
   verifications: z.number().int().nonnegative(),
   /** Заявки на верификацию личности, ждущие решения (D-12). */
   identity: z.number().int().nonnegative(),

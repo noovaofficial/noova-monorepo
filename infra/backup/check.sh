@@ -86,9 +86,26 @@ say "Фотографии"
 LIST="$TMP/list"
 tar tzf "$MEDIA" > "$LIST" || fail "Архив фотографий не читается"
 
-OBJECTS="$(grep -c '\.webp/$' "$LIST" || true)"
-MEDIA_PHOTOS="$(grep '\.webp/$' "$LIST" | sed 's|/[^/]*/$||' | sort -u | wc -l | tr -d ' ')"
-SIZES="$(grep '\.webp/$' "$LIST" | sed 's|/$||; s|.*/||' | sort -u | tr '\n' ' ')"
+#
+# Копия, снятая через S3-API (MEDIA_BACKUP=s3), устроена иначе: в ней лежат
+# сами файлы. Отличаем по наличию каталогов `*.webp/` и дальше считаем по
+# одному списку путей без хвостовой косой черты.
+if grep -q '\.webp/$' "$LIST"; then
+  FORMAT="том MinIO"
+  WEBP="$(grep '\.webp/$' "$LIST" | sed 's|/$||')"
+else
+  FORMAT="S3-API"
+  WEBP="$(grep '\.webp$' "$LIST" || true)"
+fi
+printf '  формат:     %s\n' "$FORMAT"
+
+OBJECTS="$(printf '%s\n' "$WEBP" | grep -c . || true)"
+# Фотография — это каталог с её размерами. Постер видео и снимки документов
+# тоже webp, но строк в таблице Photo у них нет: считать их фотографиями
+# значило бы завысить число и не заметить настоящую недостачу.
+PHOTO_FILES="$(printf '%s\n' "$WEBP" | grep -vE '/video-[^/]*/|(^|/)verification/' || true)"
+MEDIA_PHOTOS="$(printf '%s\n' "$PHOTO_FILES" | grep . | sed 's|/[^/]*$||' | sort -u | wc -l | tr -d ' ')"
+SIZES="$(printf '%s\n' "$PHOTO_FILES" | grep . | sed 's|.*/||' | sort -u | tr '\n' ' ')"
 
 printf '  объектов:   %s\n' "$OBJECTS"
 printf '  фотографий: %s\n' "$MEDIA_PHOTOS"

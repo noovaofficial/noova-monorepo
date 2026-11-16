@@ -9,12 +9,14 @@ import { useSession } from '@/modules/auth/components/SessionProvider';
 import {
   approveComment,
   approvePhoto,
+  approveTextEdit,
   approveVerification,
   approveVideo,
   fetchQueue,
   fetchQueueCount,
   rejectComment,
   rejectPhoto,
+  rejectTextEdit,
   rejectVerification,
   rejectVideo,
   resolveReport,
@@ -37,6 +39,7 @@ const TABS = [
   'report',
   'photo',
   'video',
+  'textEdit',
   'verification',
   'identity',
   'comment',
@@ -49,6 +52,7 @@ const TAB_LABELS: Record<Tab, string> = {
   all: 'tabAll',
   photo: 'tabPhotos',
   video: 'tabVideos',
+  textEdit: 'tabTextEdits',
   verification: 'tabVerifications',
   identity: 'tabIdentity',
   comment: 'tabComments',
@@ -65,6 +69,7 @@ const TAB_COUNTS: Partial<Record<Tab, keyof QueueCount>> = {
   report: 'reports',
   photo: 'photos',
   video: 'videos',
+  textEdit: 'textEdits',
   verification: 'verifications',
   identity: 'identity',
   comment: 'comments',
@@ -103,7 +108,7 @@ export function ModerationQueue() {
    * Виды очереди перечислены явно, а не «всё кроме»: список вкладок растёт,
    * и вычитание рано или поздно пропустит новую вкладку в запрос к очереди.
    */
-  const QUEUE_KINDS = ['photo', 'video', 'verification', 'comment', 'report'] as const;
+  const QUEUE_KINDS = ['photo', 'video', 'textEdit', 'verification', 'comment', 'report'] as const;
   type QueueKind = (typeof QUEUE_KINDS)[number];
   const queueKind = (QUEUE_KINDS as readonly string[]).includes(tab)
     ? (tab as QueueKind)
@@ -256,11 +261,13 @@ export function ModerationQueue() {
                     ? t('photoOf')
                     : item.kind === 'video'
                       ? t('videoOf')
-                      : item.kind === 'verification'
-                        ? t('verificationOf')
-                        : item.kind === 'report'
-                          ? t('reportOf')
-                          : t(item.reports.length > 0 ? 'reportedCommentOf' : 'commentOf')}
+                      : item.kind === 'textEdit'
+                        ? t('textEditOf')
+                        : item.kind === 'verification'
+                          ? t('verificationOf')
+                          : item.kind === 'report'
+                            ? t('reportOf')
+                            : t(item.reports.length > 0 ? 'reportedCommentOf' : 'commentOf')}
                 </span>
                 <span className={styles.cardName}>{item.profile.displayName}</span>
                 <span className={styles.cardMeta}>
@@ -276,6 +283,32 @@ export function ModerationQueue() {
                   <span className={styles.cardMeta}>
                     {t('photoCount', { count: item.photoCount })}
                   </span>
+                ) : null}
+
+                {item.kind === 'textEdit' ? (
+                  <>
+                    {/* Показываем только то, что изменилось: одобренный
+                        текст и нынешний, уже видимый посетителям. */}
+                    {item.previousDisplayName !== item.displayName ? (
+                      <>
+                        <span className={styles.cardMeta}>{t('textEditName')}</span>
+                        <p className={styles.reportBody}>{item.previousDisplayName}</p>
+                        <p className={styles.commentBody}>{item.displayName}</p>
+                      </>
+                    ) : null}
+                    {item.previousDescription !== item.description ? (
+                      <>
+                        <span className={styles.cardMeta}>{t('textEditDescription')}</span>
+                        <p className={styles.reportBody}>
+                          {item.previousDescription || t('textEditEmpty')}
+                        </p>
+                        <p className={styles.commentBody}>
+                          {item.description || t('textEditEmpty')}
+                        </p>
+                      </>
+                    ) : null}
+                    <span className={styles.hint}>{t('textEditHint')}</span>
+                  </>
                 ) : null}
 
                 {item.kind === 'report' ? (
@@ -342,9 +375,11 @@ export function ModerationQueue() {
                             ? rejectPhoto(item.id, reason.trim())
                             : item.kind === 'video'
                               ? rejectVideo(item.id, reason.trim())
-                              : item.kind === 'comment'
-                                ? rejectComment(item.id, reason.trim())
-                                : rejectVerification(item.id, reason.trim()),
+                              : item.kind === 'textEdit'
+                                ? rejectTextEdit(item.id, reason.trim())
+                                : item.kind === 'comment'
+                                  ? rejectComment(item.id, reason.trim())
+                                  : rejectVerification(item.id, reason.trim()),
                         )
                       }
                     >
@@ -365,11 +400,13 @@ export function ModerationQueue() {
                           ? approvePhoto(item.id)
                           : item.kind === 'video'
                             ? approveVideo(item.id)
-                            : item.kind === 'comment'
-                              ? approveComment(item.id)
-                              : item.kind === 'report'
-                                ? resolveReport(item.id)
-                                : approveVerification(item.id),
+                            : item.kind === 'textEdit'
+                              ? approveTextEdit(item.id)
+                              : item.kind === 'comment'
+                                ? approveComment(item.id)
+                                : item.kind === 'report'
+                                  ? resolveReport(item.id)
+                                  : approveVerification(item.id),
                       )
                     }
                   >

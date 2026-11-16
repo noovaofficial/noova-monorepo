@@ -275,6 +275,7 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: userId },
         select: {
           advertiserKind: true,
+          emailVerifiedAt: true,
           // Город берётся с первой анкеты: у учётной записи его нет.
           profiles: { select: { cityId: true }, orderBy: { createdAt: 'asc' }, take: 1 },
         },
@@ -283,6 +284,15 @@ export const campaignRoutes: FastifyPluginAsyncZod = async (fastify) => {
         throw withCode(
           fastify.httpErrors.forbidden('Доступно только рекламодателям'),
           'role_forbidden',
+        );
+      }
+
+      // Подарок — на подтверждённую учётку: без этого один код выбирался бы
+      // пачкой учёток на несуществующие адреса, пока не кончится квота.
+      if (!user.emailVerifiedAt) {
+        throw withCode(
+          fastify.httpErrors.forbidden('Сначала подтвердите адрес электронной почты'),
+          'email_not_verified',
         );
       }
 

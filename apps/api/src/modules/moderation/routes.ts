@@ -38,6 +38,7 @@ import { decodeCursor, encodeCursor } from '../profiles/query.js';
 import { deleteVerificationPhotos } from '../verification/service.js';
 import { sendVideoFile } from '../videos/routes.js';
 import { approveVideo, deleteProfileVideoFiles, rejectVideo } from '../videos/service.js';
+import { pendingTextReviewWhere } from './text-review.js';
 
 const profileSelect = {
   id: true,
@@ -294,6 +295,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const [
         photos,
         videos,
+        textEdits,
         verifications,
         identity,
         pendingComments,
@@ -310,6 +312,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           where: { isApproved: false, deletedAt: null, rejectedReason: null },
         }),
         fastify.prisma.video.count({ where: pendingVideoWhere }),
+        fastify.prisma.profileTextReview.count({ where: pendingTextReviewWhere }),
         fastify.prisma.verificationCase.count({ where: { status: 'pending' } }),
         // Заявки на верификацию личности — тоже незакрытая работа (D-12).
         fastify.prisma.verificationRequest.count({ where: { status: 'pending' } }),
@@ -336,6 +339,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       return {
         photos,
         videos,
+        textEdits,
         verifications,
         identity,
         comments,
@@ -345,7 +349,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         blockedUsers,
         // Заблокированных в итоге нет: бейдж в шапке — это то, что ждёт
         // решения, и расти от уже принятых решений он не должен.
-        total: photos + videos + verifications + identity + comments + profileReports,
+        total: photos + videos + textEdits + verifications + identity + comments + profileReports,
       };
     },
   );
@@ -360,11 +364,19 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
    * поднимались сортировкой в памяти, а с курсором порядок обязан жить в
    * запросе — иначе страницы перекрывались бы.
    */
-  type QueueSource = 'verification' | 'photo' | 'video' | 'comment' | 'reportUrgent' | 'report';
+  type QueueSource =
+    | 'verification'
+    | 'photo'
+    | 'video'
+    | 'textEdit'
+    | 'comment'
+    | 'reportUrgent'
+    | 'report';
   const QUEUE_ORDER: QueueSource[] = [
     'verification',
     'photo',
     'video',
+    'textEdit',
     'comment',
     'reportUrgent',
     'report',
@@ -483,6 +495,37 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         },
       }));
     },
+    textEdit: async (afterId, take) => {
+      const reviews = await fastify.prisma.profileTextReview.findMany({
+        where: pendingTextReviewWhere,
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+        take,
+        ...after(afterId),
+        select: {
+          id: true,
+          createdAt: true,
+          previousDisplayName: true,
+          previousDescription: true,
+          profile: { select: { ...profileSelect, description: true } },
+        },
+      });
+      return reviews.map((review) => ({
+        kind: 'textEdit' as const,
+        id: review.id,
+        createdAt: review.createdAt.toISOString(),
+        previousDisplayName: review.previousDisplayName,
+        previousDescription: review.previousDescription,
+        displayName: review.profile.displayName,
+        description: review.profile.description,
+        profile: {
+          id: review.profile.id,
+          slug: review.profile.slug,
+          displayName: review.profile.displayName,
+          kind: review.profile.kind,
+          cityName: review.profile.city.name,
+        },
+      }));
+    },
     comment: async (afterId, take) => {
       const comments = await fastify.prisma.profileComment.findMany({
         // Новые на проверку и опубликованные, на которые пожаловались:
@@ -596,6 +639,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { isApproved: false, deletedAt: null, rejectedReason: null },
       }),
     video: () => fastify.prisma.video.count({ where: pendingVideoWhere }),
+    textEdit: () => fastify.prisma.profileTextReview.count({ where: pendingTextReviewWhere }),
     comment: () =>
       fastify.prisma.profileComment.count({
         where: {
@@ -878,6 +922,100 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       return { ok: true as const };
     },
   );
+
+  /**
+   * Правка текста опубликованной анкеты. Согласие просто закрывает проверку:
+   * новый текст уже на сайте. Отказ возвращает одобренный текст — анкета
+   * остаётся в каталоге; снять её можно отдельным действием в просмотре.
+   */
+  fastify.post(
+    '/moderation/text-edits/:id/approve',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const review = await findTextReview(request.params.id);
+      refuseSelfModeration(fastify, review.profile.ownerId, userId);
+
+      // deleteMany: второй модератор мог закрыть ту же проверку секундой раньше.
+      await fastify.prisma.$transaction([
+        fastify.prisma.profileTextReview.deleteMany({ where: { id: review.id } }),
+        // Замечание от прошлого отказа по тексту больше не относится к делу.
+        fastify.prisma.profile.update({
+          where: { id: review.profileId },
+          data: { moderationNote: null },
+        }),
+      ]);
+      await writeAction(fastify, userId, 'profile', review.profileId, 'approved');
+      return { ok: true as const };
+    },
+  );
+
+  fastify.post(
+    '/moderation/text-edits/:id/reject',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['moderation'],
+        params: z.object({ id: z.string().min(1) }),
+        body: rejectionSchema,
+        response: { 200: z.object({ ok: z.literal(true) }) },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const review = await findTextReview(request.params.id);
+      refuseSelfModeration(fastify, review.profile.ownerId, userId);
+
+      await fastify.prisma.$transaction([
+        fastify.prisma.profile.update({
+          where: { id: review.profileId },
+          data: {
+            displayName: review.previousDisplayName,
+            description: review.previousDescription,
+            // Владелец видит причину в кабинете: иначе текст «сам» вернулся бы
+            // к прежнему без объяснения.
+            moderationNote: request.body.reason,
+          },
+        }),
+        fastify.prisma.profileTextReview.deleteMany({ where: { id: review.id } }),
+      ]);
+      await writeAction(
+        fastify,
+        userId,
+        'profile',
+        review.profileId,
+        'rejected',
+        request.body.reason,
+      );
+      // Имя стоит и на карточках каталога, не только на странице анкеты.
+      fastify.revalidate([profileTag(review.profile.slug), PROFILES_TAG]);
+      return { ok: true as const };
+    },
+  );
+
+  async function findTextReview(id: string) {
+    const review = await fastify.prisma.profileTextReview.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        profileId: true,
+        previousDisplayName: true,
+        previousDescription: true,
+        profile: { select: { slug: true, ownerId: true } },
+      },
+    });
+    if (!review) throw fastify.httpErrors.notFound('Правка не найдена');
+    return review;
+  }
 
   /** Решение принимается только по обработанному видео: до этого смотреть нечего. */
   async function findModeratedVideo(id: string) {

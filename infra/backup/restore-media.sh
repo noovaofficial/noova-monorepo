@@ -11,6 +11,20 @@ VOLUME="${2:-noova_minio_data}"
 
 [ -n "$ARCHIVE" ] || { echo "Использование: restore-media.sh <архив.tar.gz> [том]" >&2; exit 1; }
 [ -f "$ARCHIVE" ] || { echo "Файл не найден: $ARCHIVE" >&2; exit 1; }
+
+# Копия, снятая через S3-API (MEDIA_BACKUP=s3), — это сами файлы, а не том
+# MinIO: в ней нет каталогов `*.webp/`. Такую раскладываем по объектам через
+# хранилище: существующие перезаписываются, лишние остаются.
+if ! tar tzf "$ARCHIVE" | grep -q '\.webp/$'; then
+  echo "Архив снят через S3-API: объекты будут записаны в хранилище поверх существующих."
+  printf 'Продолжить? [yes/NO] '
+  read -r answer
+  [ "$answer" = "yes" ] || { echo "Отменено."; exit 1; }
+  gunzip -c "$ARCHIVE" | docker compose run --rm --no-deps -T api node dist/scripts/import-media.js
+  echo "[restore-media] готово"
+  exit 0
+fi
+
 docker volume inspect "$VOLUME" >/dev/null 2>&1 || { echo "Тома $VOLUME нет" >&2; exit 1; }
 
 echo "ВНИМАНИЕ: содержимое тома ${VOLUME} будет заменено архивом ${ARCHIVE}."

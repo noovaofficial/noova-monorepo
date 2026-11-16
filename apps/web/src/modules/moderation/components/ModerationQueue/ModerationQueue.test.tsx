@@ -25,6 +25,7 @@ function counts(overrides: Partial<QueueCount> = {}): QueueCount {
   return {
     photos: 0,
     videos: 0,
+    textEdits: 0,
     verifications: 0,
     identity: 0,
     comments: 0,

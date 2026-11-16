@@ -142,7 +142,9 @@ async function grantReward(
     // Анкеты, снятые за неоплату, возвращаются: подаренные дни — такое же
     // оплаченное размещение, как купленное.
     await tx.profile.updateMany({
-      where: { ownerId: candidate.userId, unpaidAt: { not: null } },
+      // Только анкеты в паузе — см. такое же условие в billing/listing.ts:
+      // заблокированную после снятия за неоплату акция возвращать не должна.
+      where: { ownerId: candidate.userId, status: 'paused', unpaidAt: { not: null } },
       data: { status: 'published', unpaidAt: null },
     });
   }
