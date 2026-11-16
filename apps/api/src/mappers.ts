@@ -63,7 +63,7 @@ export function toCity(row: CityRow): City {
 }
 
 /** Онлайн — это «был активен последние 10 минут», отдельного флага в БД нет. */
-const ONLINE_WINDOW_MS = 10 * 60 * 1000;
+export const ONLINE_WINDOW_MS = 10 * 60 * 1000;
 
 export function isOnline(lastSeenAt: Date | null): boolean {
   return lastSeenAt !== null && Date.now() - lastSeenAt.getTime() < ONLINE_WINDOW_MS;

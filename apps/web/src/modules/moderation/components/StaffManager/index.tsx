@@ -11,6 +11,7 @@ import {
   deleteStaff,
   fetchStaff,
   ModerationError,
+  resetStaffTwoFactor,
   setStaffBlocked,
 } from '@/modules/moderation/api';
 import { useErrorText } from '@/shared/error-text';
@@ -51,6 +52,11 @@ export function StaffManager() {
     onSuccess: invalidate,
   });
 
+  const resetTwoFactor = useMutation({
+    mutationFn: (member: StaffMember) => resetStaffTwoFactor(member.id),
+    onSuccess: invalidate,
+  });
+
   const remove = useMutation({
     mutationFn: (member: StaffMember) => deleteStaff(member.id),
     onSuccess: async () => {
@@ -60,13 +66,13 @@ export function StaffManager() {
   });
 
   const staff = list.data ?? null;
-  const busy = create.isPending || block.isPending || remove.isPending;
+  const busy = create.isPending || block.isPending || remove.isPending || resetTwoFactor.isPending;
   // 409 на создании — занятый адрес, а не сбой: сообщение должно называть
   // причину, иначе админ будет пробовать тот же адрес снова.
   const error =
     create.error instanceof ModerationError && create.error.status === 409
       ? 'emailTaken'
-      : create.isError || block.isError || remove.isError || list.isError
+      : create.isError || block.isError || remove.isError || resetTwoFactor.isError || list.isError
         ? 'createFailed'
         : null;
 
@@ -169,7 +175,8 @@ export function StaffManager() {
                     ? t('lastLogin', {
                         date: new Date(member.lastLoginAt).toLocaleDateString(),
                       })
-                    : t('neverLoggedIn')}
+                    : t('neverLoggedIn')}{' '}
+                  · {member.hasTwoFactor ? t('twoFactorOn') : t('twoFactorOff')}
                 </span>
               </div>
 
@@ -205,6 +212,21 @@ export function StaffManager() {
                 >
                   {member.isBlocked ? t('unblock') : t('block')}
                 </Button>
+
+                {member.hasTwoFactor ? (
+                  <Button
+                    variant="secondary"
+                    disabled={busy || isSelf}
+                    title={isSelf ? t('selfResetTwoFactorNote') : t('resetTwoFactorHint')}
+                    onClick={() => {
+                      if (window.confirm(t('resetTwoFactorConfirm', { email: member.email }))) {
+                        resetTwoFactor.mutate(member);
+                      }
+                    }}
+                  >
+                    {t('resetTwoFactor')}
+                  </Button>
+                ) : null}
 
                 {deleting !== member.id ? (
                   <Button

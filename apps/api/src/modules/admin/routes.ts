@@ -21,6 +21,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { placeName, placeNameSelect } from '../../i18n.js';
 import { photoUrl } from '../../mappers.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
@@ -31,6 +32,7 @@ import { loadPromotionEffects } from '../analytics/promotion.js';
 import { loadAnalytics } from '../analytics/query.js';
 import { loadTrafficQuality } from '../analytics/traffic-quality.js';
 import { hashPassword } from '../auth/passwords.js';
+import { resetMfa } from '../auth/totp.js';
 import {
   grantTop,
   revokeTop,
@@ -71,7 +73,7 @@ async function resolveSubjects(
           select: {
             id: true,
             displayName: true,
-            city: { select: { name: true } },
+            city: placeNameSelect,
             owner: { select: { email: true } },
           },
         },
@@ -82,7 +84,7 @@ async function resolveSubjects(
         title: photo.profile.displayName,
         accountEmail: photo.profile.owner.email,
         profileId: photo.profile.id,
-        cityName: photo.profile.city.name,
+        cityName: placeName(photo.profile.city),
       });
     }
   }
@@ -97,7 +99,7 @@ async function resolveSubjects(
           select: {
             id: true,
             displayName: true,
-            city: { select: { name: true } },
+            city: placeNameSelect,
             owner: { select: { email: true } },
           },
         },
@@ -108,7 +110,7 @@ async function resolveSubjects(
         title: item.profile.displayName,
         accountEmail: item.profile.owner.email,
         profileId: item.profile.id,
-        cityName: item.profile.city.name,
+        cityName: placeName(item.profile.city),
       });
     }
   }
@@ -121,7 +123,7 @@ async function resolveSubjects(
         id: true,
         body: true,
         author: { select: { email: true } },
-        profile: { select: { id: true, displayName: true, city: { select: { name: true } } } },
+        profile: { select: { id: true, displayName: true, city: placeNameSelect } },
       },
     });
     for (const comment of comments) {
@@ -132,7 +134,7 @@ async function resolveSubjects(
         // Учётка автора отзыва, а не владелицы: решение касалось его текста.
         accountEmail: comment.author.email,
         profileId: comment.profile.id,
-        cityName: comment.profile.city.name,
+        cityName: placeName(comment.profile.city),
       });
     }
   }
@@ -149,7 +151,7 @@ async function resolveSubjects(
           select: {
             id: true,
             displayName: true,
-            city: { select: { name: true } },
+            city: placeNameSelect,
             owner: { select: { email: true } },
           },
         },
@@ -160,7 +162,7 @@ async function resolveSubjects(
         title: item.profile.displayName,
         accountEmail: item.profile.owner.email,
         profileId: item.profile.id,
-        cityName: item.profile.city.name,
+        cityName: placeName(item.profile.city),
       });
     }
   }
@@ -204,7 +206,7 @@ async function resolveSubjects(
       select: {
         id: true,
         displayName: true,
-        city: { select: { name: true } },
+        city: placeNameSelect,
         owner: { select: { email: true } },
       },
     });
@@ -213,7 +215,7 @@ async function resolveSubjects(
         title: profile.displayName,
         accountEmail: profile.owner.email,
         profileId: profile.id,
-        cityName: profile.city.name,
+        cityName: placeName(profile.city),
       });
     }
   }
@@ -228,6 +230,7 @@ type StaffRow = {
   bannedAt: Date | null;
   lastLoginAt: Date | null;
   createdAt: Date;
+  totpEnabledAt: Date | null;
   _count: { moderationActions: number };
 };
 
@@ -240,6 +243,7 @@ function toStaffMember(row: StaffRow) {
     lastLoginAt: row.lastLoginAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     decisionCount: row._count.moderationActions,
+    hasTwoFactor: row.totpEnabledAt !== null,
   };
 }
 
@@ -250,6 +254,7 @@ const staffSelect = {
   bannedAt: true,
   lastLoginAt: true,
   createdAt: true,
+  totpEnabledAt: true,
   _count: { select: { moderationActions: true } },
 } as const;
 
@@ -300,7 +305,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
                 id: true,
                 slug: true,
                 displayName: true,
-                city: { select: { name: true } },
+                city: placeNameSelect,
                 owner: { select: { advertiserKind: true } },
                 company: { select: { name: true } },
                 photos: {
@@ -339,7 +344,7 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
           displayName: row.profile.displayName,
           ownerKind: row.profile.owner.advertiserKind ?? 'individual',
           companyName: row.profile.company?.name ?? null,
-          city: row.profile.city.name,
+          city: placeName(row.profile.city),
           coverUrl: row.profile.photos[0] ? photoUrl(row.profile.photos[0].storageKey) : null,
           startsAt: row.startsAt.toISOString(),
           expiresAt: row.expiresAt.toISOString(),
@@ -577,6 +582,53 @@ export const adminRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Блокировка должна действовать сразу, а не после истечения сессии.
       if (request.body.blocked) await fastify.destroyAllSessions(target.id);
 
+      return toStaffMember(updated as StaffRow);
+    },
+  );
+
+  /**
+   * Сброс второго фактора сотруднику, потерявшему и телефон, и резервные
+   * коды. После сброса он настраивает фактор заново при следующем входе.
+   *
+   * Себе — нельзя: это обход собственного второго фактора из сессии, которую
+   * могли угнать. Единственному админу фактор сбрасывают скриптом на сервере
+   * (`scripts/reset-mfa.ts`).
+   */
+  fastify.post(
+    '/admin/staff/:id/reset-two-factor',
+    {
+      onRequest: guard,
+      config: { rateLimit: false },
+      schema: {
+        tags: ['admin'],
+        params: z.object({ id: z.string().min(1) }),
+        response: { 200: staffMemberSchema },
+      },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      if (request.params.id === userId) {
+        throw fastify.httpErrors.badRequest('Нельзя сбросить второй фактор самому себе');
+      }
+
+      const target = await fastify.prisma.user.findFirst({
+        where: { id: request.params.id, role: { in: ['moderator', 'admin'] } },
+        select: { id: true, email: true },
+      });
+      if (!target) throw fastify.httpErrors.notFound('Сотрудник не найден');
+
+      await resetMfa(fastify.prisma, target.id);
+      // Действующие сессии прошли прежний фактор — их тоже гасим.
+      await fastify.destroyAllSessions(target.id);
+      fastify.log.warn(
+        { actor: userId, target: target.id, email: target.email },
+        'сброшен второй фактор сотрудника',
+      );
+
+      const updated = await fastify.prisma.user.findUniqueOrThrow({
+        where: { id: target.id },
+        select: staffSelect,
+      });
       return toStaffMember(updated as StaffRow);
     },
   );

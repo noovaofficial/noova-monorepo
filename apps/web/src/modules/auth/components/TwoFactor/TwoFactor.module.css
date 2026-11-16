@@ -1,0 +1,44 @@
+.text {
+  font-size: var(--textSm);
+  color: var(--secondaryText);
+  line-height: 1.5;
+}
+
+/* Белая подложка обязательна: в тёмной теме сканер не читает QR без полей. */
+.qr {
+  align-self: center;
+  background: #fff;
+  border-radius: var(--radiusMd);
+  padding: var(--space2);
+}
+
+.secret {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--textSm);
+  word-break: break-all;
+  user-select: all;
+}
+
+.codes {
+  list-style: none;
+  margin: var(--space4) 0;
+  padding: var(--space4);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space2) var(--space4);
+  border: 1px solid var(--border);
+  border-radius: var(--radiusMd);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--textBase);
+  user-select: all;
+}
+
+.linkButton {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--secondaryText);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

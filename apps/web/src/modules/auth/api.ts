@@ -5,6 +5,12 @@ import {
   type DeleteAccountInput,
   type Locale,
   type LoginInput,
+  type MfaEnabled,
+  type MfaSetup,
+  type MfaVerified,
+  mfaEnabledSchema,
+  mfaSetupSchema,
+  mfaVerifiedSchema,
   type RegisterInput,
 } from '@noova/shared';
 
@@ -62,6 +68,21 @@ async function post<T>(path: string, body: unknown, schema?: { parse: (v: unknow
 
 export function login(input: LoginInput): Promise<CurrentUser> {
   return post('/auth/login', input, currentUserSchema);
+}
+
+/** Начало настройки второго фактора: новый секрет и его QR-код. */
+export function startMfaSetup(): Promise<MfaSetup> {
+  return post('/auth/mfa/setup', {}, mfaSetupSchema);
+}
+
+/** Подтверждение настройки первым кодом; в ответе — резервные коды. */
+export function enableMfa(code: string): Promise<MfaEnabled> {
+  return post('/auth/mfa/enable', { code }, mfaEnabledSchema);
+}
+
+/** Код при входе: шесть цифр из приложения или резервный. */
+export function verifyMfa(code: string): Promise<MfaVerified> {
+  return post('/auth/mfa/verify', { code }, mfaVerifiedSchema);
 }
 
 export function register(input: RegisterInput): Promise<{ ok: true }> {
@@ -128,6 +149,8 @@ export function errorKeyFor(error: unknown): string {
   if (error.code === 'placement_forbidden') return 'errorPlacementForbidden';
   if (error.code === 'city_required') return 'errorCityRequired';
   if (error.code === 'city_not_found') return 'errorCityNotFound';
+  if (error.code === 'mfa_wrong_code') return 'errorMfaWrongCode';
+  if (error.code === 'mfa_locked') return 'errorMfaLocked';
   switch (error.status) {
     case 401:
       return 'errorInvalidCredentials';

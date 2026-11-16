@@ -30,15 +30,20 @@ export function safeNext(raw: string | null): string | null {
  * вошедшего значит замедлить всех ради одного.
  */
 export function useRedirectSignedIn(): boolean {
-  const { status } = useSession();
+  const { status, user } = useSession();
   const router = useRouter();
   const params = useSearchParams();
 
   useEffect(() => {
     if (status !== 'authenticated') return;
     // replace, а не push: возврат «назад» не должен приводить обратно на форму.
+    // Сотрудник, не дошедший до второго фактора, ещё не вошёл: ему — туда.
+    if (user && user.twoFactor !== 'ok') {
+      router.replace('/two-factor');
+      return;
+    }
     router.replace(safeNext(params.get('next')) ?? '/');
-  }, [status, router, params]);
+  }, [status, user, router, params]);
 
   return status === 'authenticated';
 }

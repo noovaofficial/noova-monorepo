@@ -7,7 +7,7 @@ import sensible from '@fastify/sensible';
 import underPressure from '@fastify/under-pressure';
 import type { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
-import { corsOrigins, env } from '../env.js';
+import { corsOrigins, env, isProduction } from '../env.js';
 
 /**
  * Браузер шлёт клиентские запросы (раскрытие контактов, избранное) на
@@ -55,7 +55,18 @@ export function rateLimitKey(ip: string): string {
 
 const securityPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(sensible);
-  await fastify.register(helmet, { contentSecurityPolicy: false });
+  await fastify.register(helmet, {
+    // API отдаёт JSON и файлы, не страницы: выполнять в его ответах нечего.
+    // Если ответ всё же откроют как документ (ошибка, файл по прямой ссылке),
+    // политика не даст в нём ничему запуститься. Вне прода выключено: там
+    // живёт Swagger UI со своими скриптами.
+    contentSecurityPolicy: isProduction
+      ? {
+          useDefaults: false,
+          directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] },
+        }
+      : false,
+  });
   await fastify.register(cors, {
     origin: (origin, callback) => {
       // Без Origin — не браузерный кросс-сайт запрос (curl, сервер-сервер):

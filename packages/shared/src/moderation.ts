@@ -325,6 +325,8 @@ export const staffMemberSchema = z.object({
   createdAt: z.string().datetime(),
   /** Сколько решений принял — видно, кто реально работает. */
   decisionCount: z.number().int().nonnegative(),
+  /** Настроен ли второй фактор. Нет — настроит при следующем входе. */
+  hasTwoFactor: z.boolean().default(false),
 });
 export type StaffMember = z.infer<typeof staffMemberSchema>;
 

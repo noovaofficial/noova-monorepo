@@ -38,3 +38,26 @@ export async function recordLoginFailure(redis: Counter, email: string): Promise
 export async function clearLoginFailures(redis: Counter, email: string): Promise<void> {
   await redis.del(key(email));
 }
+
+/**
+ * Тот же замок для второго фактора, по учётной записи. Порог ниже: код —
+ * шесть цифр, и без замка его подбирают за часы; ошибиться же пять раз
+ * подряд, глядя в приложение, трудно.
+ */
+export const MFA_MAX_FAILURES = 5;
+export const MFA_LOCK_SECONDS = 15 * 60;
+
+const mfaKey = (userId: string) => `mfa-fail:${userId}`;
+
+export async function isMfaLocked(redis: Counter, userId: string): Promise<boolean> {
+  return Number(await redis.get(mfaKey(userId))) >= MFA_MAX_FAILURES;
+}
+
+export async function recordMfaFailure(redis: Counter, userId: string): Promise<void> {
+  const count = await redis.incr(mfaKey(userId));
+  if (count === 1) await redis.expire(mfaKey(userId), MFA_LOCK_SECONDS);
+}
+
+export async function clearMfaFailures(redis: Counter, userId: string): Promise<void> {
+  await redis.del(mfaKey(userId));
+}

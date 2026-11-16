@@ -197,6 +197,14 @@ model User {
   /// модерацию в произвол. Показывается ему же при попытке входа.
   banReason            String?
 
+  /// Второй фактор сотрудника (TOTP). Секрет зашифрован ключом из окружения
+  /// (`MFA_SECRET_KEY`, см. modules/auth/totp.ts). Пока `totpEnabledAt`
+  /// пуст, секрет — черновик настройки и входа не защищает.
+  totpSecret    String?
+  totpEnabledAt DateTime?
+  /// Шаг времени последнего принятого кода: тот же код второй раз не пройдёт.
+  totpLastStep  Int?
+
   /// Баланс GlowCoin. Меняется только вместе с записью в BillingTransaction,
   /// в одной транзакции БД: баланс без журнала — состояние, которое нечем
   /// восстановить (payments.md §8, этап 1).
@@ -218,6 +226,7 @@ model User {
   comments            ProfileComment[]
   commentReports      CommentReport[]
   profileReports      ProfileReport[]
+  mfaRecoveryCodes    MfaRecoveryCode[]
   moderationActions   ModerationAction[]   @relation("moderatorActions")
   createdStaff        User[]               @relation("staffCreator")
   campaignGrants      CampaignGrant[]
@@ -741,6 +750,21 @@ enum ProfileReportReason {
 /// кто увидел признаки принуждения или несовершеннолетнюю, значит такого
 /// сообщения не получить. Спам сдерживается лимитом на IP и журналом, как
 /// в N-08. Жалоба никогда не снимает анкету сама — решает человек.
+/// Резервные коды второго фактора: вход, когда телефона под рукой нет.
+/// Хранится только хэш; использованный код помечается, а не удаляется —
+/// по отметке видно, сколько кодов осталось.
+model MfaRecoveryCode {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash String
+
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, codeHash])
+}
+
 model ProfileReport {
   id        String  @id @default(cuid())
   profileId String

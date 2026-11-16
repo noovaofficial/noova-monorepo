@@ -31,6 +31,7 @@ import {
   VIDEO_MAX_BYTES,
 } from '@noova/shared';
 import { z } from 'zod';
+import { localeHeader } from '@/shared/api-locale';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
@@ -66,6 +67,7 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
       ...(init.body === undefined || init.body instanceof FormData
         ? {}
         : { 'content-type': 'application/json' }),
+      ...localeHeader(),
       ...init.headers,
     },
     // Кабинет всегда работает от имени пользователя — куку сессии слать обязательно.

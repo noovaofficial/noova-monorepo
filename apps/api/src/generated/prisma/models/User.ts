@@ -27,10 +27,12 @@ export type AggregateUser = {
 }
 
 export type UserAvgAggregateOutputType = {
+  totpLastStep: number | null
   glowcoinBalance: number | null
 }
 
 export type UserSumAggregateOutputType = {
+  totpLastStep: number | null
   glowcoinBalance: number | null
 }
 
@@ -50,6 +52,9 @@ export type UserMinAggregateOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  totpSecret: string | null
+  totpEnabledAt: Date | null
+  totpLastStep: number | null
   glowcoinBalance: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -72,6 +77,9 @@ export type UserMaxAggregateOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  totpSecret: string | null
+  totpEnabledAt: Date | null
+  totpLastStep: number | null
   glowcoinBalance: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -94,6 +102,9 @@ export type UserCountAggregateOutputType = {
   bannedAt: number
   deletionRequestedAt: number
   banReason: number
+  totpSecret: number
+  totpEnabledAt: number
+  totpLastStep: number
   glowcoinBalance: number
   createdAt: number
   updatedAt: number
@@ -103,10 +114,12 @@ export type UserCountAggregateOutputType = {
 
 
 export type UserAvgAggregateInputType = {
+  totpLastStep?: true
   glowcoinBalance?: true
 }
 
 export type UserSumAggregateInputType = {
+  totpLastStep?: true
   glowcoinBalance?: true
 }
 
@@ -126,6 +139,9 @@ export type UserMinAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  totpSecret?: true
+  totpEnabledAt?: true
+  totpLastStep?: true
   glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
@@ -148,6 +164,9 @@ export type UserMaxAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  totpSecret?: true
+  totpEnabledAt?: true
+  totpLastStep?: true
   glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
@@ -170,6 +189,9 @@ export type UserCountAggregateInputType = {
   bannedAt?: true
   deletionRequestedAt?: true
   banReason?: true
+  totpSecret?: true
+  totpEnabledAt?: true
+  totpLastStep?: true
   glowcoinBalance?: true
   createdAt?: true
   updatedAt?: true
@@ -279,6 +301,9 @@ export type UserGroupByOutputType = {
   bannedAt: Date | null
   deletionRequestedAt: Date | null
   banReason: string | null
+  totpSecret: string | null
+  totpEnabledAt: Date | null
+  totpLastStep: number | null
   glowcoinBalance: number
   createdAt: Date
   updatedAt: Date
@@ -324,6 +349,9 @@ export type UserWhereInput = {
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  totpSecret?: Prisma.StringNullableFilter<"User"> | string | null
+  totpEnabledAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  totpLastStep?: Prisma.IntNullableFilter<"User"> | number | null
   glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -344,6 +372,7 @@ export type UserWhereInput = {
   comments?: Prisma.ProfileCommentListRelationFilter
   commentReports?: Prisma.CommentReportListRelationFilter
   profileReports?: Prisma.ProfileReportListRelationFilter
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeListRelationFilter
   moderationActions?: Prisma.ModerationActionListRelationFilter
   createdStaff?: Prisma.UserListRelationFilter
   campaignGrants?: Prisma.CampaignGrantListRelationFilter
@@ -367,6 +396,9 @@ export type UserOrderByWithRelationInput = {
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpEnabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpLastStep?: Prisma.SortOrderInput | Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -387,6 +419,7 @@ export type UserOrderByWithRelationInput = {
   comments?: Prisma.ProfileCommentOrderByRelationAggregateInput
   commentReports?: Prisma.CommentReportOrderByRelationAggregateInput
   profileReports?: Prisma.ProfileReportOrderByRelationAggregateInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeOrderByRelationAggregateInput
   moderationActions?: Prisma.ModerationActionOrderByRelationAggregateInput
   createdStaff?: Prisma.UserOrderByRelationAggregateInput
   campaignGrants?: Prisma.CampaignGrantOrderByRelationAggregateInput
@@ -413,6 +446,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  totpSecret?: Prisma.StringNullableFilter<"User"> | string | null
+  totpEnabledAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  totpLastStep?: Prisma.IntNullableFilter<"User"> | number | null
   glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -433,6 +469,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   comments?: Prisma.ProfileCommentListRelationFilter
   commentReports?: Prisma.CommentReportListRelationFilter
   profileReports?: Prisma.ProfileReportListRelationFilter
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeListRelationFilter
   moderationActions?: Prisma.ModerationActionListRelationFilter
   createdStaff?: Prisma.UserListRelationFilter
   campaignGrants?: Prisma.CampaignGrantListRelationFilter
@@ -456,6 +493,9 @@ export type UserOrderByWithAggregationInput = {
   bannedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   banReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpEnabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totpLastStep?: Prisma.SortOrderInput | Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -486,6 +526,9 @@ export type UserScalarWhereWithAggregatesInput = {
   bannedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  totpSecret?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  totpEnabledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  totpLastStep?: Prisma.IntNullableWithAggregatesFilter<"User"> | number | null
   glowcoinBalance?: Prisma.IntWithAggregatesFilter<"User"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -506,6 +549,9 @@ export type UserCreateInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -525,6 +571,7 @@ export type UserCreateInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -548,6 +595,9 @@ export type UserUncheckedCreateInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -566,6 +616,7 @@ export type UserUncheckedCreateInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -586,6 +637,9 @@ export type UserUpdateInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,6 +659,7 @@ export type UserUpdateInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -628,6 +683,9 @@ export type UserUncheckedUpdateInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -646,6 +704,7 @@ export type UserUncheckedUpdateInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -668,6 +727,9 @@ export type UserCreateManyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -688,6 +750,9 @@ export type UserUpdateManyMutationInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -709,6 +774,9 @@ export type UserUncheckedUpdateManyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -746,6 +814,9 @@ export type UserCountOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  totpEnabledAt?: Prisma.SortOrder
+  totpLastStep?: Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -753,6 +824,7 @@ export type UserCountOrderByAggregateInput = {
 }
 
 export type UserAvgOrderByAggregateInput = {
+  totpLastStep?: Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
 }
 
@@ -772,6 +844,9 @@ export type UserMaxOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  totpEnabledAt?: Prisma.SortOrder
+  totpLastStep?: Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -794,6 +869,9 @@ export type UserMinOrderByAggregateInput = {
   bannedAt?: Prisma.SortOrder
   deletionRequestedAt?: Prisma.SortOrder
   banReason?: Prisma.SortOrder
+  totpSecret?: Prisma.SortOrder
+  totpEnabledAt?: Prisma.SortOrder
+  totpLastStep?: Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -801,6 +879,7 @@ export type UserMinOrderByAggregateInput = {
 }
 
 export type UserSumOrderByAggregateInput = {
+  totpLastStep?: Prisma.SortOrder
   glowcoinBalance?: Prisma.SortOrder
 }
 
@@ -851,6 +930,14 @@ export type NullableEnumAdvertiserKindFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -1043,6 +1130,20 @@ export type UserUpdateOneRequiredWithoutProfilesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutProfilesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutProfilesInput, Prisma.UserUpdateWithoutProfilesInput>, Prisma.UserUncheckedUpdateWithoutProfilesInput>
+}
+
+export type UserCreateNestedOneWithoutMfaRecoveryCodesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedCreateWithoutMfaRecoveryCodesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMfaRecoveryCodesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMfaRecoveryCodesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedCreateWithoutMfaRecoveryCodesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMfaRecoveryCodesInput
+  upsert?: Prisma.UserUpsertWithoutMfaRecoveryCodesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMfaRecoveryCodesInput, Prisma.UserUpdateWithoutMfaRecoveryCodesInput>, Prisma.UserUncheckedUpdateWithoutMfaRecoveryCodesInput>
 }
 
 export type UserCreateNestedOneWithoutProfileReportsInput = {
@@ -1255,6 +1356,9 @@ export type UserCreateWithoutCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1274,6 +1378,7 @@ export type UserCreateWithoutCreatedByInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -1296,6 +1401,9 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1313,6 +1421,7 @@ export type UserUncheckedCreateWithoutCreatedByInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -1343,6 +1452,9 @@ export type UserCreateWithoutCreatedStaffInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1362,6 +1474,7 @@ export type UserCreateWithoutCreatedStaffInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
   createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
@@ -1384,6 +1497,9 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1402,6 +1518,7 @@ export type UserUncheckedCreateWithoutCreatedStaffInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
   createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1447,6 +1564,9 @@ export type UserScalarWhereInput = {
   bannedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   banReason?: Prisma.StringNullableFilter<"User"> | string | null
+  totpSecret?: Prisma.StringNullableFilter<"User"> | string | null
+  totpEnabledAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  totpLastStep?: Prisma.IntNullableFilter<"User"> | number | null
   glowcoinBalance?: Prisma.IntFilter<"User"> | number
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1478,6 +1598,9 @@ export type UserUpdateWithoutCreatedStaffInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1497,6 +1620,7 @@ export type UserUpdateWithoutCreatedStaffInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
   createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
@@ -1519,6 +1643,9 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1537,6 +1664,7 @@ export type UserUncheckedUpdateWithoutCreatedStaffInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
   createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1556,6 +1684,9 @@ export type UserCreateWithoutClientProfileInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1574,6 +1705,7 @@ export type UserCreateWithoutClientProfileInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -1597,6 +1729,9 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1614,6 +1749,7 @@ export type UserUncheckedCreateWithoutClientProfileInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -1650,6 +1786,9 @@ export type UserUpdateWithoutClientProfileInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1668,6 +1807,7 @@ export type UserUpdateWithoutClientProfileInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -1691,6 +1831,9 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1708,6 +1851,7 @@ export type UserUncheckedUpdateWithoutClientProfileInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -1728,6 +1872,9 @@ export type UserCreateWithoutModerationActionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1747,6 +1894,7 @@ export type UserCreateWithoutModerationActionsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
   createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
@@ -1769,6 +1917,9 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1787,6 +1938,7 @@ export type UserUncheckedCreateWithoutModerationActionsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
   createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1822,6 +1974,9 @@ export type UserUpdateWithoutModerationActionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1841,6 +1996,7 @@ export type UserUpdateWithoutModerationActionsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
   createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
@@ -1863,6 +2019,9 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1881,6 +2040,7 @@ export type UserUncheckedUpdateWithoutModerationActionsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
   createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -1900,6 +2060,9 @@ export type UserCreateWithoutAuthTokensInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1918,6 +2081,7 @@ export type UserCreateWithoutAuthTokensInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -1941,6 +2105,9 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1958,6 +2125,7 @@ export type UserUncheckedCreateWithoutAuthTokensInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -1994,6 +2162,9 @@ export type UserUpdateWithoutAuthTokensInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2012,6 +2183,7 @@ export type UserUpdateWithoutAuthTokensInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -2035,6 +2207,9 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2052,6 +2227,7 @@ export type UserUncheckedUpdateWithoutAuthTokensInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -2072,6 +2248,9 @@ export type UserCreateWithoutCountryInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2090,6 +2269,7 @@ export type UserCreateWithoutCountryInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2112,6 +2292,9 @@ export type UserUncheckedCreateWithoutCountryInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2130,6 +2313,7 @@ export type UserUncheckedCreateWithoutCountryInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2176,6 +2360,9 @@ export type UserCreateWithoutCityInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2194,6 +2381,7 @@ export type UserCreateWithoutCityInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2216,6 +2404,9 @@ export type UserUncheckedCreateWithoutCityInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2234,6 +2425,7 @@ export type UserUncheckedCreateWithoutCityInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2280,6 +2472,9 @@ export type UserCreateWithoutProfilesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2298,6 +2493,7 @@ export type UserCreateWithoutProfilesInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2321,6 +2517,9 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2338,6 +2537,7 @@ export type UserUncheckedCreateWithoutProfilesInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2374,6 +2574,9 @@ export type UserUpdateWithoutProfilesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2392,6 +2595,7 @@ export type UserUpdateWithoutProfilesInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -2415,11 +2619,203 @@ export type UserUncheckedUpdateWithoutProfilesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUncheckedUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUncheckedUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
+  moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutMfaRecoveryCodesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  company?: Prisma.CompanyCreateNestedOneWithoutOwnerInput
+  country?: Prisma.CountryCreateNestedOneWithoutUsersInput
+  city?: Prisma.CityCreateNestedOneWithoutUsersInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutCreatedStaffInput
+}
+
+export type UserUncheckedCreateWithoutMfaRecoveryCodesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  isAdult?: boolean
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  advertiserKind?: $Enums.AdvertiserKind | null
+  countryId?: string | null
+  cityId?: string | null
+  placementGraceEndsAt?: Date | string | null
+  locale?: string
+  bannedAt?: Date | string | null
+  deletionRequestedAt?: Date | string | null
+  banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
+  glowcoinBalance?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdById?: string | null
+  company?: Prisma.CompanyUncheckedCreateNestedOneWithoutOwnerInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutOwnerInput
+  billingTransactions?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutUserInput
+  billingAdjustments?: Prisma.BillingTransactionUncheckedCreateNestedManyWithoutCreatedByInput
+  listings?: Prisma.ListingUncheckedCreateNestedManyWithoutUserInput
+  topupOrders?: Prisma.TopupOrderUncheckedCreateNestedManyWithoutUserInput
+  topPlacements?: Prisma.TopPlacementUncheckedCreateNestedManyWithoutUserInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUncheckedCreateNestedManyWithoutUserInput
+  clientProfile?: Prisma.ClientProfileUncheckedCreateNestedOneWithoutUserInput
+  authTokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
+  favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
+  comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
+  commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
+  createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
+  createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutMfaRecoveryCodesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedCreateWithoutMfaRecoveryCodesInput>
+}
+
+export type UserUpsertWithoutMfaRecoveryCodesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedUpdateWithoutMfaRecoveryCodesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedCreateWithoutMfaRecoveryCodesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMfaRecoveryCodesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMfaRecoveryCodesInput, Prisma.UserUncheckedUpdateWithoutMfaRecoveryCodesInput>
+}
+
+export type UserUpdateWithoutMfaRecoveryCodesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  company?: Prisma.CompanyUpdateOneWithoutOwnerNestedInput
+  country?: Prisma.CountryUpdateOneWithoutUsersNestedInput
+  city?: Prisma.CityUpdateOneWithoutUsersNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutOwnerNestedInput
+  billingTransactions?: Prisma.BillingTransactionUpdateManyWithoutUserNestedInput
+  billingAdjustments?: Prisma.BillingTransactionUpdateManyWithoutCreatedByNestedInput
+  listings?: Prisma.ListingUpdateManyWithoutUserNestedInput
+  topupOrders?: Prisma.TopupOrderUpdateManyWithoutUserNestedInput
+  topPlacements?: Prisma.TopPlacementUpdateManyWithoutUserNestedInput
+  agencyTopPlacements?: Prisma.AgencyTopPlacementUpdateManyWithoutUserNestedInput
+  clientProfile?: Prisma.ClientProfileUpdateOneWithoutUserNestedInput
+  authTokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
+  favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
+  comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
+  commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
+  createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
+  campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
+  createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutCreatedStaffNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMfaRecoveryCodesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isAdult?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  advertiserKind?: Prisma.NullableEnumAdvertiserKindFieldUpdateOperationsInput | $Enums.AdvertiserKind | null
+  countryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placementGraceEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  locale?: Prisma.StringFieldUpdateOperationsInput | string
+  bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  company?: Prisma.CompanyUncheckedUpdateOneWithoutOwnerNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutOwnerNestedInput
   billingTransactions?: Prisma.BillingTransactionUncheckedUpdateManyWithoutUserNestedInput
   billingAdjustments?: Prisma.BillingTransactionUncheckedUpdateManyWithoutCreatedByNestedInput
   listings?: Prisma.ListingUncheckedUpdateManyWithoutUserNestedInput
@@ -2452,6 +2848,9 @@ export type UserCreateWithoutProfileReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2470,6 +2869,7 @@ export type UserCreateWithoutProfileReportsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2493,6 +2893,9 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2510,6 +2913,7 @@ export type UserUncheckedCreateWithoutProfileReportsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2546,6 +2950,9 @@ export type UserUpdateWithoutProfileReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2564,6 +2971,7 @@ export type UserUpdateWithoutProfileReportsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -2587,6 +2995,9 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2604,6 +3015,7 @@ export type UserUncheckedUpdateWithoutProfileReportsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -2624,6 +3036,9 @@ export type UserCreateWithoutCommentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2642,6 +3057,7 @@ export type UserCreateWithoutCommentsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2665,6 +3081,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2682,6 +3101,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2718,6 +3138,9 @@ export type UserUpdateWithoutCommentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2736,6 +3159,7 @@ export type UserUpdateWithoutCommentsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -2759,6 +3183,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2776,6 +3203,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -2796,6 +3224,9 @@ export type UserCreateWithoutCommentReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2814,6 +3245,7 @@ export type UserCreateWithoutCommentReportsInput = {
   favorites?: Prisma.FavoriteCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -2837,6 +3269,9 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2854,6 +3289,7 @@ export type UserUncheckedCreateWithoutCommentReportsInput = {
   favorites?: Prisma.FavoriteUncheckedCreateNestedManyWithoutClientInput
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -2890,6 +3326,9 @@ export type UserUpdateWithoutCommentReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2908,6 +3347,7 @@ export type UserUpdateWithoutCommentReportsInput = {
   favorites?: Prisma.FavoriteUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -2931,6 +3371,9 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2948,6 +3391,7 @@ export type UserUncheckedUpdateWithoutCommentReportsInput = {
   favorites?: Prisma.FavoriteUncheckedUpdateManyWithoutClientNestedInput
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -2968,6 +3412,9 @@ export type UserCreateWithoutFavoritesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2986,6 +3433,7 @@ export type UserCreateWithoutFavoritesInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3009,6 +3457,9 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3026,6 +3477,7 @@ export type UserUncheckedCreateWithoutFavoritesInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3062,6 +3514,9 @@ export type UserUpdateWithoutFavoritesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3080,6 +3535,7 @@ export type UserUpdateWithoutFavoritesInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3103,6 +3559,9 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3120,6 +3579,7 @@ export type UserUncheckedUpdateWithoutFavoritesInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -3140,6 +3600,9 @@ export type UserCreateWithoutCompanyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3158,6 +3621,7 @@ export type UserCreateWithoutCompanyInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3181,6 +3645,9 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3198,6 +3665,7 @@ export type UserUncheckedCreateWithoutCompanyInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3234,6 +3702,9 @@ export type UserUpdateWithoutCompanyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3252,6 +3723,7 @@ export type UserUpdateWithoutCompanyInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3275,6 +3747,9 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3292,6 +3767,7 @@ export type UserUncheckedUpdateWithoutCompanyInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -3312,6 +3788,9 @@ export type UserCreateWithoutBillingTransactionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3330,6 +3809,7 @@ export type UserCreateWithoutBillingTransactionsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3353,6 +3833,9 @@ export type UserUncheckedCreateWithoutBillingTransactionsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3370,6 +3853,7 @@ export type UserUncheckedCreateWithoutBillingTransactionsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3395,6 +3879,9 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3413,6 +3900,7 @@ export type UserCreateWithoutBillingAdjustmentsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3436,6 +3924,9 @@ export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3453,6 +3944,7 @@ export type UserUncheckedCreateWithoutBillingAdjustmentsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3489,6 +3981,9 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3507,6 +4002,7 @@ export type UserUpdateWithoutBillingTransactionsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3530,6 +4026,9 @@ export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3547,6 +4046,7 @@ export type UserUncheckedUpdateWithoutBillingTransactionsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -3578,6 +4078,9 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3596,6 +4099,7 @@ export type UserUpdateWithoutBillingAdjustmentsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3619,6 +4123,9 @@ export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3636,6 +4143,7 @@ export type UserUncheckedUpdateWithoutBillingAdjustmentsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -3656,6 +4164,9 @@ export type UserCreateWithoutListingsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3674,6 +4185,7 @@ export type UserCreateWithoutListingsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3697,6 +4209,9 @@ export type UserUncheckedCreateWithoutListingsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3714,6 +4229,7 @@ export type UserUncheckedCreateWithoutListingsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3750,6 +4266,9 @@ export type UserUpdateWithoutListingsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3768,6 +4287,7 @@ export type UserUpdateWithoutListingsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3791,6 +4311,9 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3808,6 +4331,7 @@ export type UserUncheckedUpdateWithoutListingsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -3828,6 +4352,9 @@ export type UserCreateWithoutTopupOrdersInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3846,6 +4373,7 @@ export type UserCreateWithoutTopupOrdersInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -3869,6 +4397,9 @@ export type UserUncheckedCreateWithoutTopupOrdersInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3886,6 +4417,7 @@ export type UserUncheckedCreateWithoutTopupOrdersInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -3922,6 +4454,9 @@ export type UserUpdateWithoutTopupOrdersInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3940,6 +4475,7 @@ export type UserUpdateWithoutTopupOrdersInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -3963,6 +4499,9 @@ export type UserUncheckedUpdateWithoutTopupOrdersInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3980,6 +4519,7 @@ export type UserUncheckedUpdateWithoutTopupOrdersInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4000,6 +4540,9 @@ export type UserCreateWithoutTopPlacementsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4018,6 +4561,7 @@ export type UserCreateWithoutTopPlacementsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -4041,6 +4585,9 @@ export type UserUncheckedCreateWithoutTopPlacementsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4058,6 +4605,7 @@ export type UserUncheckedCreateWithoutTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -4094,6 +4642,9 @@ export type UserUpdateWithoutTopPlacementsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4112,6 +4663,7 @@ export type UserUpdateWithoutTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4135,6 +4687,9 @@ export type UserUncheckedUpdateWithoutTopPlacementsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4152,6 +4707,7 @@ export type UserUncheckedUpdateWithoutTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4172,6 +4728,9 @@ export type UserCreateWithoutAgencyTopPlacementsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4190,6 +4749,7 @@ export type UserCreateWithoutAgencyTopPlacementsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -4213,6 +4773,9 @@ export type UserUncheckedCreateWithoutAgencyTopPlacementsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4230,6 +4793,7 @@ export type UserUncheckedCreateWithoutAgencyTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -4266,6 +4830,9 @@ export type UserUpdateWithoutAgencyTopPlacementsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4284,6 +4851,7 @@ export type UserUpdateWithoutAgencyTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4307,6 +4875,9 @@ export type UserUncheckedUpdateWithoutAgencyTopPlacementsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4324,6 +4895,7 @@ export type UserUncheckedUpdateWithoutAgencyTopPlacementsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4344,6 +4916,9 @@ export type UserCreateWithoutCreatedCampaignsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4363,6 +4938,7 @@ export type UserCreateWithoutCreatedCampaignsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantCreateNestedManyWithoutUserInput
@@ -4385,6 +4961,9 @@ export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4403,6 +4982,7 @@ export type UserUncheckedCreateWithoutCreatedCampaignsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   campaignGrants?: Prisma.CampaignGrantUncheckedCreateNestedManyWithoutUserInput
@@ -4438,6 +5018,9 @@ export type UserUpdateWithoutCreatedCampaignsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4457,6 +5040,7 @@ export type UserUpdateWithoutCreatedCampaignsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4479,6 +5063,9 @@ export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4497,6 +5084,7 @@ export type UserUncheckedUpdateWithoutCreatedCampaignsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4516,6 +5104,9 @@ export type UserCreateWithoutCampaignGrantsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4535,6 +5126,7 @@ export type UserCreateWithoutCampaignGrantsInput = {
   comments?: Prisma.ProfileCommentCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserCreateNestedManyWithoutCreatedByInput
   createdCampaigns?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
@@ -4557,6 +5149,9 @@ export type UserUncheckedCreateWithoutCampaignGrantsInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4575,6 +5170,7 @@ export type UserUncheckedCreateWithoutCampaignGrantsInput = {
   comments?: Prisma.ProfileCommentUncheckedCreateNestedManyWithoutAuthorInput
   commentReports?: Prisma.CommentReportUncheckedCreateNestedManyWithoutReporterInput
   profileReports?: Prisma.ProfileReportUncheckedCreateNestedManyWithoutReporterInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedCreateNestedManyWithoutUserInput
   moderationActions?: Prisma.ModerationActionUncheckedCreateNestedManyWithoutModeratorInput
   createdStaff?: Prisma.UserUncheckedCreateNestedManyWithoutCreatedByInput
   createdCampaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4610,6 +5206,9 @@ export type UserUpdateWithoutCampaignGrantsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4629,6 +5228,7 @@ export type UserUpdateWithoutCampaignGrantsInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   createdCampaigns?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
@@ -4651,6 +5251,9 @@ export type UserUncheckedUpdateWithoutCampaignGrantsInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4669,6 +5272,7 @@ export type UserUncheckedUpdateWithoutCampaignGrantsInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   createdCampaigns?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4690,6 +5294,9 @@ export type UserCreateManyCreatedByInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4709,6 +5316,9 @@ export type UserUpdateWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4728,6 +5338,7 @@ export type UserUpdateWithoutCreatedByInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4750,6 +5361,9 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4767,6 +5381,7 @@ export type UserUncheckedUpdateWithoutCreatedByInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4789,6 +5404,9 @@ export type UserUncheckedUpdateManyWithoutCreatedByInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4809,6 +5427,9 @@ export type UserCreateManyCountryInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4829,6 +5450,9 @@ export type UserUpdateWithoutCountryInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4847,6 +5471,7 @@ export type UserUpdateWithoutCountryInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4869,6 +5494,9 @@ export type UserUncheckedUpdateWithoutCountryInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4887,6 +5515,7 @@ export type UserUncheckedUpdateWithoutCountryInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -4908,6 +5537,9 @@ export type UserUncheckedUpdateManyWithoutCountryInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4929,6 +5561,9 @@ export type UserCreateManyCityInput = {
   bannedAt?: Date | string | null
   deletionRequestedAt?: Date | string | null
   banReason?: string | null
+  totpSecret?: string | null
+  totpEnabledAt?: Date | string | null
+  totpLastStep?: number | null
   glowcoinBalance?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4949,6 +5584,9 @@ export type UserUpdateWithoutCityInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4967,6 +5605,7 @@ export type UserUpdateWithoutCityInput = {
   comments?: Prisma.ProfileCommentUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUpdateManyWithoutUserNestedInput
@@ -4989,6 +5628,9 @@ export type UserUncheckedUpdateWithoutCityInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5007,6 +5649,7 @@ export type UserUncheckedUpdateWithoutCityInput = {
   comments?: Prisma.ProfileCommentUncheckedUpdateManyWithoutAuthorNestedInput
   commentReports?: Prisma.CommentReportUncheckedUpdateManyWithoutReporterNestedInput
   profileReports?: Prisma.ProfileReportUncheckedUpdateManyWithoutReporterNestedInput
+  mfaRecoveryCodes?: Prisma.MfaRecoveryCodeUncheckedUpdateManyWithoutUserNestedInput
   moderationActions?: Prisma.ModerationActionUncheckedUpdateManyWithoutModeratorNestedInput
   createdStaff?: Prisma.UserUncheckedUpdateManyWithoutCreatedByNestedInput
   campaignGrants?: Prisma.CampaignGrantUncheckedUpdateManyWithoutUserNestedInput
@@ -5028,6 +5671,9 @@ export type UserUncheckedUpdateManyWithoutCityInput = {
   bannedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   banReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  totpEnabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totpLastStep?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   glowcoinBalance?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5052,6 +5698,7 @@ export type UserCountOutputType = {
   comments: number
   commentReports: number
   profileReports: number
+  mfaRecoveryCodes: number
   moderationActions: number
   createdStaff: number
   campaignGrants: number
@@ -5071,6 +5718,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   commentReports?: boolean | UserCountOutputTypeCountCommentReportsArgs
   profileReports?: boolean | UserCountOutputTypeCountProfileReportsArgs
+  mfaRecoveryCodes?: boolean | UserCountOutputTypeCountMfaRecoveryCodesArgs
   moderationActions?: boolean | UserCountOutputTypeCountModerationActionsArgs
   createdStaff?: boolean | UserCountOutputTypeCountCreatedStaffArgs
   campaignGrants?: boolean | UserCountOutputTypeCountCampaignGrantsArgs
@@ -5174,6 +5822,13 @@ export type UserCountOutputTypeCountProfileReportsArgs<ExtArgs extends runtime.T
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountMfaRecoveryCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MfaRecoveryCodeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountModerationActionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ModerationActionWhereInput
 }
@@ -5216,6 +5871,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  totpSecret?: boolean
+  totpEnabledAt?: boolean
+  totpLastStep?: boolean
   glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5236,6 +5894,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   commentReports?: boolean | Prisma.User$commentReportsArgs<ExtArgs>
   profileReports?: boolean | Prisma.User$profileReportsArgs<ExtArgs>
+  mfaRecoveryCodes?: boolean | Prisma.User$mfaRecoveryCodesArgs<ExtArgs>
   moderationActions?: boolean | Prisma.User$moderationActionsArgs<ExtArgs>
   createdStaff?: boolean | Prisma.User$createdStaffArgs<ExtArgs>
   campaignGrants?: boolean | Prisma.User$campaignGrantsArgs<ExtArgs>
@@ -5260,6 +5919,9 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  totpSecret?: boolean
+  totpEnabledAt?: boolean
+  totpLastStep?: boolean
   glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5285,6 +5947,9 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  totpSecret?: boolean
+  totpEnabledAt?: boolean
+  totpLastStep?: boolean
   glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -5310,13 +5975,16 @@ export type UserSelectScalar = {
   bannedAt?: boolean
   deletionRequestedAt?: boolean
   banReason?: boolean
+  totpSecret?: boolean
+  totpEnabledAt?: boolean
+  totpLastStep?: boolean
   glowcoinBalance?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   createdById?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "countryId" | "cityId" | "placementGraceEndsAt" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "glowcoinBalance" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "isAdult" | "emailVerifiedAt" | "lastLoginAt" | "advertiserKind" | "countryId" | "cityId" | "placementGraceEndsAt" | "locale" | "bannedAt" | "deletionRequestedAt" | "banReason" | "totpSecret" | "totpEnabledAt" | "totpLastStep" | "glowcoinBalance" | "createdAt" | "updatedAt" | "createdById", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   company?: boolean | Prisma.User$companyArgs<ExtArgs>
   country?: boolean | Prisma.User$countryArgs<ExtArgs>
@@ -5334,6 +6002,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   commentReports?: boolean | Prisma.User$commentReportsArgs<ExtArgs>
   profileReports?: boolean | Prisma.User$profileReportsArgs<ExtArgs>
+  mfaRecoveryCodes?: boolean | Prisma.User$mfaRecoveryCodesArgs<ExtArgs>
   moderationActions?: boolean | Prisma.User$moderationActionsArgs<ExtArgs>
   createdStaff?: boolean | Prisma.User$createdStaffArgs<ExtArgs>
   campaignGrants?: boolean | Prisma.User$campaignGrantsArgs<ExtArgs>
@@ -5374,6 +6043,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     comments: Prisma.$ProfileCommentPayload<ExtArgs>[]
     commentReports: Prisma.$CommentReportPayload<ExtArgs>[]
     profileReports: Prisma.$ProfileReportPayload<ExtArgs>[]
+    mfaRecoveryCodes: Prisma.$MfaRecoveryCodePayload<ExtArgs>[]
     moderationActions: Prisma.$ModerationActionPayload<ExtArgs>[]
     createdStaff: Prisma.$UserPayload<ExtArgs>[]
     campaignGrants: Prisma.$CampaignGrantPayload<ExtArgs>[]
@@ -5430,6 +6100,17 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
      * модерацию в произвол. Показывается ему же при попытке входа.
      */
     banReason: string | null
+    /**
+     * Второй фактор сотрудника (TOTP). Секрет зашифрован ключом из окружения
+     * (`MFA_SECRET_KEY`, см. modules/auth/totp.ts). Пока `totpEnabledAt`
+     * пуст, секрет — черновик настройки и входа не защищает.
+     */
+    totpSecret: string | null
+    totpEnabledAt: Date | null
+    /**
+     * Шаг времени последнего принятого кода: тот же код второй раз не пройдёт.
+     */
+    totpLastStep: number | null
     /**
      * Баланс GlowCoin. Меняется только вместе с записью в BillingTransaction,
      * в одной транзакции БД: баланс без журнала — состояние, которое нечем
@@ -5852,6 +6533,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   commentReports<T extends Prisma.User$commentReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   profileReports<T extends Prisma.User$profileReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$profileReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfileReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  mfaRecoveryCodes<T extends Prisma.User$mfaRecoveryCodesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$mfaRecoveryCodesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MfaRecoveryCodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   moderationActions<T extends Prisma.User$moderationActionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$moderationActionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModerationActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdStaff<T extends Prisma.User$createdStaffArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdStaffArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   campaignGrants<T extends Prisma.User$campaignGrantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$campaignGrantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignGrantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5901,6 +6583,9 @@ export interface UserFieldRefs {
   readonly bannedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly deletionRequestedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly banReason: Prisma.FieldRef<"User", 'String'>
+  readonly totpSecret: Prisma.FieldRef<"User", 'String'>
+  readonly totpEnabledAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly totpLastStep: Prisma.FieldRef<"User", 'Int'>
   readonly glowcoinBalance: Prisma.FieldRef<"User", 'Int'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
@@ -6667,6 +7352,30 @@ export type User$profileReportsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.ProfileReportScalarFieldEnum | Prisma.ProfileReportScalarFieldEnum[]
+}
+
+/**
+ * User.mfaRecoveryCodes
+ */
+export type User$mfaRecoveryCodesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MfaRecoveryCode
+   */
+  select?: Prisma.MfaRecoveryCodeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MfaRecoveryCode
+   */
+  omit?: Prisma.MfaRecoveryCodeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MfaRecoveryCodeInclude<ExtArgs> | null
+  where?: Prisma.MfaRecoveryCodeWhereInput
+  orderBy?: Prisma.MfaRecoveryCodeOrderByWithRelationInput | Prisma.MfaRecoveryCodeOrderByWithRelationInput[]
+  cursor?: Prisma.MfaRecoveryCodeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MfaRecoveryCodeScalarFieldEnum | Prisma.MfaRecoveryCodeScalarFieldEnum[]
 }
 
 /**

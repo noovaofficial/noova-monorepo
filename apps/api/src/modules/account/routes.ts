@@ -10,6 +10,7 @@ import {
   isProfileComplete,
   isReadyToSubmit,
   LISTING_KIND_BY_ADVERTISER,
+  type Locale,
   type MissingField,
   missingForReview,
   normalizeContact,
@@ -55,9 +56,9 @@ import { ownProfileSelect, toOwnProfile } from './mappers.js';
  * Ссылки на фото подписываются на лету, поэтому сборка представления
  * асинхронная. Отдельная функция, чтобы не повторять это в шести маршрутах.
  */
-async function present(row: Parameters<typeof toOwnProfile>[0]) {
+async function present(row: Parameters<typeof toOwnProfile>[0], locale: Locale) {
   const photos = await Promise.all(row.photos.map(toOwnPhoto));
-  return toOwnProfile(row, photos);
+  return toOwnProfile(row, photos, locale);
 }
 
 const MISSING_LABEL: Record<MissingField, string> = {
@@ -476,7 +477,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         orderBy: { createdAt: 'desc' },
         select: ownProfileSelect,
       });
-      return Promise.all(rows.map(present));
+      return Promise.all(rows.map((row) => present(row, request.locale)));
     },
   );
 
@@ -638,7 +639,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       // Подписка уже могла быть куплена: новая анкета в бесплатном месте — Premium.
       await syncPremiumForOwner(fastify.prisma, userId);
 
-      return reply.status(201).send(await present(created));
+      return reply.status(201).send(await present(created, request.locale));
     },
   );
 
@@ -661,7 +662,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: { id: request.params.id },
         select: ownProfileSelect,
       });
-      return present(row);
+      return present(row, request.locale);
     },
   );
 
@@ -936,7 +937,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       fastify.revalidate(tagsFor(owned.slug));
-      return present(updated);
+      return present(updated, request.locale);
     },
   );
 
@@ -1010,7 +1011,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       fastify.revalidate(tagsFor(owned.slug));
-      return present(updated);
+      return present(updated, request.locale);
     },
   );
 
@@ -1066,7 +1067,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       fastify.revalidate(tagsFor(owned.slug));
-      return present(updated);
+      return present(updated, request.locale);
     },
   );
 
@@ -1335,6 +1336,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
             where: { id: owned.id },
             select: ownProfileSelect,
           }),
+          request.locale,
         );
       }
       if (owned.status !== 'published') {
@@ -1348,7 +1350,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
 
       fastify.revalidate(tagsFor(owned.slug));
-      return present(updated);
+      return present(updated, request.locale);
     },
   );
 };

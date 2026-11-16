@@ -1,4 +1,4 @@
-import type { OwnPhoto, OwnProfile } from '@noova/shared';
+import { DEFAULT_LOCALE, type Locale, type OwnPhoto, type OwnProfile } from '@noova/shared';
 import { toMoney } from '../../mappers.js';
 
 type OwnProfileRow = {
@@ -8,8 +8,8 @@ type OwnProfileRow = {
   status: OwnProfile['status'];
   displayName: string;
   description: string;
-  city: { slug: string; name: string; country: { currency: string } };
-  district: { slug: string; name: string } | null;
+  city: { slug: string; name: string; translations: NameIn[]; country: { currency: string } };
+  district: { slug: string; name: string; translations: NameIn[] } | null;
   age: number | null;
   heightCm: number | null;
   weightKg: number | null;
@@ -60,7 +60,17 @@ type OwnProfileRow = {
  * Владелец видит больше публичного представления: черновики, причину отказа
  * модератора и статус верификации. Наружу это не отдаётся.
  */
-export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile {
+/** Перевод названия. Выбраны все языки: нужный определяет запрос. */
+type NameIn = { locale: string; name: string };
+
+const nameIn = (translations: NameIn[], locale: Locale, fallback: string) =>
+  translations.find((item) => item.locale === locale)?.name ?? fallback;
+
+export function toOwnProfile(
+  row: OwnProfileRow,
+  photos: OwnPhoto[],
+  locale: Locale = DEFAULT_LOCALE,
+): OwnProfile {
   return {
     id: row.id,
     slug: row.slug,
@@ -77,8 +87,17 @@ export function toOwnProfile(row: OwnProfileRow, photos: OwnPhoto[]): OwnProfile
     payments: row.payments,
     amenities: row.amenities,
     hours: row.hours,
-    city: { slug: row.city.slug, name: row.city.name, currency: row.city.country.currency },
-    district: row.district ? { slug: row.district.slug, name: row.district.name } : null,
+    city: {
+      slug: row.city.slug,
+      name: nameIn(row.city.translations, locale, row.city.name),
+      currency: row.city.country.currency,
+    },
+    district: row.district
+      ? {
+          slug: row.district.slug,
+          name: nameIn(row.district.translations, locale, row.district.name),
+        }
+      : null,
     age: row.age,
     heightCm: row.heightCm,
     weightKg: row.weightKg,
@@ -151,8 +170,19 @@ export const ownProfileSelect = {
   needsEditBeforeResubmit: true,
   publishedAt: true,
   updatedAt: true,
-  city: { select: { slug: true, name: true, country: { select: { currency: true } } } },
-  district: { select: { slug: true, name: true } },
+  // Переводы — все сразу: выборка общая для всех маршрутов кабинета, а язык
+  // у каждого запроса свой (см. `toOwnProfile`).
+  city: {
+    select: {
+      slug: true,
+      name: true,
+      translations: { select: { locale: true, name: true } },
+      country: { select: { currency: true } },
+    },
+  },
+  district: {
+    select: { slug: true, name: true, translations: { select: { locale: true, name: true } } },
+  },
   prices: {
     orderBy: { durationMinutes: 'asc' },
     select: { durationMinutes: true, incallCents: true, outcallCents: true },

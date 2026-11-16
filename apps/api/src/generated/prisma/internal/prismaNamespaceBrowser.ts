@@ -70,6 +70,7 @@ export const ModelName = {
   Profile: 'Profile',
   Video: 'Video',
   Photo: 'Photo',
+  MfaRecoveryCode: 'MfaRecoveryCode',
   ProfileReport: 'ProfileReport',
   ProfileComment: 'ProfileComment',
   CommentReport: 'CommentReport',
@@ -137,6 +138,9 @@ export const UserScalarFieldEnum = {
   bannedAt: 'bannedAt',
   deletionRequestedAt: 'deletionRequestedAt',
   banReason: 'banReason',
+  totpSecret: 'totpSecret',
+  totpEnabledAt: 'totpEnabledAt',
+  totpLastStep: 'totpLastStep',
   glowcoinBalance: 'glowcoinBalance',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -416,6 +420,17 @@ export const PhotoScalarFieldEnum = {
 } as const
 
 export type PhotoScalarFieldEnum = (typeof PhotoScalarFieldEnum)[keyof typeof PhotoScalarFieldEnum]
+
+
+export const MfaRecoveryCodeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  codeHash: 'codeHash',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type MfaRecoveryCodeScalarFieldEnum = (typeof MfaRecoveryCodeScalarFieldEnum)[keyof typeof MfaRecoveryCodeScalarFieldEnum]
 
 
 export const ProfileReportScalarFieldEnum = {

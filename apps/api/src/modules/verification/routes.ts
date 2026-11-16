@@ -11,6 +11,7 @@ import {
 } from '@noova/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
+import { placeName, placeNameSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
 import { ImageError, MAX_UPLOAD_BYTES, processImage } from '../photos/images.js';
@@ -443,7 +444,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
               status: true,
               isVerified: true,
               isFeatured: true,
-              city: { select: { name: true } },
+              city: placeNameSelect,
               topPlacement: { select: { status: true, expiresAt: true } },
             },
           },
@@ -521,7 +522,7 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: profile.slug,
           displayName: profile.displayName,
           status: profile.status,
-          cityName: profile.city.name,
+          cityName: placeName(profile.city),
           isVerified: profile.isVerified,
           isFeatured: profile.isFeatured,
         })),

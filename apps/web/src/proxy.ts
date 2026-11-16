@@ -1,6 +1,7 @@
 import { DEFAULT_LOCALE, isLocale, RESERVED_CITY_SLUGS } from '@noova/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
+import { buildCsp, CSP_HEADER, cspMode, NONCE_HEADER } from './shared/csp';
 import { routing } from './shared/i18n/routing';
 import { countryFromHeaders, GEO_COOKIE, LOCATION_COOKIE } from './shared/location-cookie';
 import { agencySlugFromHost } from './shared/subdomain';
@@ -65,7 +66,40 @@ function pathWithoutLocale(pathname: string): string {
   return isLocale(first) ? pathname.slice(first.length + 1) || '' : pathname;
 }
 
+/**
+ * Content-Security-Policy: заголовок и одноразовая метка на этот запрос.
+ *
+ * Политика кладётся и в заголовки *запроса*: оттуда Next достаёт метку и сам
+ * ставит её на свои скрипты, а layout — на свой инлайн-скрипт (`x-nonce`).
+ * Заголовки запроса меняем на месте, до next-intl: он копирует их, когда
+ * собирает свой ответ.
+ */
+function applyCsp(request: NextRequest): ((response: NextResponse) => NextResponse) | null {
+  const mode = cspMode(process.env.CSP_MODE);
+  if (mode === 'off') return null;
+
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  const value = buildCsp({
+    nonce,
+    mode,
+    isDev: process.env.NODE_ENV !== 'production',
+    apiUrl: process.env.NEXT_PUBLIC_API_URL,
+    mediaUrl: process.env.NEXT_PUBLIC_MEDIA_URL,
+  });
+  const name = CSP_HEADER[mode];
+  request.headers.set(NONCE_HEADER, nonce);
+  request.headers.set(name, value);
+  return (response) => {
+    response.headers.set(name, value);
+    return response;
+  };
+}
+
 export default function proxy(request: NextRequest) {
+  // Метку снаружи не принимаем: иначе её можно было бы подсказать заголовком.
+  request.headers.delete(NONCE_HEADER);
+  const withCsp = applyCsp(request) ?? ((response: NextResponse) => response);
+
   /**
    * Поддомен агентства (N-38): `{slug}.{апекс}` → `/company/{slug}` дефолтной
    * локали, в обход next-intl и редиректов по роли — весь путь заменяется
@@ -87,10 +121,10 @@ export default function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = `/${DEFAULT_LOCALE}/company/${agencySlug}`;
     url.search = '';
-    return NextResponse.rewrite(url);
+    return withCsp(NextResponse.rewrite(url, { request: { headers: request.headers } }));
   }
 
-  const response = handleI18n(request);
+  const response = withCsp(handleI18n(request));
 
   // Запоминаем последний посещённый сегмент — город или код страны, как
   // есть, без проверки (N-42): проверяет и различает их `resolveHome`,

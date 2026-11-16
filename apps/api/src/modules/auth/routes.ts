@@ -13,7 +13,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
-import { requireSession } from '../../plugins/session.js';
+import { MFA_ROLES, requireSession } from '../../plugins/session.js';
 import { resolveAccountLocation, throwLocationProblem } from '../locations/account-location.js';
 import { clearLoginFailures, isLoginLocked, recordLoginFailure } from './login-guard.js';
 import { MailQueue } from './mail-queue.js';
@@ -201,8 +201,15 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
         data: { lastLoginAt: new Date() },
       });
 
-      await fastify.createSession(reply, { userId: user.id, role: user.role });
-      return toCurrentUser(user);
+      // Сотруднику пароль даёт только право ввести код (или настроить второй
+      // фактор, если его ещё нет) — см. mfa-routes.ts и plugins/session.ts.
+      const mfa = MFA_ROLES.includes(user.role)
+        ? user.totpEnabledAt
+          ? ('pending' as const)
+          : ('setup' as const)
+        : undefined;
+      await fastify.createSession(reply, { userId: user.id, role: user.role, mfa });
+      return toCurrentUser(user, mfa ?? 'ok');
     },
   );
 
@@ -228,7 +235,10 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
 
   fastify.post(
     '/auth/logout',
-    { schema: { tags: ['auth'], response: { 200: acknowledgedSchema } } },
+    {
+      config: { allowPendingMfa: true },
+      schema: { tags: ['auth'], response: { 200: acknowledgedSchema } },
+    },
     async (request, reply) => {
       await fastify.destroySession(request, reply);
       return ACK;
@@ -296,15 +306,19 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     '/auth/me',
     {
       onRequest: fastify.requireAuth,
+      // Недошедшему до второго фактора тоже отвечаем: по `twoFactor` фронт
+      // понимает, что показать, — ввод кода или настройку.
+      config: { allowPendingMfa: true },
       schema: { tags: ['auth'], response: { 200: currentUserSchema } },
     },
     async (request) => {
+      const session = requireSession(request);
       const user = await fastify.prisma.user.findUnique({
-        where: { id: requireSession(request).userId },
+        where: { id: session.userId },
         include: USER_INCLUDE,
       });
       if (!user) throw fastify.httpErrors.unauthorized('Сессия недействительна');
-      return toCurrentUser(user);
+      return toCurrentUser(user, session.mfa ?? 'ok');
     },
   );
 

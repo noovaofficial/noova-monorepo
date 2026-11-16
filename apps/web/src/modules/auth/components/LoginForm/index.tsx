@@ -45,10 +45,15 @@ export function LoginForm() {
 
     setPending(true);
     try {
-      await login(input);
+      const user = await login(input);
       // Подтягиваем пользователя до перехода, иначе шапка на новой странице
       // успеет отрисоваться анонимной.
       await refresh();
+      // Сотруднику пароль даёт только право ввести код второго фактора.
+      if (user.twoFactor !== 'ok') {
+        router.push('/two-factor');
+        return;
+      }
       // Возвращаем туда, откуда пришли: гость мог нажать сердце на анкете,
       // и высадка на главной заставила бы искать ту же анкету заново.
       router.push(safeNext(params.get('next')) ?? '/');

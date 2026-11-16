@@ -17,7 +17,13 @@ import type { FastifyInstance } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { env } from '../../env.js';
-import { localeQuerySchema, localized, translationSelect } from '../../i18n.js';
+import {
+  localeQuerySchema,
+  localized,
+  placeName,
+  placeNameSelect,
+  translationSelect,
+} from '../../i18n.js';
 import { purgeUserById } from '../../jobs/retention.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { requireSession } from '../../plugins/session.js';
@@ -46,7 +52,7 @@ const profileSelect = {
   displayName: true,
   kind: true,
   ownerId: true,
-  city: { select: { name: true } },
+  city: placeNameSelect,
 } as const;
 
 /**
@@ -424,7 +430,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: item.profile.slug,
           displayName: item.profile.displayName,
           kind: item.profile.kind,
-          cityName: item.profile.city.name,
+          cityName: placeName(item.profile.city),
         },
       }));
     },
@@ -458,7 +464,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: photo.profile.slug,
           displayName: photo.profile.displayName,
           kind: photo.profile.kind,
-          cityName: photo.profile.city.name,
+          cityName: placeName(photo.profile.city),
         },
       }));
     },
@@ -491,7 +497,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: video.profile.slug,
           displayName: video.profile.displayName,
           kind: video.profile.kind,
-          cityName: video.profile.city.name,
+          cityName: placeName(video.profile.city),
         },
       }));
     },
@@ -522,7 +528,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           slug: review.profile.slug,
           displayName: review.profile.displayName,
           kind: review.profile.kind,
-          cityName: review.profile.city.name,
+          cityName: placeName(review.profile.city),
         },
       }));
     },
@@ -545,7 +551,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           status: true,
           createdAt: true,
           author: { select: { clientProfile: { select: { nickname: true } } } },
-          profile: { select: { id: true, slug: true, displayName: true, city: true } },
+          profile: { select: { id: true, slug: true, displayName: true, city: placeNameSelect } },
           reports: {
             where: { resolvedAt: null },
             orderBy: { createdAt: 'asc' },
@@ -564,7 +570,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           id: comment.profile.id,
           slug: comment.profile.slug,
           displayName: comment.profile.displayName,
-          cityName: comment.profile.city.name,
+          cityName: placeName(comment.profile.city),
         },
         reports: comment.reports.map((report) => ({
           id: report.id,
@@ -592,7 +598,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         details: true,
         createdAt: true,
         reporter: { select: { email: true } },
-        profile: { select: { id: true, slug: true, displayName: true, city: true } },
+        profile: { select: { id: true, slug: true, displayName: true, city: placeNameSelect } },
       },
     });
     if (reports.length === 0) return [];
@@ -619,7 +625,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         id: report.profile.id,
         slug: report.profile.slug,
         displayName: report.profile.displayName,
-        cityName: report.profile.city.name,
+        cityName: placeName(report.profile.city),
       },
       otherOpenReports: (openByProfile.get(report.profile.id) ?? 1) - 1,
     }));
@@ -1717,7 +1723,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           kind: true,
           moderationNote: true,
           updatedAt: true,
-          city: { select: { name: true } },
+          city: placeNameSelect,
           owner: { select: { email: true, bannedAt: true } },
         },
       });
@@ -1746,7 +1752,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         id: row.id,
         slug: row.slug,
         displayName: row.displayName,
-        cityName: row.city.name,
+        cityName: placeName(row.city),
         kind: row.kind,
         reason: row.moderationNote,
         ownerEmail: row.owner.email,
@@ -2011,8 +2017,8 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
           weightKg: true,
           languages: true,
           createdAt: true,
-          city: { select: { name: true } },
-          district: { select: { name: true } },
+          city: placeNameSelect,
+          district: placeNameSelect,
           owner: {
             select: {
               id: true,
@@ -2070,8 +2076,8 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (fastify) => {
         kind: profile.kind,
         displayName: profile.displayName,
         description: profile.description,
-        cityName: profile.city.name,
-        districtName: profile.district?.name ?? null,
+        cityName: placeName(profile.city),
+        districtName: profile.district ? placeName(profile.district) : null,
         age: profile.age,
         heightCm: profile.heightCm,
         weightKg: profile.weightKg,

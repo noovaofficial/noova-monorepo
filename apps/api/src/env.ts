@@ -80,6 +80,15 @@ const envSchema = z.object({
    */
   INTERNAL_API_TOKEN: z.string().default(''),
 
+  /**
+   * Ключ, которым шифруются секреты второго фактора сотрудников в базе
+   * (modules/auth/totp.ts). Любая длинная случайная строка. Не задан — в проде
+   * сотрудники войти не смогут (503), остальной сайт работает. Менять нельзя:
+   * со сменой все настроенные вторые факторы перестанут расшифровываться, и
+   * их придётся сбрасывать скриптом `reset-mfa`.
+   */
+  MFA_SECRET_KEY: z.string().default('dev-only-mfa-key'),
+
   // ---------- Фоновые задачи (N-18) ----------
   /**
    * Сроки хранения в днях. В конфигурации, а не в коде: это обязательства
@@ -174,6 +183,7 @@ export const env: Env = parsed.data;
  */
 const DEV_DEFAULTS: Partial<Record<keyof Env, string>> = {
   IP_HASH_SALT: 'dev-only-salt',
+  MFA_SECRET_KEY: 'dev-only-mfa-key',
   S3_SECRET_KEY: 'noova-dev-secret',
 };
 

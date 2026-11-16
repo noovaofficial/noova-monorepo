@@ -75,7 +75,9 @@ function fakePrisma(rows: {
   const queryRaw = vi.fn((strings: TemplateStringsArray, ...values: unknown[]) => {
     const sql = [...strings, ...values.map((v) => JSON.stringify(v))].join(' ');
     if (sql.includes('"SourceDailyStat"')) return Promise.resolve(rows.sources ?? []);
-    if (sql.includes('DISTINCT ON')) return Promise.resolve(rows.citySnapshot ?? []);
+    // Снимок анкет: из роллапа (прошлые даты) или живой из `Profile` (сегодня).
+    if (sql.includes('DISTINCT ON') || sql.includes('"Profile" p'))
+      return Promise.resolve(rows.citySnapshot ?? []);
     if (sql.includes('"CityDailyStat"')) return Promise.resolve(rows.cityTraffic ?? []);
     return Promise.resolve(rows.revenue ?? []);
   });

@@ -1,11 +1,14 @@
 import {
   type BuyTopResult,
   canBuyProfileTop,
+  DEFAULT_LOCALE,
+  type Locale,
   TOP_WEEK_DAYS,
   type TopPlacement,
   type TopState,
 } from '@noova/shared';
 import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { localized, translationSelect } from '../../i18n.js';
 import { PROFILES_TAG, profileTag } from '../../plugins/revalidate.js';
 import { getCountryMonetization } from './scoped.js';
 import { applyMovement } from './wallet.js';
@@ -117,12 +120,16 @@ export async function topState(
   prisma: PrismaClient,
   userId: string,
   now: Date = new Date(),
+  locale: Locale = DEFAULT_LOCALE,
 ): Promise<TopState> {
   const [owner, own, placements] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId }, select: { advertiserKind: true } }),
     prisma.profile.findMany({
       where: { ownerId: userId },
-      select: { cityId: true, city: { select: { slug: true, name: true } } },
+      select: {
+        cityId: true,
+        city: { select: { slug: true, name: true, translations: translationSelect(locale) } },
+      },
     }),
     prisma.topPlacement.findMany({
       where: { userId, ...activeWhere(now) },
@@ -140,7 +147,7 @@ export async function topState(
       ]);
       return {
         citySlug: city.slug,
-        cityName: city.name,
+        cityName: localized(city.translations, city.name),
         priceGc: config.weekGc,
         slots: config.slots,
         freeSlots: Math.max(0, config.slots - taken),
@@ -148,7 +155,7 @@ export async function topState(
       };
     }),
   );
-  rows.sort((a, b) => a.cityName.localeCompare(b.cityName));
+  rows.sort((a, b) => a.cityName.localeCompare(b.cityName, locale));
 
   return { cities: rows, placements: placements.map(toTopPlacement) };
 }

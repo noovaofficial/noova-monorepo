@@ -14,10 +14,7 @@ import type * as Prisma from "../internal/prismaNamespace"
 
 /**
  * Model ProfileReport
- * Жалоба на анкету. Вход не требуется: заставлять регистрироваться того,
- * кто увидел признаки принуждения или несовершеннолетнюю, значит такого
- * сообщения не получить. Спам сдерживается лимитом на IP и журналом, как
- * в N-08. Жалоба никогда не снимает анкету сама — решает человек.
+ * 
  */
 export type ProfileReportModel = runtime.Types.Result.DefaultSelection<Prisma.$ProfileReportPayload>
 

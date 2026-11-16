@@ -187,6 +187,13 @@ for img in api web; do
   printf 'перенесён\n'
 done
 
+# MinIO: образа в Docker Hub больше нет, и compose его не скачивает
+# (`pull_policy: never`). Единственный источник — старый сервер.
+printf '  minio/minio:latest … '
+$SSH "$FROM" "docker save minio/minio:latest | gzip -1" \
+  | $SSH "$TO" "gunzip | docker load" >/dev/null
+printf 'перенесён\n'
+
 # ---------------------------------------------------------------------------
 step "5/9 Хранилища"
 # ---------------------------------------------------------------------------

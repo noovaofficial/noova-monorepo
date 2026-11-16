@@ -19,7 +19,9 @@ x-logging: &logging
 
 services:
   postgres:
-    image: postgres:17-alpine
+    # Версия закреплена отпечатком — см. «Образы» в documentation/deploy/prod.md.
+    # postgres:17-alpine, снято с сервера 15.11.2026.
+    image: postgres@sha256:18cfe3ef5e6815560c98237d6216d1e5119702fb0f3894c8785dd58b8bbe5d73
     <<: [*restart, *logging]
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -38,7 +40,8 @@ services:
     networks: [internal]
 
   redis:
-    image: redis:7-alpine
+    # redis:7-alpine, снято с сервера 15.11.2026.
+    image: redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf
     <<: [*restart, *logging]
     command: redis-server --save 60 1 --appendonly yes --loglevel warning
     volumes:
@@ -51,7 +54,15 @@ services:
     networks: [internal]
 
   minio:
+    # Образа в Docker Hub больше нет (проверено 16.11.2026), поэтому отпечатком
+    # он не закреплён: после `docker load` из сохранённого файла отпечаток
+    # реестра у образа пропадает, и запись `minio/minio@sha256:…` его бы не
+    # нашла. Вместо этого запрещено скачивание: нет образа на машине — запуск
+    # остановится с понятной ошибкой, а не возьмёт что-то чужое под тем же
+    # именем. Рабочая сборка: RELEASE.2025-09-07,
+    # sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e.
     image: minio/minio:latest
+    pull_policy: never
     <<: [*restart, *logging]
     command: server /data --console-address ':9001'
     environment:
@@ -79,6 +90,7 @@ services:
     # скачать его заново нельзя: стоило чистке образов задеть его на
     # сервере — и api, ждущий этот контейнер, больше не поднялся бы.
     image: minio/minio:latest
+    pull_policy: never
     <<: *logging
     depends_on:
       minio:
@@ -168,6 +180,9 @@ services:
       SESSION_TTL_DAYS: ${SESSION_TTL_DAYS:-30}
       IP_HASH_SALT: ${IP_HASH_SALT}
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      # Ключ шифрования секретов второго фактора сотрудников. Пусто —
+      # сайт работает, но админы и модераторы войти не смогут.
+      MFA_SECRET_KEY: ${MFA_SECRET_KEY:-}
       # Сброс кэша фронта по событию. Без этих двух правки владелицы и
       # решения модератора не видны до истечения ISR — до десяти минут,
       # а адрес по умолчанию (localhost) внутри контейнера ведёт в сам api.
@@ -238,6 +253,10 @@ services:
       # Пустое значение отключает карты: остаётся текстовая сноска.
       MAP_TILE_URL: ${MAP_TILE_URL:-}
       MAP_TILE_USER_AGENT: ${MAP_TILE_USER_AGENT:-Noova/1.0}
+      # Content-Security-Policy: report — только отчёты в лог api (по
+      # умолчанию), enforce — блокировка, off — без заголовка. Читается при
+      # запуске: смена значения не требует пересборки, хватит `make update`.
+      CSP_MODE: ${CSP_MODE:-report}
       NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL}
       NEXT_PUBLIC_SITE_URL: ${SITE_URL}
     volumes:
@@ -268,7 +287,8 @@ services:
   #   3) прогрев адреса: первые недели объём наращивается постепенно.
   # Подробнее — documentation/planning/planning.md, N-15.
   smtp:
-    image: boky/postfix:latest
+    # boky/postfix:latest, снято с сервера 15.11.2026.
+    image: boky/postfix@sha256:aafc772384232497bed875e1eb66b4d3e54ba1ebc86e2e185a6dc1dbc48182ef
     <<: [*restart, *logging]
     environment:
       ALLOWED_SENDER_DOMAINS: ${MAIL_DOMAIN}
@@ -309,7 +329,8 @@ services:
   # Единственный контейнер, смотрящий наружу. Caddy сам получает и продлевает
   # TLS-сертификаты — на новом домене поднимается без ручной возни.
   caddy:
-    image: caddy:2-alpine
+    # caddy:2-alpine, снято с сервера 15.11.2026.
+    image: caddy@sha256:5f5c8640aae01df9654968d946d8f1a56c497f1dd5c5cda4cf95ab7c14d58648
     <<: [*restart, *logging]
     ports:
       - '80:80'

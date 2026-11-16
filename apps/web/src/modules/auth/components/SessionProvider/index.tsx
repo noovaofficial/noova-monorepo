@@ -10,6 +10,7 @@ import {
   clearSessionHint,
   setSessionHint,
 } from '@/modules/auth/session-hint';
+import { usePathname, useRouter } from '@/shared/i18n/navigation';
 import { queryKeys } from '@/shared/query-keys';
 
 type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
@@ -62,6 +63,17 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(queryKeys.session(), { ...user, locale: siteLocale }),
     );
   }, [user, siteLocale, queryClient]);
+
+  // Сотрудник с верным паролем, но без кода второго фактора: сервер ему
+  // ничего, кроме страницы кода, не отдаст — и интерфейс ведёт туда же,
+  // на какой бы адрес он ни пришёл.
+  const router = useRouter();
+  const pathname = usePathname();
+  const needsTwoFactor = user !== null && user.twoFactor !== 'ok';
+  useEffect(() => {
+    if (needsTwoFactor && pathname !== '/two-factor') router.replace('/two-factor');
+  }, [needsTwoFactor, pathname, router]);
+
   const status: SessionStatus = session.isPending
     ? 'loading'
     : user

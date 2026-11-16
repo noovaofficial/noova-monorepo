@@ -1,5 +1,5 @@
 import { buildApp } from './app.js';
-import { env, requireProductionSecrets } from './env.js';
+import { env, missingProductionSecrets, requireProductionSecrets } from './env.js';
 
 requireProductionSecrets([
   'IP_HASH_SALT',
@@ -7,6 +7,13 @@ requireProductionSecrets([
   'REVALIDATE_SECRET',
   'S3_SECRET_KEY',
 ]);
+
+// Без ключа второго фактора сайт работать может, а сотрудники войти — нет.
+// Не роняем сервис (иначе пропущенная переменная клала бы весь сайт), но и
+// не молчим: по этой строке причину отказа входа находят за минуту.
+if (missingProductionSecrets(env, ['MFA_SECRET_KEY']).length > 0) {
+  console.error('MFA_SECRET_KEY не задан: вход админов и модераторов закрыт (503).');
+}
 
 const app = await buildApp();
 

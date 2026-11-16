@@ -6,6 +6,7 @@
  * фронт кэширует ответы через ISR по адресу, и невидимый в адресе заголовок
  * сделал бы разные языки одной записью кэша.
  */
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { DEFAULT_LOCALE, isLocale, type Locale } from '@noova/shared';
 import { z } from 'zod';
 
@@ -32,4 +33,35 @@ export const translationSelect = (locale: Locale) => ({
  */
 export function localized(translations: { name: string }[] | undefined, fallback: string): string {
   return translations?.[0]?.name ?? fallback;
+}
+
+// --- Язык текущего запроса ---------------------------------------------------
+
+/**
+ * Язык запроса, доступный без проброса через аргументы. Его ставит
+ * `plugins/locale.ts` из заголовка `x-noova-locale`.
+ *
+ * Нужен интерфейсу сотрудников: названия городов там собираются в десятках
+ * мест — в загрузчиках очереди, в журнале, во вспомогательных функциях, —
+ * куда запрос не передаётся. Вне запроса (фоновые задачи, скрипты) хранилище
+ * пусто, и берётся язык по умолчанию.
+ */
+export const requestLocale = new AsyncLocalStorage<Locale>();
+
+export const currentLocale = (): Locale => requestLocale.getStore() ?? DEFAULT_LOCALE;
+
+/**
+ * Выборка названия города или района со всеми переводами. В отличие от
+ * `translationSelect`, не требует языка в момент составления запроса —
+ * годится для выборок-констант. Язык выбирает `placeName`.
+ */
+export const placeNameSelect = {
+  select: { name: true, translations: { select: { locale: true, name: true } } },
+} as const;
+
+type Place = { name: string; translations: { locale: string; name: string }[] };
+
+/** Название на языке запроса; без перевода — базовое (см. `localized`). */
+export function placeName(place: Place, locale: Locale = currentLocale()): string {
+  return place.translations.find((item) => item.locale === locale)?.name ?? place.name;
 }

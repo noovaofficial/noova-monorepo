@@ -176,11 +176,19 @@ export type Video = Prisma.VideoModel
  */
 export type Photo = Prisma.PhotoModel
 /**
- * Model ProfileReport
+ * Model MfaRecoveryCode
  * Жалоба на анкету. Вход не требуется: заставлять регистрироваться того,
  * кто увидел признаки принуждения или несовершеннолетнюю, значит такого
  * сообщения не получить. Спам сдерживается лимитом на IP и журналом, как
  * в N-08. Жалоба никогда не снимает анкету сама — решает человек.
+ * Резервные коды второго фактора: вход, когда телефона под рукой нет.
+ * Хранится только хэш; использованный код помечается, а не удаляется —
+ * по отметке видно, сколько кодов осталось.
+ */
+export type MfaRecoveryCode = Prisma.MfaRecoveryCodeModel
+/**
+ * Model ProfileReport
+ * 
  */
 export type ProfileReport = Prisma.ProfileReportModel
 /**

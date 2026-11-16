@@ -14,6 +14,7 @@ import { loggerOptions } from './logger.js';
 import { accountRoutes } from './modules/account/routes.js';
 import { adminRoutes } from './modules/admin/routes.js';
 import { analyticsRoutes } from './modules/analytics/routes.js';
+import { mfaRoutes } from './modules/auth/mfa-routes.js';
 import { authRoutes } from './modules/auth/routes.js';
 import { agencyTariffRoutes } from './modules/billing/agency-tariffs.routes.js';
 import { billingRoutes } from './modules/billing/routes.js';
@@ -22,6 +23,7 @@ import { commentRoutes } from './modules/comments/routes.js';
 import { domainCheckRoutes } from './modules/company/domain-check.js';
 import { companyRevealRoutes } from './modules/company/reveal.js';
 import { companyRoutes } from './modules/company/routes.js';
+import { cspRoutes } from './modules/csp/routes.js';
 import { favoriteRoutes } from './modules/favorites/routes.js';
 import { healthRoutes } from './modules/health/routes.js';
 import { locationRoutes } from './modules/locations/routes.js';
@@ -35,6 +37,7 @@ import { serviceCatalogRoutes } from './modules/service-catalog/routes.js';
 import { verificationRoutes } from './modules/verification/routes.js';
 import { videoRoutes } from './modules/videos/routes.js';
 import eventBufferPlugin from './plugins/event-buffer.js';
+import localePlugin from './plugins/locale.js';
 import presencePlugin from './plugins/presence.js';
 import prismaPlugin from './plugins/prisma.js';
 import redisPlugin from './plugins/redis.js';
@@ -68,6 +71,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(sessionPlugin);
   await app.register(revalidatePlugin);
   await app.register(presencePlugin);
+  await app.register(localePlugin);
 
   if (!isProduction) {
     await app.register(swagger, {
@@ -136,6 +140,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   await app.register(
     async (api) => {
       await api.register(authRoutes);
+      await api.register(mfaRoutes);
       await api.register(accountRoutes);
       await api.register(photoRoutes);
       await api.register(videoRoutes);
@@ -156,6 +161,7 @@ export async function buildApp(): Promise<FastifyInstance> {
       await api.register(verificationRoutes);
       await api.register(analyticsRoutes);
       await api.register(campaignRoutes);
+      await api.register(cspRoutes);
     },
     { prefix: '/api/v1' },
   );

@@ -42,6 +42,8 @@ import {
 } from '@noova/shared';
 import { z } from 'zod';
 
+import { localeHeader } from '@/shared/api-locale';
+
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
 
 export class ModerationError extends Error {
@@ -61,6 +63,7 @@ async function call<T>(path: string, schema: z.ZodType<T>, init: RequestInit = {
       // Заголовок только при наличии тела: на POST без тела Fastify отвечает
       // «Body cannot be empty when content-type is set to application/json».
       ...(init.body === undefined ? {} : { 'content-type': 'application/json' }),
+      ...localeHeader(),
       ...init.headers,
     },
     credentials: 'include',
@@ -366,6 +369,11 @@ export function setStaffBlocked(id: string, blocked: boolean): Promise<StaffMemb
     method: 'POST',
     body: JSON.stringify({ blocked }),
   });
+}
+
+/** Сброс второго фактора сотруднику: настроит заново при следующем входе. */
+export function resetStaffTwoFactor(id: string): Promise<StaffMember> {
+  return call(`/admin/staff/${id}/reset-two-factor`, staffMemberSchema, { method: 'POST' });
 }
 
 /** Необратимое удаление сотрудника — только админ. 204 без тела. */

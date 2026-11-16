@@ -377,7 +377,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (fastify) => {
     async (request) => {
       const { userId, role } = requireSession(request);
       if (role !== 'advertiser') throw fastify.httpErrors.forbidden('ТОП доступен рекламодателю');
-      return topState(fastify.prisma, userId);
+      return topState(fastify.prisma, userId, new Date(), request.locale);
     },
   );
 

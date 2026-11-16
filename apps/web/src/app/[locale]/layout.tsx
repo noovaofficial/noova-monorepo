@@ -18,6 +18,7 @@ import { SessionTracker } from '@/modules/analytics/components/SessionTracker';
 import { SessionProvider } from '@/modules/auth/components/SessionProvider';
 import { SESSION_HINT_SCRIPT } from '@/modules/auth/session-hint';
 import { FavoritesProvider } from '@/modules/favorites/components/FavoritesProvider';
+import { NONCE_HEADER } from '@/shared/csp';
 import { PUBLIC_CLIENT_NAMESPACES, pickNamespaces } from '@/shared/i18n/client-namespaces';
 import { routing } from '@/shared/i18n/routing';
 import { SubdomainProvider } from '@/shared/i18n/SubdomainContext';
@@ -113,6 +114,7 @@ export default async function LocaleLayout({
       <head>
         {/* Тема применяется до первой отрисовки, иначе при статике страница мигает. */}
         <script
+          nonce={hdrs.get(NONCE_HEADER) ?? undefined}
           // biome-ignore lint/security/noDangerouslySetInnerHtml: константный инлайн-скрипт темы, пользовательских данных нет
           dangerouslySetInnerHTML={{
             __html: `${THEME_INIT_SCRIPT}${AGE_GATE_INIT_SCRIPT}${SESSION_HINT_SCRIPT}${CONSENT_INIT_SCRIPT}`,

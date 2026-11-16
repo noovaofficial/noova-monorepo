@@ -109,6 +109,8 @@ async function loadCities(
   prisma: PrismaClient,
   from: string,
   to: string,
+  /** Отчёт доходит до сегодняшнего дня: анкеты считаем по живой таблице. */
+  live: boolean,
 ): Promise<Dashboard['cities']> {
   const [traffic, snapshot] = await Promise.all([
     prisma.$queryRaw<CityTrafficRow[]>`
@@ -127,7 +129,22 @@ async function loadCities(
      * все дни окна (см. `rollupActiveProfiles`). Сложить их за 30 дней
      * значило бы получить снимок, умноженный на 30.
      */
-    prisma.$queryRaw<CitySnapshotRow[]>`
+    live
+      ? /**
+         * Сегодняшний отчёт — прямо из `Profile`. Снимок в роллапе пишет
+         * фоновая задача (раз в несколько часов), и только что
+         * опубликованная анкета в новом городе не появлялась бы в таблице
+         * до следующего её прохода. Запрос тот же, что в
+         * `rollupActiveProfiles`, и дешёвый: опубликованных анкет тысячи.
+         */
+        prisma.$queryRaw<CitySnapshotRow[]>`
+          SELECT c."slug" AS "city", p."kind"::text AS "category", count(*)::int AS "activeProfiles"
+            FROM "Profile" p
+            JOIN "City" c ON c."id" = p."cityId"
+           WHERE p."status" = 'published'::"ProfileStatus"
+           GROUP BY 1, 2
+        `
+      : prisma.$queryRaw<CitySnapshotRow[]>`
       SELECT DISTINCT ON ("city", "category") "city", "category", "activeProfiles"
         FROM "CityDailyStat"
        WHERE "day" <= ${to}::date
@@ -248,7 +265,7 @@ export async function loadDashboard(
 
   const [sources, cities, revenue] = await Promise.all([
     loadSources(prisma, from, to),
-    loadCities(prisma, from, to),
+    loadCities(prisma, from, to, to >= berlinDate(now)),
     loadRevenue(prisma, from, to),
   ]);
 

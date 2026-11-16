@@ -10,6 +10,7 @@ export default defineConfig({
     'src/server.ts',
     'src/jobs/runner.ts',
     'src/scripts/create-admin.ts',
+    'src/scripts/reset-mfa.ts',
     'src/scripts/seed-reference.ts',
     'src/scripts/export-reference.ts',
     'src/scripts/grant-launch-listings.ts',

@@ -152,6 +152,13 @@ export const currentUserSchema = z.object({
   deletionRequestedAt: z.string().datetime().nullable(),
   /** До какого момента удаление можно отменить. */
   deletionEffectiveAt: z.string().datetime().nullable(),
+  /**
+   * Второй фактор — только у админов и модераторов; у остальных всегда `ok`.
+   *  - `pending` — пароль принят, нужен код из приложения;
+   *  - `setup` — второй фактор ещё не настроен, доступна только настройка.
+   * Пока не `ok`, сервер не пускает никуда, кроме страницы второго фактора.
+   */
+  twoFactor: z.enum(['ok', 'pending', 'setup']).default('ok'),
 });
 export type CurrentUser = z.infer<typeof currentUserSchema>;
 
@@ -181,3 +188,30 @@ export const changePasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+/** Код второго фактора: шесть цифр из приложения или резервный код. */
+export const mfaCodeSchema = z.object({ code: z.string().trim().min(6).max(20) });
+export type MfaCodeInput = z.infer<typeof mfaCodeSchema>;
+
+/** Начало настройки: секрет для приложения — QR-кодом и текстом. */
+export const mfaSetupSchema = z.object({
+  /** Секрет в base32 — для ручного ввода, если камеры нет. */
+  secret: z.string(),
+  /** Картинка QR-кода (`data:image/png;base64,…`). */
+  qrDataUrl: z.string(),
+});
+export type MfaSetup = z.infer<typeof mfaSetupSchema>;
+
+/** Второй фактор включён. Резервные коды показываются один раз — здесь. */
+export const mfaEnabledSchema = z.object({
+  user: currentUserSchema,
+  recoveryCodes: z.array(z.string()),
+});
+export type MfaEnabled = z.infer<typeof mfaEnabledSchema>;
+
+/** Код принят. `recoveryCodesLeft` — если вошли резервным: сколько осталось. */
+export const mfaVerifiedSchema = z.object({
+  user: currentUserSchema,
+  recoveryCodesLeft: z.number().int().nullable(),
+});
+export type MfaVerified = z.infer<typeof mfaVerifiedSchema>;

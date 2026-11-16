@@ -21,7 +21,7 @@
 /* Шапка анкеты во всю ширину: имя, бейджи и город одной строкой. */
 .header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: var(--space3);
   padding-top: var(--space8);

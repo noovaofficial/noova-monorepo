@@ -8,3 +8,5 @@ sent.jsonl
 accounts.json
 sessions/
 __pycache__/
+accounts.json.bak-*
+spare_proxies.txt

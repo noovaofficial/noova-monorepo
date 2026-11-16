@@ -5,6 +5,7 @@ import type {
 } from '@noova/shared';
 import { VERIFICATION_PHOTO_KINDS } from '@noova/shared';
 import type { PrismaClient } from '../../generated/prisma/client.js';
+import { placeName, placeNameSelect } from '../../i18n.js';
 import {
   deleteObject,
   getObject,
@@ -59,7 +60,7 @@ export const verificationSelect = {
       displayName: true,
       kind: true,
       isVerified: true,
-      city: { select: { name: true } },
+      city: placeNameSelect,
       owner: { select: { email: true } },
     },
   },
@@ -78,7 +79,7 @@ type Row = {
     displayName: string;
     kind: 'escort' | 'massage';
     isVerified: boolean;
-    city: { name: string };
+    city: { name: string; translations: { locale: string; name: string }[] };
     owner: { email: string };
   };
 };
@@ -94,7 +95,7 @@ export function toVerificationItem(row: Row): VerificationRequestItem {
       id: row.profile.id,
       slug: row.profile.slug,
       displayName: row.profile.displayName,
-      cityName: row.profile.city.name,
+      cityName: placeName(row.profile.city),
       kind: row.profile.kind,
       isVerified: row.profile.isVerified,
     },

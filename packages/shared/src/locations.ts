@@ -35,6 +35,7 @@ export const RESERVED_CITY_SLUGS = [
   'profile',
   'register',
   'reset-password',
+  'two-factor',
   'verify-email',
 ] as const;
 

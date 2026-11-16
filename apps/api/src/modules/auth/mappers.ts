@@ -20,9 +20,13 @@ type UserRow = {
 };
 
 /** Пароль, токены и служебные метки наружу не отдаются. */
-export function toCurrentUser(user: UserRow): CurrentUser {
+export function toCurrentUser(
+  user: UserRow,
+  twoFactor: CurrentUser['twoFactor'] = 'ok',
+): CurrentUser {
   return {
     id: user.id,
+    twoFactor,
     email: user.email,
     role: user.role,
     isEmailVerified: user.emailVerifiedAt !== null,
