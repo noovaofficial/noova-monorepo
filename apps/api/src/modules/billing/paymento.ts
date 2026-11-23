@@ -155,8 +155,9 @@ export class PaymentoError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    options?: { cause?: unknown },
   ) {
-    super(message);
+    super(message, options);
     this.name = 'PaymentoError';
   }
 }
@@ -164,18 +165,31 @@ export class PaymentoError extends Error {
 type Envelope<T> = { success: boolean; message?: string; body: T };
 
 async function call<T>(path: string, body: unknown): Promise<T> {
-  const response = await fetch(`${env.PAYMENTO_API_URL}${path}`, {
-    method: 'POST',
-    headers: {
-      'Api-key': env.PAYMENTO_API_KEY,
-      'content-type': 'application/json',
-      accept: 'text/plain',
-    },
-    body: JSON.stringify(body),
-    // Шлюз, который не ответил за десять секунд, не ответит и за минуту;
-    // человек в это время смотрит на крутилку.
-    signal: AbortSignal.timeout(10_000),
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${env.PAYMENTO_API_URL}${path}`, {
+      method: 'POST',
+      headers: {
+        'Api-key': env.PAYMENTO_API_KEY,
+        'content-type': 'application/json',
+        accept: 'text/plain',
+      },
+      body: JSON.stringify(body),
+      // Шлюз, который не ответил за десять секунд, не ответит и за минуту;
+      // человек в это время смотрит на крутилку.
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch (error) {
+    // До ответа не дошло: тайм-аут, DNS, отказ соединения, TLS. Раньше это
+    // уходило наверх как есть и превращалось в 500 без объяснения — а это
+    // сбой поставщика, а не наш. Причину сохраняем для журнала.
+    const cause = error instanceof Error ? (error.cause ?? error) : error;
+    const reason =
+      error instanceof Error && error.name === 'TimeoutError'
+        ? 'не ответил за 10 с'
+        : `недоступен: ${cause instanceof Error ? cause.message : String(cause)}`;
+    throw new PaymentoError(`Paymento ${reason} (${path})`, 504, { cause: error });
+  }
 
   const envelope = (await response.json().catch(() => null)) as Envelope<T> | null;
   if (!response.ok || !envelope?.success) {

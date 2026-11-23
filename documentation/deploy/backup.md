@@ -95,9 +95,16 @@ make backup-allow-pull SERVER=deploy@<IP Prod> KEY='ssh-ed25519 … noova-pull'
 
    ```bash
    CHECK_HTTP="https://noova.cc/ https://mail.noova.fyi:8443/admin/ https://webmail.noova.fyi/"
-   CHECK_TCP="mail.noova.fyi:25 mail.noova.fyi:465 mail.noova.fyi:993"
+   CHECK_TCP="mail.noova.fyi:465 mail.noova.fyi:993"
    CHECK_TLS="noova.cc:443 mail.noova.fyi:8443 mail.noova.fyi:993 webmail.noova.fyi:443"
    ```
+
+   Порт 25 (приём почты) отсюда не проверять: хостеры обычно закрывают
+   серверам исходящий 25-й, и с хранилища он «закрыт» у любого почтового
+   сервера, включая исправный (16.11.2026 так и вышло — ложная тревога).
+   Проверить его — письмом снаружи (например, с Gmail) на ящик `@noova.fyi`
+   или с машины, где исходящий 25-й открыт: `documentation/deploy/smtp.md`,
+   «Проверка».
 
    Зачем отдельная машина: проверка здоровья контейнера видит только процесс.
    Админка почты восемь дней отвечала 404 при статусе `healthy`. Журнал —

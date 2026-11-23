@@ -285,6 +285,16 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       }[request.params.kind];
       if (!key) throw fastify.httpErrors.notFound('Снимок недоступен');
 
+      // Запись — до выдачи байтов: просмотр, который не удалось записать,
+      // не должен состояться.
+      await fastify.prisma.verificationPhotoView.create({
+        data: {
+          requestId: request.params.id,
+          kind: request.params.kind,
+          viewerId: requireSession(request).userId,
+        },
+      });
+
       const { body, contentType, contentLength } = await readVerificationPhoto(key);
       // no-store, а не private: документ не должен осесть даже в кэше браузера
       // модератора — с общей машины его увидел бы следующий смотрящий.
@@ -311,9 +321,18 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const found = await fastify.prisma.verificationRequest.findUnique({
         where: { id: request.params.id },
-        select: { id: true, status: true, profileId: true, profile: { select: { slug: true } } },
+        select: {
+          id: true,
+          status: true,
+          profileId: true,
+          profile: { select: { slug: true, ownerId: true } },
+        },
       });
       if (!found) throw fastify.httpErrors.notFound('Заявка не найдена');
+      // Бейдж «Проверено» себе — то же самоодобрение, что и у остальных решений.
+      if (found.profile.ownerId === userId) {
+        throw fastify.httpErrors.forbidden('Нельзя модерировать собственные материалы');
+      }
       if (found.status !== 'pending') throw fastify.httpErrors.conflict('Заявка уже рассмотрена');
 
       const [, updated] = await fastify.prisma.$transaction([
@@ -363,9 +382,12 @@ export const verificationRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = requireSession(request);
       const found = await fastify.prisma.verificationRequest.findUnique({
         where: { id: request.params.id },
-        select: { id: true, status: true },
+        select: { id: true, status: true, profile: { select: { ownerId: true } } },
       });
       if (!found) throw fastify.httpErrors.notFound('Заявка не найдена');
+      if (found.profile.ownerId === userId) {
+        throw fastify.httpErrors.forbidden('Нельзя модерировать собственные материалы');
+      }
       if (found.status !== 'pending') throw fastify.httpErrors.conflict('Заявка уже рассмотрена');
 
       // Бейдж не трогаем: отказ по новой заявке не отменяет прошлое решение,

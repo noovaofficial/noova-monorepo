@@ -1,8 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  createPayment,
   httpsOnly,
   isValidSignature,
   mapOrderStatus,
+  PaymentoError,
   parseCallback,
   signatureFor,
 } from './paymento.js';
@@ -79,5 +81,57 @@ describe('адрес возврата', () => {
       url: 'https://noova.cc/ru/x',
       upgraded: false,
     });
+  });
+});
+
+describe('связь с Paymento', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  /**
+   * Сбой сети — это сбой поставщика, а не наш: маршрут должен ответить 502
+   * с понятным текстом, а не 500. Раньше ошибка `fetch` уходила наверх как есть.
+   */
+  it('недоступный шлюз даёт PaymentoError с причиной, а не сырую ошибку fetch', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(
+        Object.assign(new TypeError('fetch failed'), {
+          cause: new Error('getaddrinfo ENOTFOUND'),
+        }),
+      ),
+    );
+    const error = await createPayment({ eurCents: 1000, orderId: 'o1', returnUrl: 'https://x/' })
+      .then(() => null)
+      .catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(PaymentoError);
+    expect((error as PaymentoError).message).toContain('ENOTFOUND');
+  });
+
+  it('тайм-аут называется тайм-аутом', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockRejectedValue(new DOMException('The operation was aborted', 'TimeoutError')),
+    );
+    const error = await createPayment({ eurCents: 1000, orderId: 'o1', returnUrl: 'https://x/' })
+      .then(() => null)
+      .catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(PaymentoError);
+    expect((error as PaymentoError).message).toContain('не ответил за 10 с');
+  });
+
+  it('ответ без success — PaymentoError с сообщением поставщика', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ success: false, message: 'Invalid api key' }), {
+          status: 401,
+        }),
+      ),
+    );
+    const error = await createPayment({ eurCents: 1000, orderId: 'o1', returnUrl: 'https://x/' })
+      .then(() => null)
+      .catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(PaymentoError);
+    expect((error as PaymentoError).message).toBe('Invalid api key');
   });
 });

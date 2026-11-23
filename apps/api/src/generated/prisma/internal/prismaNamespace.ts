@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.9.1
- * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
+ * Prisma Client JS version: 7.10.1
+ * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.9.1",
-  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
+  client: "7.10.1",
+  engine: "d1b3f377ca835d73fd50954a5e22128b9ebdd6b8"
 }
 
 /**
@@ -448,6 +448,7 @@ export const ModelName = {
   TopPlacement: 'TopPlacement',
   AgencyTopPlacement: 'AgencyTopPlacement',
   VerificationRequest: 'VerificationRequest',
+  VerificationPhotoView: 'VerificationPhotoView',
   Campaign: 'Campaign',
   CampaignGrant: 'CampaignGrant'
 } as const
@@ -465,7 +466,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "clientProfile" | "moderationAction" | "profileTextReview" | "authToken" | "country" | "countryTranslation" | "city" | "placementRule" | "cityTopSetting" | "countryTopSetting" | "countryPlacementPrice" | "cityPlacementPrice" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "video" | "photo" | "mfaRecoveryCode" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "campaign" | "campaignGrant"
+    modelProps: "user" | "clientProfile" | "moderationAction" | "profileTextReview" | "authToken" | "country" | "countryTranslation" | "city" | "placementRule" | "cityTopSetting" | "countryTopSetting" | "countryPlacementPrice" | "cityPlacementPrice" | "cityTranslation" | "district" | "districtTranslation" | "profile" | "video" | "photo" | "mfaRecoveryCode" | "profileReport" | "profileComment" | "commentReport" | "favorite" | "company" | "profileHours" | "companyContact" | "companyPriceSlot" | "profileContact" | "profileEvent" | "analyticsSession" | "profileEventDaily" | "sourceDailyStat" | "cityDailyStat" | "priceSlot" | "service" | "serviceTranslation" | "serviceGroupTranslation" | "profileService" | "verificationCase" | "promoSlot" | "billingSettings" | "agencyTariffTier" | "agencyTariffPrice" | "topupTier" | "billingTransaction" | "listing" | "topupOrder" | "topPlacement" | "agencyTopPlacement" | "verificationRequest" | "verificationPhotoView" | "campaign" | "campaignGrant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4243,6 +4244,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VerificationPhotoView: {
+      payload: Prisma.$VerificationPhotoViewPayload<ExtArgs>
+      fields: Prisma.VerificationPhotoViewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationPhotoViewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationPhotoViewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationPhotoViewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationPhotoViewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationPhotoViewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationPhotoViewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationPhotoViewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationPhotoViewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationPhotoViewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        update: {
+          args: Prisma.VerificationPhotoViewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationPhotoViewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationPhotoViewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationPhotoViewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationPhotoViewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPhotoViewPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationPhotoViewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationPhotoView>
+        }
+        groupBy: {
+          args: Prisma.VerificationPhotoViewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationPhotoViewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationPhotoViewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationPhotoViewCountAggregateOutputType> | number
+        }
+      }
+    }
     Campaign: {
       payload: Prisma.$CampaignPayload<ExtArgs>
       fields: Prisma.CampaignFieldRefs
@@ -5175,6 +5250,17 @@ export const VerificationRequestScalarFieldEnum = {
 export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
 
 
+export const VerificationPhotoViewScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  kind: 'kind',
+  viewerId: 'viewerId',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationPhotoViewScalarFieldEnum = (typeof VerificationPhotoViewScalarFieldEnum)[keyof typeof VerificationPhotoViewScalarFieldEnum]
+
+
 export const CampaignScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -5967,6 +6053,7 @@ export type GlobalOmitConfig = {
   topPlacement?: Prisma.TopPlacementOmit
   agencyTopPlacement?: Prisma.AgencyTopPlacementOmit
   verificationRequest?: Prisma.VerificationRequestOmit
+  verificationPhotoView?: Prisma.VerificationPhotoViewOmit
   campaign?: Prisma.CampaignOmit
   campaignGrant?: Prisma.CampaignGrantOmit
 }

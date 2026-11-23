@@ -213,27 +213,28 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profiles            Profile[]
-  billingTransactions BillingTransaction[]
-  billingAdjustments  BillingTransaction[] @relation("billingAdjustments")
-  listings            Listing[]
-  topupOrders         TopupOrder[]
-  topPlacements       TopPlacement[]
-  agencyTopPlacements AgencyTopPlacement[]
-  clientProfile       ClientProfile?
-  authTokens          AuthToken[]
-  favorites           Favorite[]
-  comments            ProfileComment[]
-  commentReports      CommentReport[]
-  profileReports      ProfileReport[]
-  mfaRecoveryCodes    MfaRecoveryCode[]
-  moderationActions   ModerationAction[]   @relation("moderatorActions")
-  createdStaff        User[]               @relation("staffCreator")
-  campaignGrants      CampaignGrant[]
-  createdCampaigns    Campaign[]           @relation("campaignAuthor")
+  profiles               Profile[]
+  billingTransactions    BillingTransaction[]
+  billingAdjustments     BillingTransaction[]    @relation("billingAdjustments")
+  listings               Listing[]
+  topupOrders            TopupOrder[]
+  topPlacements          TopPlacement[]
+  agencyTopPlacements    AgencyTopPlacement[]
+  clientProfile          ClientProfile?
+  authTokens             AuthToken[]
+  favorites              Favorite[]
+  comments               ProfileComment[]
+  commentReports         CommentReport[]
+  profileReports         ProfileReport[]
+  mfaRecoveryCodes       MfaRecoveryCode[]
+  moderationActions      ModerationAction[]      @relation("moderatorActions")
+  verificationPhotoViews VerificationPhotoView[] @relation("verificationPhotoViews")
+  createdStaff           User[]                  @relation("staffCreator")
+  campaignGrants         CampaignGrant[]
+  createdCampaigns       Campaign[]              @relation("campaignAuthor")
   /// Кто завёл эту учётку. Заполняется только для модераторов и админов.
-  createdById         String?
-  createdBy           User?                @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdById            String?
+  createdBy              User?                   @relation("staffCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([createdAt])
 }
@@ -1616,8 +1617,29 @@ model VerificationRequest {
   /// файлы — нет.
   purgedAt         DateTime?
 
+  views VerificationPhotoView[]
+
   @@index([status, submittedAt])
   @@index([profileId, submittedAt])
+}
+
+/// Кто и когда открывал снимок документа. Снимки — данные особой
+/// категории, и вопрос «кто видел мой паспорт» должен иметь ответ.
+/// Запись остаётся и после удаления снимков (`purgedAt`): это след
+/// доступа, а не сам документ.
+model VerificationPhotoView {
+  id        String              @id @default(cuid())
+  requestId String
+  request   VerificationRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  /// face | document | together
+  kind      String
+  /// Удалённый сотрудник — запись остаётся без автора, как в журнале модерации.
+  viewerId  String?
+  viewer    User?               @relation("verificationPhotoViews", fields: [viewerId], references: [id], onDelete: SetNull)
+  createdAt DateTime            @default(now())
+
+  @@index([requestId, createdAt])
+  @@index([viewerId, createdAt])
 }
 
 /// Когда акция срабатывает.

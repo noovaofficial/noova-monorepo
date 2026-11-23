@@ -102,6 +102,7 @@ export const ModelName = {
   TopPlacement: 'TopPlacement',
   AgencyTopPlacement: 'AgencyTopPlacement',
   VerificationRequest: 'VerificationRequest',
+  VerificationPhotoView: 'VerificationPhotoView',
   Campaign: 'Campaign',
   CampaignGrant: 'CampaignGrant'
 } as const
@@ -865,6 +866,17 @@ export const VerificationRequestScalarFieldEnum = {
 } as const
 
 export type VerificationRequestScalarFieldEnum = (typeof VerificationRequestScalarFieldEnum)[keyof typeof VerificationRequestScalarFieldEnum]
+
+
+export const VerificationPhotoViewScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  kind: 'kind',
+  viewerId: 'viewerId',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationPhotoViewScalarFieldEnum = (typeof VerificationPhotoViewScalarFieldEnum)[keyof typeof VerificationPhotoViewScalarFieldEnum]
 
 
 export const CampaignScalarFieldEnum = {

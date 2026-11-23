@@ -235,6 +235,7 @@ export type VerificationRequestWhereInput = {
   submittedAt?: Prisma.DateTimeFilter<"VerificationRequest"> | Date | string
   purgedAt?: Prisma.DateTimeNullableFilter<"VerificationRequest"> | Date | string | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  views?: Prisma.VerificationPhotoViewListRelationFilter
 }
 
 export type VerificationRequestOrderByWithRelationInput = {
@@ -250,6 +251,7 @@ export type VerificationRequestOrderByWithRelationInput = {
   submittedAt?: Prisma.SortOrder
   purgedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
+  views?: Prisma.VerificationPhotoViewOrderByRelationAggregateInput
 }
 
 export type VerificationRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -268,6 +270,7 @@ export type VerificationRequestWhereUniqueInput = Prisma.AtLeast<{
   submittedAt?: Prisma.DateTimeFilter<"VerificationRequest"> | Date | string
   purgedAt?: Prisma.DateTimeNullableFilter<"VerificationRequest"> | Date | string | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
+  views?: Prisma.VerificationPhotoViewListRelationFilter
 }, "id">
 
 export type VerificationRequestOrderByWithAggregationInput = {
@@ -316,6 +319,7 @@ export type VerificationRequestCreateInput = {
   submittedAt?: Date | string
   purgedAt?: Date | string | null
   profile: Prisma.ProfileCreateNestedOneWithoutVerificationRequestsInput
+  views?: Prisma.VerificationPhotoViewCreateNestedManyWithoutRequestInput
 }
 
 export type VerificationRequestUncheckedCreateInput = {
@@ -330,6 +334,7 @@ export type VerificationRequestUncheckedCreateInput = {
   reviewedAt?: Date | string | null
   submittedAt?: Date | string
   purgedAt?: Date | string | null
+  views?: Prisma.VerificationPhotoViewUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type VerificationRequestUpdateInput = {
@@ -344,6 +349,7 @@ export type VerificationRequestUpdateInput = {
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   profile?: Prisma.ProfileUpdateOneRequiredWithoutVerificationRequestsNestedInput
+  views?: Prisma.VerificationPhotoViewUpdateManyWithoutRequestNestedInput
 }
 
 export type VerificationRequestUncheckedUpdateInput = {
@@ -358,6 +364,7 @@ export type VerificationRequestUncheckedUpdateInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  views?: Prisma.VerificationPhotoViewUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type VerificationRequestCreateManyInput = {
@@ -453,6 +460,11 @@ export type VerificationRequestMinOrderByAggregateInput = {
   purgedAt?: Prisma.SortOrder
 }
 
+export type VerificationRequestScalarRelationFilter = {
+  is?: Prisma.VerificationRequestWhereInput
+  isNot?: Prisma.VerificationRequestWhereInput
+}
+
 export type VerificationRequestCreateNestedManyWithoutProfileInput = {
   create?: Prisma.XOR<Prisma.VerificationRequestCreateWithoutProfileInput, Prisma.VerificationRequestUncheckedCreateWithoutProfileInput> | Prisma.VerificationRequestCreateWithoutProfileInput[] | Prisma.VerificationRequestUncheckedCreateWithoutProfileInput[]
   connectOrCreate?: Prisma.VerificationRequestCreateOrConnectWithoutProfileInput | Prisma.VerificationRequestCreateOrConnectWithoutProfileInput[]
@@ -499,6 +511,20 @@ export type EnumVerificationRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.VerificationRequestStatus
 }
 
+export type VerificationRequestCreateNestedOneWithoutViewsInput = {
+  create?: Prisma.XOR<Prisma.VerificationRequestCreateWithoutViewsInput, Prisma.VerificationRequestUncheckedCreateWithoutViewsInput>
+  connectOrCreate?: Prisma.VerificationRequestCreateOrConnectWithoutViewsInput
+  connect?: Prisma.VerificationRequestWhereUniqueInput
+}
+
+export type VerificationRequestUpdateOneRequiredWithoutViewsNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationRequestCreateWithoutViewsInput, Prisma.VerificationRequestUncheckedCreateWithoutViewsInput>
+  connectOrCreate?: Prisma.VerificationRequestCreateOrConnectWithoutViewsInput
+  upsert?: Prisma.VerificationRequestUpsertWithoutViewsInput
+  connect?: Prisma.VerificationRequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationRequestUpdateToOneWithWhereWithoutViewsInput, Prisma.VerificationRequestUpdateWithoutViewsInput>, Prisma.VerificationRequestUncheckedUpdateWithoutViewsInput>
+}
+
 export type VerificationRequestCreateWithoutProfileInput = {
   id?: string
   faceKey: string
@@ -510,6 +536,7 @@ export type VerificationRequestCreateWithoutProfileInput = {
   reviewedAt?: Date | string | null
   submittedAt?: Date | string
   purgedAt?: Date | string | null
+  views?: Prisma.VerificationPhotoViewCreateNestedManyWithoutRequestInput
 }
 
 export type VerificationRequestUncheckedCreateWithoutProfileInput = {
@@ -523,6 +550,7 @@ export type VerificationRequestUncheckedCreateWithoutProfileInput = {
   reviewedAt?: Date | string | null
   submittedAt?: Date | string
   purgedAt?: Date | string | null
+  views?: Prisma.VerificationPhotoViewUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type VerificationRequestCreateOrConnectWithoutProfileInput = {
@@ -568,6 +596,78 @@ export type VerificationRequestScalarWhereInput = {
   purgedAt?: Prisma.DateTimeNullableFilter<"VerificationRequest"> | Date | string | null
 }
 
+export type VerificationRequestCreateWithoutViewsInput = {
+  id?: string
+  faceKey: string
+  documentKey: string
+  togetherKey: string
+  status?: $Enums.VerificationRequestStatus
+  rejectionReason?: string | null
+  reviewedByUserId?: string | null
+  reviewedAt?: Date | string | null
+  submittedAt?: Date | string
+  purgedAt?: Date | string | null
+  profile: Prisma.ProfileCreateNestedOneWithoutVerificationRequestsInput
+}
+
+export type VerificationRequestUncheckedCreateWithoutViewsInput = {
+  id?: string
+  profileId: string
+  faceKey: string
+  documentKey: string
+  togetherKey: string
+  status?: $Enums.VerificationRequestStatus
+  rejectionReason?: string | null
+  reviewedByUserId?: string | null
+  reviewedAt?: Date | string | null
+  submittedAt?: Date | string
+  purgedAt?: Date | string | null
+}
+
+export type VerificationRequestCreateOrConnectWithoutViewsInput = {
+  where: Prisma.VerificationRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationRequestCreateWithoutViewsInput, Prisma.VerificationRequestUncheckedCreateWithoutViewsInput>
+}
+
+export type VerificationRequestUpsertWithoutViewsInput = {
+  update: Prisma.XOR<Prisma.VerificationRequestUpdateWithoutViewsInput, Prisma.VerificationRequestUncheckedUpdateWithoutViewsInput>
+  create: Prisma.XOR<Prisma.VerificationRequestCreateWithoutViewsInput, Prisma.VerificationRequestUncheckedCreateWithoutViewsInput>
+  where?: Prisma.VerificationRequestWhereInput
+}
+
+export type VerificationRequestUpdateToOneWithWhereWithoutViewsInput = {
+  where?: Prisma.VerificationRequestWhereInput
+  data: Prisma.XOR<Prisma.VerificationRequestUpdateWithoutViewsInput, Prisma.VerificationRequestUncheckedUpdateWithoutViewsInput>
+}
+
+export type VerificationRequestUpdateWithoutViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  faceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  documentKey?: Prisma.StringFieldUpdateOperationsInput | string
+  togetherKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationRequestStatusFieldUpdateOperationsInput | $Enums.VerificationRequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  profile?: Prisma.ProfileUpdateOneRequiredWithoutVerificationRequestsNestedInput
+}
+
+export type VerificationRequestUncheckedUpdateWithoutViewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  faceKey?: Prisma.StringFieldUpdateOperationsInput | string
+  documentKey?: Prisma.StringFieldUpdateOperationsInput | string
+  togetherKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationRequestStatusFieldUpdateOperationsInput | $Enums.VerificationRequestStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 export type VerificationRequestCreateManyProfileInput = {
   id?: string
   faceKey: string
@@ -592,6 +692,7 @@ export type VerificationRequestUpdateWithoutProfileInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  views?: Prisma.VerificationPhotoViewUpdateManyWithoutRequestNestedInput
 }
 
 export type VerificationRequestUncheckedUpdateWithoutProfileInput = {
@@ -605,6 +706,7 @@ export type VerificationRequestUncheckedUpdateWithoutProfileInput = {
   reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   purgedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  views?: Prisma.VerificationPhotoViewUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type VerificationRequestUncheckedUpdateManyWithoutProfileInput = {
@@ -621,6 +723,35 @@ export type VerificationRequestUncheckedUpdateManyWithoutProfileInput = {
 }
 
 
+/**
+ * Count Type VerificationRequestCountOutputType
+ */
+
+export type VerificationRequestCountOutputType = {
+  views: number
+}
+
+export type VerificationRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  views?: boolean | VerificationRequestCountOutputTypeCountViewsArgs
+}
+
+/**
+ * VerificationRequestCountOutputType without action
+ */
+export type VerificationRequestCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationRequestCountOutputType
+   */
+  select?: Prisma.VerificationRequestCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * VerificationRequestCountOutputType without action
+ */
+export type VerificationRequestCountOutputTypeCountViewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationPhotoViewWhereInput
+}
+
 
 export type VerificationRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -635,6 +766,8 @@ export type VerificationRequestSelect<ExtArgs extends runtime.Types.Extensions.I
   submittedAt?: boolean
   purgedAt?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  views?: boolean | Prisma.VerificationRequest$viewsArgs<ExtArgs>
+  _count?: boolean | Prisma.VerificationRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["verificationRequest"]>
 
 export type VerificationRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -684,6 +817,8 @@ export type VerificationRequestSelectScalar = {
 export type VerificationRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "profileId" | "faceKey" | "documentKey" | "togetherKey" | "status" | "rejectionReason" | "reviewedByUserId" | "reviewedAt" | "submittedAt" | "purgedAt", ExtArgs["result"]["verificationRequest"]>
 export type VerificationRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
+  views?: boolean | Prisma.VerificationRequest$viewsArgs<ExtArgs>
+  _count?: boolean | Prisma.VerificationRequestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VerificationRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
@@ -696,6 +831,7 @@ export type $VerificationRequestPayload<ExtArgs extends runtime.Types.Extensions
   name: "VerificationRequest"
   objects: {
     profile: Prisma.$ProfilePayload<ExtArgs>
+    views: Prisma.$VerificationPhotoViewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1111,6 +1247,7 @@ readonly fields: VerificationRequestFieldRefs;
 export interface Prisma__VerificationRequestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   profile<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  views<T extends Prisma.VerificationRequest$viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationRequest$viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPhotoViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1549,6 +1686,30 @@ export type VerificationRequestDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many VerificationRequests to delete.
    */
   limit?: number
+}
+
+/**
+ * VerificationRequest.views
+ */
+export type VerificationRequest$viewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationPhotoView
+   */
+  select?: Prisma.VerificationPhotoViewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationPhotoView
+   */
+  omit?: Prisma.VerificationPhotoViewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationPhotoViewInclude<ExtArgs> | null
+  where?: Prisma.VerificationPhotoViewWhereInput
+  orderBy?: Prisma.VerificationPhotoViewOrderByWithRelationInput | Prisma.VerificationPhotoViewOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationPhotoViewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationPhotoViewScalarFieldEnum | Prisma.VerificationPhotoViewScalarFieldEnum[]
 }
 
 /**

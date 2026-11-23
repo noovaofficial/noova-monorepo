@@ -19,6 +19,8 @@ type Json = Record<string, unknown>;
 describe.skipIf(!testUrl)('маршруты: место аккаунта, правила размещения, Premium', () => {
   let app: FastifyInstance;
   const cookies = new Map<string, string>();
+  const mfaSecrets = new Map<string, string>();
+  let signIns = 0;
 
   const call = async (
     method: 'GET' | 'POST' | 'PUT' | 'PATCH',
@@ -34,16 +36,63 @@ describe.skipIf(!testUrl)('маршруты: место аккаунта, пра
     return { status: response.statusCode, body: response.json() as Json, raw: response };
   };
 
+  const keepCookies = (email: string, header: string | string[] | undefined) => {
+    const list = Array.isArray(header) ? header : [String(header)];
+    const jar = new Map(
+      (cookies.get(email) ?? '')
+        .split('; ')
+        .filter(Boolean)
+        .map((pair) => pair.split('=') as [string, string]),
+    );
+    for (const cookie of list) {
+      const [pair = ''] = cookie.split(';');
+      const [name = '', value = ''] = pair.split('=');
+      if (!name) continue;
+      if (value === '' || /max-age=0/i.test(cookie)) jar.delete(name);
+      else jar.set(name, value);
+    }
+    cookies.set(email, [...jar].map(([name, value]) => `${name}=${value}`).join('; '));
+  };
+
   const signIn = async (email: string) => {
+    cookies.delete(email);
+    signIns += 1;
     const response = await app.inject({
       method: 'POST',
       url: '/api/v1/auth/login',
       payload: { email, password: 'correct-horse-battery' },
+      // Свой адрес на каждый вход: у входа лимит 5 в минуту с адреса, а набор
+      // входит чаще — иначе последние тесты получали 429.
+      remoteAddress: `10.0.0.${signIns}`,
     });
     expect(response.statusCode).toBe(200);
-    const header = response.headers['set-cookie'];
-    const list = Array.isArray(header) ? header : [String(header)];
-    cookies.set(email, list.map((c) => c.split(';')[0]).join('; '));
+    keepCookies(email, response.headers['set-cookie']);
+
+    // Сотруднику пароль даёт только второй фактор: проходим его, иначе
+    // админские маршруты отвечают 403 (см. plugins/session.ts).
+    const { totpCode, totpStep } = await import('../modules/auth/totp.js');
+    const state = (response.json() as Json).twoFactor;
+    if (state === 'setup') {
+      const setup = await call('POST', '/auth/mfa/setup', { body: {}, as: email });
+      expect(setup.status).toBe(200);
+      mfaSecrets.set(email, String(setup.body.secret));
+      const enabled = await call('POST', '/auth/mfa/enable', {
+        body: { code: totpCode(String(setup.body.secret), totpStep()) },
+        as: email,
+      });
+      expect(enabled.status).toBe(200);
+      keepCookies(email, enabled.raw.headers['set-cookie']);
+    } else if (state === 'pending') {
+      // Повторный вход в пределах одного шага времени: код того же шага уже
+      // использован — сервер его справедливо отклонил бы.
+      await app.prisma.user.update({ where: { email }, data: { totpLastStep: null } });
+      const verified = await call('POST', '/auth/mfa/verify', {
+        body: { code: totpCode(mfaSecrets.get(email) ?? '', totpStep()) },
+        as: email,
+      });
+      expect(verified.status).toBe(200);
+      keepCookies(email, verified.raw.headers['set-cookie']);
+    }
   };
 
   const register = (extra: Json) =>
@@ -214,7 +263,13 @@ describe.skipIf(!testUrl)('маршруты: место аккаунта, пра
       expect(profile.city.slug).toBe('hamburg');
     });
 
-    it('пока есть анкеты, страну сменить нельзя', async () => {
+    // Правило изменилось: черновики переезжают вместе с аккаунтом, а
+    // запрещает смену только опубликованная анкета.
+    it('пока есть опубликованные анкеты, страну сменить нельзя', async () => {
+      await app.prisma.profile.updateMany({
+        where: { owner: { email: 'ok@test.dev' } },
+        data: { status: 'published' },
+      });
       const result = await call('PUT', '/me/location', {
         as: 'ok@test.dev',
         body: { countryCode: 'PL', citySlug: 'warszawa' },

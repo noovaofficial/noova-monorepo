@@ -422,6 +422,14 @@ export type AgencyTopPlacement = Prisma.AgencyTopPlacementModel
  */
 export type VerificationRequest = Prisma.VerificationRequestModel
 /**
+ * Model VerificationPhotoView
+ * Кто и когда открывал снимок документа. Снимки — данные особой
+ * категории, и вопрос «кто видел мой паспорт» должен иметь ответ.
+ * Запись остаётся и после удаления снимков (`purgedAt`): это след
+ * доступа, а не сам документ.
+ */
+export type VerificationPhotoView = Prisma.VerificationPhotoViewModel
+/**
  * Model Campaign
  * Акция: кому, при каком условии и что выдаём (решение админа).
  * 

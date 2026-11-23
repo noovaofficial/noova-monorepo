@@ -27,17 +27,22 @@ export const promoRoutes: FastifyPluginAsyncZod = async (fastify) => {
         where: {
           isActive: true,
           startsAt: { lte: now },
-          OR: [{ endsAt: null }, { endsAt: { gte: now } }],
-          ...(request.query.city
-            ? { profile: { city: { slug: request.query.city }, status: 'published' } }
-            : request.query.country
-              ? {
-                  profile: {
-                    country: { code: request.query.country.toUpperCase() },
-                    status: 'published',
-                  },
-                }
-              : {}),
+          AND: [
+            { OR: [{ endsAt: null }, { endsAt: { gte: now } }] },
+            request.query.city
+              ? { profile: { city: { slug: request.query.city }, status: 'published' } }
+              : request.query.country
+                ? {
+                    profile: {
+                      country: { code: request.query.country.toUpperCase() },
+                      status: 'published',
+                    },
+                  }
+                : // Без фильтра слот — это либо ссылка без анкеты, либо
+                  // опубликованная анкета. Снятая или заблокированная вела
+                  // бы на 404.
+                  { OR: [{ profileId: null }, { profile: { status: 'published' } }] },
+          ],
         },
         orderBy: { position: 'asc' },
         take: request.query.limit,
