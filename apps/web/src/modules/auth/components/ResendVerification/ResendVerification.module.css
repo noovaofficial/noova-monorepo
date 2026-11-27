@@ -1,0 +1,20 @@
+.link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.note {
+  display: block;
+  margin-top: 4px;
+}

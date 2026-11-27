@@ -345,7 +345,11 @@
     "errorCityNotFound": "This city isn't available in the chosen country.",
     "errorNetwork": "No connection to the server. Check your internet and try again.",
     "errorServer": "Server error on our side. Try again in a few minutes.",
-    "errorInvalid": "Some of the entered data is not valid. Check the fields and try again."
+    "errorInvalid": "Some of the entered data is not valid. Check the fields and try again.",
+    "resendVerification": "Send the email again",
+    "resendSent": "Email sent — check your inbox and spam folder",
+    "resendWait": "Already sent, you can try again in a minute",
+    "resendFailed": "Could not send, please try again later"
   },
   "account": {
     "title": "My profiles",

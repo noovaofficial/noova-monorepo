@@ -112,6 +112,11 @@ export function verifyEmail(token: string): Promise<{ ok: true }> {
   return post('/auth/verify-email', { token });
 }
 
+/** Письмо подтверждения ещё раз. 429 — уже отправлено меньше минуты назад. */
+export function resendVerificationEmail(): Promise<{ ok: true }> {
+  return post('/auth/verify-email/resend', {});
+}
+
 export function requestAccountDeletion(input: DeleteAccountInput): Promise<CurrentUser> {
   return post('/auth/delete-account', input, currentUserSchema);
 }

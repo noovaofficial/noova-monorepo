@@ -121,6 +121,28 @@ fi
 if [ "$ROLE" = app ]; then
   usermod -aG docker "$USER_NAME"
   ok "$USER_NAME добавлен в группу docker"
+
+  # DNS для контейнеров — явно. Без этого Docker берёт вышестоящий сервер из
+  # /etc/resolv.conf хоста в момент создания контейнера, а на Ubuntu там
+  # 127.0.0.53 (systemd-resolved). 18 ноября 2026 resolved перезапустился без
+  # слушателя на этом адресе, и девять дней ни один контейнер не находил
+  # внешних имён: не работали пополнения (Paymento) и все письма. С хоста при
+  # этом всё выглядело исправным — он ходит в resolved мимо 127.0.0.53.
+  DAEMON=/etc/docker/daemon.json
+  DNS_SERVERS='"8.8.8.8", "1.1.1.1"'
+  if [ ! -f "$DAEMON" ]; then
+    mkdir -p /etc/docker
+    printf '{ "dns": [%s] }\n' "$DNS_SERVERS" > "$DAEMON"
+    systemctl restart docker
+    ok "DNS для контейнеров: $DNS_SERVERS ($DAEMON)"
+  elif grep -q '"dns"' "$DAEMON"; then
+    ok "DNS для контейнеров уже задан в $DAEMON"
+  else
+    # Чужой JSON без jq не правим: испорченный daemon.json не даст Docker
+    # запуститься вовсе.
+    printf '  ! в %s нет "dns" — добавьте вручную: "dns": [%s], затем\n' "$DAEMON" "$DNS_SERVERS"
+    printf '    systemctl restart docker и docker compose up -d --force-recreate\n'
+  fi
 fi
 
 # Хранилищу нужны cron (расписание снимков), openssl (шифрование и проверка)

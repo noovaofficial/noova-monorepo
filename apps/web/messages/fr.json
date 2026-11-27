@@ -345,7 +345,11 @@
     "errorCityNotFound": "Cette ville n'est pas disponible dans le pays choisi.",
     "errorNetwork": "Pas de connexion au serveur. Vérifiez votre connexion internet et réessayez.",
     "errorServer": "Erreur de notre côté. Réessayez dans quelques minutes.",
-    "errorInvalid": "Certaines données saisies sont invalides. Vérifiez les champs et réessayez."
+    "errorInvalid": "Certaines données saisies sont invalides. Vérifiez les champs et réessayez.",
+    "resendVerification": "Renvoyer l'e-mail",
+    "resendSent": "E-mail envoyé — vérifiez votre boîte de réception et vos spams",
+    "resendWait": "Déjà envoyé, réessayez dans une minute",
+    "resendFailed": "Échec de l'envoi, réessayez plus tard"
   },
   "account": {
     "title": "Mes profils",

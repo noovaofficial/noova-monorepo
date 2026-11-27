@@ -345,7 +345,11 @@
     "errorCityNotFound": "Esta ciudad no está disponible en el país elegido.",
     "errorNetwork": "Sin conexión con el servidor. Comprueba tu internet e inténtalo de nuevo.",
     "errorServer": "Error en nuestro servidor. Inténtalo de nuevo en unos minutos.",
-    "errorInvalid": "Algunos datos no son válidos. Revisa los campos e inténtalo de nuevo."
+    "errorInvalid": "Algunos datos no son válidos. Revisa los campos e inténtalo de nuevo.",
+    "resendVerification": "Enviar el correo de nuevo",
+    "resendSent": "Correo enviado: revisa tu bandeja de entrada y la carpeta de spam",
+    "resendWait": "Ya enviado, puedes volver a intentarlo en un minuto",
+    "resendFailed": "No se pudo enviar, inténtalo más tarde"
   },
   "account": {
     "title": "Mis perfiles",

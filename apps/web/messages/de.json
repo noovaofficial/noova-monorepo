@@ -345,7 +345,11 @@
     "errorCityNotFound": "Diese Stadt ist im gewählten Land nicht verfügbar.",
     "errorNetwork": "Keine Verbindung zum Server. Prüfe deine Internetverbindung und versuche es erneut.",
     "errorServer": "Serverfehler auf unserer Seite. Versuche es in ein paar Minuten erneut.",
-    "errorInvalid": "Einige Eingaben sind ungültig. Prüfe die Felder und versuche es erneut."
+    "errorInvalid": "Einige Eingaben sind ungültig. Prüfe die Felder und versuche es erneut.",
+    "resendVerification": "E-Mail erneut senden",
+    "resendSent": "E-Mail gesendet – prüfen Sie Posteingang und Spam-Ordner",
+    "resendWait": "Bereits gesendet, erneut möglich in einer Minute",
+    "resendFailed": "Senden fehlgeschlagen, bitte später erneut versuchen"
   },
   "account": {
     "title": "Meine Anzeigen",

@@ -46,6 +46,9 @@ LOAD_ALERT_CPU_PCT=80    # load average / ядра, три замера подр
 LOAD_ALERT_MEM_PCT=90
 LOAD_ALERT_DISK_PCT=85
 LOAD_ALERT_COOLDOWN_H=6  # не чаще раза в N часов на один вид тревоги
+# Тревоги по журналу api (app-alerts.sh):
+APP_ALERT_COOLDOWN_MIN=60  # не чаще раза в N минут на один вид
+APP_ALERT_5XX=5            # от скольких ответов 5xx за 5 минут тревожить
 CONFEOF
 fi
 chmod 600 "$CONF"
@@ -56,11 +59,15 @@ LINE="$AT export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/b
 SAMPLE="$DIR/infra/backup/load-sample.sh"
 [ -f "$SAMPLE" ] || fail "Нет $SAMPLE — сначала: make deploy-files SERVER=…"
 SAMPLE_LINE="*/10 * * * * export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; /bin/bash $SAMPLE >> $HOME/noova-load.log 2>&1"
+# Тревоги по журналу api (письма, оплаты, 5xx) — каждые пять минут.
+ALERTS="$DIR/infra/backup/app-alerts.sh"
+[ -f "$ALERTS" ] || fail "Нет $ALERTS — сначала: make deploy-files SERVER=…"
+ALERTS_LINE="*/5 * * * * export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; /bin/bash $ALERTS >> $HOME/noova-alerts.log 2>&1"
 
 CURRENT="$(crontab -l 2>/dev/null || true)"
-REST="$(printf '%s\n' "$CURRENT" | grep -v 'backup/watch\.sh' | grep -v 'backup/load-sample\.sh' || true)"
-printf '%s\n%s\n%s\n' "$REST" "$LINE" "$SAMPLE_LINE" | grep -v '^[[:space:]]*$' | crontab -
-say "Расписание сторожа: $AT (UTC-время машины); замер нагрузки: каждые 10 минут"
+REST="$(printf '%s\n' "$CURRENT" | grep -v 'backup/watch\.sh' | grep -v 'backup/load-sample\.sh' | grep -v 'backup/app-alerts\.sh' || true)"
+printf '%s\n%s\n%s\n%s\n' "$REST" "$LINE" "$SAMPLE_LINE" "$ALERTS_LINE" | grep -v '^[[:space:]]*$' | crontab -
+say "Расписание сторожа: $AT (UTC-время машины); замер нагрузки: каждые 10 минут; тревоги по журналу api: каждые 5 минут"
 
 printf '\n\033[32mСторож поставлен.\033[0m Осталось:\n'
 printf '  1. Вписать WATCH_TG_TOKEN и WATCH_TG_CHAT в %s\n' "$CONF"

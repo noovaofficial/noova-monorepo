@@ -650,4 +650,64 @@ describe.skipIf(!testUrl)('маршруты: место аккаунта, пра
       expect(result.body.convertedProfiles).toBe(0);
     });
   });
+
+  describe('письмо подтверждения ещё раз', () => {
+    it('гасит прежнюю ссылку, выдаёт новую и не шлёт чаще раза в минуту', async () => {
+      const { hashPassword } = await import('../modules/auth/passwords.js');
+      const user = await app.prisma.user.create({
+        data: {
+          email: 'resend@test.dev',
+          passwordHash: await hashPassword('correct-horse-battery'),
+          role: 'client',
+          isAdult: true,
+          authTokens: {
+            create: {
+              tokenHash: 'old-token-hash',
+              purpose: 'email_verification',
+              expiresAt: new Date(Date.now() + 60_000),
+            },
+          },
+        },
+      });
+      await app.redis.del(`mail:resend:${user.id}`);
+      await signIn('resend@test.dev');
+
+      const first = await call('POST', '/auth/verify-email/resend', {
+        as: 'resend@test.dev',
+        body: {},
+      });
+      expect(first.status).toBe(200);
+      const tokens = await app.prisma.authToken.findMany({
+        where: { userId: user.id, purpose: 'email_verification' },
+      });
+      expect(tokens).toHaveLength(2);
+      expect(tokens.filter((t) => t.usedAt === null)).toHaveLength(1);
+      expect(tokens.find((t) => t.tokenHash === 'old-token-hash')?.usedAt).not.toBeNull();
+
+      const again = await call('POST', '/auth/verify-email/resend', {
+        as: 'resend@test.dev',
+        body: {},
+      });
+      expect(again.status).toBe(429);
+    });
+
+    it('без входа — 401', async () => {
+      const result = await call('POST', '/auth/verify-email/resend', { body: {} });
+      expect(result.status).toBe(401);
+    });
+
+    it('наступившие повторы переносятся в очередь, будущие остаются ждать', async () => {
+      const { PROMOTE_DUE } = await import('../modules/auth/mail-queue.js');
+      const delayed = 'itest:mail:delayed';
+      const queue = 'itest:mail:queue';
+      await app.redis.del(delayed, queue);
+      await app.redis.zadd(delayed, Date.now() - 1000, 'due', Date.now() + 60_000, 'later');
+
+      const moved = await app.redis.eval(PROMOTE_DUE, 2, delayed, queue, String(Date.now()));
+      expect(moved).toBe(1);
+      expect(await app.redis.lrange(queue, 0, -1)).toEqual(['due']);
+      expect(await app.redis.zrange(delayed, '0', '-1')).toEqual(['later']);
+      await app.redis.del(delayed, queue);
+    });
+  });
 });

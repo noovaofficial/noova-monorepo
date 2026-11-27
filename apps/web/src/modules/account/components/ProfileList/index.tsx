@@ -27,6 +27,7 @@ import {
   submitAllProfiles,
 } from '@/modules/account/api';
 import { fetchOwnCompanyTariff } from '@/modules/agencies/api';
+import { ResendVerification } from '@/modules/auth/components/ResendVerification';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { fetchListing, fetchPlacement } from '@/modules/billing/api';
 import { ListingNotice } from '@/modules/billing/components/ListingNotice';
@@ -400,7 +401,9 @@ export function ProfileList() {
       </div>
 
       {user.isEmailVerified ? null : (
-        <p className={`${styles.notice} ${styles.noticeWarn}`}>{t('verifyEmailFirst')}</p>
+        <p className={`${styles.notice} ${styles.noticeWarn}`}>
+          {t('verifyEmailFirst')} <ResendVerification />
+        </p>
       )}
       {/* Закрытая страна и льготный срок после «стало платным» — над списком, а
           не только внутри анкеты: владелец узнаёт причину, не открывая её. */}

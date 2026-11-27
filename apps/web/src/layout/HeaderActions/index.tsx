@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/design-system/components/Button';
+import { ResendVerification } from '@/modules/auth/components/ResendVerification';
 import { useSession } from '@/modules/auth/components/SessionProvider';
 import { GlowCoinIcon } from '@/modules/billing/components/GlowCoinIcon';
 import { fetchQueueCount } from '@/modules/moderation/api';
@@ -97,7 +98,11 @@ export function HeaderActions() {
         {open ? (
           <div className={styles.menu} role="menu">
             {needsVerification ? (
-              <div className={styles.warning}>{ta('emailNotVerified')}</div>
+              <div className={styles.warning}>
+                {ta('emailNotVerified')}
+                <br />
+                <ResendVerification />
+              </div>
             ) : null}
 
             {user?.role === 'advertiser' ? (

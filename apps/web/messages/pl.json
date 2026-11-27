@@ -345,7 +345,11 @@
     "errorCityNotFound": "To miasto nie jest dostępne w wybranym kraju.",
     "errorNetwork": "Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.",
     "errorServer": "Błąd po naszej stronie. Spróbuj ponownie za kilka minut.",
-    "errorInvalid": "Część danych jest nieprawidłowa. Sprawdź pola i spróbuj ponownie."
+    "errorInvalid": "Część danych jest nieprawidłowa. Sprawdź pola i spróbuj ponownie.",
+    "resendVerification": "Wyślij e-mail ponownie",
+    "resendSent": "E-mail wysłany — sprawdź skrzynkę i folder spam",
+    "resendWait": "Już wysłano, spróbuj ponownie za minutę",
+    "resendFailed": "Nie udało się wysłać, spróbuj później"
   },
   "account": {
     "title": "Moje profile",

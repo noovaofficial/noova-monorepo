@@ -448,6 +448,62 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     },
   );
 
+  /**
+   * Письмо подтверждения ещё раз — для вошедшего, чей адрес не подтверждён.
+   * Нужно, когда первое не дошло: 27 ноября 2026 письма девять дней терялись
+   * из-за сбоя DNS, и подтвердить почту можно было только запросом к базе.
+   *
+   * Прежние ссылки гасятся: рабочей остаётся только последняя. Чаще раза в
+   * минуту на учётку не шлём — кнопку жмут повторно, не дождавшись письма, —
+   * и не больше пяти в час с адреса.
+   */
+  fastify.post(
+    '/auth/verify-email/resend',
+    {
+      onRequest: fastify.requireAuth,
+      config: { rateLimit: { max: 5, timeWindow: '1 hour', allowList: () => false } },
+      schema: { tags: ['auth'], response: { 200: acknowledgedSchema } },
+    },
+    async (request) => {
+      const { userId } = requireSession(request);
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true, locale: true, emailVerifiedAt: true },
+      });
+      if (!user) throw fastify.httpErrors.unauthorized('Сессия недействительна');
+      // Уже подтверждён (например, по ссылке в другой вкладке) — делать нечего.
+      if (user.emailVerifiedAt) return ACK;
+
+      const fresh = await fastify.redis.set(`mail:resend:${user.id}`, '1', 'EX', 60, 'NX');
+      if (fresh !== 'OK') {
+        throw fastify.httpErrors.tooManyRequests('Письмо уже отправлено, подождите минуту');
+      }
+
+      const { token, tokenHash } = generateToken();
+      await fastify.prisma.$transaction([
+        fastify.prisma.authToken.updateMany({
+          where: { userId: user.id, purpose: 'email_verification', usedAt: null },
+          data: { usedAt: new Date() },
+        }),
+        fastify.prisma.authToken.create({
+          data: {
+            userId: user.id,
+            tokenHash,
+            purpose: 'email_verification',
+            expiresAt: new Date(Date.now() + EMAIL_TOKEN_TTL_MS),
+          },
+        }),
+      ]);
+
+      const locale = localeOf(user.locale);
+      mails.enqueue({
+        to: user.email,
+        ...verifyEmailMail(locale, mailLink(locale, '/verify-email', token)),
+      });
+      return ACK;
+    },
+  );
+
   fastify.post(
     '/auth/password-reset/request',
     {
